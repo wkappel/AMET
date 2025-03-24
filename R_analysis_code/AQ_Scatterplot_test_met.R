@@ -1,16 +1,15 @@
-header <- "
-############################ MODEL TO OBS SCATTERPLOT ##############################
+################## MODEL TO OBS SCATTERPLOT #################### 
 ### AMET CODE: R_Scatterplot.r 
 ###
-### This script is part of the AMET-AQ system.  This script creates a single model-to-obs
-### scatterplot. This script will plot a single species for multiple  networks on a single
-### plot.  Additionally, summary statistics are also included on the plot. The script will
-### also allow a second run to plotted on top of the first run. Output format is png, pdf
-### or both.
+### This script is part of the AMET-AQ system.  This script creates
+### a single model-to-obs scatterplot. This script will plot a
+### single species from up to three networks on a single plot.  
+### Additionally, summary statistics are also included on the plot.  
+### The script will also allow a second run to plotted on top of the
+### first run. 
 ###
-### Last Updated by Wyat Appel: May 2020
-#####################################################################################
-"
+### Last Updated by Wyat Appel: June, 2018
+################################################################
 
 # get some environmental variables and setup some directories
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
@@ -21,7 +20,10 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+{
+   if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
+   else { title <- custom_title }
+}
 
 filename_pdf <- paste(run_name1,species,pid,"scatterplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot.png",sep="_")		# Set PNG filename
@@ -75,7 +77,7 @@ while (run_count <= num_runs) {
             model_name	     <- "Model"
          }
          else {
-            query_result   <- query_dbase(run_name,network,species)
+            query_result   <- query_met_dbase(run_name,network,species)
             aqdat_query.df <- query_result[[1]]
             data_exists    <- query_result[[2]]
             if (data_exists == "y") { units <- query_result[[3]] }
@@ -92,7 +94,7 @@ while (run_count <= num_runs) {
          }
          else {
             if (averaging != "n") {
-               aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,State=aqdat_query.df$state,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
+               aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
                {
                   if (use_avg_stats == "y") {
                      aqdat.df <- Average(aqdat.df)
@@ -106,7 +108,7 @@ while (run_count <= num_runs) {
             }
             else { 
                aqdat.df <- aqdat_query.df
-               aqdat.df <- data.frame(Network=aqdat.df$network,Stat_ID=aqdat.df$stat_id,lat=aqdat.df$lat,lon=aqdat.df$lon,State=aqdat_query.df$state,Obs_Value=round(aqdat.df[[ob_col_name]],5),Mod_Value=round(aqdat.df[[mod_col_name]],5),Month=aqdat.df$month)      # Create dataframe of network values to be used to create a list
+               aqdat.df <- data.frame(Network=aqdat.df$network,Stat_ID=aqdat.df$stat_id,lat=aqdat.df$lat,lon=aqdat.df$lon,Obs_Value=round(aqdat.df[[ob_col_name]],5),Mod_Value=round(aqdat.df[[mod_col_name]],5),Month=aqdat.df$month)      # Create dataframe of network values to be used to create a list
                aqdat_stats.df <- aqdat.df
             }
             axis.max <- max(c(axis.max,aqdat.df$Obs_Value,aqdat.df$Mod_Value)) 
@@ -182,7 +184,7 @@ while (run_count <= num_runs) {
       }
       write.table(dates,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
       write.table(network,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
-      write.table(aqdat.df,file=filename_txt,append=T,col.names=T,row.names=F,sep=",")
+      write.table(aqdat_query.df,file=filename_txt,append=T,col.names=T,row.names=F,sep=",")
       ###############################
    }	# End for loop for networks
    run_count <- run_count+1

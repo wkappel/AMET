@@ -43,6 +43,10 @@ filename_error_1	 <- paste(run_name1,species,pid,"spatialplot_error_1",sep="_") 
 filename_error_2	 <- paste(run_name1,species,pid,"spatialplot_error_2",sep="_")     # Filename for model spatial plot
 filename_error_diff	 <- paste(run_name1,species,pid,"spatialplot_error_diff",sep="_")       # Filename for diff spatial plot
 filename_error_diff_hist <- paste(run_name1,species,pid,"spatialplot_error_diff_hist",sep="_")       # Filename for diff spatial plot
+filename_corr_1          <- paste(run_name1,species,pid,"spatialplot_corr_1",sep="_")     # Filename for obs spatial plot
+filename_corr_2          <- paste(run_name1,species,pid,"spatialplot_corr_2",sep="_")     # Filename for model spatial plot
+filename_corr_diff       <- paste(run_name1,species,pid,"spatialplot_corr_diff",sep="_")       # Filename for diff spatial plot
+filename_corr_diff_hist  <- paste(run_name1,species,pid,"spatialplot_corr_diff_hist",sep="_")       # Filename for diff spatial plot
 filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
@@ -60,6 +64,10 @@ filename_error_1          <- paste(figdir,filename_error_1,sep="/")     	# Filen
 filename_error_2          <- paste(figdir,filename_error_2,sep="/")     	# Filename for model spatial plot
 filename_error_diff       <- paste(figdir,filename_error_diff,sep="/")     	# Filename for diff spatial plot
 filename_error_diff_hist  <- paste(figdir,filename_error_diff_hist,sep="/")	# Filename for diff spatial plot
+filename_corr_1          <- paste(figdir,filename_corr_1,sep="/")             # Filename for obs spatial plot
+filename_corr_2          <- paste(figdir,filename_corr_2,sep="/")             # Filename for model spatial plot
+filename_corr_diff       <- paste(figdir,filename_corr_diff,sep="/")          # Filename for diff spatial plot
+filename_corr_diff_hist  <- paste(figdir,filename_corr_diff_hist,sep="/")     # Filename for diff spatial plot
 filename_csv	 	  <- paste(figdir,filename_csv,sep="/")
 
 #################################
@@ -71,12 +79,18 @@ sinfo_bias_diff		<- NULL						# Set list for difference values to NULL
 sinfo_error_1		<- NULL                                         # Set list for obs values to NULL
 sinfo_error_2		<- NULL                                         # Set list for model values to NULL
 sinfo_error_diff	<- NULL                                         # Set list for difference values to NULL
+sinfo_corr_1            <- NULL
+sinfo_corr_2            <- NULL
+sinfo_corr_diff         <- NULL
 sinfo_bias_1_data	<- NULL
 sinfo_bias_2_data	<- NULL
 sinfo_bias_diff_data	<- NULL
 sinfo_error_1_data	<- NULL
 sinfo_error_2_data	<- NULL
 sinfo_error_diff_data	<- NULL
+sinfo_corr_1_data	<- NULL
+sinfo_corr_2_data	<- NULL
+sinfo_corr_diff_data	<- NULL
 diff_min        <- NULL
 all_sites	<- NULL
 all_lats        <- NULL
@@ -87,6 +101,9 @@ all_error	<- NULL
 all_error2	<- NULL
 all_bias_diff	<- NULL
 all_error_diff	<- NULL
+all_corr        <- NULL
+all_corr2       <- NULL
+all_corr_diff   <- NULL
 bounds          <- NULL						# Set map bounds to NULL
 sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
@@ -119,6 +136,9 @@ for (j in 1:total_networks) {							# Loop through for each network
    mod_error_1_all   	<- NULL                                                 # Set obs average to NULL
    mod_error_2_all   	<- NULL                                                 # Set model average to NULL
    error_diff    	<- NULL
+   mod_corr_1_all       <- NULL
+   mod_corr_2_all       <- NULL
+   corr_diff            <- NULL
    network_number 	<- j							# Set network number to loop value
    network        	<- network_names[[j]]					# Determine network name from loop value
    {
@@ -180,7 +200,7 @@ for (j in 1:total_networks) {							# Loop through for each network
          else { match.ind<-match(aqdat2.df$statdate,aqdat1.df$statdate)                               # If more obs in run 2 than run 1
             aqdat.df<-data.frame(network=aqdat2.df$network, stat_id=I(aqdat2.df$stat_id), lat=aqdat2.df$lat, lon=aqdat2.df$lon, ob_dates=aqdat2.df$ob_dates, Mod_Value_1=aqdat1.df[match.ind,mod_col_name], Mod_Value_2=aqdat2.df[[mod_col_name]], Ob_Value_1=aqdat1.df[match.ind,ob_col_name], Ob_Value_2=aqdat2.df[[ob_col_name]], month=aqdat2.df$month)      # eliminate points that are not common between the two runs
          }
-         remove(aqdat1.df,aqdat2.df)
+         #remove(aqdat1.df,aqdat2.df)
 
          ### Remove NAs from paired dataset ###
          indic.na <- !is.na(aqdat.df$Mod_Value_1)
@@ -213,27 +233,39 @@ for (j in 1:total_networks) {							# Loop through for each network
                   sites        <- c(sites, unique(sub_good.df$stat_id))			# Add current site to site list	
                   lats         <- c(lats, unique(sub_good.df$lat))				# Add current lat to lat list
                   lons         <- c(lons, unique(sub_good.df$lon))				# Add current lon to lon list
-                  mod_bias_1     <- mean(sub_good.df$Mod_Value_1-sub_good.df$Ob_Value_1)  	# Compute the site mean bias for simulation 1
-                  mod_bias_2     <- mean(sub_good.df$Mod_Value_2-sub_good.df$Ob_Value_2)  	# Compute the site mean bias for simulation 2
-                  mod_bias_1_all <- c(mod_bias_1_all, mod_bias_1)  			# Store site bias for simulation 1 in an array
-                  mod_bias_2_all <- c(mod_bias_2_all, mod_bias_2)  			# Store site bias for simulation 2 in an array
-                  bias_diff      <- c(bias_diff, (abs(mod_bias_1)-abs(mod_bias_2)))	# Compute diff in site mean bias between two simulations
-                  mod_error_1    <- mean(abs(sub_good.df$Mod_Value_1-sub_good.df$Ob_Value_1))	# Compute the site mean error for simulation 1
-                  mod_error_2    <- mean(abs(sub_good.df$Mod_Value_2-sub_good.df$Ob_Value_2))	# Compute the site mean error for simulation 2
-                  mod_error_1_all    <- c(mod_error_1_all, mod_error_1)				# Store site mean error for simulation 1 in an array
-                  mod_error_2_all    <- c(mod_error_2_all, mod_error_2)				# Store site mean error for simulation 2 in an array
-                  error_diff     <- c(error_diff, (mod_error_1-mod_error_2))	# Compute difference in site mean error between two simulations
+                  mod_mean1    <- avg_func(sub_good.df$Mod_Value_1)
+                  ob_mean1     <- avg_func(sub_good.df$Ob_Value_1)
+                  mod_mean2    <- avg_func(sub_good.df$Mod_Value_2)
+                  ob_mean2     <- avg_func(sub_good.df$Ob_Value_2)
+                  mod_bias_1   <- mod_mean1-ob_mean1
+                  mod_bias_2   <- mod_mean2-ob_mean2
+                  mod_bias_1_all <- c(mod_bias_1_all, mod_bias_1)                       # Store site bias for simulation 1 in an array
+                  mod_bias_2_all <- c(mod_bias_2_all, mod_bias_2)                       # Store site bias for simulation 2 in an array
+                  bias_diff      <- c(bias_diff, (abs(mod_bias_1)-abs(mod_bias_2)))     # Compute diff in site mean bias between two simulations
+                  mod_error_1   <- abs(mod_mean1-ob_mean1)
+                  mod_error_2   <- abs(mod_mean2-ob_mean2)
+                  mod_error_1_all <- c(mod_error_1_all, mod_error_1)                       # Store site bias for simulation 1 in an array
+                  mod_error_2_all <- c(mod_error_2_all, mod_error_2)                       # Store site bias for simulation 2 in an array
+                  error_diff      <- c(error_diff, (abs(mod_error_1)-abs(mod_error_2)))     # Compute diff in site mean bias between two simulations
+                  mod_corr_1     <- cor(sub_good.df$Mod_Value_1, sub_good.df$Ob_Value_1)
+                  mod_corr_2     <- cor(sub_good.df$Mod_Value_2, sub_good.df$Ob_Value_2)
+                  mod_corr_1_all <- c(mod_corr_1_all, mod_corr_1)
+                  mod_corr_2_all <- c(mod_corr_2_all, mod_corr_2)
+                  corr_diff      <- c(corr_diff, (abs(mod_corr_1)-abs(mod_corr_2)))
                }
             }
          }
 
-         sites_avg.df 			<- data.frame(Network=network,Site_ID=I(sites),lat=lats,lon=lons,Bias_1=mod_bias_1_all,Bias_2=mod_bias_2_all,Bias_Diff=bias_diff,Error_1=mod_error_1_all,Error_2=mod_error_2_all,Error_Diff=error_diff)	# Create properly formatted dataframe for use with PlotSpatial function
+         sites_avg.df 			<- data.frame(Network=network,Site_ID=I(sites),lat=lats,lon=lons,Bias_1=mod_bias_1_all,Bias_2=mod_bias_2_all,Bias_Diff=bias_diff,Error_1=mod_error_1_all,Error_2=mod_error_2_all,Error_Diff=error_diff,Corr_1=mod_corr_1_all,Corr_2=mod_corr_2_all,Corr_Diff=corr_diff)	# Create properly formatted dataframe for use with PlotSpatial function
          sinfo_bias_1_data[[l]]		<-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Bias_1)
          sinfo_bias_2_data[[l]]		<-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Bias_2)
          sinfo_bias_diff_data[[l]]	<-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Bias_Diff)
          sinfo_error_1_data[[l]]	<-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Error_1)
          sinfo_error_2_data[[l]]	<-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Error_2)
          sinfo_error_diff_data[[l]]	<-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Error_Diff)
+         sinfo_corr_1_data[[l]]        <-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Corr_1)
+         sinfo_corr_2_data[[l]]        <-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Corr_2)
+         sinfo_corr_diff_data[[l]]     <-list(lat=sites_avg.df$lat,lon=sites_avg.df$lon,plotval=sites_avg.df$Corr_Diff)
 
          all_sites		<- c(all_sites,sites_avg.df$Site_ID)
          all_lats		<- c(all_lats,sites_avg.df$lat)
@@ -244,8 +276,11 @@ for (j in 1:total_networks) {							# Loop through for each network
          all_error		<- c(all_error,sites_avg.df$Error_1)
          all_error2           <- c(all_error2,sites_avg.df$Error_2)
          all_error_diff	<- c(all_error_diff,sites_avg.df$Error_Diff)
+         all_corr              <- c(all_corr,sites_avg.df$Corr_1)
+         all_corr2           <- c(all_corr2,sites_avg.df$Corr_2)
+         all_corr_diff <- c(all_corr_diff,sites_avg.df$Corr_Diff)
    
-         All_Data <- data.frame(Site=all_sites,Lat=all_lats,Lon=all_lons,Bias1=all_bias,Bias2=all_bias2,Bias_Diff=all_bias_diff,Error1=all_error,Error2=all_error2,Error_Diff=all_error_diff)
+         All_Data <- data.frame(Site=all_sites,Lat=all_lats,Lon=all_lons,Bias1=all_bias,Bias2=all_bias2,Bias_Diff=all_bias_diff,Error1=all_error,Error2=all_error2,Error_Diff=all_error_diff,Corr1=all_corr,Corr2=all_corr2,Corr_Diff=all_corr_diff)
 #         sub_title<-paste(sub_title,symbols[j],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched with the symbol name used for that network
          l <- l + 1
       }
@@ -291,8 +326,8 @@ length_levs_bias <- length(levs_bias)
 intervals	 <- num_ints
 {
    if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
-      bias_max <- quantile(all_bias,quantile_max)
-      bias_min <- quantile(all_bias,quantile_min)
+      bias_max <- quantile(all_bias,quantile_max,na.rm=T)
+      bias_min <- quantile(all_bias,quantile_min,na.rm=T)
       while ((length_levs_bias == 0) || (length_levs_bias > 15)) {	# Loop to cap number of intervals
          levs_bias <- pretty(c(bias_min,bias_max),intervals,min.n=5)
          length_levs_bias <- length(levs_bias)
@@ -342,7 +377,7 @@ colors_error  <- NULL
 intervals <- num_ints
 {
    if ((length(abs_range_min) == 0) || (length(abs_range_max) == 0)) {
-      levs <- pretty(c(0,quantile(all_error,quantile_max)),intervals,min.n=5)
+      levs <- pretty(c(0,quantile(all_error,quantile_max,na.rm=T)),intervals,min.n=5)
    }
    else {
       levs <- pretty(c(abs_range_min,abs_range_max),intervals,min.n=5)
@@ -362,6 +397,34 @@ colors_error				<- all_colors(length_levs_error)
 leg_colors_error			<- colors_error
 ###########################################
 
+#####################################
+### Create Corr levels and colors ###
+#####################################
+levs    <- NULL
+colors_corr  <- NULL
+intervals <- num_ints
+{
+   if ((length(abs_range_min) == 0) || (length(abs_range_max) == 0)) {
+      levs <- pretty(c(min(all_corr),quantile(all_corr,quantile_max,na.rm=T)),intervals,min.n=5)
+   }
+   else {
+      levs <- pretty(c(abs_range_min,abs_range_max),intervals,min.n=5)
+   }
+}
+levs_interval                           <- (max(levs)-min(levs))/(length(levs)-1)
+length_levs_corr                        <- length(levs)
+levs_legend_corr                        <- c(levs,max(levs)+levs_interval)
+leg_labels_corr                         <- levs
+levels_label_corr                       <- levs
+leg_labels_corr[length_levs_corr]       <- paste("> ",max(levs),sep="")
+leg_labels_corr                         <- c(leg_labels_corr,"")
+levels_max                              <- length(levs)+1      # determine the final maximum number of levels
+levs[levels_max]                        <- 10000         # set the level maximum to 1000 in order to include all values
+levels_corr                             <- levs
+colors_corr                             <- all_colors(length_levs_corr)
+leg_colors_corr                         <- colors_corr
+###########################################
+
 ############################################
 ### Compute Bias Difference Range/Colors ###
 ############################################
@@ -369,7 +432,7 @@ colors_diff_bias <- NULL
 intervals <- num_ints
 {
    if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
-      diff_max <- max(quantile(abs(all_bias_diff),quantile_max))
+      diff_max <- max(quantile(abs(all_bias_diff),quantile_max,na.rm=T))
       levs_diff <- pretty(c(-diff_max,diff_max),intervals,min.n=5)
       diff_range <- range(levs_diff)
       power <- abs(levs_diff[1]) - abs(levs_diff[2])
@@ -413,7 +476,7 @@ colors_diff_error <- NULL
 intervals <- num_ints
 {
    if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
-      diff_max <- max(quantile(abs(all_error_diff)),quantile_max)
+      diff_max <- max(quantile(abs(all_error_diff),quantile_max,na.rm=T))
       levs_diff <- pretty(c(-diff_max,diff_max),intervals,min.n=5)
       diff_range <- range(levs_diff)
       power <- abs(levs_diff[1]) - abs(levs_diff[2])
@@ -450,6 +513,51 @@ colors_diff_error                               <- c(low_range,near_zero_color,h
 leg_colors_diff_error                           <- c(low_range,near_zero_color,near_zero_color,high_range)
 #####################################################################
 
+############################################
+### Compute Corr Difference Range/Colors ###
+############################################
+colors_diff_corr <- NULL
+intervals <- num_ints
+{
+   if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
+      diff_max <- max(quantile(abs(all_corr_diff),quantile_max,na.rm=T))
+
+      levs_diff <- pretty(c(-diff_max,diff_max),intervals,min.n=5)
+      diff_range <- range(levs_diff)
+      power <- abs(levs_diff[1]) - abs(levs_diff[2])
+      if (abs(diff_range[1]) > diff_range[2]) {
+         diff_range[2] <- abs(diff_range[1])
+      }
+      else {
+         diff_range[1] <- -diff_range[2]
+      }
+   }
+   else {
+      levs_diff <- pretty(c(diff_range_min,diff_range_max),intervals,min.n=5)
+      power <- abs(levs_diff[1]) - abs(levs_diff[2])
+      diff_range <- range(levs_diff)
+   }
+   levs_diff_corr <- signif(round(seq(diff_range[1],diff_range[2],power),5),2)
+}
+levs_interval                                   <- (max(levs_diff_corr)-min(levs_diff_corr))/(length(levs_diff_corr)-1)
+length_levs_diff_corr                           <- length(levs_diff_corr)
+levs_legend_diff_corr                           <- c(min(levs_diff_corr)-levs_interval,levs_diff_corr,max(levs_diff_corr)+levs_interval)
+leg_labels_diff_corr                            <- levs_diff_corr
+leg_labels_diff_corr[length_levs_diff_corr]     <- paste(">",max(levs_diff_corr))     # Label maximum level as greater than max defined value
+leg_labels_diff_corr                            <- c(leg_labels_diff_corr,"")        # Label maximum level as greater than max defined value
+leg_labels_diff_corr                            <- c("",leg_labels_diff_corr)        # Label minimum level as less than max defined value
+leg_labels_diff_corr[2]                         <- paste("<",min(levs_diff_corr))    # Label minimum level as less than max defined value
+levs_diff_corr                                  <- c(levs_diff_corr,10000)              # Set extreme absolute value to capture all values
+levs_diff_corr                                  <- c(-10000,levs_diff_corr)             # Set extreme miniumum value to capture all values
+zero_place                                      <- which(levs_diff_corr==0)
+levs_diff_corr                                  <- levs_diff_corr[-zero_place]
+levels_diff_corr                                <- levs_diff_corr
+low_range                                       <- cool_colors(trunc(length_levs_diff_corr/2))
+high_range                                      <- hot_colors(trunc(length_levs_diff_corr/2))
+colors_diff_corr                                <- c(low_range,near_zero_color,high_range)
+leg_colors_diff_corr                            <- c(low_range,near_zero_color,near_zero_color,high_range)
+#####################################################################
+
 for (k in 1:total_networks) {
 
    sinfo_bias_1[[k]]<-list(lat=sinfo_bias_1_data[[k]]$lat,lon=sinfo_bias_1_data[[k]]$lon,plotval=sinfo_bias_1_data[[k]]$plotval,levs=levs_bias,levcols=colors_bias,levs_legend=levs_legend_bias,cols_legend=leg_colors_bias,convFac=.01)			# Create list to be used with PlotSpatial function
@@ -458,6 +566,9 @@ for (k in 1:total_networks) {
    sinfo_error_1[[k]]<-list(lat=sinfo_error_1_data[[k]]$lat,lon=sinfo_error_1_data[[k]]$lon,plotval=sinfo_error_1_data[[k]]$plotval,levs=levs,levcols=colors_error,levs_legend=levs_legend_error,cols_legend=leg_colors_error,convFac=.01)                    # Create list to be used with PlotSpatial function
    sinfo_error_2[[k]]<-list(lat=sinfo_error_2_data[[k]]$lat,lon=sinfo_error_2_data[[k]]$lon,plotval=sinfo_error_2_data[[k]]$plotval,levs=levs,levcols=colors_error,levs_legend=levs_legend_error,cols_legend=leg_colors_error,convFac=.01)                    # Create model list to be used with PlotSpatial fuction
    sinfo_error_diff[[k]]<-list(lat=sinfo_error_diff_data[[k]]$lat,lon=sinfo_error_diff_data[[k]]$lon,plotval=sinfo_error_diff_data[[k]]$plotval,levs=levels_diff_error,levcols=colors_diff_error,levs_legend=levs_legend_diff_error,cols_legend=leg_colors_diff_error,convFac=.01)      # Create diff list to be used with PlotSpatial fuction
+   sinfo_corr_1[[k]]<-list(lat=sinfo_corr_1_data[[k]]$lat,lon=sinfo_corr_1_data[[k]]$lon,plotval=sinfo_corr_1_data[[k]]$plotval,levs=levs,levcols=colors_corr,levs_legend=levs_legend_corr,cols_legend=leg_colors_corr,convFac=.01)                    # Create list to be used with PlotSpatial function
+   sinfo_corr_2[[k]]<-list(lat=sinfo_corr_2_data[[k]]$lat,lon=sinfo_corr_2_data[[k]]$lon,plotval=sinfo_corr_2_data[[k]]$plotval,levs=levs,levcols=colors_corr,levs_legend=levs_legend_corr,cols_legend=leg_colors_corr,convFac=.01)                    # Create model list to be used with PlotSpatial fuction
+   sinfo_corr_diff[[k]]<-list(lat=sinfo_corr_diff_data[[k]]$lat,lon=sinfo_corr_diff_data[[k]]$lon,plotval=sinfo_corr_diff_data[[k]]$plotval,levs=levels_diff_corr,levcols=colors_diff_corr,levs_legend=levs_legend_diff_corr,cols_legend=leg_colors_diff_corr,convFac=.01)      # Create diff list to be used with PlotSpatial fuction
 }
 
 ###########################
@@ -465,12 +576,15 @@ for (k in 1:total_networks) {
 ###########################
 {
    if (custom_title == "") {
-      title_bias_1	<-paste(species, " Bias for Run ",run_name1," for ", dates,sep="")		# Title for obs spatial plot
-      title_bias_2	<-paste(species, " Bias for Run ",run_name2," for ", dates,sep="")		# Title for model spatial plot
-      title_bias_diff	<-paste(run_name1,"-",run_name2,species,"bias difference for", dates,sep=" ")	# Title for diff spatial plot
+      title_bias_1 	 <-paste(species, " Bias for Run ",run_name1," for ", dates,sep="")		# Title for obs spatial plot
+      title_bias_2 	 <-paste(species, " Bias for Run ",run_name2," for ", dates,sep="")		# Title for model spatial plot
+      title_bias_diff  	 <-paste(run_name1,"-",run_name2,species,"bias difference for", dates,sep=" ")	# Title for diff spatial plot
       title_error_1      <-paste(species, " Error for Run ",run_name1," for ", dates,sep="")              # Title for obs spatial plot
       title_error_2      <-paste(species, " Error for Run ",run_name2," for ", dates,sep="")              # Title for model spatial plot
       title_error_diff   <-paste(run_name1,"-",run_name2,species,"Error Difference for", dates,sep=" ")      # Title for diff spatial plot
+      title_corr_1       <-paste(species, " Correlation for Run ",run_name1," for ", dates,sep="")              # Title for obs spatial plot
+      title_corr_2       <-paste(species, " Correlation for Run ",run_name2," for ", dates,sep="")              # Title for model spatial plot
+      title_corr_diff    <-paste(run_name1,"-",run_name2,species,"Correlation Difference for", dates,sep=" ")      # Title for diff spatial plot
    }
    else {
       title_bias_1	<- custom_title
@@ -576,6 +690,50 @@ if ((ametptype == "pdf") || (ametptype == "both")) {
 }
 ######################################### 
 
+### Plot Run 1 Corr ###
+unique_labels <- "y"                                                                                            # Do not use unique labels
+levLab <- leg_labels_corr
+if ((ametptype == "png") || (ametptype == "both")) {
+   plotfmt <-"png"
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_1,figure=filename_corr_1,varlab=title_corr_1,bounds=bounds,plotopts=plotopts,plot_units="None")     # Call PlotSpatial function for obs values
+}
+if ((ametptype == "pdf") || (ametptype == "both")) {
+   plotfmt <- "pdf"                                                                                                # Set plot format as pdf
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_1,figure=filename_corr_1,varlab=title_corr_1,bounds=bounds,plotopts=plotopts,plot_units="None")     # Call PlotSpatial function for ob values
+}
+#########################
+
+### Plot Run 2 Corr ###
+if ((ametptype == "png") || (ametptype == "both")) {
+   plotfmt <- "png"                                                                                                # Set plot format as png
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_2,figure=filename_corr_2,varlab=title_corr_2,bounds=bounds,plotopts=plotopts,plot_units="None")     # Call PlotSpatial function for model values
+}
+if ((ametptype == "pdf") || (ametptype == "both")) {
+   plotfmt <- "pdf"                                                                                                # Set plot format as pdf
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_2,figure=filename_corr_2,varlab=title_corr_2,bounds=bounds,plotopts=plotopts,plot_units="None")     # Call PlotSpatial function for model values
+}
+###########################
+
+### Plot Corr Difference ###
+plotfmt <- "png"                                                                                                # Set plot format as png
+unique_labels <- "y"                                                                                            # Flag within Misc_Functions.R to use predefined labels
+levLab <- leg_labels_diff_corr
+if ((ametptype == "png") || (ametptype == "both")) {
+   plotfmt <- "png"
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_diff,figure=filename_corr_diff,varlab=title_corr_diff,bounds=bounds,plotopts=plotopts,plot_units="None")    # Call PlotSpatial function for difference values
+}
+if ((ametptype == "pdf") || (ametptype == "both")) {
+   plotfmt <- "pdf"                                                                                                # Set plot format as pdf
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_diff,figure=filename_corr_diff,varlab=title_corr_diff,bounds=bounds,plotopts=plotopts,plot_units="None")    # Call PlotSpatial function for difference values
+}
+#########################################
+
 ### Plot Bias Difference as Histogram ###
 unique_labels <- "y"                                                                                            # Flag within Misc_Functions.R to use predefined labels
 levLab <- leg_labels_diff_bias
@@ -605,3 +763,18 @@ if ((ametptype == "pdf") || (ametptype == "both")) {
    plotSpatial(sinfo_error_diff,figure=filename_error_diff_hist,varlab=title_error_diff,bounds=bounds,plotopts=plotopts,histplot=T,plot_units=units)    # Call PlotSpatial function for difference values
 }
 ##########################################
+
+### Plot Corr Difference as Histogram ###
+unique_labels <- "y"                                                                                            # Flag within Misc_Functions.R to use predefined labels
+levLab <- leg_labels_diff_corr
+if ((ametptype == "png") || (ametptype == "both")) {
+   plotfmt <- "png"
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_diff,figure=filename_corr_diff_hist, varlab=title_corr_diff,bounds=bounds,plotopts=plotopts, histplot=T, plot_units="None",hist_corr="y")    # Call PlotSpatial function for difference values
+}
+if ((ametptype == "pdf") || (ametptype == "both")) {
+   plotfmt <- "pdf"                                                                                                # Set plot format as pdf
+   plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)                                     # Set plot options list to use with PlotSpatial function
+   plotSpatial(sinfo_corr_diff,figure=filename_corr_diff_hist,varlab=title_corr_diff,bounds=bounds,plotopts=plotopts,histplot=T,plot_units="None",hist_corr="y")    # Call PlotSpatial function for difference values
+}
+#########################################

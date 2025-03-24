@@ -26,8 +26,6 @@ if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
 if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-
 ################################################
 ## Set output names and remove existing files ##
 ################################################
@@ -181,7 +179,8 @@ for (j in 1:total_networks) {
          header <- c(paste("Run Name = ",run_name1,sep=""),paste("Evaluation Dates = ",dates,sep=""),paste("Species = ",species,sep=""),paste("State = ",state,sep=""),paste("Site Name = ",site,sep=""))
 
          ### Compute site stats using SitesStats function ###
-         sites_stats.df <- try(SitesStats(data_all.df))
+         sites_stats_all.df 	<- try(SitesStats(data_all.df))
+	 sites_stats.df 	<- subset(sites_stats_all.df, Coverage >= coverage_limit & Num_Obs >= num_obs_limit)	# subset data by only sites that meet coverage criteria limit
 
          sinfo_data[[k]]<-list(lat=sites_stats.df$lat,lon=sites_stats.df$lon,NMB=sites_stats.df$NMB,NME=sites_stats.df$NME,MB=sites_stats.df$MB,ME=sites_stats.df$ME,FB=sites_stats.df$FB,FE=sites_stats.df$FE,RMSE=sites_stats.df$RMSE,COR=sites_stats.df$COR)
          k <- k+1
@@ -214,7 +213,7 @@ for (j in 1:total_networks) {
    write.table(network, file=filename_sites, append=T ,sep=",",col.names=F,row.names=F)                          # Write network name (sites stats)
 
    write.table(stats_all.df, file=filename_stats, append=T, sep=",",col.names=T,row.names=F)           # Write domain stats
-   write.table(sites_stats.df, file=filename_sites, append=T, sep=",",col.names=T,row.names=F)                   # Write sites stats
+   write.table(sites_stats_all.df, file=filename_sites, append=T, sep=",",col.names=T,row.names=F)                   # Write sites stats
 
    ###########################################
 }	# End network data query loop
@@ -305,11 +304,11 @@ leg_colors_nme			<- levcols_nme
 ########################
 ### Create MB Scales ###
 ########################
-if ((length(abs_range_min) == 0) || (length(abs_range_max) == 0)) {
-   abs_range_max <- quantile(abs(all_mb),quantile_max,na.rm=T)
-   abs_range_min <- -abs_range_max
+if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
+   diff_range_max <- quantile(abs(all_mb),quantile_max,na.rm=T)
+   diff_range_min <- -diff_range_max
 }
-mb_range <- c(abs_range_min,abs_range_max)
+mb_range <- c(diff_range_min,diff_range_max)
 intervals <- num_ints
 max_levs <- 22
 levs_mb <- NULL
@@ -446,6 +445,7 @@ labels_all <- c("leg_labels_nmb","leg_labels_nmb","leg_labels_nme","leg_labels_n
 #########################
 ## plot text options   ##
 #########################
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 stat_names	<- c("NMB (%)","FB (%)", "NME (%)", " FE (%)", paste(" RMSE (",units,")",sep=""), paste(" MB (",units,")",sep=""), paste(" ME (",units,")",sep=""), "Correlation")
 units_all	<- c("%","%","%","%",units,units,units,"none")
 #########################

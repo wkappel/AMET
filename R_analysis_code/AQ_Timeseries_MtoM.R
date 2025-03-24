@@ -40,7 +40,7 @@ sub.title       <- ""
 
 filename_pdf <- paste(run_name1,species,pid,"timeseries_mtom.pdf",sep="_")              # Set output file name
 filename_png <- paste(run_name1,species,pid,"timeseries_mtom.png",sep="_")
-filename_txt <- paste(run_name1,species,pid,"timeseries_mtom_data.csv",sep="_")
+filename_txt <- paste(run_name1,species,pid,"timeseries_mtom.csv",sep="_")
 
 ## Create a full path to file
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for diff spatial plot
@@ -176,7 +176,7 @@ if (averaging == "h") {
    Mod_Mean2       <- tapply(aqdat.df$Mod_Value2,aqdat.df$Hour,FUN=avg_func)
    Bias_Mean       <- Mod_Mean1-Mod_Mean2
    Dates           <- unique(aqdat.df$Hour)
-   x_label         <- "Hour (LST)"
+   x_label         <- paste("Hour (",TIME_FORMAT,")") 
 }
 Num_Obs              <- length(aqdat.df$Mod_Value1)
 #   ymin                 <- min(ymin,(Obs_Mean[[j]]-Obs_Period_Mean), (Mod_Mean[[j]]-Mod_Period_Mean))

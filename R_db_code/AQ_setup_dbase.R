@@ -6,7 +6,7 @@
 #                database table, and populate the       #
 #                metadata table with the site info      #
 #                                                       # 
-#       Last Update: 06/07/2017 by Wyat Appel           #
+#       Last Update: 12/2024 by Wyat Appel              #
 #--------------------------------------------------------
 
 suppressMessages(require(RMySQL))                                              # Use MYSQL R package

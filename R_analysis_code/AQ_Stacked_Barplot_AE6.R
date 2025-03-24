@@ -77,8 +77,8 @@ merge_statid_POC <- "n"	# Do not merge statid and POC. Need them separate from C
 remove_negatives <- "n"	# Do not remove negatives. This will be handled in another fuction
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
 #species <- c("SO4","NO3","NH4","PM_TOT","PM_FRM","EC","OC","TC","soil","NCOM","NaCl","OTHER","OTHER_REM")
-species <- c("SO4","NO3","NH4","PM_TOT","PM_FRM","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") 
-if (network == 'CSN') { species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") }
+species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") 
+if (network == 'CSN') { species <- c("SO4","NO3","NH4","PM_TOT","PM_FRM","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") }
 #############################################
 ### Read sitex file or query the database ###
 #############################################
@@ -135,10 +135,10 @@ blank_ob   <- 0
 blank_ob2  <- 0
 
 if (network == 'CSN') {
-   blank_mod  <- 0.4  
-   blank_mod2 <- 0.4
-   blank_ob   <- 0.4
-   blank_ob2  <- 0.4
+   blank_mod  <- 0  
+   blank_mod2 <- 0
+   blank_ob   <- 0
+   blank_ob2  <- 0
 }
 if (network != 'CSN') {
    aqdat_all.df$PM_FRM_ob <- aqdat_all.df$PM_TOT_ob
@@ -265,8 +265,8 @@ if (num_runs > 1) {
    NCOM_mod_percent     <- round(medians.df$NCOM_mod/(medians_tot_mod)*100,1)
    other_rem_mod_percent<- round(other_mod/(medians_tot_mod)*100,1)
    blank_mod_percent    <- round(blank_mod/(medians_tot_mod)*100,1)
-
-   if ((inc_FRM_adj == 'y') && (network == 'CSN')) { 
+ 
+   if ((inc_FRM_adj == 'y') && (network == 'CSN')) {
       FRM_adj_mod_percent	<- round(FRM_adj_median/(medians_tot_mod)*100,1)
    }
 
@@ -323,7 +323,7 @@ if (num_runs > 1) {
       other_rem_mod_percent2	<- round(other_mod2/(medians_tot_mod2)*100,1)
       blank_mod_percent2        <- round(blank_mod2/(medians_tot_mod2)*100,1)
 
-      if ((inc_FRM_adj == 'y') && (network == 'CSN')) {
+      if (inc_FRM_adj == 'y') {
          FRM_adj_mod_percent2       <- round(FRM_adj_median2/(medians_tot_mod2)*100,1)
       }
 

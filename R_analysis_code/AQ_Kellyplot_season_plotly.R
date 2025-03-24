@@ -29,6 +29,8 @@ require(reshape2)
 require(data.table)
 require(ggplot2)
 require(RColorBrewer)
+require(plotly)
+require(dplyr)
 
 network <- network_names[1]
 network_name <- network_label[1]
@@ -167,6 +169,7 @@ stats <- c("NMB","NME","MB","ME","RMSE","COR")
 stat_unit <- c("%","%",units,units,units,"")
 for (i in 1:6) {
    stat_in <- stats[i]
+   stat_unit_in <- stat_unit[i]
    data.tmp <- data_melted.df[data_melted.df$variable == stat_in,]
    data.orig <- data_melted.df[data_melted.df$variable == stat_in,]
    if (stat_in == "NMB") {
@@ -186,6 +189,9 @@ for (i in 1:6) {
       col.rng[ceiling(nlab/2)] <- 'grey70'
       alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,append=F,sep=",")
+      axis.max <- nmb.max
+      axis.min <- -nmb.max
+      text.col <- "black"
    }
    if (stat_in == "NME") {
       nme.val <- max(abs(data.tmp$value),na.rm=T)
@@ -205,6 +211,9 @@ for (i in 1:6) {
       col.rng  <- (brewer.pal(nlab,'YlOrBr'))
       alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
+      axis.max <- nme.max
+      axis.min <- nme.min
+      text.col <- "blue"
    }
    if (stat_in == "MB") {
       mb.val <- max(abs(quantile(data.tmp$value,quantile_max,na.rm=T)),abs(quantile(data.tmp$value,quantile_min,na.rm=T)),na.rm=T)
@@ -221,6 +230,9 @@ for (i in 1:6) {
       col.rng[ceiling(nlab/2)] <- 'grey70'
       alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
+      axis.max <- mb.max
+      axis.min <- -mb.max
+      text.col <- "black"
    }
    if (stat_in == "ME") {
       me.max    <- (max(data.tmp$value,na.rm=T))
@@ -245,6 +257,9 @@ for (i in 1:6) {
       col.rng   <- (brewer.pal(nlab,'YlOrBr'))
       alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
+      axis.max <- me.max
+      axis.min <- me.min
+      text.col <- "blue"
    }
    if (stat_in == "RMSE") {
       rmse.max  <- (max(data.tmp$value,na.rm=T))
@@ -270,6 +285,9 @@ for (i in 1:6) {
       col.rng  <- (brewer.pal(nlab,'YlOrBr'))
       alp <- 0.9
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
+      axis.max <- rmse.max
+      axis.min <- rmse.min
+      text.col <- "blue"
    }
    if (stat_in == "COR") {
       cor.max   <- (ceiling(10*(max(data.tmp$value,na.rm=T))))/10
@@ -283,47 +301,36 @@ for (i in 1:6) {
       cor.max  <- cor.min+(9*int)
       data.tmp <- binval(dt=data.tmp,mn=cor.min,mx=cor.max,sp=int)
       nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'YlGnBu'))
+      col.rng  <- rev(brewer.pal(nlab,'YlOrRd'))
       alp <- 0.9   
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
+      axis.max <- cor.max
+      axis.min <- cor.min
+      text.col <- "black"
+      stat_in  <- "Correlation"
    }
    if (!exists("inc_kelly_stats")) { inc_kelly_stats <- "n" }
    data.tmp$round_value <- signif(data.tmp$value,2)
    data.orig$round_value <- signif(data.orig$value,2)
-   plt <- ggplot() +
-     geom_tile(data=data.tmp,aes(x=season,y=simulation,fill=fac),color='black',lwd=0.3,alpha=0.8) +
-     facet_wrap(~variable) +
-     scale_fill_manual(values=col.rng,name=stat_unit[i],drop=F) +
-     scale_x_discrete(name='',expand=c(0,0)) +
-     scale_y_discrete(name='',expand=c(0,0)) +
-     guides(fill = guide_legend(reverse=T)) +
-     theme(strip.text=element_text(size=18),
-           plot.margin=margin(t=0.1,r=0.1,b=0,l=0.1,unit="cm"),
-           axis.text.y=element_text(size=8),
-           axis.text.x=element_text(size=10,angle=0,hjust=0.5),
-           axis.title=element_text(size=15),
-           legend.text=element_text(size=13),
-           legend.title=element_text(size=13),
-           plot.title=element_text(size=14,hjust=0.5),
-           plot.subtitle=element_text(size=6,hjust=0)) +
-     labs(title=title)
-     if (inc_kelly_stats == "y") {
-      plt <- plt + geom_text(size=2.5,data=data.orig,aes(x=season,y=simulation,label=round_value))   #Add the value for each color square to the Kelly plot.
-   }
 
-   ggsave(plt,file=paste(filename[i],".pdf",sep=""),dpi=600,width=6.5,height=5)
+   plt <- plot_ly(data=data.tmp,x=~season,y=~simulation,z=~round_value,type="heatmap",zauto=FALSE,zmin=axis.min,zmax=axis.max,colors=col.rng,colorbar=list(title=paste(stat_in,stat_unit_in)),text=~paste(stat_in,": ",value," ",stat_unit_in,"<br>Simulation: ",simulation,"<br>Season: ",season,sep=""),hoverinfo='text') %>%
+   layout(title=list(text=title,margin=list(l=0,r=0,t=0,b=200),font=list(size=25)),xaxis=list(title=list(text="Region",standoff=25),titlefont=list(size=25),tickfont=list(size=25),side="bottom"), yaxis=list(title=list(text="Simulation",standoff=25),titlefont=list(size=25),tickfont=list(size=20),side="left"),showlegend=TRUE,margin=list(l=400,r=200,b=150,t=100),hoverlabel=list(font=list(size=20)))
+   if (inc_kelly_stats == "y") {
+      plt <- plt %>% add_annotations(font=list(color=text.col,size=20),text=~round_value, x=~season, y=~simulation, showarrow=FALSE)
+   }
+   saveWidget(plt, file=paste(filename[i],".html",sep=""),selfcontained=T)
 
    ### Convert pdf file to png file ###
    #dev.off()
-   if ((ametptype == "png") || (ametptype == "both")) {
-      convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename[i],".pdf"," png:",filename[i],".png",sep="")
-      system(convert_command)
+#   if ((ametptype == "png") || (ametptype == "both")) {
+#      convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename[i],".pdf"," png:",filename[i],".png",sep="")
+#      system(convert_command)
 
-      if (ametptype == "png") {
-         remove_command <- paste("rm ",filename[i],".pdf",sep="")
-         system(remove_command)
-      }
-   }
+#      if (ametptype == "png") {
+#         remove_command <- paste("rm ",filename[i],".pdf",sep="")
+#         system(remove_command)
+#      }
+#   }
 }
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")

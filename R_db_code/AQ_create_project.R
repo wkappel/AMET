@@ -4,7 +4,7 @@
 #       PURPOSE: To create a MYSQL table usable for     #
 #               the AMET-AQ system                      #
 #							#
-#       Last Update: 06/08/2017 by Wyat Appel           #
+#       Last Update: 02/2025 by Wyat Appel              #
 #--------------------------------------------------------
 
 ######################################################################################

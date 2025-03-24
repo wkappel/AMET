@@ -1,13 +1,12 @@
 header <- "
 ####################### MODEL TO MODEL SCATTERPLOT ####################### 
-### AMET CODE: R_Scatterplot_MtoM_density.r 
+### AMET CODE: R_Scatterplot_MtoM.r 
 ###
 ### This script is part of the AMET-AQ system.  This script creates a single
-### model-to-model density scatterplot.  However, the model points correspond 
-### to network observation sites, and does not use all the model grid points 
-### (only what is in the database).  Two model runs must be provided.  The 
-### script attempts to match all points in one run with all points in the other
-### run. This version of the plot utilizes the GGPLOT R package. 
+### model-to-model scatterplot.  However, the model points correspond to network
+### observation sites, and does not use all the model grid points (only what
+### is in the database).  Two model runs must be provided.  The script attempts
+### to match all points in one run with all points in the other run.  
 ###
 ### Last Updated by Wyat Appel: Jun 2020
 ##########################################################################
@@ -94,8 +93,8 @@ for (j in 1:length(network_names)) {						# Loop through for each network
       if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
    }
 }
-aqdat1.df$ob_dates	<- aqdat1.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-aqdat2.df$ob_dates	<- aqdat2.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
+#aqdat1.df$ob_dates	<- aqdat1.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
+#aqdat2.df$ob_dates	<- aqdat2.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
 
 print(max(aqdat1.df$O3_8hrmax_mod))
 print(max(aqdat2.df$O3_8hrmax_mod))

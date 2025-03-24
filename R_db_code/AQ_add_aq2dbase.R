@@ -5,7 +5,7 @@
 #       PURPOSE: To input site compare output into      #
 #               the AMET-AQ MYSQL database              #
 #                                                       #
-#   Last Update: 11/2023 by Wyat Appel                  #
+#   Last Update: 02/2025 by Wyat Appel                  #
 #                                                       #
 #   Note that is program assumes a consistent           #
 #   configuration of the input files, mainly from       #

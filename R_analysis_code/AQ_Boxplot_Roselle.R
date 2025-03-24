@@ -32,7 +32,7 @@ filename_bias_pdf <- paste(run_name1,species,pid,"boxplot_roselle_bias.pdf",sep=
 filename_bias_png <- paste(run_name1,species,pid,"boxplot_roselle_bias.png",sep="_")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title)
+title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 #################################
 
 ## Create a full path to file

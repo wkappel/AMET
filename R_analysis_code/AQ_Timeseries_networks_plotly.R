@@ -48,9 +48,9 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 }
 sub.title	<- ""
 
-filename_html   <- paste(run_name1,species,pid,"timeseries_multi_networks.html",sep="_")              # Set output file name
+filename_html   <- paste(run_name1,species,pid,"timeseries.html",sep="_")              # Set output file name
 filename_html   <- paste(figdir,filename_html,sep="/")
-filename_txt	<- paste(run_name1,species,pid,"timeseries_multi_networks_data.csv",sep="_")
+filename_txt	<- paste(run_name1,species,pid,"timeseries.csv",sep="_")
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 
 #######################
@@ -126,7 +126,7 @@ for (j in 1:length(network_names)) {	# For each simulation being plotted
       num_runs <- (num_runs-1)
    }
    else {
-   aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Hour=aqdat_query.df$ob_hour,Start_Date=I(aqdat_query.df[,5]),End_Date=I(aqdat_query.df[,6]),Month=aqdat_query.df$month)
+   aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Hour=aqdat_query.df$ob_hour,Start_Date=I(aqdat_query.df$ob_dates),End_Date=I(aqdat_query.df$ob_datee),Month=aqdat_query.df$month)
 
    Date_Hour            <- paste(aqdat.df$Start_Date," ",aqdat.df$Hour,sep="") # Create unique Date/Hour field
    aqdat.df$Date_Hour   <- Date_Hour                                                    # Add Date_Hour field to dataframe
@@ -212,7 +212,7 @@ for (j in 1:length(network_names)) {	# For each simulation being plotted
       RMSE_Mean[[j]]       <- by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Hour,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2)))
 #      Dates[[j]]           <- unique(aqdat.df$Hour)
       Dates[[j]]           <- as.POSIXct(paste(years[1],"-",months[1],"-",days[1]," ",unique(aqdat.df$Hour),":00:00",sep=""),origin="1970-01-01")
-      x_label		   <- "Hour (LST)"
+      x_label		   <- paste("Hour (",TIME_FORMAT,")") 
    }
    if (averaging == "a") {
       years                <- substr(aqdat.df$Start_Date,1,4)

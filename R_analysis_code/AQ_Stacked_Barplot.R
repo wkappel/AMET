@@ -185,7 +185,7 @@ OC_ob_percent    <- round(medians.df$OC_ob/(medians.df$SO4_ob+medians.df$NO3_ob+
 TC_ob_percent    <- round(TC_ob/(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+med_other_ob)*100,1)
 Other_ob_percent <- round(med_other_ob/(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+med_other_ob)*100,1)
 
-other_mod      <- data.df[[PM_spec_ob]]-(data.df$SO4_mod+data.df$NO3_mod+data.df$NH4_mod+data.df$EC_mod+data.df$OC_mod)
+other_mod      <- data.df[[PM_spec_mod]]-(data.df$SO4_mod+data.df$NO3_mod+data.df$NH4_mod+data.df$EC_mod+data.df$OC_mod)
 med_other_mod    <- median(other_mod)
 total_mod        <- data.df[[PM_spec_mod]]
 

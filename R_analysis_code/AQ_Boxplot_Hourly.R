@@ -34,7 +34,7 @@ filename_png <- paste(figdir,filename_png,sep="/")
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,clim_reg)
+title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,clim_reg=clim_reg)
 
 #################################
 {
@@ -237,13 +237,13 @@ legend_colors 	<- c(plot_colors)
 legend_type 	<- c(1,1)
 
 par(mai=c(1,1,0.5,0.5))								# Set plot margins
-boxplot(split(aqdat.df$Obs_Value, aqdat.df$ob_hour), range=0, border="black", whiskcol=whisker_color[1], staplecol=whisker_color[1], col=bar_colors[1], boxlty=box_ltype, boxwex=bar_width[1], ylim=c(y.axis.min, y.axis.max), xlab="Hour (LST)", ylab=label, cex.axis=1.3, cex.lab=1.3)	# Create boxplot
+boxplot(split(aqdat.df$Obs_Value, aqdat.df$ob_hour), range=0, border="black", whiskcol=whisker_color[1], staplecol=whisker_color[1], col=bar_colors[1], boxlty=box_ltype, boxwex=bar_width[1], ylim=c(y.axis.min, y.axis.max), xlab=paste("Hour (",TIME_FORMAT,")"), ylab=label, cex.axis=1.3*leg_size_fac, cex.lab=1.3*leg_size_fac)	# Create boxplot
 
 ## Do the same thing for model values.  Use a different color for the background.
-boxplot(split(aqdat.df$Mod_Value,aqdat.df$ob_hour), range=0, border="black", whiskcol=whisker_color[2], staplecol=whisker_color[2], col=bar_colors[2], boxlty=box_ltype, boxwex=bar_width[2], add=T, cex.axis=1.3, cex.lab=1.3)	# Plot model values on existing plot
+boxplot(split(aqdat.df$Mod_Value,aqdat.df$ob_hour), range=0, border="black", whiskcol=whisker_color[2], staplecol=whisker_color[2], col=bar_colors[2], boxlty=box_ltype, boxwex=bar_width[2], add=T, cex.axis=1.3*leg_size_fac, cex.lab=1.3*leg_size_fac)	# Plot model values on existing plot
 
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
-   boxplot(split(aqdat2.df$Mod_Value,aqdat2.df$ob_hour), range=0, border="black", whiskcol=whisker_color[3], staplecol=whisker_color[3], col=bar_colors[3], boxlty=box_ltype, boxwex=bar_width[3], add=T, cex.axis=1.3, cex.lab=1.3)
+   boxplot(split(aqdat2.df$Mod_Value,aqdat2.df$ob_hour), range=0, border="black", whiskcol=whisker_color[3], staplecol=whisker_color[3], col=bar_colors[3], boxlty=box_ltype, boxwex=bar_width[3], add=T, cex.axis=1.3*leg_size_fac, cex.lab=1.3*leg_size_fac)
    legend_names <- c(legend_names, run_name2)
    legend_fill <- c(legend_fill, bar_colors[3])
    legend_colors <- c(legend_colors,plot_colors[2])
@@ -251,7 +251,7 @@ if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
 }
 
 if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
-   boxplot(split(aqdat3.df$Mod_Value,aqdat3.df$ob_hour), range=0, border="black", whiskcol=whisker_color[4], staplecol=whisker_color[4], col=bar_colors[4], boxlty=box_ltype, boxwex=bar_width[4], add=T, cex.axis=1.3, cex.lab=1.3)
+   boxplot(split(aqdat3.df$Mod_Value,aqdat3.df$ob_hour), range=0, border="black", whiskcol=whisker_color[4], staplecol=whisker_color[4], col=bar_colors[4], boxlty=box_ltype, boxwex=bar_width[4], add=T, cex.axis=1.3*leg_size_fac, cex.lab=1.3*leg_size_fac)
    legend_names <- c(legend_names, run_name3)
    legend_fill <- c(legend_fill, bar_colors[4])
    legend_colors <- c(legend_colors,plot_colors[3])
@@ -267,38 +267,46 @@ x.loc <- 1:num.groups                                                           
 
 if (inc_median_lines == 'y') {
    x.loc <- 1:num.groups								# Set number of median points to plot
-   lines(x.loc, median.spec1)							# Connect median points with a line
+   lines(x.loc, median.spec1, lwd=line_width)							# Connect median points with a line
 
    ### Run 1 Modeled Values ###								# As above, except for model values
    x.loc <- 1:num.groups
-   lines(x.loc, median.spec2, lty=1, col=plot_colors[2])
+   lines(x.loc, median.spec2, lty=1, lwd=line_width, col=plot_colors[2])
 
    ### Run 2 Modeled Values ###
    if ((exists("run_name2")) && (nchar(run_name2) > 0)) {   
       x.loc <- 1:num.groups 
-      lines(x.loc, median.spec3, lty=1, col=plot_colors[3])
+      lines(x.loc, median.spec3, lty=1, lwd=line_width, col=plot_colors[3])
    }
 
    ### Run 3 Modeled Values ###
    if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
       x.loc <- 1:num.groups
-      lines(x.loc, median.spec4, lty=1, col=plot_colors[4])
+      lines(x.loc, median.spec4, lty=1, lwd=line_width, col=plot_colors[4])
    }
 }
 #########################################################################
 
 
+#header <- paste("Obs_q1","Obs_median","Obs_q3","Mod_q1","Mod_median","Mod_q3",sep=",")
+#raw_data <- paste(q1.spec1,median.spec1,q3.spec1,q1.spec2,median.spec2,q3.spec2,sep=",")
 raw_data.df <- data.frame(Hour_LST=seq(0,23,by=1),Obs_q1=q1.spec1,Obs_median=median.spec1,Obs_q3=q3.spec1,Mod_q1=q1.spec2,Mod_median=median.spec2,Mod_q3=q3.spec2)
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
+#   header <- c(paste(header,"Mod2_q1","Mod2_median","Mod2_q3",sep=","))
+#   raw_data <- c(paste(raw_data,q1.spec3,median.spec3,q3.spec3,sep=","))
    raw_data.df <- data.frame(Hour_LST=seq(0,23,by=1),Obs_q1=q1.spec1,Obs_median=median.spec1,Obs_q3=q3.spec1,Mod_q1=q1.spec2,Mod_median=median.spec2,Mod_q3=q3.spec2,Mod2_q1=q1.spec3,Mod2_median=median.spec3,Mod2_q3=q3.spec3)
 }
 if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
+#   header <- c(paste(header,"Mod2_q1","Mod2_median","Mod2_q3",sep=","))
+#   raw_data <- c(paste(raw_data,q1.spec4,median.spec4,q3.spec4,sep=","))
    raw_data.df <- data.frame(Hour_LST=seq(0,23,by=1),Obs_q1=q1.spec1,Obs_median=median.spec1,Obs_q3=q3.spec1,Mod_q1=q1.spec2,Mod_median=median.spec2,Mod_q3=q3.spec2,Mod2_q1=q1.spec3,Mod2_median=median.spec3,Mod2_q3=q3.spec3,Mod3_q1=q1.spec4,Mod3_median=median.spec4,Mod3_q3=q3.spec4)
 }
+#write.table(header,file=filename_txt,append=F,col.names=F,row.names=F,sep=",")                     # Write raw data to csv file
+#write.table(raw_data,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")                     # Write raw data to csv file
 write.table(raw_data.df,file=filename_txt,append=F,col.names=T,row.names=F,sep=",")                     # Write raw data to csv file
 
 ### Put legend on the plot ###
-legend("topleft", legend_names, fill=legend_fill, lty=legend_type, col=legend_colors, merge=F, cex=.9, bty="n")
+legend("topleft", legend_names, fill=legend_fill, lty=legend_type, col=legend_colors, merge=F, cex=.9*leg_size_fac, bty="n")
 ##############################
 
 ### Count number of samples per hour ###
@@ -307,17 +315,22 @@ nsamples.table <- table(aqdat.df$ob_hour)
 
 ### Put text on plot ###
 if (run_info_text == 'y') {
-   if (rpo != 'None') {
+   if ((rpo != '') && (rpo != "None")) {
       text(x=18,y=y.axis.max,paste("RPO: ",rpo,sep=""),cex=1.2,adj=c(0,0))
    }
-   if (pca != 'None') {
+   if ((pca != '') && (pca != "None")) {
       text(x=18,y=y.axis.max,paste("PCA: ",pca,sep=""),cex=1.2,adj=c(0,0))
+   }
+   if ((clim_reg != '') && (clim_reg != "None")) {
+      text(x=18,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1.2,adj=c(0.5,0))
    }
 #   if (loc_setting != '') {
 #      text(x=18,y=y.axis.max*0.95,paste("Loc_Setting: ",loc_setting,sep=""),cex=1.2,adj=c(0,0))
 #   }
-   text(x=18,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1.2,adj=c(0,0))
-   if (state != "All") {
+   if ((site != '') && (site != "All")) {
+      text(x=18,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1.2,adj=c(0,0))
+   }
+   if ((state != "All") && (state != '')) {
       text(x=18,y=y.axis.max*0.85,paste("State: ",state,sep=""),cex=1.2,adj=c(0,0))
    }
 }

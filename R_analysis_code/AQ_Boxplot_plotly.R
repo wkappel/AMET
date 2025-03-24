@@ -30,7 +30,7 @@ level_names_nmb  <- NULL
 filename_html		<- paste(run_name1,species,pid,"boxplot.html",sep="_")
 filename_bias_html	<- paste(run_name1,species,pid,"boxplot_bias.html",sep="_")
 filename_nmb_html       <- paste(run_name1,species,pid,"boxplot_nmb.html",sep="_")
-filename_txt            <- paste(run_name1,species,pid,"boxplot_data.csv",sep="_")
+filename_txt            <- paste(run_name1,species,pid,"boxplot.csv",sep="_")
 
 ## Create a full path to file
 filename_html            <- paste(figdir,filename_html,sep="/")
@@ -39,9 +39,9 @@ filename_nmb_html        <- paste(figdir,filename_nmb_html,sep="/")
 filename_txt             <- paste(figdir,filename_txt,sep="/")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title)
-title_bias <- get_title(run_names,species,network_names,dates,custom_text="bias",custom_title)
-title_nmb <- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title) 
+title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title_bias <- get_title(run_names,species,network_names,dates,custom_text="bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title_nmb <- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg) 
 
 num_sites <- NULL
 #num_obs <- NULL

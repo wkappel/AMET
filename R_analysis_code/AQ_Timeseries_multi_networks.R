@@ -38,9 +38,9 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 }
 sub.title       <- ""
 
-filename_pdf <- paste(run_name1,species,pid,"timeseries_multi_networks.pdf",sep="_")
-filename_png <- paste(run_name1,species,pid,"timeseries_multi_networks.png",sep="_")
-filename_txt <- paste(run_name1,species,pid,"timeseries_multi_networks_data.csv",sep="_")
+filename_pdf <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")
+filename_png <- paste(run_name1,species,pid,"timeseries.png",sep="_")
+filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
 
 ## Create a full path to file
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for timeseries pdf plot
@@ -82,7 +82,7 @@ for (j in 1:total_networks) {	# For each simulation being plotted
       else {
          query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
          aqdat_query.df  <- query_result[[1]]
-         data_exists	 <- query_result[[2]]
+         aqdat_query.df  <- query_result[[2]]
          if (data_exists == "y") { units <- query_result[[3]] }
          model_name      <- query_result[[4]]
       }
@@ -92,7 +92,7 @@ for (j in 1:total_networks) {	# For each simulation being plotted
    #############################################
 
 #   aqdat_query.df <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
-   aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Hour=aqdat_query.df$ob_hour,Start_Date=I(aqdat_query.df[,5]),End_Date=I(aqdat_query.df[,6]),Month=aqdat_query.df$month)
+   aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Hour=aqdat_query.df$ob_hour,Start_Date=I(aqdat_query.df$ob_dates),End_Date=I(aqdat_query.df$ob_datee),Month=aqdat_query.df$month)
 
    Date_Hour            <- paste(aqdat.df$Start_Date," ",aqdat.df$Hour,":00:00",sep="") # Create unique Date/Hour field
    Date_Hour_Factor     <- factor(Date_Hour,levels=unique(Date_Hour))                   # Create unique levels so tapply maintains correct time order 
@@ -120,7 +120,7 @@ for (j in 1:total_networks) {	# For each simulation being plotted
       Mod_Mean[[j]]        <- tapply(aqdat.df$Mod_Value,aqdat.df$Hour,FUN=avg_func)
       Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
       Dates[[j]]           <- unique(aqdat.df$Hour)
-      x_label		   <- "Hour (LST)"
+      x_label		   <- paste("Hour (",TIME_FORMAT,")") 
    }
    Num_Obs[[j]]		<- length(aqdat.df$Obs_Value)
    num_sites[[j]]    <- length(unique(aqdat.df$Stat_ID))
