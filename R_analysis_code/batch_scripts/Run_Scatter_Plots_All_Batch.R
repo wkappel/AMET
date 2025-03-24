@@ -99,7 +99,8 @@ if (hourly_ozone_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("AQS_Hourly")
          network_label 	<- c("AQS_Hourly")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot		== 'y') { 
@@ -136,7 +137,8 @@ if (daily_ozone_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("AQS_Daily_O3")
          network_label 	<- c("AQS_Daily")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -174,7 +176,8 @@ if (aerosol_analysis == 'y') {
          mkdir_command 	<- paste("mkdir -p",figdir)
          network_names 	<- c("IMPROVE")
          network_label 	<- c("IMPROVE")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -207,7 +210,8 @@ if (aerosol_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("CSN")
          network_label 	<- c("CSN")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -240,7 +244,8 @@ if (aerosol_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("CASTNET")
          network_label 	<- c("CASTNET")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -274,7 +279,8 @@ if (aerosol_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("AQS_Daily")
          network_label 	<- c("AQS_Daily")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -308,7 +314,8 @@ if (aerosol_analysis == 'y') {
             dates 		<- batch_names[m]
             network_names 	<- c("AQS_Hourly")
             network_label 	<- c("AQS_Hourly")
-             pid                <- paste(pid_date,network_label,sep="_")
+            total_networks 	<- length(network_names)
+	    pid                	<- paste(pid_date,network_label,sep="_")
             query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
             system(mkdir_command)
             if (scatter_plot               == 'y') {
@@ -346,7 +353,8 @@ if (dep_analysis == 'y') {
          mkdir_command 	<- paste("mkdir -p",figdir)
          network_names	<- c("NADP") 
          network_label	<- c("NADP")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -382,10 +390,11 @@ if (gas_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command  <- paste("mkdir -p",figdir)
-            network_names 	<- c("SEARCH")
-            network_label 	<- c("SEARCH")
-            pid            <- paste(pid_date,network_label,sep="_")
-            query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
+            network_names  <- c("SEARCH")
+            network_label  <- c("SEARCH")
+            total_networks <- length(network_names)
+	    pid            <- paste(pid_date,network_label,sep="_")
+            query 	   <- paste(query_string,"and (",batch_query[m],")",sep=" ")
             system(mkdir_command)
             if (scatter_plot               == 'y') {
                try(source(run_script_command1))
@@ -418,7 +427,8 @@ if (gas_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("AQS_Hourly")
          network_label 	<- c("AQS_Hourly")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -455,7 +465,8 @@ if (AE6_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("CSN")
          network_label 	<- c("CSN")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
 	 query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          if ((scatter_plot == 'y') || (scatter_single_plot == 'y') || (scatter_density_plot == 'y') || (scatter_bins_plot == 'y') || (scatter_percentiles_plot == 'y') || (scatter_skill_plot == 'y') || (scatter_mtom_plot == 'y')) {
             system(mkdir_command)
@@ -496,7 +507,8 @@ if (AE6_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("IMPROVE")
          network_label 	<- c("IMPROVE")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          if ((scatter_plot == 'y') || (scatter_single_plot == 'y') || (scatter_density_plot == 'y') || (scatter_bins_plot == 'y') || (scatter_percentiles_plot == 'y') || (scatter_skill_plot == 'y') || (scatter_mtom_plot == 'y')) {
             system(mkdir_command)
@@ -542,7 +554,8 @@ if (AOD_analysis == 'y') {
          system(mkdir_command)
          network_names 	<- c("AERONET")
          network_label 	<- c("AERONET")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query <- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -578,7 +591,8 @@ if (PAMS_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("AQS_Hourly")
          network_label 	<- c("AQS_Hourly")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
@@ -611,7 +625,8 @@ if (PAMS_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("AQS_Daily")
          network_label 	<- c("AQS_Daily")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          system(mkdir_command)
          if (scatter_plot               == 'y') {
