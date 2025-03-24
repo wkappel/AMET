@@ -85,7 +85,8 @@ if (hourly_ozone_analysis == 'y') {
          dates 			<- batch_names[m]
          network_names 		<- c("AQS_Hourly")
          network_label 		<- c("AQS_Hourly")
-         pid                 	<- paste(pid_date,"hourly_O3",sep="_")
+         total_networks 	<- length(network_names)
+	 pid                 	<- paste(pid_date,"hourly_O3",sep="_")
          query 			<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          if (soccer_plot == 'y') { 
             system(mkdir_command)
@@ -105,6 +106,7 @@ if (daily_ozone_analysis == 'y') {
       dates 		<- batch_names[m]
       network_names 	<- c("AQS_Daily_O3")
       network_label 	<- c("AQS_Daily")
+      total_networks 	<- length(network_names)
       pid		<- paste(pid_date,"daily_O3",sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
       if (soccer_plot == 'y') { 
@@ -143,6 +145,7 @@ if (aerosol_analysis == 'y') {
          network_names     <- c(network_names,"AQS_Hourly")
          network_label     <- c(network_names,"AQS_Hourly")
       }
+      total_networks 	<- length(network_names)
       pid            	<- paste(pid_date,"multi_network",sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
       if (soccer_plot == 'y') {
@@ -176,6 +179,7 @@ if (dep_analysis == 'y') {
       dates		<- batch_names[m]
       network_names	<- c("NADP") 
       network_label	<- c("NADP")
+      total_networks 	<- length(network_names)
       pid        	<- paste(pid_date,"deposition",sep="_")
       query		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
       if (soccer_plot == 'y') {
@@ -208,6 +212,7 @@ if (gas_analysis == 'y') {
       dates 		<- batch_names[m]
       network_names 	<- c("AQS_Hourly")
       network_label 	<- c("AQS_Hourly")
+      total_networks 	<- length(network_names)
       pid            	<- paste(pid_date,"gas",sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
       if (soccer_plot == 'y') {
@@ -241,6 +246,7 @@ if (AE6_analysis == 'y') {
       dates 		<- batch_names[m]
       network_names 	<- c("CSN","IMPROVE")
       network_label 	<- c("CSN","IMPROVE")
+      total_networks 	<- length(network_names)
       pid            	<- paste(pid_date,"AE6",sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
       if (soccer_plot == 'y') {
@@ -276,7 +282,8 @@ if (AOD_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("AERONET")
          network_label 	<- c("AERONET")
-         pid            <- paste(pid_date,"AOD",sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,"AOD",sep="_")
          query <- paste(query_string,"and (",batch_query[m],")",sep=" ")
          if (soccer_plot == 'y') {
             species <- species_list
@@ -308,6 +315,7 @@ if (PAMS_analysis == 'y') {
       dates 		<- batch_names[m]
       network_names 	<- c("AQS_Hourly")
       network_label 	<- c("AQS_Hourly")
+      total_networks 	<- length(network_names)
       pid            	<- paste(pid_date,network_label,sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
       if (soccer_plot == 'y') {
@@ -339,6 +347,7 @@ if (PAMS_analysis == 'y') {
       dates 		<- batch_names[m]
       network_names 	<- c("AQS_Daily")
       network_label 	<- c("AQS_Daily")
+      total_networks 	<- length(network_names)
       pid            	<- paste(pid_date,network_label,sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
       if (soccer_plot == 'y') {

@@ -93,6 +93,7 @@ for (m in 1:length(batch_query)) {
       mkdir_command     <- paste("mkdir -p",figdir)
       network_names 	<- c("CSN")
       network_label 	<- c("CSN")
+      total_networks 	<- length(network_names)
       pid 		<- paste(pid_date,network_names,sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep="")
       sites <- "All"
@@ -146,6 +147,7 @@ for (m in 1:length(batch_query)) {
       mkdir_command     <- paste("mkdir -p",figdir)
       network_names     <- c("IMPROVE")
       network_label     <- c("IMPROVE")
+      total_networks 	<- length(network_names)
       pid               <- paste(pid_date,network_names,sep="_")
       query             <- paste(query_string,"and (",batch_query[m],")",sep="")
       sites <- "All"
@@ -199,6 +201,7 @@ for (m in 1:length(batch_query)) {
       mkdir_command     <- paste("mkdir -p",figdir)
       network_names     <- c("AQS_Daily")
       network_label     <- c("AQS_Daily")
+      total_networks 	<- length(network_names)
       pid               <- paste(pid_date,network_names,sep="_")
       query             <- paste(query_string,"and (",batch_query[m],")",sep="")
       sites <- "All"
@@ -246,6 +249,7 @@ for (m in 1:length(batch_query)) {
       mkdir_command        <- paste("mkdir -p",figdir)
       network_names        <- c("CSN","IMPROVE")
       network_label        <- c("CSN","IMPROVE")
+      total_networks 	   <- length(network_names)
       pid                  <- paste(pid_date,"multi_network",sep="_")
       query                <- paste(query_string,"and (",batch_query[m],")",sep="")
       sites <- "All"

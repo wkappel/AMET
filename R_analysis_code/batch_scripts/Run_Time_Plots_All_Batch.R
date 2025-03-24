@@ -55,25 +55,25 @@ custom_title <- ""
 ### Set default value for by_site flag ###
 if(!exists("by_site")) { 
    print("by_site flag not set. Defaulting to n. Set by_site flag in config file to create plots by individual site id.")
-   by_site <- "n" 
+   by_site <- 'n' 
 }
 if (!exists("hourly_pm_analysis")) {
       print("hourly_pm_analysis flag not found. Defaulting to n. Set hourly_pm_analysis flag in batch config file to include hourly PM data from AQS.")
-      hourly_pm_analysis <- "n"
+      hourly_pm_analysis <- 'n'
 }
 if ((by_site == 'T') || (by_site == "t") || (by_site == "Y")) { by_site <- "y" }
 
 if(!exists("kelly_plot")) {
    print("kelly_plot flag not set. Defaulting to n. Add kelly_plot flag (kelly_plot <- 'y') in config file to create Kelly plots by NOAA climate region for a single or multiple simulutions.")
-   kelly_plot <- "n"
+   kelly_plot <- 'n'
 }
 if(!exists("kelly_plot_annual")) {
    print("kelly_plot_annual flag not set. Defaulting to n. Add kelly_plot_annual flag (kelly_plot_annual <- 'y') in config file to create seasonal NOAA region Kelly plots using annual data.")
-   kelly_plot_annual <- "n"
+   kelly_plot_annual <- 'n'
 }
 if(!exists("inc_search")) {
    print("inc_search flag not set. Defaulting to n. Set inc_search flag in config file to include the limited SEARCH network data.")
-   by_site <- "n"
+   by_site <- 'n'
 }
 
 ### Main Database Query String. ###
@@ -121,7 +121,8 @@ if (hourly_ozone_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names	<- network_names_list[i]
          network_label 	<- network_label_list[i]
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -191,7 +192,8 @@ if (daily_ozone_analysis == 'y') {
       for (n in 1:length(network_names_list)) {
          network_names <- network_names_list[n]
          network_label <- network_label_list[n]
-         for (i in 1:length(species_list)) {
+         total_networks <- length(network_names)
+	 for (i in 1:length(species_list)) {
             species	<- species_list[i]
             figdir                 <- paste(out_dir,species,sep="/")
             if (batch_names[m] != "None") {
@@ -271,7 +273,8 @@ if (aerosol_analysis == 'y') {
          mkdir_command 	<- paste("mkdir -p",figdir)
          network_names 	<- c("IMPROVE")
          network_label 	<- c("IMPROVE")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -338,7 +341,8 @@ if (aerosol_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("CSN")
          network_label 	<- c("CSN")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -405,7 +409,8 @@ if (aerosol_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("CASTNET")
          network_label 	<- c("CASTNET")
-         pid            <- paste(pid_date,network_label,sep="_") 
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_") 
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -473,7 +478,8 @@ if (aerosol_analysis == 'y') {
          dates 		<- batch_names[m]
          network_names 	<- c("AQS_Daily")
          network_label 	<- c("AQS_Daily")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -528,7 +534,7 @@ if (aerosol_analysis == 'y') {
          }
       }
    }
-   if (hourly_pm_analysis == "y") {
+   if (hourly_pm_analysis == 'y') {
       for (m in 1:length(batch_query)) {
          species_list <- c("PM_TOT")
          for (i in 1:length(species_list)) {
@@ -541,7 +547,8 @@ if (aerosol_analysis == 'y') {
             dates 		<- batch_names[m]
             network_names 	<- c("AQS_Hourly")
             network_label 	<- c("AQS_Hourly")
-            pid                 <- paste(pid_date,network_label,sep="_")
+            total_networks      <- length(network_names)
+	    pid                 <- paste(pid_date,network_label,sep="_")
             query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
             sites <- "All"
             if (by_site == 'y') {
@@ -616,7 +623,8 @@ if (dep_analysis == 'y') {
          mkdir_command 	<- paste("mkdir -p",figdir)
          network_names	<- c("NADP") 
          network_label	<- c("NADP")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -686,7 +694,8 @@ if (gas_analysis == 'y') {
             }
             network_names 	<- c("SEARCH")
             network_label 	<- c("SEARCH")
-            pid            <- paste(pid_date,network_label,sep="_")
+            total_networks      <- length(network_names)
+	    pid                 <- paste(pid_date,network_label,sep="_")
             query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
             sites <- "All"
             if (by_site == 'y') {
@@ -758,7 +767,8 @@ if (gas_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("AQS_Hourly")
          network_label 	<- c("AQS_Hourly")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -832,7 +842,8 @@ if (AE6_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("CSN")
          network_label 	<- c("CSN")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
 	 query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -899,7 +910,8 @@ if (AE6_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("IMPROVE")
          network_label 	<- c("IMPROVE")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -970,7 +982,8 @@ if (AOD_analysis == 'y') {
          system(mkdir_command)
          network_names 	<- c("AERONET")
          network_label 	<- c("AERONET")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query <- paste(query_string,"and (",batch_query[m],")",sep=" ")
          if (timeseries_plot    == 'y') {
             system(mkdir_command)
@@ -1026,7 +1039,8 @@ if (PAMS_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("AQS_Hourly")
          network_label 	<- c("AQS_Hourly")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
@@ -1097,7 +1111,8 @@ if (PAMS_analysis == 'y') {
          mkdir_command  <- paste("mkdir -p",figdir)
          network_names 	<- c("AQS_Daily")
          network_label 	<- c("AQS_Daily")
-         pid            <- paste(pid_date,network_label,sep="_")
+         total_networks <- length(network_names)
+	 pid            <- paste(pid_date,network_label,sep="_")
          query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          sites <- "All"
          if (by_site == 'y') {
