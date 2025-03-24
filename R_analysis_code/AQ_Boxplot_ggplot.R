@@ -31,18 +31,18 @@ filename_pdf		<- paste(run_name1,species,pid,"boxplot_ggplot.pdf",sep="_")
 filename_bias_pdf	<- paste(run_name1,species,pid,"boxplot_bias_ggplot.pdf",sep="_")
 filename_png            <- paste(run_name1,species,pid,"boxplot_ggplot.png",sep="_")
 filename_bias_png       <- paste(run_name1,species,pid,"boxplot_bias_ggplot.png",sep="_")
-filename_txt            <- paste(run_name1,species,pid,"boxplot_ggplot_data.csv",sep="_")
+filename_txt            <- paste(run_name1,species,pid,"boxplot_ggplot.csv",sep="_")
 
 ## Create a full path to file
 filename_pdf            <- paste(figdir,filename_pdf,sep="/")
-filename_bias_pdf       <- paste(figdir,filename_bias_pdf,sep="/")
+filename_pdf_bias       <- paste(figdir,filename_bias_pdf,sep="/")
 filename_png            <- paste(figdir,filename_png,sep="/")
-filename_bias_png       <- paste(figdir,filename_bias_png,sep="/")
-filename_txt            <- paste(figdir,filename_txt,sep="/")
+filename_png_bias       <- paste(figdir,filename_bias_png,sep="/")
+filename_txt             <- paste(figdir,filename_txt,sep="/")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,clim_reg)
-title_bias <- get_title(run_names,species,network_label,dates,custom_title,clim_reg,bias=T)
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title_bias <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,bias=T)
 bias.title <- title_bias
 
 sp_new <- NULL
@@ -95,7 +95,7 @@ for (j in 1:length(run_names)) {
             }
             if (averaging == "h") {
                aqdat.df$Split_On <- aqdat_query.df$ob_hour
-               date_title <- "Hour of Day (LST)"
+               date_title <- paste("Hour of Day (",TIME_FORMAT,")")
             }
             if (averaging == "md") {
                aqdat.df$Split_On <- aqdat_query.df$ob_day
@@ -196,6 +196,8 @@ options(bitmapType='cairo')
 
 ymax <- max(aqdat_out.df$Value)
 ymin <- min(aqdat_out.df$Value)
+bias_max <- max(aqdat_out_bias.df$Value)
+bias_min <- min(aqdat_out_bias.df$Value)
 
 if (length(y_axis_max) > 0) {
    ymax         <- y_axis_max
@@ -230,18 +232,18 @@ if ((ametptype == "png") || (ametptype == "both")) {
 
 
 #pdf(file=filename_pdf_bias,width=9,height=9)
-sp<-ggplot(aqdat_out_bias.df,aes(x=bin,y=Value,fill=Sim)) + geom_boxplot(position=position_dodge(0.8)) + theme(legend.title = element_blank(), legend.text = element_text(size=13), legend.key.size = unit(0.8, 'cm'), legend.justification=c(0,1), legend.position=c(0.02,0.98), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5), axis.text.x=element_text(angle=x_label_angle, vjust=0.5)) + labs(title=bias.title,x=date_title,y=paste(species,"Bias (",units,")")) + geom_hline(yintercept=0,color="black") + scale_fill_manual(values=plot_colors[-1]) + scale_y_continuous(breaks = pretty(aqdat_out_bias.df$Value, n = 10))
+sp<-ggplot(aqdat_out_bias.df,aes(x=bin,y=Value,fill=Sim)) + geom_boxplot(position=position_dodge(0.8)) + theme(legend.title = element_blank(), legend.text = element_text(size=13), legend.key.size = unit(0.8, 'cm'), legend.justification=c(0,1), legend.position=c(0.02,0.98), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5), axis.text.x=element_text(angle=x_label_angle, vjust=0.5)) + labs(title=bias.title,x=date_title,y=paste(species,"Bias (",units,")")) + geom_hline(yintercept=0,color="black") + scale_fill_manual(values=plot_colors[-1]) + scale_y_continuous(limits= c(bias_min,bias_max), breaks = pretty(aqdat_out_bias.df$Value, n = 10))
 
 #sp
 #dev.off()
-if (overlap_boxes != "y") { ggsave(filename_bias_pdf,plot=sp,height=9,width=9) }
+if (overlap_boxes != "y") { ggsave(filename_pdf_bias,plot=sp,height=9,width=9) }
 
 if ((ametptype == "png") || (ametptype == "both")) {
-   convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_bias_pdf," png:",filename_bias_png,sep="")
+   convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf_bias," png:",filename_png_bias,sep="")
    system(convert_command)
 
    if (ametptype == "png") {
-      remove_command <- paste("rm ",filename_bias_pdf,sep="")
+      remove_command <- paste("rm ",filename_pdf_bias,sep="")
       system(remove_command)
    }
 }

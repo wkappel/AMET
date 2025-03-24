@@ -43,7 +43,7 @@ ob_col_name <- paste(species,"_ob",sep="")
 mod_col_name <- paste(species,"_mod",sep="")
 {
    if (averaging != "n") {
-      aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),State=I(aqdat_query.df$state),County=I(aqdat_query.df$county),Landuse=I(aqdat_query.df$landuse),Loc_setting=I(aqdat_query.df$loc_setting),NLCD_Loc_setting=I(aqdat_query.df$NLCD2011_Imperv_Surf_Loc_Setting),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
+      aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),State=I(aqdat_query.df$state),County=I(aqdat_query.df$county),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
       aqdat.df <- Average(aqdat.df)
    }
    else {
@@ -52,6 +52,7 @@ mod_col_name <- paste(species,"_mod",sep="")
 }
 write.table(run_name1,file=filename_txt,append=F,col.names=F,row.names=F,sep=",")
 write.table(dates,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
+write.table(species[1],file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
 write.table("",file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
 write.table(network,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
 write.table(aqdat.df,file=filename_txt,append=T,col.names=T,row.names=F,sep=",")

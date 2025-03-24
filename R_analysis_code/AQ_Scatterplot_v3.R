@@ -8,9 +8,12 @@ header <- "
 ### also allow a second run to plotted on top of the first run. Output format is png, pdf
 ### or both.
 ###
-### Last Updated by Wyat Appel: May 2020
+### Last Updated by Wyat Appel: June, 2019
 #####################################################################################
 "
+
+library(png)
+library(pdftools)
 
 # get some environmental variables and setup some directories
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
@@ -21,7 +24,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title <- get_title(run_names,species,network_names,dates,custom_title)
 
 filename_pdf <- paste(run_name1,species,pid,"scatterplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot.png",sep="_")		# Set PNG filename
@@ -92,7 +95,7 @@ while (run_count <= num_runs) {
          }
          else {
             if (averaging != "n") {
-               aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,State=aqdat_query.df$state,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
+               aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
                {
                   if (use_avg_stats == "y") {
                      aqdat.df <- Average(aqdat.df)
@@ -106,7 +109,7 @@ while (run_count <= num_runs) {
             }
             else { 
                aqdat.df <- aqdat_query.df
-               aqdat.df <- data.frame(Network=aqdat.df$network,Stat_ID=aqdat.df$stat_id,lat=aqdat.df$lat,lon=aqdat.df$lon,State=aqdat_query.df$state,Obs_Value=round(aqdat.df[[ob_col_name]],5),Mod_Value=round(aqdat.df[[mod_col_name]],5),Month=aqdat.df$month)      # Create dataframe of network values to be used to create a list
+               aqdat.df <- data.frame(Network=aqdat.df$network,Stat_ID=aqdat.df$stat_id,lat=aqdat.df$lat,lon=aqdat.df$lon,Obs_Value=round(aqdat.df[[ob_col_name]],5),Mod_Value=round(aqdat.df[[mod_col_name]],5),Month=aqdat.df$month)      # Create dataframe of network values to be used to create a list
                aqdat_stats.df <- aqdat.df
             }
             axis.max <- max(c(axis.max,aqdat.df$Obs_Value,aqdat.df$Mod_Value)) 
@@ -247,7 +250,7 @@ while (run_count <= num_runs) {
       ### Preset values for plot characters and colors (these can be changed to user preference) ###
       plot_chars <- c(1,2,3,4)                                 	# set vector of plot characters
       ##############################################################################################
-      pdf(file=filename_pdf,width=8,height=8)
+      pdf(file=filename_pdf,width=8,height=8,family="ArialMT")
       ### Plot and draw rectangle with stats ###
       par(mai=c(1,1,0.5,0.5))
       plot(1,1,type="n", pch=2, col="red", ylim=c(axis.min, axis.max), xlim=c(axis.min, axis.max), xlab="Observation", ylab=model_name, cex.axis=1.3, cex.lab=1.3)	# create plot axis and labels, but do not plot any points
@@ -387,8 +390,11 @@ if (run_info_text == "y") {
 ### Convert pdf file to png file ###
 dev.off()
 if ((ametptype == "png") || (ametptype == "both")) {
-   convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf," png:",filename_png,sep="")
-   system(convert_command)
+#   convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf," png:",filename_png,sep="")
+#   system(convert_command)
+   bitmap <- pdf_render_page(filename_pdf, page = 1, dpi = 300)
+   png::writePNG(bitmap, filename_png)
+#   pdf_convert(filename_pdf, format = "png", pages = NULL, filenames = filename_png, dpi = 300, opw = "", upw = "", verbose = TRUE)
 
    if (ametptype == "png") {
       remove_command <- paste("rm ",filename_pdf,sep="")

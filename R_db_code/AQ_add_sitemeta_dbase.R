@@ -5,6 +5,7 @@
 #	PURPOSE: To update the surface station			#
 #		database information (id,lat,lon,elev,etc)	#
 #								#
+#	LAST UPDATE 12/2023					#
 #----------------------------------------------------------------
 
 #amet_base <- Sys.getenv('AMETBASE')

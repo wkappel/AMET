@@ -155,6 +155,7 @@ for (j in 1:length(run_names)) {
    data_ts.df   <- data_ts.df[-c(2,3,4,5,38)]
 #   names(data_ts.df)[1] <- "stat_id"
    names(data_ts.df)[1] <- "ob_dates"
+   print(names(data_ts.df))
    num_dates <- length(unique(data_ts.df$ob_dates))
    data_ts_obs.df <- data_ts.df[-c(3,5,7,8,9,11,13,15,17,19,21,23,25,27,29,31,33,34,36)]
    names(data_ts_obs.df)[-1] <- gsub("_ob","",names(data_ts_obs.df)[-1])
@@ -199,6 +200,8 @@ title <- paste(title,sim_legend,sep="\n\n")
 data_merged.df$species <- factor(data_merged.df$species, levels=c("SO4","NO3","NH4","EC","OC","Al","Ca","Fe","K","Mg","Si","Ti","Na","Cl","NCOM","OTHR"))
 data_merged.df$cat     <- factor(data_merged.df$cat, levels=x_factor)
 bar_colors <- c("red","yellow","orange","grey20","black","lightblue","blue","firebrick","yellow4","green4","gray50","orange","purple","lightseagreen","pink","gray70")
+
+print(data_merged.df)
 
 #pdf(file=filename_pdf,width=9,height=9)
 dates_uniq <- unique(data_merged.df$ob_dates)

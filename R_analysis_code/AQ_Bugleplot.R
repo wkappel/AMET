@@ -3,7 +3,7 @@ header <- "
 ### AMET CODE: AQ_Bugleplot.R
 ###
 ### This script is part of the AMET-AQ system.  It plots a unique type of 
-### plot referred to as a bugle plot.  The idea behind the plot is that 
+### plot referred to as a "bugle" plot.  The idea behind the plot is that 
 ### model performance should be adjusted as a function of the average 
 ### concentration of the observed value for that species.Therefore, as the 
 ### average concentration of the specie decreses, the acceptable performance 
@@ -29,10 +29,10 @@ network  <- network_names[1]
 ################################################
 
 ### Set file names and titles ###
-filename_error_pdf	<- paste(run_name1,species,pid,"bugleplot_error.pdf",sep="_")
-filename_bias_pdf 	<- paste(run_name1,species,pid,"bugleplot_bias.pdf",sep="_")
-filename_error_png 	<- paste(run_name1,species,pid,"bugleplot_error.png",sep="_")
-filename_bias_png 	<- paste(run_name1,species,pid,"bugleplot_bias.png",sep="_")
+filename_error_pdf	<- paste(run_name1,species,pid,"bugle_plot_error.pdf",sep="_")
+filename_bias_pdf 	<- paste(run_name1,species,pid,"bugle_plot_bias.pdf",sep="_")
+filename_error_png 	<- paste(run_name1,species,pid,"bugle_plot_error.png",sep="_")
+filename_bias_png 	<- paste(run_name1,species,pid,"bugle_plot_bias.png",sep="_")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {

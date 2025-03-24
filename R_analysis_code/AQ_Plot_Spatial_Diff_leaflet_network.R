@@ -37,8 +37,19 @@ if(!exists("png_from_html")) { png_from_html <- "n" }
 network <- network_names[1]	# When using mutiple networks, units from network 1 will be used
 ################################################
 
+filename <- NULL
+filename_png <- NULL
+
 ### Set file names and titles ###
-filename_html	         <- paste(run_name1,species,pid,"spatialplot_diff",sep="_") # Filename for diff spatial plot
+filename_bias_1		 <- paste(run_name1,species,pid,"spatialplot_bias_1",sep="_")       # Filename for obs spatial plot
+filename_bias_2		 <- paste(run_name1,species,pid,"spatialplot_bias_2",sep="_")       # Filename for model spatial plot
+filename_bias_diff	 <- paste(run_name1,species,pid,"spatialplot_bias_diff",sep="_") # Filename for diff spatial plot
+filename_error_1	 <- paste(run_name1,species,pid,"spatialplot_error_1",sep="_")     # Filename for obs spatial plot
+filename_error_2	 <- paste(run_name1,species,pid,"spatialplot_error_2",sep="_")     # Filename for model spatial plot
+filename_error_diff	 <- paste(run_name1,species,pid,"spatialplot_error_diff",sep="_")       # Filename for diff spatial plot
+filename_corr_1          <- paste(run_name1,species,pid,"spatialplot_corr_1",sep="_")     # Filename for obs spatial plot
+filename_corr_2          <- paste(run_name1,species,pid,"spatialplot_corr_2",sep="_")     # Filename for model spatial plot
+filename_corr_diff       <- paste(run_name1,species,pid,"spatialplot_corr_diff",sep="_") # Filename for diff spatial plot
 filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 filename_bias_hist       <- paste(run_name1,species,pid,"histogram_bias_diff",sep="_") # Filename for diff spatial plot
 filename_error_hist      <- paste(run_name1,species,pid,"histogram_error_diff",sep="_") # Filename for diff spatial plot
@@ -51,7 +62,24 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 }
 
 ## Create a full path to file
-filename_html        <- paste(figdir,"/",filename_html,".html",sep="")            # Filename for diff spatial plot
+filename[1]          <- paste(figdir,"/",filename_bias_1,".html",sep="")		# Filename for obs spatial plot
+filename[2]          <- paste(figdir,"/",filename_bias_2,".html",sep="")       	# Filename for model spatial plot
+filename[7]          <- paste(figdir,"/",filename_bias_diff,".html",sep="") 		# Filename for diff spatial plot
+filename[3]          <- paste(figdir,"/",filename_error_1,".html",sep="")     	# Filename for obs spatial plot
+filename[4]          <- paste(figdir,"/",filename_error_2,".html",sep="")     	# Filename for model spatial plot
+filename[8]          <- paste(figdir,"/",filename_error_diff,".html",sep="")     	# Filename for diff spatial plot
+filename[5]          <- paste(figdir,"/",filename_corr_1,".html",sep="")       # Filename for obs spatial plot
+filename[6]          <- paste(figdir,"/",filename_corr_2,".html",sep="")       # Filename for model spatial plot
+filename[9]          <- paste(figdir,"/",filename_corr_diff,".html",sep="")            # Filename for diff spatial plot
+filename_png[1]      <- paste(figdir,"/",filename_bias_1,".png",sep="")           # Filename for obs spatial plot
+filename_png[2]      <- paste(figdir,"/",filename_bias_2,".png",sep="")           # Filename for model spatial plot
+filename_png[7]      <- paste(figdir,"/",filename_bias_diff,".png",sep="")                # Filename for diff spatial plot
+filename_png[3]      <- paste(figdir,"/",filename_error_1,".png",sep="")          # Filename for obs spatial plot
+filename_png[4]      <- paste(figdir,"/",filename_error_2,".png",sep="")          # Filename for model spatial plot
+filename_png[8]      <- paste(figdir,"/",filename_error_diff,".png",sep="")       # Filename for diff spatial plot
+filename_png[5]      <- paste(figdir,"/",filename_corr_1,".png",sep="")          # Filename for obs spatial plot
+filename_png[6]      <- paste(figdir,"/",filename_corr_2,".png",sep="")          # Filename for model spatial plot
+filename_png[9]      <- paste(figdir,"/",filename_corr_diff,".png",sep="")       # Filename for diff spatial plot
 filename_bias_hist_html   <- paste(figdir,"/",filename_bias_hist,".html",sep="")
 filename_error_hist_html  <- paste(figdir,"/",filename_error_hist,".html",sep="")
 filename_corr_hist_html   <- paste(figdir,"/",filename_corr_hist,".html",sep="")
@@ -63,8 +91,7 @@ filename_csv	          <- paste(figdir,filename_csv,sep="/")
 #################################
 
 ### Set NULL values and plot symbols ###
-sinfo_data	<- NULL
-sinfo_data_tmp	<- NULL
+sinfo_data		<- NULL
 diff_min        <- NULL
 all_sites	<- NULL
 all_lats        <- NULL
@@ -217,9 +244,8 @@ for (j in 1:total_networks) {							# Loop through for each network
             }
          }
 #	 print(states)
-         sites_avg.df 		<- data.frame(Network=network,Site_ID=I(sites),lat=lats,lon=lons,state=states,Bias_1=mod_bias_1_all,Bias_2=mod_bias_2_all,Bias_Diff=bias_diff,Error_1=mod_error_1_all,Error_2=mod_error_2_all,Error_Diff=error_diff,Corr_1=mod_corr_1_all,Corr_2=mod_corr_2_all,Corr_Diff=corr_diff)	# Create properly formatted dataframe for use with PlotSpatial function
-         sinfo_data_tmp		<-data.frame(network=network,stat_id=sites,lat=sites_avg.df$lat,lon=sites_avg.df$lon,state=sites_avg.df$state,Bias_1=sites_avg.df$Bias_1, Bias_2=sites_avg.df$Bias_2, Bias_Diff=sites_avg.df$Bias_Diff, Error_1=sites_avg.df$Error_1, Error_2=sites_avg.df$Error_2, Error_Diff=sites_avg.df$Error_Diff,Corr_1=sites_avg.df$Corr_1,Corr_2=sites_avg.df$Corr_2,Corr_Diff=sites_avg.df$Corr_Diff)
-	 sinfo_data		<- rbind(sinfo_data,sinfo_data_tmp)
+         sites_avg.df 			<- data.frame(Network=network,Site_ID=I(sites),lat=lats,lon=lons,state=states,Bias_1=mod_bias_1_all,Bias_2=mod_bias_2_all,Bias_Diff=bias_diff,Error_1=mod_error_1_all,Error_2=mod_error_2_all,Error_Diff=error_diff,Corr_1=mod_corr_1_all,Corr_2=mod_corr_2_all,Corr_Diff=corr_diff)	# Create properly formatted dataframe for use with PlotSpatial function
+         sinfo_data[[j]]		<-list(stat_id=sites,lat=sites_avg.df$lat,lon=sites_avg.df$lon,state=sites_avg.df$state,Bias_1=sites_avg.df$Bias_1, Bias_2=sites_avg.df$Bias_2, Bias_Diff=sites_avg.df$Bias_Diff, Error_1=sites_avg.df$Error_1, Error_2=sites_avg.df$Error_2, Error_Diff=sites_avg.df$Error_Diff,Corr_1=sites_avg.df$Corr_1,Corr_2=sites_avg.df$Corr_2,Corr_Diff=sites_avg.df$Corr_Diff)
 
          all_sites		<- c(all_sites,sites_avg.df$Site_ID)
          all_lats		<- c(all_lats,sites_avg.df$lat)
@@ -270,7 +296,6 @@ plot_data[[7]] <- all_bias_diff
 plot_data[[8]] <- all_error_diff
 plot_data[[9]] <- all_corr_diff
 
-map_title <- paste("Run 1:",run_name1,"/ Run 2:",run_name2,"<br>",species,"for",dates,sep=" ")
 title <- NULL
 {
    if (custom_title == "") { 
@@ -281,14 +306,23 @@ title <- NULL
       run_name_title2 <- run_name_elements[1]
       for (l in 2:length(run_name_elements)) { run_name_title2 <- paste(run_name_title2,run_name_elements[l],sep="<br>") }
       title[1] <- paste(species," (",units,") <br> Bias (",avg_func_name,")",sep="") 
+      map_title[1] <- paste(run_name1,species,"Bias",dates,sep=" ")
       title[2] <- paste(species," (",units,") <br> Bias (",avg_func_name,")",sep="")
+      map_title[2] <- paste(run_name2,species,"Bias",dates,sep=" ")
       title[7] <- paste(species," (",units,") <br> Bias Diff (",avg_func_name,")",sep="")
+      map_title[7] <- paste(run_name1,"-",run_name2,species,"Bias Diff",dates,sep=" ")
       title[3] <- paste(species," (",units,") <br> Error (",avg_func_name,")",sep="")
+      map_title[3] <- paste(run_name1,species,"Error",dates,sep=" ")
       title[4] <- paste(species," (",units,") <br> Error (",avg_func_name,")",sep="")
+      map_title[4] <- paste(run_name2,species,"Error",dates,sep=" ")
       title[8] <- paste(species," (",units,") <br> Error Diff (",avg_func_name,")",sep="")
+      map_title[8] <- paste(run_name1,"-",run_name2,species,"Error Diff",dates,sep=" ")
       title[5] <- paste(species," (none) <br> Corr (",avg_func_name,")",sep="")
+      map_title[5] <- paste(run_name1,species,"Corr",dates,sep=" ")
       title[6] <- paste(species," (none) <br> Corr (",avg_func_name,")",sep="")
+      map_title[6] <- paste(run_name2,species,"Corr",dates,sep=" ")
       title[9] <- paste(species," (none) <br> Corr Diff (",avg_func_name,")",sep="")
+      map_title[9] <- paste(run_name1,"-",run_name2,species,"Corr Diff",dates,sep=" ")
    }
    else { 
       title[1] <- custom_title 
@@ -304,14 +338,12 @@ title <- NULL
 }
 
 num_bins <- NULL
-plot_names <- c("Bias_Run1","Bias_Run2","Error_Run1","Error_Run2","Corr_Run1","Corr_Run2","Bias_Diff","Error_Diff","Corr_Diff")
-my.leaf <- my.leaf.base
 for (i in 1:9) {
    left_adj <- 30
    if (i > 6) { left_adj <- 10 }
 #   tag.map.title.png <- tag_map_title_png_func(left_adj)
-   main_title <- tags$div(tag.map.title.html, HTML(map_title[1]))
-   main_title_png <- tags$div(tag.map.title.png, HTML(map_title[1]))
+   main_title <- tags$div(tag.map.title.html, HTML(map_title[i]))
+   main_title_png <- tags$div(tag.map.title.png, HTML(map_title[i]))
 #  aqs.dat <- subset(o3.obs.df,date==pick.days[i])
 #  xyz <- data.frame(x=expand.grid(x.proj.12,y.proj.12)[,1]*1000,y=expand.grid(x.proj.12,y.proj.12)[,2]*1000,z=matrix(o3.mod.array[,,i]))
 #  o3.mod.raster <- rasterFromXYZ(xyz,crs="+proj=lcc +lat_1=33 +lat_2=45 +lat_0=40 +lon_0=-97 +a=6370000 +b=6370000")
@@ -342,82 +374,82 @@ for (i in 1:9) {
      binpal2 <- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
    }
 
-#  my.leaf <- my.leaf.base   
-#  for (j in 1:length(network_names)) {
+  my.leaf <- my.leaf.base   
+  for (j in 1:length(network_names)) {
      if(i == 1) { 
-        plot_val <- sinfo_data$Bias_1
+        plot_val <- sinfo_data[[j]]$Bias_1
         name <- "Bias Sim 1"
         ecdf_data <- c(all_bias,all_bias2) 
      }
      if(i == 2) { 
-        plot_val <- sinfo_data$Bias_2
+        plot_val <- sinfo_data[[j]]$Bias_2
         name <- "Bias Sim 2" 
         ecdf_data <- c(all_bias,all_bias2)
      }
      if(i == 3) { 
-        plot_val <- sinfo_data$Error_1 
+        plot_val <- sinfo_data[[j]]$Error_1 
         name <- "Error Sim 1"
         ecdf_data <- c(all_error,all_error2)
      }
      if(i == 4) { 
-        plot_val <- sinfo_data$Error_2 
+        plot_val <- sinfo_data[[j]]$Error_2 
         name <- "Error Sim 2"
         ecdf_data <- c(all_error,all_error2)
      }
      if(i == 5) {
-        plot_val <- sinfo_data$Corr_1
+        plot_val <- sinfo_data[[j]]$Corr_1
         name <- "Corr Sim 1"
         ecdf_data <- c(all_corr,all_corr2)
      }
      if(i == 6) {
-        plot_val <- sinfo_data$Corr_2
+        plot_val <- sinfo_data[[j]]$Corr_2
         name <- "Corr Sim 2"
         ecdf_data <- c(all_corr,all_corr2)
      }
      if(i == 7) { 
-        plot_val <- sinfo_data$Bias_Diff
+        plot_val <- sinfo_data[[j]]$Bias_Diff
         name <- "Bias Diff" 
         ecdf_data <- all_bias_diff
      }
      if(i == 8) { 
-        plot_val <- sinfo_data$Error_Diff 
+        plot_val <- sinfo_data[[j]]$Error_Diff 
         name <- "Error Diff"
         ecdf_data <- all_error_diff
      }
      if(i == 9) {
-        plot_val <- sinfo_data$Corr_Diff
+        plot_val <- sinfo_data[[j]]$Corr_Diff
         name <- "Corr Diff"
         ecdf_data <- all_corr_diff
      }
-     data.df <- data.frame(site.id=sinfo_data$stat_id,latitude=sinfo_data$lat,longitude=sinfo_data$lon,state=sinfo_data$state,data.obs=plot_val)
+     data.df <- data.frame(site.id=sinfo_data[[j]]$stat_id,latitude=sinfo_data[[j]]$lat,longitude=sinfo_data[[j]]$lon,state=sinfo_data[[j]]$state,data.obs=plot_val)
      contents <- paste("Site: ", all_sites,
                   "<br/>",
-		   "Latitude: ",sinfo_data$lat,
+		   "Latitude: ",sinfo_data[[j]]$lat,
                   "<br/>",
-                  "Longitude: ",sinfo_data$lon,
+                  "Longitude: ",sinfo_data[[j]]$lon,
                   "<br/>",
-                  "State: ",sinfo_data$state,
+                  "State: ",sinfo_data[[j]]$state,
                   "<br/>",
-                  "Bias1: ", round(sinfo_data$Bias_1, 2),units,
+                  "Bias1: ", round(sinfo_data[[j]]$Bias_1, 2),units,
                   "<br/>",
-                  "Bias2: ", round(sinfo_data$Bias_2, 2),units,
+                  "Bias2: ", round(sinfo_data[[j]]$Bias_2, 2),units,
                   "<br/>",
-                  "Bias Diff:", round(sinfo_data$Bias_Diff, 2),units,
+                  "Bias Diff:", round(sinfo_data[[j]]$Bias_Diff, 2),units,
                   "<br/>",
-                  "Error1: ", round(sinfo_data$Error_1, 2),units,
+                  "Error1: ", round(sinfo_data[[j]]$Error_1, 2),units,
                   "<br/>",
-                  "Error2: ", round(sinfo_data$Error_2, 2),units,
+                  "Error2: ", round(sinfo_data[[j]]$Error_2, 2),units,
                   "<br/>",
-                  "Error Diff:", round(sinfo_data$Error_Diff, 2),units,
+                  "Error Diff:", round(sinfo_data[[j]]$Error_Diff, 2),units,
                   "<br/>",
-                  "Corr1: ", round(sinfo_data$Corr_1, 2),units,
+                  "Corr1: ", round(sinfo_data[[j]]$Corr_1, 2),units,
                   "<br/>",
-                  "Corr2: ", round(sinfo_data$Corr_2, 2),units,
+                  "Corr2: ", round(sinfo_data[[j]]$Corr_2, 2),units,
                   "<br/>",
-                  "Corr Diff:", round(sinfo_data$Corr_Diff, 2),units, sep=" ")
+                  "Corr Diff:", round(sinfo_data[[j]]$Corr_Diff, 2),units, sep=" ")
 
-     contents2 <- paste("Site: ", sinfo_data$stat_id,
-                              "  Network: ", network_names,
+     contents2 <- paste("Site: ", sinfo_data[[j]]$stat_id,
+                              "  Network: ", network_names[[j]],
                               "  Value: ", round(plot_val, 2), units, sep=" ") 
 
    
@@ -432,27 +464,27 @@ for (i in 1:9) {
         plot_rad[plot_rad < min.radius] <- min.radius
         plot_rad[abs(plot_val) > max.data] <- outlier_radius
      }
-     my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=plot_names[i],radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents,label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
+     my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data[[j]]$lon,sinfo_data[[j]]$lat,color="black",fillColor=~binpal2(plot_val),group=network_names[[j]],radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents,label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
 #     addCircleMarkers(all_lons,all_lats,color=~binpal2(plot_data[[i]]),radius=6,data=data.df,opacity=1,fillOpacity=1,popup=contents,label=contents2)%>%
-#  }
+  }
     
-  my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal2, values = c(min.data,max.data), group=plot_names[i], layerId=plot_names[i], title = title[i], opacity = 2) 
-#  my.leaf2 <- my.leaf %>% addProviderTiles(leaflet_map[1],group="Street Map") %>% setView(center_lon,center_lat,zoom=zoom_level)
-  my.leaf <- my.leaf %>% addControl(main_title,position="topleft",className="map-title")
-#  my.leaf2 <- my.leaf2 %>% addControl(main_title_png,position="topright",className="map-title")
+  my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal2, values = c(min.data,max.data), title = title[i], opacity = 2) 
+  my.leaf2 <- my.leaf %>% addProviderTiles(leaflet_map[1],group="Street Map") %>% setView(center_lon,center_lat,zoom=zoom_level)
+  my.leaf <- my.leaf %>% addControl(main_title,position="topright",className="map-title")
+  my.leaf2 <- my.leaf2 %>% addControl(main_title_png,position="topright",className="map-title")
   my.leaf <- my.leaf %>%
-  addLayersControl(baseGroups = base_Groups,overlayGroups = plot_names, options =  layersControlOptions(collapsed = FALSE,position="topleft"))
+  addLayersControl(baseGroups = base_Groups,overlayGroups = c(network_names),options =  layersControlOptions(collapsed = FALSE,position="topleft"))
 
 #  addLegend("bottomright", pal = binpal2, values = c(min.data,max.data),
 #  title = title[i],
 #  opacity = 2)
-} # End metric loop
-  saveWidget(my.leaf, file=filename_html,selfcontained=T)
-#  saveWidget(my.leaf2, file="Rplot.html",selfcontained=T)
+
+  saveWidget(my.leaf, file=filename[i],selfcontained=T)
+  saveWidget(my.leaf2, file="Rplot.html",selfcontained=T)
   if (png_from_html == "y") {
      webshot("Rplot.html", file = filename_png[i],cliprect = "viewport",zoom=2,vwidth=max(lon_diff*24.5,1600),vheight=max(lat_diff*36.5,800))
   }
-#}
+}
 total_sites 	 <- length(all_bias_diff[!is.na(all_bias_diff)])
 bias_neg_vals    <- sum(all_bias_diff<0)
 bias_pos_vals    <- sum(all_bias_diff>0)

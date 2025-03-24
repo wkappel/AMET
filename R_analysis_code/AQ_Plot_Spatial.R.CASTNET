@@ -113,7 +113,9 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
    #######################
-
+   aqdat_query.df[,9] <- k
+   aqdat_query.df[,10] <- k
+   units <- "ug/m3"
 #   count <- sum(is.na(aqdat_query.df[,9]))
 #   len   <- length(aqdat_query.df[,9])
 
@@ -131,7 +133,7 @@ for (j in 1:total_networks) {							# Loop through for each network
          ####################################
          legend_names <<- c(legend_names,network_label[j])
          legend_chars <<- c(legend_chars,spch[k])
-         if (averaging == "n") { averaging <- "e" }
+         if (averaging == "n") { averaging <- "a" }
          ob_col_name <- paste(species,"_ob",sep="")
          mod_col_name <- paste(species,"_mod",sep="")
          aqdat_in.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
@@ -149,18 +151,18 @@ for (j in 1:total_networks) {							# Loop through for each network
          ##################################################
          ## Store values for each network in array lists ##
          ##################################################
-         sinfo_obs_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Obs_Value)
-         sinfo_mod_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Value)
-         sinfo_diff_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff)
-         sinfo_rat_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Rat)
+         sinfo_obs_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=rep(k,length(aqdat.df$lat)))
+         sinfo_mod_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=k)
+         sinfo_diff_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=k)
+         sinfo_rat_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=k)
 
 
          all_lats <- c(all_lats,aqdat.df$lat)
          all_lons <- c(all_lons,aqdat.df$lon)
-         all_obs  <- c(all_obs,aqdat.df$Obs_Value)
-         all_mod  <- c(all_mod,aqdat.df$Mod_Value)
-         all_diff <- c(all_diff,aqdat.df$Mod_Obs_Diff)
-         all_rat  <- c(all_rat,aqdat.df$Mod_Obs_Rat)
+         all_obs  <- c(all_obs,k)
+         all_mod  <- c(all_mod,k)
+         all_diff <- c(all_diff,k)
+         all_rat  <- c(all_rat,k)
          ##################################################
 #         sub_title<-paste(sub_title,symbols[k],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
          k <- k+1
@@ -298,7 +300,7 @@ leg_colors_diff				<- c(low_range,near_zero_color,near_zero_color,high_range)
 
 for (k in 1:total_networks) {
 
-   sinfo_obs[[k]]<-list(lat=sinfo_obs_data[[k]]$lat,lon=sinfo_obs_data[[k]]$lon,plotval=sinfo_obs_data[[k]]$plotval,levs=levs,levcols=colors,levs_legend=levs_legend,cols_legend=leg_colors,convFac=.01)			# Create list to be used with PlotSpatial function
+   sinfo_obs[[k]]<-list(lat=sinfo_obs_data[[k]]$lat,lon=sinfo_obs_data[[k]]$lon,plotval=sinfo_obs_data[[k]]$plotval,levs=c(0,1,2,3,4,5),levcols=c("#68228B","#003FBF","#7FFF00","#FFBB00","#B22222"),levs_legend=c(0,1,2,3,4,5),cols_legend=c("#68228B","#003FBF","#7FFF00","#FFBB00","#B22222"),convFac=.01)			# Create list to be used with PlotSpatial function
    sinfo_mod[[k]]<-list(lat=sinfo_mod_data[[k]]$lat,lon=sinfo_mod_data[[k]]$lon,plotval=sinfo_mod_data[[k]]$plotval,levs=levs,levcols=colors,levs_legend=levs_legend,cols_legend=leg_colors,convFac=.01)			# Create model list to be used with PlotSpatial fuction
    sinfo_diff[[k]]<-list(lat=sinfo_diff_data[[k]]$lat,lon=sinfo_diff_data[[k]]$lon,plotval=sinfo_diff_data[[k]]$plotval,levs=levs_diff,levcols=levcols_diff,levs_legend=levs_legend_diff,cols_legend=leg_colors_diff,convFac=.01)	# Create diff list to be used with PlotSpatial fuction
    sinfo_rat[[k]]<-list(lat=sinfo_rat_data[[k]]$lat,lon=sinfo_rat_data[[k]]$lon,plotval=sinfo_rat_data[[k]]$plotval,levs=levs_rat,levcols=levcols_rat,levs_legend=levs_legend_rat,cols_legend=leg_colors_rat,convFac=.01)  # Create ratio list to be used with PlotSpatial fuction

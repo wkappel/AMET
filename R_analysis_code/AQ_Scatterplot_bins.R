@@ -192,12 +192,12 @@ for (j in 1:num_runs) {
             bias      <- NULL
             rmse      <- NULL
             indic.bin <- aqdat.df$Bin_Value > bin_range[n]
-            bin.df <- as.vector(aqdat.df[indic.bin,])
-            if (n != max(length(bin_range))) {
-               indic.bin <- bin.df$Bin_Value <= bin_range[(n+1)]
-               bin.df <- bin.df[indic.bin,]
-            }
-            if (length(bin.df$Stat_ID) >= 5) {	# IMPORTANT: This sets the miniumum number of pairs to 5 
+            bin.df <- aqdat.df[indic.bin,]
+	    indic.bin <- bin.df$Bin_Value <= bin_range[(n+1)]
+#	    if(length(which(indic.bin)) >= 5) {
+               bin.df <- as.data.frame(bin.df)[indic.bin,]
+#            }
+	    if (length(bin.df$Stat_ID) >= 5) {	# IMPORTANT: This sets the miniumum number of pairs to 5 
                bias 		<- bin.df$Mod_Value-bin.df$Obs_Value
                rmse 		<- sqrt((bin.df$Mod_Value-bin.df$Obs_Value)^2)
                mod.stats1 	<- boxplot(bias, plot=F)

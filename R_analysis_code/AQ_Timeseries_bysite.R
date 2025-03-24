@@ -26,45 +26,79 @@ species <- species[1]
 
 ### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	 <- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
-main.title.bias  <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+{
+   if (custom_title == "") { 
+      main.title 	<- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") 
+      main.title.bias 	<- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
+   }
+   else { 
+     main.title   <- custom_title
+     main.title.bias <- custom_title
+  }
+}
 sub.title	<- ""
 
 
-filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
+filename_csv_zip 	<- paste(run_name1,species,pid,"timeseries_csv.zip",sep="_")
+filename_zip 		<- paste(run_name1,species,pid,"timeseries.zip",sep="_")
 
 ## Create a full path to file
-filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
-
-#######################
-### Set NULL values ###
-#######################
-Obs_Mean	<- NULL
-Mod_Mean	<- NULL
-Obs_Period_Mean	<- NULL
-Mod_Period_Mean	<- NULL
-Bias_Mean	<- NULL
-CORR		<- NULL
-RMSE		<- NULL
-Dates		<- NULL
-All_Data.df	<- NULL
-Num_Obs		<- NULL
-ymin		<- NULL
-ymax		<- NULL
-bias_min        <- NULL
-bias_max        <- NULL
-corr_min	<- NULL
-corr_max	<- NULL
-rmse_max	<- NULL
-rmse_min	<- NULL
-x_label		<- "Date"
-#######################
+filename_csv_zip	<- paste(figdir,filename_csv_zip,sep="/")           # Filename for diff spatial plot
+filename_zip    	<- paste(figdir,filename_zip,sep="/")           # Filename for diff spatial plot
 
 labels <- c(network,run_names)
 num_runs <- length(run_names)
 
+run_name<-run_names[1]
+
+{
+   if (Sys.getenv("AMET_DB") == 'F') {
+      outdir           <- "OUTDIR"
+      if (j >1) { outdir <- paste("OUTDIR",j,sep="") }
+      sitex_info       <- read_sitex(Sys.getenv(outdir),network,run_name,species)
+      aqdat_query.df   <- sitex_info$sitex_data
+      data_exists      <- sitex_info$data_exists
+      if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
+   }
+   else {
+     query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
+     aqdat_query.df  <- query_result[[1]]
+     data_exists     <- query_result[[2]]
+     if (data_exists == "y") { units <- query_result[[3]] }
+      model_name      <- query_result[[4]]
+   }
+}
+sites <- unique(aqdat_query.df$stat_id_noPOC)
+query_base <- query
+
+for (s in 1:length(sites)) {
+#######################
+### Set NULL values ###
+#######################
+Obs_Mean        <- NULL
+Mod_Mean        <- NULL
+Obs_Period_Mean <- NULL
+Mod_Period_Mean <- NULL
+Bias_Mean       <- NULL
+CORR            <- NULL
+RMSE            <- NULL
+Dates           <- NULL
+All_Data.df     <- NULL
+Num_Obs         <- NULL
+ymin            <- NULL
+ymax            <- NULL
+bias_min        <- NULL
+bias_max        <- NULL
+corr_min        <- NULL
+corr_max        <- NULL
+rmse_max        <- NULL
+rmse_min        <- NULL
+x_label         <- "Date"
+#######################
+
 for (j in 1:num_runs) {	# For each simulation being plotted
    run_name <- run_names[j]
+   site <- sites[s]
    #############################################
    ### Read sitex file or query the database ###
    #############################################
@@ -78,6 +112,7 @@ for (j in 1:num_runs) {	# For each simulation being plotted
          if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
       }
       else {
+	 query <- paste(query_base," and d.stat_id='",site,"'",sep="")
          query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
          aqdat_query.df  <- query_result[[1]]
          data_exists     <- query_result[[2]]
@@ -216,6 +251,7 @@ for (j in 1:num_runs) {	# For each simulation being plotted
       col_name4               <- paste(run_names[1],"_RMSE_Average",sep="")
       col_name5               <- paste(run_names[1],"_Corr_Average",sep="")
       All_Data.df	      <- data.frame(Date=Dates[[j]])
+      All_Data.df$Stat_ID     <- sites[s]
       All_Data.df[,col_name1] <- signif((Obs_Mean[[j]]),6)
       All_Data.df[,col_name2] <- signif((Mod_Mean[[j]]),6)
       All_Data.df[,col_name3] <- signif((Bias_Mean[[j]]),6)
@@ -229,6 +265,7 @@ for (j in 1:num_runs) {	# For each simulation being plotted
       col_name4 <- paste(run_names[j],"_RMSE_Average",sep="")
       col_name5 <- paste(run_names[j],"_Corr_Average",sep="")
       temp.df <- data.frame(Date=Dates[[j]])
+      temp.df$Stat_ID     <- sites[s]
       temp.df[,col_name1] <- signif((Obs_Mean[[j]]),6)
       temp.df[,col_name2] <- signif((Mod_Mean[[j]]),6)
       temp.df[,col_name3] <- signif((Bias_Mean[[j]]),6)
@@ -248,7 +285,8 @@ if (length(Dates[[1]]) == 0) { stop("Stopping because length of dates was zero. 
 ########################################
 
 ### Write data to be plotted to file ###
-write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # Write raw data to csv file
+filename_csv         <- paste(run_name1,species,sites[s],pid,"timeseries.csv",sep="_")              # Set output file name
+write.table(All_Data.df,file=filename_csv,append=T,row.names=F,sep=",")      # Write raw data to csv file
 ########################################
 
 ### Calculate some values for plot formatting ###
@@ -276,8 +314,8 @@ if (length(bias_y_axis_min) > 0) {
 
 #################################################
 
-filename_pdf         <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
-filename_png         <- paste(run_name1,species,pid,"timeseries.png",sep="_")
+filename_pdf         <- paste(run_name1,species,sites[s],pid,"timeseries.pdf",sep="_")              # Set output file name
+filename_png         <- paste(run_name1,species,sites[s],pid,"timeseries.png",sep="_")
 
 filename_pdf         <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
 filename_png         <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
@@ -476,4 +514,11 @@ if ((ametptype == "png") || (ametptype == "both")) {
       system(remove_command)
    }
 }
+}
+zip_command<-paste("zip -r ",filename_zip," *",pid,"*.png"," *",pid,"*.pdf",sep="")
+system(zip_command)
+zip_csv_command<-paste("zip -r ",filename_csv_zip," *",pid,"*.csv",sep="")
+system(zip_csv_command)
+remove_command <- paste("rm *",pid,"*.png *",pid,"*.pdf *",pid,"*.csv",sep="")
+system(remove_command)
 

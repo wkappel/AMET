@@ -28,7 +28,7 @@ network <- network_names[1]
 
 ### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	  <- get_title(run_names,species,network_names,dates,custom_title)
+main.title 	  <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 filename_html <- paste(run_name1,species,pid,"scatterplot_bins.html",sep="_")                          # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_bins.png",sep="_")                          # Set PNG filenam

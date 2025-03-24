@@ -39,39 +39,37 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network <- network_names[1]
 ################################################
 
+run_name<-run_names[1]
+
+{
+   if (Sys.getenv("AMET_DB") == 'F') {
+      outdir           <- "OUTDIR"
+      if (j >1) { outdir <- paste("OUTDIR",j,sep="") }
+      sitex_info       <- read_sitex(Sys.getenv(outdir),network,run_name,species)
+      aqdat_query.df   <- sitex_info$sitex_data
+      data_exists      <- sitex_info$data_exists
+      if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
+   }
+   else {
+     query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
+     aqdat_query.df  <- query_result[[1]]
+     data_exists     <- query_result[[2]]
+     if (data_exists == "y") { units <- query_result[[3]] }
+      model_name      <- query_result[[4]]
+   }
+}
+sites <- unique(aqdat_query.df$stat_id_noPOC)
+query_base <- query
+
 ### Set file names ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
-filename_html   <- paste(run_name1,species,pid,"timeseries.html",sep="_")              # Set output file name
-filename_html   <- paste(figdir,filename_html,sep="/")
-filename_png    <- paste(run_name1,species,pid,"timeseries.png",sep="_")              # Set output file name
-filename_png    <- paste(figdir,filename_png,sep="/")
-filename_txt	<- paste(run_name1,species,pid,"timeseries.csv",sep="_")
-filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
+filename_csv_zip        <- paste(run_name1,species,pid,"timeseries_csv.zip",sep="_")
+filename_zip            <- paste(run_name1,species,pid,"timeseries.zip",sep="_")
 
-#######################
-### Set NULL values ###
-#######################
-Obs_Mean	<- NULL
-Mod_Mean	<- NULL
-Obs_All		<- NULL
-Obs_Period_Mean	<- NULL
-Mod_Period_Mean	<- NULL
-Bias_Mean	<- NULL
-Error_Mean	<- NULL
-Corr_Mean	<- NULL
-RMSE_Mean	<- NULL
-NMB_Mean	<- NULL
-NME_Mean	<- NULL
-Dates		<- NULL
-Dates_All	<- NULL
-All_Data	<- NULL
-Num_Obs		<- NULL
-x_label		<- "Date"
-num_sites	<- NULL
-Num_Sites	<- NULL
-Num_Records	<- NULL
-#######################
+## Create a full path to file
+filename_csv_zip        <- paste(figdir,filename_csv_zip,sep="/")           # Filename for diff spatial plot
+filename_zip            <- paste(figdir,filename_zip,sep="/")           # Filename for diff spatial plot
 
 labels <- c(network,run_names)
 num_runs <- length(run_names)
@@ -79,8 +77,36 @@ num_runs <- length(run_names)
 #   sites <- find_common_sites(run_names,network,species)
 #}
 
+for (site_n in 1:length(sites)) {
+
+#######################
+### Set NULL values ###
+#######################
+Obs_Mean        <- NULL
+Mod_Mean        <- NULL
+Obs_All         <- NULL
+Obs_Period_Mean <- NULL
+Mod_Period_Mean <- NULL
+Bias_Mean       <- NULL
+Error_Mean      <- NULL
+Corr_Mean       <- NULL
+RMSE_Mean       <- NULL
+NMB_Mean        <- NULL
+NME_Mean        <- NULL
+Dates           <- NULL
+Dates_All       <- NULL
+All_Data        <- NULL
+Num_Obs         <- NULL
+x_label         <- "Date"
+num_sites       <- NULL
+Num_Sites       <- NULL
+Num_Records     <- NULL
+#######################
+
+
 for (j in 1:num_runs) {	# For each simulation being plotted
    run_name <- run_names[j]
+   site <- sites[site_n]
    #############################################
    ### Read sitex file or query the database ###
    #############################################
@@ -94,6 +120,7 @@ for (j in 1:num_runs) {	# For each simulation being plotted
          if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
       }
       else {
+         query <- paste(query_base," and d.stat_id='",site,"'",sep="")
          query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
          aqdat_query.df  <- query_result[[1]]
          data_exists     <- query_result[[2]]
@@ -288,6 +315,7 @@ for (j in 1:num_runs) {	# For each simulation being plotted
    
       if (j == 1) {
          All_Data.df             <- data.frame(Date=Dates[[j]])
+         All_Data.df$Stat_ID     <- sites[site_n]
          All_Data.df[,col_name1] <- signif((Obs_Mean[[j]]),6)
          All_Data.df[,col_name2] <- signif((Mod_Mean[[j]]),6)
          All_Data.df[,col_name3] <- signif((Bias_Mean[[j]]),6)
@@ -298,6 +326,7 @@ for (j in 1:num_runs) {	# For each simulation being plotted
       }
       else {
          temp.df <- data.frame(Date=Dates[[j]])
+         temp.df$Stat_ID     <- sites[site_n]
          temp.df[,col_name1] <- signif((Obs_Mean[[j]]),6)
          temp.df[,col_name2] <- signif((Mod_Mean[[j]]),6)
          temp.df[,col_name3] <- signif((Bias_Mean[[j]]),6)
@@ -327,8 +356,13 @@ if (length(Dates[[1]]) == 0) { stop("Stopping because length of dates was zero. 
 ########################################
 
 ### Write data to be plotted to file ###
-write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # Write raw data to csv file
+filename_csv	<- paste(run_name1,species,sites[site_n],pid,"timeseries.csv",sep="_")              # Set output file name
+write.table(All_Data.df,file=filename_csv,append=F,row.names=F,sep=",")      # Write raw data to csv file
 ########################################
+filename_html   <- paste(run_name1,species,sites[site_n],pid,"timeseries.html",sep="_")              # Set output file name
+filename_html   <- paste(figdir,filename_html,sep="/")
+filename_png    <- paste(run_name1,species,sites[site_n],pid,"timeseries.png",sep="_")              # Set output file name
+filename_png    <- paste(figdir,filename_png,sep="/")
 
 #####################################
 ### Plot Model vs. Ob Time Series ###
@@ -367,13 +401,13 @@ inc_nme <- "n"
 #data_temp.df <- data.frame(Dates=Dates,Obs=Obs_Mean)
 data.df <- unique(data.df)	# Eliminate duplicate rows in the obs data frame
 
-xaxis <- list(title= x_label, automargin = TRUE,font=list(size=10),tickfont=list(size=20))
-yaxis <- list(title=paste(species," (",units,")"),automargin=TRUE,font=list(size=10),tickfont=list(size=20))
-if (inc_corr == 'y') { yaxis <- list(title=paste(species," (",units,") / Correlation"),automargin=TRUE,font=list(size=30),tickfont=list(size=20)) }
+xaxis <- list(title= x_label, automargin = TRUE,titlefont=list(size=30),tickfont=list(size=20))
+yaxis <- list(title=paste(species," (",units,")"),automargin=TRUE,titlefont=list(size=30),tickfont=list(size=20))
+if (inc_corr == 'y') { yaxis <- list(title=paste(species," (",units,") / Correlation"),automargin=TRUE,titlefont=list(size=30),tickfont=list(size=20)) }
 
 p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color='black'), marker=list(symbol='circle',color='black',size=10), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
 #p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', color=I('black'), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
-     layout(title=main.title,font=list(size=15),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5)),margin=list(t=50,b=110)) %>%
+     layout(title=main.title,titlefont=list(size=25),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5)),margin=list(t=50,b=110)) %>%
      layout(annotations=list(x=Dates[[j]],y=~Obs,text=network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE))
 
 for (j in 1:num_runs) {
@@ -404,4 +438,13 @@ for (j in 1:num_runs) {
 #api_create(p, filename = "r-timeseries")
 
 saveWidget(p, file=filename_html,selfcontained=T)
+}	#End sites loop
+
+zip_command<-paste("zip -r ",filename_zip," *",pid,"*.png"," *",pid,"*.html",sep="")
+system(zip_command)
+zip_csv_command<-paste("zip -r ",filename_csv_zip," *",pid,"*.csv",sep="")
+system(zip_csv_command)
+remove_command <- paste("rm *",pid,"*.png *",pid,"*.pdf *",pid,"*.csv",sep="")
+#system(remove_command)
+
 

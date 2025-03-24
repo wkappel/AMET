@@ -31,6 +31,8 @@
 #-----------------------------------------------------------------------#
 #########################################################################
 
+library(lubridate)
+
 #####################################################
 ### Print executing script header to the terminal ###
 #####################################################
@@ -46,6 +48,8 @@ dbase           <- Sys.getenv("AMET_DATABASE")                  # AMET database
 ametRinput      <- Sys.getenv("AMETRINPUT")                     # input file for this script
 ametptype       <- Sys.getenv("AMET_PTYPE")                     # Prefered output type
 config_file     <- Sys.getenv("MYSQL_CONFIG")                   # MySQL configuration file 
+
+if (!exists("TIME_FORMAT")){ TIME_FORMAT <- "LST" }
 
 ## source some configuration files, AMET libs, and input
 source (config_file)
@@ -122,8 +126,6 @@ num_runs <- length(run_names)
 mylegend <- function(x,y,dx=NULL,dy=NULL,cols,bounds,fmt=NA,labels=NULL,
                      cex=1,xw=3,yo=2.5, horizontal=FALSE, ...) {
 if (length(cols) != (length(bounds)-1)) {
-    print(cols)
-    print(bounds)
     stop ('mylegend: there should be one more break than color')
   }
   nrect <- length(cols)
@@ -194,6 +196,7 @@ if (length(cols) != (length(bounds)-1)) {
 
   for (q in 1:length(query)){
     rs<-dbSendQuery(con,query[q])	# Send query and place results in data frame
+#    df<-dbGetQuery(con,query[q])
     if(verbose){ print(query[q]) }
   }
 #  if(get == 1){df<-fetch(rs,n=mysql$maxrec)}
@@ -339,13 +342,13 @@ if (length(cols) != (length(bounds)-1)) {
    require(fields)
 
    plotops<-list(plotfmt="pdf")
-        plotSpatial<-function(sinfo,varlab,figure="spatial",nlevs=0,bounds=c(24,50,-120,-60),plotopts=plotopts,histplot=F,shadeplot=F,sres=0.25,plot_units)
+        plotSpatial<-function(sinfo,varlab,figure="spatial",nlevs=0,bounds=c(24,50,-120,-60),plotopts=plotopts,histplot=F,shadeplot=F,sres=0.25,plot_units,hist_corr="n")
  {
 ######################################################################################################
 #---------------------------------------------------------------------------------------------------##
 ######################################################################################################
 # Open Figure  for plot functions
-
+#  print(sinfo)
   cent_lat <-bounds[1]+(abs(bounds[1]-bounds[2]))/2
   aspect <- (abs(bounds[1]-bounds[2]))/((cent_lat/47)*(abs(bounds[3]-bounds[4])))
   if (aspect > 1) {  aspect <- 1 }
@@ -471,6 +474,7 @@ if (length(cols) != (length(bounds)-1)) {
 #  }
 #   print(legend_chars)
    legend("bottom",inset=c(0,-0.075),legend=legend_names, pch=legend_chars,bty="n",bg="white",horiz=TRUE,box.col="black")
+#   legend("bottom",inset=c(0,-0.075),legend=legend_names, pch=legend_chars,bty="n",bg="white",horiz=TRUE,col=c("#003FBF","#7FFF00","#FFBB00","#B22222"))
    mylegend(x=lone-legoffset3+legoffset,y=lats,labels=levLab,cols=sinfo[[1]]$cols_legend,bounds=sinfo[[1]]$levs_legend,cex=legend.size,xw=text_offset)
 #  legend(x=lone-legoffset3+legoffset,y=latn-((latn-lats)/2), legend=rev(levLab), col=rev(sinfo[[1]]$levcols), pch=spch[1], pt.cex=legend.size, cex=legend.size, inset=c(0,0),yjust=0.5)
 #  image.plot(add=T,legend.only=T,breaks=sinfo[[1]]$levs_legend,lab.breaks=levLab,col=sinfo[[1]]$cols_legend,zlim=c(min(sinfo[[1]]$levs_legend),max(sinfo[[1]]$levs_legend)))
@@ -499,9 +503,12 @@ if (length(cols) != (length(bounds)-1)) {
       ###############################################################################
       positive_count <- sum(plotval_tot > 0)
       negative_count <- sum(plotval_tot < 0)
-      perc_pos <- positive_count/length(plotval_tot)
+      perc_pos <- round(100*( positive_count/length(plotval_tot)),1)
       perc_neg <- round(100*(negative_count/length(plotval_tot)),1)
-      sub_title <- paste("Number of sites w/ Decreased Bias/Error: ",negative_count," (",perc_neg,"%)",sep="")
+      sub_title <- paste("Number of sites w/ decreased bias/error: ",negative_count," (",perc_neg,"%)",sep="")
+      if (hist_corr == "y") {
+         sub_title <- paste("Number of sites w/ increased correlation: ",positive_count," (",perc_pos,"%)",sep="")
+      }
       ### Set any plot values > max or min levels to the max or min level ###
       for (i in 1:length(plotval_tot)) {
          if (plotval_tot[i] > max(sinfo[[1]]$levs)) {
@@ -649,9 +656,8 @@ if (length(data.df$stat_id) > 1) {
    
    nb          <- signif(c(nb,((sum((data.df$mod_val-data.df$ob_val)/data.df$ob_val))/length(data.df$stat_id))*100),3)
    ne          <- signif(c(ne,((sum((abs(data.df$mod_val-data.df$ob_val))/data.df$ob_val))/length(data.df$stat_id))*100),3)
-   fb          <- signif(c(fb,(sum((data.df$mod_val-data.df$ob_val)/((data.df$mod_val+data.df$ob_val)/2)))/length(data.df$stat_id))*100,3)
-   fe          <- signif(c(fe,(sum(abs(data.df$mod_val-data.df$ob_val)/((data.df$mod_val+data.df$ob_val)/2)))/length(data.df$stat_id))*100,3)
-
+   fb 	       <- signif(c(fb,((sum((data.df$mod_val-data.df$ob_val)/((data.df$mod_val+data.df$ob_val)/2)))/length(data.df$stat_id))*100),3)
+   fe 	       <- signif(c(fe,((sum((abs(data.df$mod_val-data.df$ob_val))/((data.df$mod_val+data.df$ob_val)/2)))/length(data.df$stat_id))*100),3)
    stats_all.df <- data.frame(NUM_SITES=num_sites, NUM_OBS=num_obs, AVG_CONC=avg_conc, MEAN_OBS=mean_obs, MEAN_MODEL=mean_model, SUM_OBS=sum_obs, SUM_MODEL=sum_model, STDEV_OBS=stdev_obs, STDEV_MODEL=stdev_model, Correlation=cor_model, R_Squared=r_sqrd, Mean_Bias=mb, Mean_Err=me, Median_Bias=med_bias, Median_Error=med_error, Percent_Norm_Bias=nb, Percent_Norm_Err=ne, Percent_Norm_Mean_Bias=nmb, Percent_Norm_Mean_Err=nme, Norm_Median_Bias=nmdnb, Norm_Median_Error=nmdne, Frac_Bias=fb, Frac_Err=fe, Index_of_Agreement=index_agree, RMSE=rmse, RMSE_systematic=rmse_sys, RMSE_unsystematic=rmse_unsys,Diff_Mean=diff_mean,SD_Diff=sd_diff, Skew_Obs=skew_obs, Skew_Mod=skew_mod, Median_obs=median_obs, Median_model=median_mod, Median_Diff=median_diff,Max_Diff=max_diff,Min_Diff=min_diff)
 
    }
@@ -702,6 +708,7 @@ median_mod    <- NULL
 median_diff   <- NULL
 skew_obs      <- NULL
 skew_mod      <- NULL
+num_good_obs  <- NULL
 site_coverage <- NULL	# Percent coverage
 site_rmse     <- NULL	# Root Mean Square Error
 site_mb       <- NULL	# Mean Bias
@@ -725,6 +732,9 @@ index_agree   <- NULL	# Willmott Index of Agreement
 rmse_sys      <- NULL	# Systematic RMSE
 rmse_unsys    <- NULL	# Unsystematic RMSE
 
+starttime <- min(as.Date(datain.df$Start_Date))
+endtime   <- max(as.Date(datain.df$Start_Date))
+num_hours <- difftime(endtime,starttime,units="hours")
 
 ## Compute site specific statistics 
 temp <- split(datain_all.df,datain_all.df$stat_id)
@@ -750,7 +760,11 @@ for (i in 1:length(temp)) {
    num_good_obs <- length(sub.df$stat_id)
 #   }
    coverage <- round((num_good_obs/total_obs[i])*100)
-   if ((length(sub.df$stat_id) > 0) && (coverage >= coverage_limit) && (num_good_obs >= num_obs_limit)) {	# number of observations necessary for evaluation(completeness criteria)
+   if (rm_negs_query == "y") {	# if removing negatives at the query level, calculate coverage based on time range (assumes hourly data)
+      coverage  <- round((num_good_obs/(as.numeric(num_hours)+24))*100)
+   }
+#   if ((length(sub.df$stat_id) > 0) && (coverage >= coverage_limit) && (num_good_obs >= num_obs_limit)) {	# number of observations necessary for evaluation(completeness criteria)
+   if ((length(sub.df$stat_id) > 0)) {      # number of observations necessary for evaluation(completeness criteria)
       site_coverage <- c(site_coverage, coverage)
       sites_noPOC   <- c(sites_noPOC, as.character(unique(sub.df$stat_id_noPOC)))
       sites         <- c(sites, as.character(unique(sub.df$stat_id)))		# Set site ID
@@ -831,6 +845,10 @@ datain_all.df	<- NULL
 sub.df		<- NULL
 total_obs	<- NULL
 
+starttime <- min(as.Date(datain.df$Start_Date))
+endtime   <- max(as.Date(datain.df$Start_Date))
+num_hours <- difftime(endtime,starttime,units="hours")
+
 ## Determine total numbers of observations per sites ##
 datain_all.df <- datain.df
 split_hours <- split(datain_all.df,datain_all.df$Date_Hour)
@@ -901,6 +919,9 @@ for (i in 1:length(temp)) {
 #      }
 #   }
    coverage <- round((num_good_obs/total_obs[i])*100)
+   if (rm_negs_query == "y") {  # if removing negatives at the query level, calculate coverage based on time range (assumes hourly data)
+      coverage  <- round((num_good_obs/(as.numeric(num_hours)+24))*100)
+   }
    if ((length(sub.df$Date_Hour) > 0) && (coverage >= coverage_limit) && (num_good_obs >= num_obs_limit)) {       # number of observations necessary for evaluation(completeness criteria)
       hour_coverage	<- c(hour_coverage, coverage)
       date_hour		<- c(date_hour, as.character(unique(sub.df$Date_Hour)))           # Set site ID
@@ -976,7 +997,9 @@ Average<-function(datain.df) {
    Sites		<- NULL
    Lats         	<- NULL
    Lons			<- NULL
+   Years		<- NULL
    States	        <- NULL
+   obs_sum		<- NULL
    category		<- NULL
 #   names(datain.df)
 #   datain.df$Stat_ID <- paste(datain.df$Stat_ID,datain.df$POCode,sep="")
@@ -987,9 +1010,10 @@ Average<-function(datain.df) {
    datain.df$Year <- substr(datain.df$Start_Date,1,4)
    indic.nonzero  <- datain.df$Mod_Value >= 0
    datain.df      <- datain.df[indic.nonzero,]
-  
-   indic.na <- datain.df$Obs_Value < 0
-   datain.df$Obs_Value[indic.na] <- NA
+#   indic.na <- datain.df$Obs_Value < 0
+#   datain.df$Obs_Value[indic.na] <- NA
+   indic.nonzero  <- datain.df$Obs_Value >= 0
+   datain.df	  <- datain.df[indic.nonzero,]
    {
    if ((network == "NADP") || (network == "MDN")) {				# Do things differently for deposition networks
       indic.na <- datain.df$precip_ob <= 0.127
@@ -1054,6 +1078,15 @@ Average<-function(datain.df) {
          split_all <- split(datain.df,datain.df$Stat_ID)
          avg_text_1 <- "Top 10 "
       }
+      else if (averaging == "W126") {
+         years                  <- substr(datain.df$Start_Date,1,4)
+         months                 <- substr(datain.df$Start_Date,6,7)
+         yearmonth              <- paste(years,months,sep="_")
+         datain.df$Year         <- years
+         datain.df$YearMonth    <- yearmonth
+         split_all <- split(datain.df,datain.df$Stat_ID)
+         avg_text_1 <- "W126 "
+      }
    }
    for (i in 1:length(split_all)) { 
       data_split.df  <- split_all[[i]]
@@ -1073,14 +1106,19 @@ Average<-function(datain.df) {
          else if (averaging == "a") {
             category      <- c(category,tapply((split_all[[i]]$Stat_ID),split_all[[i]]$Stat_ID,unique))	# Create list of all sites used
          }
+         else if (averaging == "e") {
+            category      <- c(category,tapply((split_all[[i]]$Stat_ID),split_all[[i]]$Stat_ID,unique)) # Create list of all sites used
+         }
          else if (averaging == "ym") {
             category       <- c(category,tapply(data_split.df$YearMonth,data_split.df$Stat_ID,unique))	# If using multiple years, use YearMonth count
          }
          else if (averaging == "t10") {
             category      <- c(category,tapply((split_all[[i]]$Stat_ID),split_all[[i]]$Stat_ID,unique))    # Create list of all sites used
          }
-          
-         if ((units == "kg/ha") || (units == "cm") || (units == "mm")) {
+         else if (averaging == "W126") {
+            category       <- c(category,tapply(data_split.df$YearMonth,data_split.df$Stat_ID,unique))  # If using multiple years, use YearMonth count
+         } 
+         if ((units == "kg/ha") || (units == "cm") || (units == "mm") || (units == "ppm-hours")) {
             Obs_Mean       <- c(Obs_Mean,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,sum,na.rm=T))
             Mod_Mean       <- c(Mod_Mean,tapply(data_split.df$Mod_Value,data_split.df$Stat_ID,sum,na.rm=T))
             Obs_Count      <- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
@@ -1089,6 +1127,7 @@ Average<-function(datain.df) {
             States         <- c(States,tapply(as.character(data_split.df$State),data_split.df$Stat_ID,unique))
             Lats           <- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
             Lons           <- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique))
+            Years	   <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
             avg_text	<- paste(avg_text_1, " Accumulated",sep="")          # set averaging text to accumulated
          }
          else if (units == "mg/l") { # If dealing with wet concentration, calculate a volume weighted average
@@ -1100,6 +1139,7 @@ Average<-function(datain.df) {
             States         <- c(States,tapply(as.character(data_split.df$State),data_split.df$Stat_ID,unique))
             Lats           <- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
             Lons           <- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique)) 
+            Years          <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
             avg_text      <- paste("VW ",avg_text_1, "Average",sep="")                         # set text as volume weighted average
          }
          else {
@@ -1112,17 +1152,26 @@ Average<-function(datain.df) {
                state       <- unique(as.character(data_split.df$State))
                Lat         <- unique(data_split.df$lat)
                Lon         <- unique(data_split.df$lon)
+               Years	   <- unique(data_split.df$Year)
                obs_sort    <- data_split.df[with(data_split.df,order(-Obs_Value)),]
                obs_t10     <- obs_sort[1:10,]
                mod_sort    <- data_split.df[with(data_split.df,order(-Mod_Value)),]
-               mod_t10     <- obs_sort[1:10,]
+               mod_t10     <- mod_sort[1:10,]
                data_split.df <- data.frame(good_ob=obs_t10$good_ob,Obs_Value=obs_t10$Obs_Value,Mod_Value=mod_t10$Mod_Value,Stat_ID=stat_id,State=state,lat=Lat,lon=Lon)
                indic.na    <- is.na(data_split.df$Obs_Value) 
                data_split.df <- data_split.df[!indic.na,]
                indic.na    <- is.na(data_split.df$Mod_Value)
                data_split.df <- data_split.df[!indic.na,]
-               print(data_split.df)
+               #print(data_split.df)
             }
+#           if (averaging == "W126") {
+#               stat_id     <- unique(data_split.df$Stat_ID)
+#               state       <- unique(as.character(data_split.df$State))
+#               Lat         <- unique(data_split.df$lat)
+#               Lon         <- unique(data_split.df$lon)
+#               obs_sum     <- c(obs_sum,tapply(data_split.df$Obs_Value,data_split.df$YearMonth,sum))
+#               print(obs_sum)
+#            }
             Obs_Mean	<- c(Obs_Mean,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,mean,na.rm=T))
             Mod_Mean	<- c(Mod_Mean,tapply(data_split.df$Mod_Value,data_split.df$Stat_ID,mean,na.rm=T))
             Obs_Count	<- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
@@ -1131,13 +1180,19 @@ Average<-function(datain.df) {
             States      <- c(States,tapply(as.character(data_split.df$State),data_split.df$Stat_ID,unique))
             Lats	<- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
             Lons	<- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique))
+            Years       <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
             avg_text    <- paste(avg_text_1, " Average",sep="")
          }
       }
    }
    coverage <- (Obs_Good/Obs_Count*100)
+   if (rm_negs_query == "y") {	# If removing negatives at the query level, calculate coverage based on full time range (assume hourly data)
+      starttime <- min(as.Date(datain.df$Start_Date))
+      endtime   <- max(as.Date(datain.df$Start_Date))
+      num_hours <- difftime(endtime,starttime,units="hours")
+      coverage  <- round((Obs_Good/(as.numeric(num_hours)+24))*100)
+   }
    data_out.df                 <- data.frame(Stat_ID=I(Sites),State=I(States),lat=Lats,lon=Lons,Obs_Value=Obs_Mean,Mod_Value=Mod_Mean,Month=I(category),Averaging_Period=I(category),Coverage=coverage)
-   print(data_out.df)
    indic.nan			<- is.nan(data_out.df$Obs_Value)		# check for NaNs
    data_out.df			<- data_out.df[!indic.nan,]			# remove records with NaNs
    indic.good			<- data_out.df$Coverage >= coverage_limit	# check to see if site coverage matches limit
@@ -1274,9 +1329,8 @@ if (greyscale == "y") {
 
 aggregate_query <- function(data_in.df)
 {
-#   print(data_in.df)
    data_in.df[data_in.df==-999] <- NA
-   agg_data <- aggregate(data_in.df[,-c(1,2,3,4,5,6,11,12)],by=list(stat_id=data_in.df$stat_id,lat=data_in.df$lat,lon=data_in.df$lon,ob_dates=data_in.df$ob_dates,ob_datee=data_in.df$ob_datee,ob_hour=data_in.df$ob_hour,state=data_in.df$state),FUN=function(x)mean(x,na.rm=T))
+   agg_data <- aggregate(data_in.df[,-c(1,2,3,4,5,6,7,8,9,13,14)],by=list(stat_id=data_in.df$stat_id,lat=data_in.df$lat,lon=data_in.df$lon,ob_dates=data_in.df$ob_dates,ob_datee=data_in.df$ob_datee,ob_hour=data_in.df$ob_hour,state=data_in.df$state),FUN=function(x)mean(x,na.rm=T))
    # Convert NAs to -999 to be removed later
    agg_data[is.na(agg_data)] <- -999
    # Add network to outgoing dataframe
@@ -1286,9 +1340,44 @@ aggregate_query <- function(data_in.df)
    # Add back POC. The POCs were lost during aggregation, so I just assign a new POC of 1 to all records
    agg_data$POCode <- 1
    return(agg_data)
+   
 }
 ########################################
 
+################################################
+### Function to aggregate query by grid cell ###
+################################################
+
+aggregate_query_gc <- function(data_in.df)
+{
+   data_in.df[data_in.df==-999] <- NA
+   data_in.df$rowcol <- paste(data_in.df$row,data_in.df$col,sep="")
+   data_in.df$stat_id_old <- data_in.df$stat_id
+   data_in.df$stat_id <- data_in.df$rowcol
+   ### In cases where sites being merged are in different states,   ###
+   ### find the state with most records and use that as the state   ###
+   ### In the case of a tie, the first state alphabetically is used ###
+   find_state <- tapply(data_in.df$state,data_in.df$stat_id,function(x) names(sort(-table(x)))[1])
+   data_in.df$state <- as.character(find_state[match(data_in.df$stat_id, names(find_state))])
+   ################################################################
+   agg_data <- aggregate(data_in.df[,-c(1,2,7,8,9,13,14,15,16,17)],by=list(stat_id=data_in.df$stat_id,ob_dates=data_in.df$ob_dates,ob_datee=data_in.df$ob_datee,ob_hour=data_in.df$ob_hour,state=data_in.df$state),FUN=function(x)mean(x,na.rm=T))
+   #   agg_data_sub <- data.frame(stat_id=agg_data$stat_id,state=agg_data$state,OC_ob=agg_data$OC_ob,OC_mod=agg_data$OC_mod)
+   agg_data_nodups <- agg_data[!duplicated(agg_data$stat_id), ]
+   statid_latlon <- data.frame(stat_id=agg_data_nodups$stat_id,lat=agg_data_nodups$lat,lon=agg_data_nodups$lon)
+   agg_data$lat <- statid_latlon$lat[match(agg_data$stat_id,statid_latlon$stat_id)]
+   agg_data$lon <- statid_latlon$lon[match(agg_data$stat_id,statid_latlon$stat_id)]
+   # Convert NAs to -999 to be removed later
+   agg_data[is.na(agg_data)] <- -999
+   # Add network to outgoing dataframe
+   agg_data <- cbind(network=network,agg_data)
+   # Order the outgoing data by start date and hour. Required for time series plots since the sorting is lost after the aggregate is run
+   agg_data <- agg_data[order(agg_data$ob_dates,agg_data$ob_hour),]
+#   agg_data <- agg_data[order(agg_data$stat_id,agg_data$ob_dates),]
+   # Add back POC. The POCs were lost during aggregation, so I just assign a new POC of 1 to all records
+   agg_data$POCode <- 1
+   return(agg_data)
+}
+########################################
 
 ############################################
 ### Function to read sitex file directly ###
@@ -1298,6 +1387,7 @@ read_sitex <- function(directory,network,run_name,species)
    cat(paste("Species to read from sitex file:", species))
    data_exists_flag <- "n"
    if (!exists("aggregate_data")) { aggregate_data <- "n" }
+   if (!exists("aggregate_data_gc")) { aggregate_data_gc <- "n" }
    sitex_file   <- paste(directory,"/",network,"_",run_name,".csv",sep="")
    cat(paste("Reading data from",sitex_file,"\n\n",sep=" "))
    species_ob   <- paste(species[1],"_ob",sep="")
@@ -1378,6 +1468,9 @@ read_sitex <- function(directory,network,run_name,species)
          if ((aggregate_data == 'y') || (aggregate_data == 'Y') || (aggregate_data == 't') || (aggregate_data == 'T')) {
             sitex_data.df <- aggregate_query(sitex_data.df)
          }
+         if ((aggregate_data_gc == 'y') || (aggregate_data_gc == 'Y') || (aggregate_data_gc == 't') || (aggregate_data_gc == 'T')) {
+            sitex_data.df <- aggregate_query_gc(sitex_data.df)
+         }
          sitex_data.df$stat_id <- paste(sitex_data.df$stat_id,sitex_data.df$POCode,sep='')
       }
    }
@@ -1403,7 +1496,8 @@ find_common_sites <- function(run_names_in,network,species,criteria="Default",or
       run_name      <- gsub("[-]","_",run_name_temp)
       if (!exists("aggregate_data")) { aggregate_data <- "n" }
       if (criteria == "Default") {
-         criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+#         criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+         criteria <- paste(" WHERE d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
       }
       if ((exists("custom_species")) && (custom_species != "")) {
          criteria <- paste(" WHERE d.network='",network,"'",query,sep="")
@@ -1414,6 +1508,13 @@ find_common_sites <- function(run_names_in,network,species,criteria="Default",or
       }
       if ((all_valid == "y") && (network == "AMON")) { # valid flags for AMON obs
          criteria <- paste(criteria, " and (d.valid_code = ' ' or d.valid_code = 'A' or d.valid_code = 'B' or d.valid_code IS NULL)",sep="")
+      }
+      ##########################################################
+      ### Remove T replicates, which identifies field blanks ###
+      check_replicate      <- paste("select * from information_schema.COLUMNS where TABLE_NAME = '",run_name,"' and COLUMN_NAME = 'replicate';",sep="")
+      query_table_info.df <-db_Query(check_replicate,mysql)
+      if (length(query_table_info.df$COLUMN_NAME) != 0) {  # Check if replicate column exisits or not
+         if ((all_valid == "y") && (network == 'AMON')) { criteria <- paste(criteria, " and (d.replicate != 'T' or d.replicate IS NULL)",sep="") }
       }
       ###########################################################
       check_POCode        <- paste("select * from information_schema.COLUMNS where TABLE_NAME = '",run_name,"' and COLUMN_NAME = 'POCode';",sep="")
@@ -1466,6 +1567,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    run_name     <- gsub("[.]","_",project_id)
    run_name     <- gsub("[-]","_",run_name)
    if (!exists("aggregate_data")) { aggregate_data <- "n" }
+   if (!exists("aggregate_data_gc")) { aggregate_data_gc <- "n" }
    data_order <- orderby[1]
    i <- 2 
    while (i <= length(orderby)) {
@@ -1478,8 +1580,12 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
       species_query_string <- paste(species_query_string,", d.",species[i],"_ob, d.",species[i],"_mod",sep="")
       i <- i+1
    }
+   if (!exists("rm_negs_query")) { rm_negs_query <- "n" } 
    if (criteria == "Default") {
-      criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+       criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+       if ((rm_negs_query == "y") || (rm_negs_query == "Y") || (rm_negs_query == "t") || (rm_negs_query == "T")) {
+          criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.",species[1],"_ob != -999 and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+       }
    }
    if ((exists("custom_species")) && (custom_species != "")) {
       species_query_string <- paste(",",custom_species,sep="")
@@ -1493,7 +1599,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
       criteria <- paste(criteria, " and (d.valid_code = 't' or d.valid_code = 'd' or d.valid_code = 'w' or d.valid_code = 'wi' or d.valid_code = 'wd' or d.valid_code = 'wa')",sep="") 
    } 
    if ((all_valid == "y") && (network == "AMON")) { # valid flags for AMON obs
-      criteria <- paste(criteria, " and (d.valid_code = ' ' or d.valid_code = 'A' or d.valid_code = 'B' or d.valid_code IS NULL)",sep="") 
+      criteria <- paste(criteria, " and (d.valid_code = ' ' or d.valid_code = 'A' or d.valid_code = 'B' or d.valid_code IS NULL)",sep="") # include QR values that A, B, missing, or NULL 
    }
    ##########################################################
    ### Remove T replicates, which identifies field blanks ###
@@ -1509,17 +1615,18 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    {
    if (length(query_table_info.df$COLUMN_NAME) == 0) {        # Check to see if POCode column exists or not
 #      if (length(query_table_info.df$Field) == 0) {        # Check to see if POCode column exists or not
-         qs <- paste("SELECT d.network,d.stat_id,s.lat,s.lon,d.ob_dates,d.ob_datee,d.ob_hour,d.month",species_query_string,",s.state,s.county from ",run_name," as d, site_metadata as s",criteria,"ORDER BY",data_order,sep=" ")      # Set the rest of the MYSQL query
-         print(qs)
+         qs <- paste("SELECT d.network,d.stat_id,s.lat,s.lon,LPAD(d.i,3,'0'),LPAD(d.j,3,'0'),d.ob_dates,d.ob_datee,d.ob_hour,d.month",species_query_string,",s.state,s.county from ",run_name," as d, site_metadata as s",criteria,"ORDER BY",data_order,sep=" ")      # Set the rest of the MYSQL query
+#         print(qs)
          aqdat_query.df<-try(db_Query(qs,mysql))
 #         aqdat_query.df$POCode <- 1
       }
       else {
-         qs <- paste("SELECT d.network,d.stat_id,s.lat,s.lon,d.ob_dates,d.ob_datee,d.ob_hour,d.month",species_query_string,",d.POCode,s.state,s.county from ",run_name," as d, site_metadata as s",criteria,"ORDER BY",data_order,sep=" ")      # Set the rest of the MYSQL query
+         qs <- paste("SELECT d.network,d.stat_id,s.lat,s.lon,LPAD(d.i,3,'0') as row,LPAD(d.j,3,'0') as col,d.ob_dates,d.ob_datee,d.ob_hour,d.month",species_query_string,",d.POCode,s.state,s.county from ",run_name," as d, site_metadata as s",criteria,"ORDER BY",data_order,sep=" ")      # Set the rest of the MYSQL query
          print(qs)
          aqdat_query.df<-try(db_Query(qs,mysql))
       }
    }
+   print(names(aqdat_query.df))
    if ((network == "EMEP_Daily") || (network == "NADP")) { aqdat_query.df$ob_hour <- 0 }
    aqdat_query.df$ob_hour <- sprintf("%02d",as.integer(aqdat_query.df$ob_hour)) 
 #   ob_col_name <- paste(species,"_ob",sep="")
@@ -1527,8 +1634,8 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    data_exists_flag <- "n"
    num_specs <- length(species)-1
    for (k in 0:num_specs) {
-      ob_col  <- 9+2*k
-      mod_col <- 10+2*k
+      ob_col  <- 11+2*k
+      mod_col <- 12+2*k
 
 #obs_subset <- aqdat_query.df[,ob_col] >= quantile(aqdat_query.df[,ob_col],prob=quantile_min,na.rm=T) &
 #aqdat_query.df[,ob_col] <= quantile(aqdat_query.df[,ob_col],prob=quantile_max,na.rm=T)
@@ -1570,6 +1677,9 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
       if (length(query_table_info.df$COLUMN_NAME) == 0) { aqdat_query.df$POCode <- 1 }
       if ((aggregate_data == 'y') || (aggregate_data == 'Y') || (aggregate_data == 't') || (aggregate_data == 'T')) {
          aqdat_query.df <- aggregate_query(aqdat_query.df)
+      }
+      if ((aggregate_data_gc == 'y') || (aggregate_data_gc == 'Y') || (aggregate_data_gc == 't') || (aggregate_data_gc == 'T')) {
+         aqdat_query.df <- aggregate_query_gc(aqdat_query.df)
       }
       aqdat_query.df$stat_id_noPOC <- aqdat_query.df$stat_id
       if ((!exists("merge_statid_POC") || merge_statid_POC == "y")) {
@@ -1613,7 +1723,10 @@ library(data.table)
   if(!is.null(value.var)) setnames(dt,value.var,'value')
 
   bin   <- seq(from=mn,to=mx,by=sp)
-  if(sign(mn) < 0 & sign(mx) > 0) bin   <- bin[-which(bin==0)]
+  if (sign(mn) < 0 & sign(mx) > 0) { 
+     bin[bin<0.00000000001 & bin>-0.00000000001] <-0
+     bin   <- bin[-which(bin==0)]
+  }
   nbin  <- length(bin) - 1
   reset.mn <- F
   if(dt[,min(value,na.rm=T)] <= mn) {
@@ -1664,8 +1777,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    }
    species_query_string <- met_query_string
    if (criteria == "Default") {
-#      criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
-      criteria <- paste(" WHERE d.",species_ob,"_ob is not NULL",query,sep="")             # Set part of the MYSQL query
+      criteria <- paste(" WHERE d.",species_ob[1],"_ob is not NULL and s.ob_network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
       if (network != "All") {
          criteria <- paste(criteria," and s.ob_network='",network,"'",sep="")             # Set part of the MYSQL query
       }
@@ -1673,7 +1785,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 #   criteria <- paste(" WHERE d.T_ob is not NULL",query,sep="")
 
 #   qs <- paste("SELECT d.network,d.stat_id,d.lat,d.lon,d.ob_dates,d.ob_datee,d.ob_hour,d.month",species_query_string,",s.state from ",run_name," as d, site_metadata as s",criteria,"ORDER BY",data_order,sep=" ")      # Set the rest of the MYSQL query
-   qs <- paste("SELECT s.ob_network,d.stat_id,s.lat,s.lon,d.ob_date,d.ob_time,",species_query_string,",s.state from ",run_name,"_surface as d, stations as s",criteria," ORDER BY ob_date, ob_time ",sep="")      # Set the rest of the MYSQL query
+   qs <- paste("SELECT s.ob_network,d.stat_id,s.lat,s.lon,DATE_FORMAT(ob_date,'%Y-%m-%d') as ob_date,ob_time,",species_query_string,",s.state from ",run_name,"_surface as d, stations as s",criteria," ORDER BY ob_date, ob_time ",sep="")      # Set the rest of the MYSQL query
    print(qs)
    aqdat_query_temp.df<-db_Query(qs,mysql)
     names(aqdat_query_temp.df)[7] <- paste(species,"_ob",sep="")
@@ -1731,27 +1843,31 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 ########################################
 }
 
-get_title <- function(run_names,species,networks,dates,custom_title="",state="All",pca="None",rpo="None",clim_reg="None",custom_text="",bias=F) {
+get_title <- function(run_names,species,network_label,dates,custom_title="",site="All",state="All",pca="None",rpo="None",clim_reg="None",custom_text="",bias=F) {
 
    {
-      print(rpo)
-      print(pca)
-      print(clim_reg)
-      if ((custom_title == "") && (length(run_names) == 1)) { 
-         my_title <- paste(network_label[1],run_name1,species,sep=", ")
-         if (bias == "T") { my_title <- paste(run_name1,species,"Bias",sep=", ") }
-         if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
-         my_title <- paste(my_title,dates,sep=", ")
+      my_title <- custom_title
+      {
+         network <- paste(network_label,collapse=",")
+         if ((custom_title == "") && (length(run_names) == 1)) { 
+            my_title <- paste(network,run_name1,species,sep=", ")
+            if (bias == "T") { my_title <- paste(run_name1,species,"Bias",sep=", ") }
+            if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
+            my_title <- paste(my_title,dates,sep=", ")	# add dates regardless of custom title or not
+         }
+         else if ((custom_title == "") && (length(run_names) > 1)) {
+            my_title <- paste(network,species,sep=", ")
+            if (bias == "T") { my_title <- paste(species,"Bias",sep=", ") }        
+            if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
+            my_title <- paste(my_title,dates,sep=", ")	# add dates regardless of custom title or not
+         }
       }
-      else {
-         my_title <- species
-         if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
-         my_title <- paste(my_title,network_label[1],dates,sep=", ")
-      }
-      if (state != "All") {     my_title <- paste(my_title,", State=",state,sep="") }
-      if (clim_reg != "None") { my_title <- paste(my_title,", Clim_Reg=",clim_reg,sep="") }
-      if (rpo != "None") {      my_title <- paste(my_title,", RPO=",rpo,sep="") }
-      if (pca != "None") {      my_title <- paste(my_title,", PCA=",pca,sep="") }
+      if ((site != "All") || (state != "All") || (clim_reg != "None") || (rpo != "None") || (pca != "None")) { my_title <- paste(my_title,"\n") }
+      if (site != "All") {	my_title <- paste(my_title," Site=",site,sep="") }
+      if (state != "All") {     my_title <- paste(my_title," State=",state,sep="") }
+      if (clim_reg != "None") { my_title <- paste(my_title," Clim_Reg=",clim_reg,sep="") }
+      if (rpo != "None") {      my_title <- paste(my_title," RPO=",rpo,sep="") }
+      if (pca != "None") {      my_title <- paste(my_title," PCA=",pca,sep="") }
       if (custom_title != "") { my_title <- custom_title }
    }
    return(my_title)
@@ -1762,6 +1878,7 @@ get_title <- function(run_names,species,networks,dates,custom_title="",state="Al
 ### Miscellaneous leaflet functions ###
 
 if(!require(htmltools)){stop("Required Package htmltools was not loaded")}
+library(pandoc)
 library(leaflet)
 library(maps)
 library(htmlwidgets)

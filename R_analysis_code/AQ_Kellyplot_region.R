@@ -43,7 +43,7 @@ filename_rmse   <- paste(run_name1,species,pid,"Kellyplot_region_RMSE",sep="_")
 filename_mb     <- paste(run_name1,species,pid,"Kellyplot_region_MB",sep="_")
 filename_me     <- paste(run_name1,species,pid,"Kellyplot_region_ME",sep="_")
 filename_corr   <- paste(run_name1,species,pid,"Kellyplot_region_Corr",sep="_")
-filename_txt    <- paste(run_name1,species,pid,"Kellyplot_region_data.csv",sep="_")      # Set output file name
+filename_txt    <- paste(run_name1,species,pid,"Kellyplot_stats_data_region.csv",sep="_")      # Set output file name
 filename_zip    <- paste(run_name1,species,pid,"Kellyplot_region.zip",sep="_")
 
 ## Create a full path to file
@@ -95,7 +95,6 @@ state2region <- data.frame(state=c("IL","IN","KY","MO","OH","TN","WV","IA","MI",
 
 ### Categorize each month into a season ###
 month2season <- data.frame(month=c(1,2,3,4,5,6,7,8,9,10,11,12),season = c("Winter","Winter","Spring","Spring","Spring","Summer","Summer","Summer","Fall","Fall","Fall","Winter"))
-
 for (s in 1:length(run_names)) {
    run_name <- run_names[s]
    query_result   <- query_dbase(run_name,network,species)
@@ -126,14 +125,15 @@ for (s in 1:length(run_names)) {
          stats_all.df$Mean_Err <- NA
          stats_all.df$RMSE <- NA
          stats_all.df$Correlation <- NA
+         stats_all.df$NUM_OBS <- NA
          print(paste("Query returned no data for the",region_names[r]," region. Replacing with NAs.",sep=""))
       }
       {
          if (k == 1) {
-            sinfo_data.df<-data.frame(NMB=stats_all.df$Percent_Norm_Mean_Bias,NME=stats_all.df$Percent_Norm_Mean_Err,MB=stats_all.df$Mean_Bias,ME=stats_all.df$Mean_Err,RMSE=stats_all.df$RMSE,COR=stats_all.df$Correlation,region=region_names[r],simulation=run_names[s])
+            sinfo_data.df<-data.frame(NMB=stats_all.df$Percent_Norm_Mean_Bias,NME=stats_all.df$Percent_Norm_Mean_Err,MB=stats_all.df$Mean_Bias,ME=stats_all.df$Mean_Err,RMSE=stats_all.df$RMSE,COR=stats_all.df$Correlation,NUM_OBS=stats_all.df$NUM_OBS,region=region_names[r],simulation=run_names[s])
          }
          else {
-            sinfo_data_temp.df <- data.frame(NMB=stats_all.df$Percent_Norm_Mean_Bias,NME=stats_all.df$Percent_Norm_Mean_Err,MB=stats_all.df$Mean_Bias,ME=stats_all.df$Mean_Err,RMSE=stats_all.df$RMSE,COR=stats_all.df$Correlation,region=region_names[r],simulation=run_names[s])
+            sinfo_data_temp.df <- data.frame(NMB=stats_all.df$Percent_Norm_Mean_Bias,NME=stats_all.df$Percent_Norm_Mean_Err,MB=stats_all.df$Mean_Bias,ME=stats_all.df$Mean_Err,RMSE=stats_all.df$RMSE,COR=stats_all.df$Correlation,NUM_OBS=stats_all.df$NUM_OBS,region=region_names[r],simulation=run_names[s])
             sinfo_data.df <- rbind(sinfo_data.df,sinfo_data_temp.df)
          }
       }
@@ -165,6 +165,7 @@ stat_unit <- c("%","%",units,units,units,"")
 for (i in 1:6) {
    stat_in <- stats[i]
    data.tmp <- data_melted.df[data_melted.df$variable == stat_in,]
+   data.orig <- data_melted.df[data_melted.df$variable == stat_in,]
    if (stat_in == "NMB") {
       nmb.val <- max(abs(data.tmp$value),na.rm=T)
       nmb.max <- signif(nmb.val,1)
@@ -203,6 +204,7 @@ for (i in 1:6) {
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
    }
    if (stat_in == "MB") {
+      print(data.tmp)
       mb.val <- max(abs(quantile(data.tmp$value,quantile_max,na.rm=T)),abs(quantile(data.tmp$value,quantile_min,na.rm=T)),na.rm=T)
       if (mb.val < 1) { mb.max <- signif(mb.val,2) }
       if (mb.val >= 1) { mb.max <- signif(mb.val,1) }
@@ -211,7 +213,11 @@ for (i in 1:6) {
       if (mb.max < mb.val) { mb.max <- mb.max+int }
       if (length(mb_max) != 0) { mb.max <- mb_max }
       if (length(mb_int) != 0) { int <- mb_int }
+      print(-mb.max)
+      print(mb.max)
+      print(int)
       data.tmp <- binval(dt=data.tmp,mn=-mb.max,mx=mb.max,sp=int)
+      print(data.tmp)
       nlab     <- data.tmp[,length(levels(fac))]
       col.rng  <- rev(brewer.pal(nlab,'RdBu'))
       col.rng[ceiling(nlab/2)] <- 'grey70'
@@ -282,6 +288,7 @@ for (i in 1:6) {
    }
    if (!exists("inc_kelly_stats")) { inc_kelly_stats <- "n" }
    data.tmp$round_value <- signif(data.tmp$value,2)
+   data.orig$round_value <- signif(data.orig$value,2)
    plt <- ggplot() +
      geom_tile(data=data.tmp,aes(x=region,y=simulation,fill=fac),color='black',lwd=0.3,alpha=0.8) +
      facet_wrap(~variable) +
@@ -300,9 +307,9 @@ for (i in 1:6) {
            plot.subtitle=element_text(size=6,hjust=0)) +
      labs(title=title)
    if (inc_kelly_stats == "y") {
-      plt <- plt + geom_text(size=2.5,data=data.tmp,aes(x=region,y=simulation,label=round_value))   #Add the value for each color square to the Kelly plot.
+      plt <- plt + geom_text(size=2.5,data=data.orig,aes(x=region,y=simulation,label=round_value))   #Add the value for each color square to the Kelly plot.
    }
-   ggsave(plt,file=paste(filename[i],".pdf",sep=""),dpi=600,width=6.5,height=5)
+   ggsave(plt,file=paste(filename[i],".pdf",sep=""),dpi=600,width=12,height=10)
 
    ### Convert pdf file to png file ###
    #dev.off()
@@ -316,5 +323,7 @@ for (i in 1:6) {
       }
    }
 }
+data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
+write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
 ####################################
 
