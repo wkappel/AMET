@@ -38,7 +38,7 @@ update_table	<- Sys.getenv('UPDATE_PROJECT')
 rename_table	<- Sys.getenv('RENAME_PROJECT')
 #if (!exists("rename_table")) {
 if (rename_table == "") {
-  cat(paste("\n*** RENAME_TABLE environment variable not set. Defaulting to F. If you'd like to rename a project, use setenv RENAME_TABLE T and setenv NEW_PROJECT_NAME XXXXXXXXXXXXXXX. ***\n",sep=""))
+  cat(paste("\n*** RENAME_TABLE environment variable not set. Defaulting to F. If you'd like to rename a project, use setenv RENAME_TABLE T and setenv NEW_AMET_PROJECT_NAME XXXXXXXXXXXXXXX. ***\n",sep=""))
   rename_table <- "F"
 }
 
@@ -67,7 +67,7 @@ MYSQL_tables    <- dbListTables(con)
 ##################################################
 create_table<-function()
 {
-   aq_new_1 <- paste("create table ",project_id," (proj_code varchar(100), POCode integer, valid_code character(10), invalid_code character(10), replicate varchar(10), network varchar(25), stat_id varchar(25), stat_id_POCode varchar(100), lat double, lon double, i integer(4), j integer(4), ob_dates date, ob_datee date, ob_hour integer(2), month integer(2), precip_ob double, precip_mod double)",sep="")
+   aq_new_1 <- paste("create table ",project_id," (proj_code varchar(100), POCode varchar(5), valid_code character(10), invalid_code character(10), replicate varchar(10), network varchar(25), stat_id varchar(25), stat_id_POCode varchar(100), lat double, lon double, i integer(4), j integer(4), ob_dates date, ob_datee date, ob_hour integer(2), month integer(2), precip_ob double, precip_mod double)",sep="")
    aq_new_2 <- paste("alter table ",project_id," add UNIQUE(network, stat_id,POCode,ob_dates,ob_datee,ob_hour)",sep="")
    aq_new_3 <- paste("alter table ",project_id," add INDEX(month)",sep="")
    create_table_log1 <- dbSendQuery(con,aq_new_1)

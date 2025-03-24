@@ -5,7 +5,7 @@
 #       PURPOSE: To input site compare output into      #
 #               the AMET-AQ MYSQL database              #
 #                                                       #
-#   Last Update by Wyat Appel: Feb 2022                 #
+#   Last Update: 11/2023 by Wyat Appel                  #
 #                                                       #
 #   Note that is program assumes a consistent           #
 #   configuration of the input files, mainly from       #
@@ -15,6 +15,7 @@
 #--------------------------------------------------------
 
 ## Load Required Libraries
+require(data.table)
 if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")}
 
 run_dir		 <- Sys.getenv('AMET_RUN',unset=NA)
@@ -25,6 +26,10 @@ config_file      <- Sys.getenv('MYSQL_CONFIG')
 if (is.na(run_dir)) {
    run_dir <- Sys.getenv('AMET_OUT')
 }
+delete_tmp_mysql_file	<- Sys.getenv('DLT_TMP_MYSQL_FILE')
+if (!exists("delete_tmp_mysql_file")) {
+   delete_tmp_mysql_file <- "T"	# Set deletion of the tmp mysql file to T if it doesn't exist
+}
 
 source(config_file)
 
@@ -34,11 +39,9 @@ mysql_pass        <- args[2]
 project_id        <- args[3]
 dtype             <- args[4]
 sitex_file        <- args[5]
-
 log_id		  <- project_id
 project_id        <- gsub("[.]","_",project_id)
 project_id        <- gsub("[-]","_",project_id)
-
 cat(paste("\nProject_ID: ",log_id,"\n",sep=""))
 cat(paste("Network: ",dtype,"\n",sep=""))
 cat(paste("Sitex File: ",sitex_file,"\n",sep=""))
@@ -57,7 +60,6 @@ db_Query<-function(query,mysql,get=1,verbose=FALSE)
     if(verbose){ print(query[q]) }
   }
   if(get == 1){df<-fetch(rs,n=mysql$maxrec)}
-
   dbClearResult(rs)
   dbDisconnect(con)             # Database disconnect
 
@@ -71,32 +73,61 @@ db_Query<-function(query,mysql,get=1,verbose=FALSE)
 ###############################################################
 reformat <- function(a) paste(a,collapse=",")
 ###############################################################
-
 ### Use MySQL login/password from config file if requested ###
 if (mysql_login == 'config_file') { mysql_login <- amet_login }
 if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
-
 mysql	<- list(login=mysql_login, passwd=mysql_pass, server=mysql_server, dbase=dbase, maxrec=maxrec)	# Set MYSQL login and query options
 con	<- dbConnect(MySQL(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
 
-sitex_in    <- read.csv(sitex_file,skip=5,colClasses = "character") # Read sitex file with header
-sitex_in2   <- read.csv(sitex_file,skip=3,header=F,colClasses="character",nrows=3)  # Read sitex file w/o header
-sitex_names <- as.character(sitex_in2[3,])   # Store species names
-sitex_units <- as.character(sitex_in2[1,])   # Store species units
-sitex_modob <- as.character(sitex_in2[2,])   # Store mod/ob designation
-col_offset <- which(sitex_names=="Emm")
-if ((dtype == 'AQS_Daily_O3') || (dtype == 'CASTNET_Daily') || (dtype == 'EMEP_Daily_O3') || (dtype == 'NAPS_Daily_O3')) {
+sitex_in    	<- fread(sitex_file,skip=5,na.strings="-999",sep=",",stringsAsFactors=F,colClasses = c('SiteId'='character'),check.names=T) # Read sitex file
+sitex_in2   	<- fread(sitex_file,skip=3,header=F,sep=",",colClasses="character",nrows=3,check.names=T)  # Read sitex file header only
+#sitex_in3   	<- fread(sitex_file,skip=5,na.strings="-999",sep=",",colClasses = "character",check.names=T) # Read sitex file with site IDs as characters
+#sitex_in$SiteId <- sitex_in3$SiteId	# replace numeric SiteId with character SiteID to avoid missing leading zeros
+#rm(sitex_in3)	# remove dataframe as it's no longer needed
+sitex_names 	<- as.character(sitex_in2[3,])   # Store species names
+sitex_units 	<- as.character(sitex_in2[1,])   # Store species units
+sitex_modob 	<- as.character(sitex_in2[2,])   # Store mod/ob designation
+col_offset 	<- which(sitex_names=="Emm")
+#col_offset <- 18
+if ((dtype == 'AQS_Daily_O3') || (dtype == 'CASTNET_Daily') || (dtype == 'EMEP_Daily_O3') || (dtype == 'NAPS_Daily_O3') || (dtype == 'TOAR2_Daily_O3') || (dtype == 'AIRNOW_Daily_O3')) {
    col_offset <- which(sitex_names=="EYYYY" )
+#   col_offset <- 14
 }
 if (dtype == 'NADP') {
-  col_offset <- which(sitex_names=="Invalcode_ob")
+   col_offset <- which(sitex_names=="Invalcode_ob")
+#  col_offset <- 20
 }
 if (dtype == 'AMON') {
-  if ("QR_ob" %in% sitex_names) {
-     col_offset <- which(sitex_names=="QR_ob")
-  }
+   # Create a dataframe with just the observed NH3 data
+   obs.df <- subset(sitex_in, REPLICATE_ob!="T")
+   # Create a dataframe with just the NH3 BLANK data
+   blank.df <- subset(sitex_in, REPLICATE_ob=="T")[,c("SiteId","Time.On","NH3_ob")]
+   colnames(blank.df)[[3]] <- "NH3_Blank_ob"
+   # Merge the full data set with the BLANK data by site id and time on.
+   obs.corrected.df <- merge(obs.df, blank.df,c("SiteId","Time.On"),all.x=T)
+   # Replace missing blank values with 0.18 if before 2015, 0.09 if 2015 or later; Model blank value is zero 
+   obs.corrected.df$NH3_Blank_ob[is.na(obs.corrected.df$NH3_Blank_ob) & as.numeric(substr(obs.corrected.df$Time.On,7,10)) > 2014] <- 0.09 
+   obs.corrected.df$NH3_Blank_ob[is.na(obs.corrected.df$NH3_Blank_ob) & as.numeric(substr(obs.corrected.df$Time.On,7,10)) <= 2014] <- 0.18
+   obs.corrected.df$NH3_Blank_mod <- 0
+   # Create a new column with blank corrected NH3 obs
+   obs.corrected.df$NH3_Corrected_ob <- obs.corrected.df$NH3_ob - obs.corrected.df$NH3_Blank_ob
+   # Create a new blank corrected mod value column which is just the NH3 model value
+   obs.corrected.df$NH3_Corrected_mod <- obs.corrected.df$NH3_mod
+   sitex_in <- obs.corrected.df
+   # Replace the NA values with -999 values. This is just to simplify the MySQL loading
+   sitex_in[is.na(sitex_in)] <- -999
+   # Update the names, units, and modob values with the new columns
+   sitex_names <- c(sitex_names,"NH3_Blank_ob","NH3_Blank_mod","NH3_Corrected_ob","NH3_Corrected_mod")
+   sitex_units <- c(sitex_units,"ugm3","ugm3","ugm3","ugm3")
+   sitex_modob <- c(sitex_modob,"ob","mod","ob","mod")
+   ################################################################
+   if ("QR_ob" %in% sitex_names) {
+      col_offset <- which(sitex_names=="QR_ob")
+   }
 }
+# Replace the NA values with -999 values. This is just to simplify the MySQL loading
+sitex_in[is.na(sitex_in)] <- -999
 cat(paste("Successfully read ",sitex_file,"\n",sep=""))
 num_cols    <- ncol(sitex_in)
 start_month <- as.numeric(substr(sitex_in$Time.On,1,2))
@@ -151,14 +182,14 @@ sitex_in$Month <- end_month*choose.end.month+start_month*(1-choose.end.month)
 cat("done. \n")
 #####################################################
 
-sitex_in$dtype     <- dtype
-sitex_in$project_id    <- project_id
-sitex_in$hour      <- hour
-sitex_names        <- sitex_names[-c(1:col_offset)]
-unit_names_tmp     <- unlist(strsplit(sitex_names,"_ob"))
-unit_species_names <- unlist(strsplit(unit_names_tmp,"_mod"))
-unit_species_vals  <- sitex_units[-c(1:col_offset)]
-duplicate_names	   <- duplicated(unit_species_names)   # Determine duplicated species names for units
+sitex_in$dtype     	<- dtype
+sitex_in$project_id	<- project_id
+sitex_in$hour      	<- hour
+sitex_names        	<- sitex_names[-c(1:col_offset)]
+unit_names_tmp     	<- unlist(strsplit(sitex_names,"_ob"))
+unit_species_names 	<- unlist(strsplit(unit_names_tmp,"_mod"))
+unit_species_vals  	<- sitex_units[-c(1:col_offset)]
+duplicate_names	   	<- duplicated(unit_species_names)   # Determine duplicated species names for units
 
 ########################################################
 ### Check for missing species in project units table ###
@@ -217,10 +248,10 @@ missing_sites           <- unique(sitex_in$SiteId[!(sitex_in$SiteId %in% existin
 
 {
    if (length(query_table_info.df[,2]) == 0) {
-      cat("***No sites found in site metadata table. Check your database setup log file for errors loading site metadata. Skipping the check for missing sites.***\n\n") 
+      cat("\n***No sites found in site metadata table. Check your database setup log file for errors loading site metadata. Skipping the check for missing sites.***\n\n") 
    }
    else {
-      max_num_stat_id		<- max(query_table_info.df[,2])
+      max_num_stat_id		<- max(query_table_info.df[,2],na.rm=T)
       #cat(missing_sites)
       #query_table_info.df     <- suppressMessages(db_Query(check_unit_names,mysql))
       #units_to_add            <- unit_query_names[!toupper(unit_query_names)%in%toupper(query_table_info.df$COLUMN_NAME)]
@@ -289,25 +320,28 @@ if (dtype == 'AMON') {
 for (i in 1:length(database_species_names)) {
    q2_main <- paste(q2_main,database_species_names[i],sep=", ")
 }
-q3_main <- data.frame(project_id=paste("'",sitex_in$project_id,"'",sep=""),dtype=paste("'",sitex_in$dtype,"'",sep=""),SiteId=paste("'",sitex_in$SiteId,"'",sep=""),sitex_in$POCode,stat_id_POCode=paste("'",sitex_in$SiteId,sitex_in$POCode,"'",sep=""),sitex_in$Latitude,sitex_in$Longitude,sitex_in$Column,sitex_in$Row,start_time,end_time,sitex_in$hour,sitex_in$Month,sitex_in[(col_offset+1):num_cols])
+q3_main <- data.frame(project_id=paste("'",sitex_in$project_id,"'",sep=""),dtype=paste("'",sitex_in$dtype,"'",sep=""),SiteId=paste("'",sitex_in$SiteId,"'",sep=""),sitex_in$POCode,stat_id_POCode=paste("'",sitex_in$SiteId,sitex_in$POCode,"'",sep=""),sitex_in$Latitude,sitex_in$Longitude,sitex_in$Row,sitex_in$Column,start_time,end_time,sitex_in$hour,sitex_in$Month,sitex_in[,(col_offset+1):num_cols])
 if (dtype == 'NADP') {
-   q3_main <- data.frame(project_id=paste("'",sitex_in$project_id,"'",sep=""),dtype=paste("'",sitex_in$dtype,"'",sep=""),SiteId=paste("'",sitex_in$SiteId,"'",sep=""),sitex_in$POCode,stat_id_POCode=paste("'",sitex_in$SiteId,sitex_in$POCode,"'",sep=""),sitex_in$Latitude,sitex_in$Longitude,sitex_in$Column,sitex_in$Row,start_time,end_time,sitex_in$hour,sitex_in$Month,valid_code=paste("'",sitex_in$Valcode,"'",sep=""),invalid_code=paste("'",sitex_in$Invalcode,"'",sep=""),sitex_in[(col_offset+1):num_cols])
+   q3_main <- data.frame(project_id=paste("'",sitex_in$project_id,"'",sep=""),dtype=paste("'",sitex_in$dtype,"'",sep=""),SiteId=paste("'",sitex_in$SiteId,"'",sep=""),sitex_in$POCode,stat_id_POCode=paste("'",sitex_in$SiteId,sitex_in$POCode,"'",sep=""),sitex_in$Latitude,sitex_in$Longitude,sitex_in$Row,sitex_in$Column,start_time,end_time,sitex_in$hour,sitex_in$Month,valid_code=paste("'",sitex_in$Valcode,"'",sep=""),invalid_code=paste("'",sitex_in$Invalcode,"'",sep=""),sitex_in[,(col_offset+1):num_cols])
 }
 if (dtype == 'AMON') {
-   q3_main <- data.frame(project_id=paste("'",sitex_in$project_id,"'",sep=""),dtype=paste("'",sitex_in$dtype,"'",sep=""),SiteId=paste("'",sitex_in$SiteId,"'",sep=""),sitex_in$POCode,stat_id_POCode=paste("'",sitex_in$SiteId,sitex_in$POCode,"'",sep=""),sitex_in$Latitude,sitex_in$Longitude,sitex_in$Column,sitex_in$Row,start_time,end_time,sitex_in$hour,sitex_in$Month,valid_code=paste("'",sitex_in$QR,"'",sep=""),replicate=paste("'",sitex_in$REPLICATE,"'",sep=""),sitex_in[(col_offset+1):num_cols])
+   q3_main <- data.frame(project_id=paste("'",sitex_in$project_id,"'",sep=""),dtype=paste("'",sitex_in$dtype,"'",sep=""),SiteId=paste("'",sitex_in$SiteId,"'",sep=""),sitex_in$POCode,stat_id_POCode=paste("'",sitex_in$SiteId,sitex_in$POCode,"'",sep=""),sitex_in$Latitude,sitex_in$Longitude,sitex_in$Row,sitex_in$Column,start_time,end_time,sitex_in$hour,sitex_in$Month,valid_code=paste("'",sitex_in$QR,"'",sep=""),replicate=paste("'",sitex_in$REPLICATE,"'",sep=""),sitex_in[,(col_offset+1):num_cols])
 }
+rm(sitex_in)	# remove sitex_in to free up memory as it's no longer needed
 q3_main2 <- apply(q3_main,1,reformat)
 query <- paste("REPLACE INTO ",project_id,q2_main,") VALUES (",q3_main2,"); ",sep="")
-mysql_query_file <- paste(run_dir,"/MySQL_query.txt",sep="")
+mysql_query_file <- paste(run_dir,"/MySQL_query_",project_id,"_",dtype,".txt",sep="")
 cat("Writing temporary MySQL query file...")
 cat(paste("use ",dbase,";",sep=""),file=mysql_query_file,append=F,sep="\n")
 cat(query,file=mysql_query_file,append=T,sep="\n")
 cat("done. \n")
 cat("Loading data into MySQL database using temporary file (may take some time)...")
-mysql_command <- paste("mysql --host=",mysql$server," --user=",mysql$login," --password=",mysql$passwd," --database=",mysql$dbase," < ",mysql_query_file,sep="")
+mysql_command <- paste("mysql --host=",mysql$server," --user=",mysql$login," --password='",mysql$passwd,"' --database=",mysql$dbase," < ",mysql_query_file,sep="")
 system(mysql_command)
 delete_command <- paste("rm ",mysql_query_file,sep="")
-system(delete_command)
+if((delete_tmp_mysql_file == "T") || (delete_tmp_mysql_file == "t") || (delete_tmp_mysql_file == "Y") || (delete_tmp_mysql_file == "y")) {
+   system(delete_command)
+}
 cat("done. \n")
 
 #####################################################################################################################################
@@ -319,7 +353,7 @@ min_date <- min(start_time)
 max_date <- max(end_time)
 
 cat("Updating project log...")
-query_all <- paste("SELECT proj_code,model,user_id,passwd,email,description,DATE_FORMAT(proj_date,'%Y%m%d'),proj_time,DATE_FORMAT(min_date,'%Y%m%d'),DATE_FORMAT(max_date,'%Y%m%d') from aq_project_log where proj_code='",log_id,"' ",sep="")    # set query for project log table for all information regarding current project
+query_all <- paste("SELECT proj_code,model,user_id,passwd,email,description,DATE_FORMAT(proj_date,'%Y%m%d'),proj_time,DATE_FORMAT(min_date,'%Y%m%d'),DATE_FORMAT(max_date,'%Y%m%d') from aq_project_log where proj_code='",project_id,"' ",sep="")    # set query for project log table for all information regarding current project
 info_all <- dbGetQuery(con,query_all)
 model        <- info_all[,2] 
 user_id      <- info_all[,3]
@@ -342,7 +376,7 @@ if (min_date > min_date_old)  {
 if (max_date < max_date_old) {
    max_date <- max_date_old
 }
-query_dates <- paste("REPLACE INTO aq_project_log (proj_code,model,user_id,passwd,email,description,proj_date,proj_time,min_date,max_date) values ('",log_id,"','",model,"','",user_id,"','",password,"','",email,"','",description,"','",proj_date,"','",proj_time,"','",min_date,"','",max_date,"')",sep="")                    # put first and last dates into project log
+query_dates <- paste("REPLACE INTO aq_project_log (proj_code,model,user_id,passwd,email,description,proj_date,proj_time,min_date,max_date) values ('",project_id,"','",model,"','",user_id,"','",password,"','",email,"','",description,"','",proj_date,"','",proj_time,"','",min_date,"','",max_date,"')",sep="")                    # put first and last dates into project log
 mysql_result <- dbSendQuery(con,query_dates)
 cat("done.\n\n")
 #######################################################################################################################################

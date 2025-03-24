@@ -15,7 +15,6 @@
 #       PURPOSE: Run Site Compare and then put the       #
 #                output into the MYSQL database for AMET #
 #                                                        #
-#       LAST UPDATE: 06/2022 by K. Wyat Appel		 #
 #                                                        #
 ##------------------------------------------------------##
 
@@ -35,6 +34,7 @@ if (!exists("AMET_DB")) {
    print("AMET_DB flag not set. Defaulting to T. Set AMET_DB flag in run script.")
    AMET_DB <- "T"
 }
+print(AMET_DB)
 if ((AMET_DB == "y") || (AMET_DB == "Y") || (AMET_DB == "t") || (AMET_DB == "T")) {
    dbase <-Sys.getenv('AMET_DATABASE')
    if (!exists("dbase")) {
@@ -42,19 +42,15 @@ if ((AMET_DB == "y") || (AMET_DB == "Y") || (AMET_DB == "t") || (AMET_DB == "T")
    }
 }
 EXEC_sitex	 <- Sys.getenv('EXEC_sitecmp')
-if ((!exists("EXEC_sitex")) || (EXEC_sitex == "")) { 
-   stop("Path to site compare executable (EXEC_sitecmp) not set! This path must be set in the run script if running site compare to do the model-obs matching.")
-}
+if ((!exists("EXEC_sitex")) || (EXEC_sitex == "") || (EXEC_sitex == "Config_file")) { EXEC_sitex <- EXEC_sitex_config }
 
 EXEC_sitex_daily <- Sys.getenv('EXEC_sitecmp_dailyo3')
-if ((!exists("EXEC_sitex_daily")) || (EXEC_sitex_daily == "")) { 
-   stop("Path to site compare daily executable (EXEC_sitecmp_dailyo3) not set! This path must be set in the run script if running site compare daily to do the model-obs matching.")
-}
+if ((!exists("EXEC_sitex_daily")) || (EXEC_sitex_daily == "") || (EXEC_sitex_daily == "Config_file")) { EXEC_sitex_daily <- EXEC_sitex_daily_config }
 
 num_avg_hours <- Sys.getenv('HOURS_8HRMAX')
 if (!exists("num_avg_hours")) {
-   print("Number of 8hr max averaging hours not set. Defaulting to 17. To set the averaging hours, specify HOURS_8HRMAX (setenv HOURS_8HRMAX) as either 17 or 24 in the AMET run script.")
-   num_avg_hours <- 17 
+   print("Number of 8hr max averaging hours not set. Defaulting to 24. To set the averaging hours, specify HOURS_8HRMAX (setenv HOURS_8HRMAX) as either 17 or 24 in the AMET run script.")
+   num_avg_hours <- 24
 }
 
 args              <- commandArgs(2)
@@ -71,7 +67,7 @@ if (site_file_format == "csv") {
 }
 
 ### Use MySQL login/password from config file if requested ###
-if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
+#if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
 
 obs_data_dir           <- Sys.getenv('AMET_OBS')
@@ -99,8 +95,10 @@ airmon_flag            <- Sys.getenv('AIRMON')                # Flag to include 
 amon_flag	       <- Sys.getenv('AMON')		      # Flag to include NADP AMON data in the analysis
 csn_flag               <- Sys.getenv('CSN')                   # Flag to include CSN data in the analysis
 aqs_hourly_flag        <- Sys.getenv('AQS_HOURLY')            # Flag to include AQS hourly data in the analysis
+aqs_hourly_voc_flag    <- Sys.getenv('AQS_HOURLY_VOC')	      # Flag to include AQS hourly VOC species
 aqs_daily_o3_flag      <- Sys.getenv('AQS_DAILY_O3')          # Flag to include AQS 1 and 8 hour max data in the analysis
 aqs_daily_flag         <- Sys.getenv('AQS_DAILY')             # Flag to include AQS daily species (pm and gas species)
+aqs_daily_voc_flag     <- Sys.getenv('AQS_DAILY_VOC')         # Flag to include AQS daily VOC species
 search_hourly_flag     <- Sys.getenv('SEARCH_HOURLY')         # Flag to include SEARCH data in the analysis
 search_daily_flag      <- Sys.getenv('SEARCH_DAILY')          # Flag to include daily SEARCH data in the analysis
 aeronet_flag	       <- Sys.getenv('AERONET')		      # Flag to include AERONET AOD data in the analysis
@@ -109,6 +107,11 @@ naps_hourly_flag       <- Sys.getenv('NAPS_HOURLY')           # Flag to include 
 naps_daily_o3_flag     <- Sys.getenv('NAPS_DAILY_O3')
 capmon_flag	       <- Sys.getenv('CAPMoN')
 noaa_esrl_o3_flag      <- Sys.getenv('NOAA_ESRL_O3')	      # Flag to include NOAA ESRL surface O3 observations in the analysis
+purpleair_hourly_flag  <- Sys.getenv('PURPLEAIR_HOURLY')      # Flag to include Purple Air hourly PM2.5 observations in the analysis
+purpleair_daily_flag   <- Sys.getenv('PURPLEAIR_DAILY')	      # Flag to include Purple Air daily PM2.5 observations in the analysis
+amtic_flag	       <- Sys.getenv('AMTIC')		      # Flag to include AMTIC HAP species in the analysis
+airnow_flag	       <- Sys.getenv('AIRNOW')		      # Flag to include AIRNOW hourly PM2.5 and O3 observations in the analysis
+airnow_daily_o3_flag   <- Sys.getenv('AIRNOW_DAILY_O3')	      # Flag to include AIRNOW daily O3 observations in the analysis
 
 emep_hourly_flag       <- Sys.getenv('EMEP_HOURLY')           # Flag to include Europe EMEP data (hourly) in analysis
 emep_daily_o3_flag     <- Sys.getenv('EMEP_DAILY_O3')	      # Flag to include Europe EMEP daily O3 data in analysis
@@ -121,7 +124,11 @@ airbase_daily_flag     <- Sys.getenv('AIRBASE_DAILY')	      # Flag to include Eu
 aganet_flag	       <- Sys.getenv('AGANET')		      # Flag to include Europe AGANET data in analysis
 admn_flag	       <- Sys.getenv('ADMN')		      # Flag to include Europe ADMN data in analysis
 namn_flag	       <- Sys.getenv('NAMN')		      # Flag to include Europe NAMN data in analysis
-toar_flag	       <- Sys.getenv('TOAR')
+toar_flag	       <- Sys.getenv('TOAR')		      # Flag to include Global TOAR observations in the analysis
+toar2_daily_flag       <- Sys.getenv('TOAR2_DAILY')	      # Flag to include Global TOAR2 daily observations in the analysis
+toar2_hourly_flag      <- Sys.getenv('TOAR2_HOURLY')	      # Flag to include Global TOAR2 hourly  observations in the analysis
+toar2_daily_O3_flag    <- Sys.getenv('TOAR2_DAILY_O3')	      # Flag to include Global TOAR2 daily O3 observations in the analysis
+nyccas_flag	       <- Sys.getenv('NYCCAS')		      # Flag to include NYC CAS PM2.5 observations in the analysis
 
 #project_id <- gsub("[.]","_",project_id)
 
@@ -162,7 +169,9 @@ if ((aqs_daily_pm_flag == "y") || (aqs_daily_pm_flag == "Y") || (aqs_daily_pm_fl
 ########################################################
 PM_MOD_SPEC     <- "ATOTIJ"
 PM_FRM_MOD_SPEC <- "ATOTIJ_FRM"
-PM10_MOD_SPEC   <- "ATOTIJK"
+PM10_IJK_MOD_SPEC   <- "ATOTIJ+ATOTK"
+PM10_CUT_MOD_SPEC   <- "PM10"
+ACLK_exists	<- "F"
 
 if(require(ncdf4)) {
    if (Sys.getenv("WRITE_SITEX") == "T") {
@@ -171,14 +180,29 @@ if(require(ncdf4)) {
          m3_file_in <- nc_open(M3_FILE)
          var_list <- ncatt_get(m3_file_in,0,"VAR-LIST")
          var_list <- var_list$value
+         print(var_list)
          if(var_list != 0 ) {
             vars <- strsplit(var_list," +")
             if ("PMIJ" %in% vars[[1]]) {
                PM_MOD_SPEC <- "PMIJ"
-               PM_FRM_MOD_SPEC <- "PMIJ_FRM"
-               PM10_MOD_SPEC <- "PM10"
+#               PM_FRM_MOD_SPEC <- "PMIJ_FRM"
+#               PM10_MOD_SPEC <- "PM10"
             }
-         }
+            if ("PMIJ_FRM" %in% vars[[1]]) {
+               PM_FRM_MOD_SPEC <- "PMIJ_FRM"
+            }
+            if (!("PMIJ_FRM" %in% vars[[1]]) && !("ATOTIJ_FRM" %in% vars[[1]])) {
+               if ("PMIJ" %in% vars[[1]]) { PM_FRM_MOD_SPEC <- "PMIJ" }
+               if ("ATOTIJ" %in% vars[[1]]) { PM_FRM_MOD_SPEC <- "ATOTIJ" }
+            } 
+            if ("AOMOCRAT_TOT" %in% vars[[1]]) {
+#               PM10_IJK_MOD_SPEC <- "PM_MASS"
+#               PM10_IJK_MOD_SPEC <- "ATOTIJ+ATOTK"
+            }
+            if ("ACLK" %in% vars[[1]]) {
+		 ACLK_exists <- "T"
+	    }
+	 }
       }
    }
 }
@@ -291,6 +315,7 @@ run_sitex <- function(network) {
    j <- 1
    m3_files=""
    M3_FILE <- Sys.getenv('CONC_FILE_1')
+   print(network)
    if ((network == "NADP") || (network == "CAPMoN") || (network == "MDN") || (network == "CASTNET_Drydep") || (network == "CASTNET_Drydep_O3") || (network == "EMEP_Dep")) {
       M3_FILE <- Sys.getenv('DEP_FILE_1')
    }
@@ -362,7 +387,8 @@ run_sitex <- function(network) {
 ### Create and Execute Site Compare Scripts ###
 ###############################################
 
-cat('IMPROVE Flag = ',improve_flag)
+cat('AE6 = ',use_AE6)
+cat('\nIMPROVE Flag = ',improve_flag)
 cat('\nCSN Flag = ',csn_flag)
 cat('\nCASTNET Weekly Flag = ',castnet_weekly_flag)
 cat('\nCASTNET DryDep Flag = ',castnet_drydep_flag)
@@ -374,6 +400,7 @@ cat('\nMDN Flag = ',mdn_flag)
 cat('\nAQS Hourly Flag = ',aqs_hourly_flag)
 cat('\nAQS Daily O3 (Max) Flag = ',aqs_daily_o3_flag)
 cat('\nAQS Daily Flag = ',aqs_daily_flag)
+cat('\nAQS Daily VOC_Flag = ',aqs_daily_voc_flag)
 cat('\nSEARCH Hourly Flag = ',search_hourly_flag)
 cat('\nSEARCH Daily Flag = ',search_daily_flag)
 cat('\nAIRMON Flag = ',airmon_flag)
@@ -383,6 +410,8 @@ cat('\nFLUXNET Flag = ',fluxnet_flag)
 cat('\nNAPS Flag = ',naps_hourly_flag)
 cat('\nNAPS Daily O3 Flag = ',naps_daily_o3_flag)
 cat('\nNOAA ESRL O3 Flag = ',noaa_esrl_o3_flag)
+cat('\nPurple Air Hourly Flag = ',purpleair_hourly_flag)
+cat('\nPurple Air Daily Flag = ',purpleair_daily_flag)
 cat('\nEMEP Hourly Flag = ',emep_hourly_flag)
 cat('\nEMEP Daily O3 Flag = ',emep_daily_o3_flag)
 cat('\nEMEP Daily Flag = ',emep_daily_flag)
@@ -393,7 +422,14 @@ cat('\nAIRBASE Hourly Flag = ',airbase_hourly_flag)
 cat('\nAIRBASE Daily Flag = ',airbase_daily_flag)
 cat('\nADMN Flag = ',admn_flag)
 cat('\nNAMN Flag = ',namn_flag)
-cat('\nTOAR Flag = ',toar_flag,'\n')
+cat('\nTOAR Flag = ',toar_flag)
+cat('\nTOAR2 DAILY Flag = ',toar2_daily_flag)
+cat('\nTOAR2 HOURLY Flag = ',toar2_hourly_flag)
+cat('\nTOAR2 DAILY O3 Flag = ',toar2_daily_O3_flag,'\n')
+cat('\nNYCCAS Flag = ',nyccas_flag)
+cat('\nAMTIC Flag = ',amtic_flag)
+cat('\nAIRNOW Flag = ',airnow_flag)
+cat('\nAIRNOW DAILY O3 Flag = ',airnow_daily_o3_flag)
 
 if ((improve_flag == "y") || (improve_flag == "Y") || (improve_flag == "t") || (improve_flag == "T")) {
    table_type    <- "IMPROVE"
@@ -511,11 +547,30 @@ if ((aqs_daily_flag == "y") || (aqs_daily_flag == "Y") || (aqs_daily_flag == "t"
    EXEC          <- EXEC_sitex
    run_sitex(network)
 }
+
+if ((aqs_daily_voc_flag == "y") || (aqs_daily_voc_flag == "Y") || (aqs_daily_voc_flag == "t") || (aqs_daily_voc_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "AQS_Daily_VOC"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/AQS",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/AQS_daily_VOC_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+
 if ((aqs_hourly_flag == "y") || (aqs_hourly_flag == "Y") || (aqs_hourly_flag == "t") || (aqs_hourly_flag == "T")) {
    table_type    <- "CASTNET"
    network       <- "AQS_Hourly"
    site_file     <- paste(obs_data_dir,site_file_directory,"/AQS",site_file_name,sep="")
    ob_file       <- paste(obs_data_dir,"/",year,"/AQS_hourly_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+
+if ((aqs_hourly_voc_flag == "y") || (aqs_hourly_voc_flag == "Y") || (aqs_hourly_voc_flag == "t") || (aqs_hourly_voc_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "AQS_Hourly"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/AQS",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/AQS_hourly_VOC_data_",year,".csv",sep="")
    EXEC          <- EXEC_sitex
    run_sitex(network)
 }
@@ -579,6 +634,24 @@ if ((noaa_esrl_o3_flag == "y") || (noaa_esrl_o3_flag == "Y") || (noaa_esrl_o3_fl
    network       <- "NOAA_ESRL_O3"
    site_file     <- paste(obs_data_dir,site_file_directory,"/NOAA_ESRL",site_file_name,sep="")
    ob_file       <- paste(obs_data_dir,"/",year,"/NOAA_ESRL_surfaceo3_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+
+if ((purpleair_hourly_flag == "y") || (purpleair_hourly_flag == "Y") || (purpleair_hourly_flag == "t") || (purpleair_hourly_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "PurpleAir_Hourly"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/PurpleAir",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/PurpleAir_hourly_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+
+if ((purpleair_daily_flag == "y") || (purpleair_daily_flag == "Y") || (purpleair_daily_flag == "t") || (purpleair_daily_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "PurpleAir_Daily"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/PurpleAir",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/PurpleAir_daily_data_",year,".csv",sep="")
    EXEC          <- EXEC_sitex
    run_sitex(network)
 }
@@ -689,4 +762,63 @@ if ((toar_flag == "y") || (toar_flag == "Y") || (toar_flag == "t") || (toar_flag
    EXEC          <- EXEC_sitex
    run_sitex(network)
 }
+if ((toar2_daily_flag == "y") || (toar2_daily_flag == "Y") || (toar2_daily_flag == "t") || (toar2_daily_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "TOAR2_Daily"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/TOAR2",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/TOAR2_daily_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+if ((toar2_hourly_flag == "y") || (toar2_hourly_flag == "Y") || (toar2_hourly_flag == "t") || (toar2_hourly_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "TOAR2_Hourly"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/TOAR2",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/TOAR2_hourly_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+if ((toar2_daily_O3_flag == "y") || (toar2_daily_O3_flag == "Y") || (toar2_daily_O3_flag == "t") || (toar2_daily_O3_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "TOAR2_Daily_O3"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/TOAR2",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/TOAR2_hourly_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex_daily
+   run_sitex(network)
+}
+if ((nyccas_flag == "y") || (nyccas_flag == "Y") || (nyccas_flag == "t") || (nyccas_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "NYCCAS"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/NYCCAS",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/All_Years/NYCCAS_data_all_years.csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+if ((amtic_flag == "y") || (amtic_flag == "Y") || (amtic_flag == "t") || (amtic_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "AMTIC"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/AMTIC",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/AMTIC_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+
+if ((airnow_flag == "y") || (airnow_flag == "Y") || (airnow_flag == "t") || (airnow_flag == "T")) {
+   table_type    <- "CASTNET"
+   network       <- "AIRNOW"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/AirNow",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/AirNow_hourly_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex
+   run_sitex(network)
+}
+
+if ((airnow_daily_o3_flag == "y") || (airnow_daily_o3_flag == "Y") || (airnow_daily_o3_flag == "t") || (airnow_daily_o3_flag == "T")) {
+   table_type    <- ""
+   network       <- "AIRNOW_Daily_O3"
+   site_file     <- paste(obs_data_dir,site_file_directory,"/AirNow",site_file_name,sep="")
+   ob_file       <- paste(obs_data_dir,"/",year,"/AirNow_hourly_data_",year,".csv",sep="")
+   EXEC          <- EXEC_sitex_daily
+   run_sitex(network)
+}
+
 cat("\n")
