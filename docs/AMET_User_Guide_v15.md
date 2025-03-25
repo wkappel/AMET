@@ -1277,8 +1277,10 @@ variable OUTDIR must be set indicating where the site compare files are located.
 | **AMET\_NADP**                   | y/n; Flag to include the NADP weekly deposition data in the analysis |
 | **AMET\_CSN**                    | y/n; Flag to include the CSN daily data in the analysis |
 | **AMET\_AQS\_HOURLY**            | y/n; Flag to include the AQS hourly data in the analysis |
+| **AMET\_AQS\_HOURLY\_VOC**       | y/n; Flag to include the AQS hourly VOC data in the analysis |
 | **AMET\_AQS\_DAILY\_O3**         | y/n; Flag to include the AQS daily O3 (e.g. MDA8 O3) data in the analysis |
 | **AMET\_AQS\_DAILY**             | y/n; Flag to include the AQS daily data in the analysis |
+| **AMET\_AQS\_DAILY_VOC**         | y/n; Flag to include the AQS daily data VOC in the analysis |
 | **AMET\_SEARCH\_HOURLY**         | y/n; Flag to include the SEARCH hourly data in the analysis |
 | **AMET\_SEARCH\_DAILY**          | y/n; Flag to include the SEARCH daily data in the analysis |
 | **AMET\_NAPS\_HOURLY**           | y/n; Flag to include the NAPS hourly data in the analysis |
@@ -1288,6 +1290,9 @@ variable OUTDIR must be set indicating where the site compare files are located.
 | **AMET\_AMON**                   | y/n; Flag to include the AMON data in the analysis |
 | **AMET\_MDN**                    | y/n; Flag to include the MDN data in the analysis |
 | **AMET\_FLUXNET**                | y/n; Flag to include the FLUXNET data in the analysis |
+| **AMET\_PURPLEAIR_HOURLY**       | y/n; Flag to include the PurpleAir hourly PM2.5 data in the analysis |
+| **AMET\_PURPLEAIR_DAILY**        | y/n; Flag to include the PurpleAir daily PM2.5 data in the analysis |
+| **AMET\_AMTIC**                  | y/n; Flag to include the AMTIC HAP data in the analysis |
 | **AMET\_AIRBASE\_HOURLY**        | y/n; Flag to include the AIRBASE hourly data in the analysis |
 | **AMET\_AIRBASE\_DAILY**         | y/n; Flag to include the AIRBASE daily data in the analysis |
 | **AMET\_AURN\_HOURLY**           | y/n; Flag to include the AURN hourly data in the analysis |
@@ -1299,6 +1304,9 @@ variable OUTDIR must be set indicating where the site compare files are located.
 | **AMET\_NAMN**                   | y/n; Flag to include the NAMN data in the analysis |
 | **AMET\_NOAA\_ESRL\_O3**         | y/n; Flag to include the NOAA ESLR ozone data in the analysis |
 | **AMET\_TOAR**                   | y/n; Flag to include the TOAR global network data in the analysis |
+| **AMET\_TOAR2\_HOURLY**          | y/n; Flag to include the TOAR2 global network hourly data in the analysis |
+| **AMET\_TOAR2\_DAILY**           | y/n; Flag to include the TOAR2 global network daily data in the analysis |
+| **AMET\_TOAR2\_DAILY_O3**        | y/n; Flag to include the TOAR2 global network daily O3 data in the analysis |
 
 Also note that all AQ analysis scripts make use of the Network
 input file. This file contains information about each observational
@@ -1538,7 +1546,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - single network;single species; multiple simulations
 
 **run\_timeseries\_mtom.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries_mtom.png))
-   - Creates a model to model time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the and model
+   - Creates a model to model time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
    - single network;single species; multiple simulations
 
 **run\_timeseries\_multi\_species.csh** ([Example Plot](./images/aqExample_1_timeseries_multi_species.png))
@@ -1849,7 +1857,8 @@ files all\_script.input and AMET\_batch.input.
 | **abs\_rang\_min**       | Specify the minimum value for the absolute value axis on spatial plots. **NULL**” – script defined limit |
 | **abs\_range\_max**      | Specify the maximum value for the absolute value axis on spatial plots. **NULL**” – script defined limit |
 | **add\_query**           | Additional query syntax to add to the MySQL query. |
-| **aggregate\_data**      | Flag (y/n) to indicate whether or not to aggregate data from sites with multiple Parameter Occurrence Codes (POCs). If set to Y, data with different POCs from the same site will be averaged and compared to the model grid-cell value as a single data point. If set to N, the data will be treated as unique observations and each POC data point will be paired to the same model grid-cell value.    |
+| **aggregate\_data**      | Flag (y/n) to indicate whether or not to aggregate data from sites with multiple Parameter Occurrence Codes (POCs). If set to Y, data with different POCs from the same site will be averaged and compared to the model grid-cell value as a single data point. If set to N, the data will be treated as unique observations and each POC data point will be paired to the same model grid-cell value.
+| **aggregate\_data\_gc**  | Flag (y/n) to indicate whether or not to aggregate data from sites with multiple Parameter Occurrence Codes (POCs). If set to Y, obs data within the same gridcell will be averaged and compared to the model grid-cell value as a single data point. If set to N, the data will be treated as unique observations and each POC data point will be paired to the same model grid-cell value. |
 | **all\_valid**           | Option to include only and all valid samples from the NADP (NTN) network:  “**y**” or “**n**”. Valid samples are based on the valid flag provided in the NADP obs file |
 | **all\_valid\_amon**     | Option to include only and all valid samples from the NADP AMON network:  “**y**” or “**n**”. Valid samples are based on the valid and replicates flags in the NTN obs file |
 | **aq\_database**         | AQ MySQL database. Most likely “**amet**”. |
@@ -1866,6 +1875,7 @@ files all\_script.input and AMET\_batch.input.
 | **bias\_y\_axis\_min**   | Specify the minimum value for the y-axis on a bias plot. **NULL**” – script defined limit |
 | **bias\_y\_axis\_max**   | Specify the maximum value for the y-axis on a bias plot. **NULL**” – script defined limit |
 | **Bldoverlay\_exe**      | The location of the **bldoverlay** Fortran executable. Most likely **$AMETBASE/bin/bldoverlay**. (AQ only) |
+| **color\_ranges**        | Use unique color ranges for some plots
 | **conf\_line**           | Add confidence lines to scatterplots: “**y**” or “**n**”. |
 | **coverage\_limit**      | **%** necessary for data completeness (e.g., **75** means 75% data completeness). |
 | **custom\_title**        | Custom title for plots: ““ – no custom title |
@@ -1921,6 +1931,7 @@ files all\_script.input and AMET\_batch.input.
 | **plotsize**             | Scale factor to increase or decrease the size of a 541 x 700 pixel (**png**) or 8.5 x 11 inch (**pdf**) plot. |
 | **png\_from\_html**      | Create png file from html file “**y**” or “**n**” |
 | **png\_res**             | Set resolution of output png files in DPI. Default is 300 dpi |
+| **popup\_ts**            | Flag to embed popup time series plots on some leaflet spatial plots. If set to 'y', when you click on a site on a leaflet plot a time series plot will appear. Note that due to computational limiations, this option is limited to queries of 100 sites or less. If set to 'n', clicking on a site on a leaflet plot will provide popup text data.
 | **quantile\_max**        | This is used to remove outliers when determining the plot scale to prevent very large scale values. Value between 0 and 1. Default is 0.999.  |
 | **quantile\_min**        | This is used to remove outliers when determining the plot scale to prevent very large scale values. Value between 0 and 1. Default is 0.001.  |
 | **query**                | MySQL query to select data from database. In most cases, this is only part of the query. The complete query is constructed in the corresponding R script. |
