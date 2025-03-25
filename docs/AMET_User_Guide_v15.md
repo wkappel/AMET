@@ -537,7 +537,7 @@ files are available for download from the CMAS website.
 > 0.8\*OC; ANCOMIJ (NCOM, ug/m3)<br>
 > PM25-SO4-NO3-NH4-OC-EC-[Na]-[Cl]-2.2\*Al-2.49\*Si-1.63\*Ca-2.42\*Fe-1.94\*Ti-0.8\*OC; UNSPEC2IJ (OTHER_REM, ug/m3)<br>
 
-*Hourly and Daily AQS VOC species used with AMET (not a complete list of all species):*
+*Hourly and Daily AQS VOC species used with AMET:*
 
 > Benzene <br>
 > Propylene <br>
@@ -627,13 +627,23 @@ files are available for download from the CMAS website.
 > alpha_Pinene<br>
 > beta_Pinene<br>
 
+### PurpleAir
+
+*PurpleAir hourly and daily species used with AMET:*
+> PM2.5; ATOTIJ(ppb)<br>
+
+### NOAA ESRL
 
 *NOAA ESRL species used with AMET:*
 > O3; O3(ppb)<br>
 
+### Tropospheric Ozone Assessment Report
+
 *TOAR species used with AMET:*
 > O3; O3(ppb)<br>
 
+*TOAR2 hourly and daily (including MDA8 O3) species used with AMET:*
+> O3; O3(ppb)<br>
 
 <a id="Database_Setup"></a>
 5. Database Setup
@@ -1797,7 +1807,7 @@ Appendix B
 ==========
 **Configuration and Input Files**
 
-<a id="Appendix_C"></a>
+<a id="appendix-c"></a>
 Appendix C
 ==========
 [Statisical metric reference document](./modelperformancestatisticsdefinitions_AMET.pdf)
