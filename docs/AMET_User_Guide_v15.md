@@ -481,7 +481,7 @@ the AQS. The pre-generated files on this site need to be combined into a
 single data file in order to work best with AMET. AMET compatible AQS data
 files are available for download from the CMAS website.
 
-*Hourly AQS species used with AMET:*
+*Hourly AQS species used with AMET (not a complete list of all species):*
 
 > O3; O3 (ppb)<br>
 > NO; NO (ppb)<br>
@@ -503,7 +503,7 @@ files are available for download from the CMAS website.
 > ; SOL_RAD (watts/m2)<br>
 > ; 10*precip (mm/hr)
 
-*Daily AQS species used with AMET:*
+*Daily AQS species used with AMET (not a complete list of all species):*
 
 > PM25; ATOTIJ (ug/m3)<br>
 > PM25_88101; ATOTIJ (ug/m3)<br>
@@ -536,6 +536,97 @@ files are available for download from the CMAS website.
 > PM25-SO4-NO3-NH4-OC-EC-[Na]-[Cl]-2.2\*Al-2.49\*Si-1.63\*Ca-2.42\*Fe-1.94\*Ti; AUNSPEC1IJ (OTHER, ug/m3)<br>
 > 0.8\*OC; ANCOMIJ (NCOM, ug/m3)<br>
 > PM25-SO4-NO3-NH4-OC-EC-[Na]-[Cl]-2.2\*Al-2.49\*Si-1.63\*Ca-2.42\*Fe-1.94\*Ti-0.8\*OC; UNSPEC2IJ (OTHER_REM, ug/m3)<br>
+
+*Hourly and Daily AQS VOC species used with AMET (not a complete list of all species):*
+
+> Benzene <br>
+> Propylene <br>
+> Toluene <br>
+> Butadiene <br>
+> Ethane <br>
+> Ethylene <br>
+> Isoprene <br>
+> Acetylene <br>
+> Sum_PAMS_Target_Compounds <br>
+> Total_NMOC <br>
+> Acrolein <br>
+> Acrolein_Unverified <br>
+> Acetone <br>
+> Acetaldehyde <br>
+> Formaldehyde <br>
+> Methyl_ethyl_ketone<br>
+> Isopropylbenzene<br>
+> m_Diethylbenzene <br>
+> m_ethyltoluene<br>
+> n_Propylbenzene <br>
+> o_Ethyltoluene <br>
+> o_Xylene<br>
+> p_Diethylbenzene<br>
+> p_Ethyltoluene<br>
+> Trimethylbenzene_1_2_3<br>
+> Trimethylbenzene_1_2_4 <br>
+> Trimethylbenzene_1_3_5 <br>
+> m_p_Xylene<br>
+> chlorotoluene_2<br>
+> Benzyl_chloride<br>
+> Styrene<br>
+> Ethylbenzene<br>
+> Trichloroethylene<br>
+> cis_1_2_Dichloroethene<br>
+> cis_1_3_Dichloropropene<br>
+> cis_2_Pentene<br>
+> trans_1_2_Dichloroethylene<br>
+> trans_1_3_Dichloropropene<br>
+> trans_2_Butene<br>
+> trans_2_Pentene<br>
+> Dichloroethylene_1_1<br>
+> Butene_1<br>
+> Pentene_1<br>
+> Acrylonitrile<br>
+> Chloroprene<br>
+> Ethyl_acrylate<br>
+> Methyl_methacrylate<br>
+> Propylene<br>
+> Vinyl_acetate<br>
+> Vinyl_bromide<br>
+> Vinyl_chloride<br>
+> cis_2_Butene<br>
+> Chloropropene_3<br>
+> Dioxane_1_4<br>
+> Trimethylpentane_2_3_4<br>
+> Methylheptane_2<br>
+> Methylheptane_3<br>
+> Cyclohexane<br>
+> Methylcyclohexane<br>
+> Methylcyclopentane<br>
+> n_Decane<br>
+> n_Heptane<br>
+> n_Nonane<br>
+> n_Octane<br>
+> n_Undecane<br>
+> tert_Butyl_ethyl_ether<br>
+> Trimethylpentane_2_2_4 <br>
+> Dimethylbutane_2_3<br>
+> Dimethylpentane_2_3<br>
+> Dimethylpentane_2_4<br>
+> Methylhexane_2<br>
+> Methylpentane_2<br>
+> Methylhexane_3<br>
+> Methylpentane_3<br>
+> Cyclopentane<br>
+> Isopentane<br>
+> Tert_amyl_methyl_ether<br>
+> n_Hexane<br>
+> n_Pentane<br>
+> Dimethylbutane_2_2<br>
+> Ethyl_acetate<br>
+> Isobutane<br>
+> Methyl_tert_butyl_ether<br>
+> Propane<br>
+> n_Butane<br>
+> alpha_Pinene<br>
+> beta_Pinene<br>
+
 
 *NOAA ESRL species used with AMET:*
 > O3; O3(ppb)<br>
