@@ -1011,8 +1011,8 @@ the relationship between model species and
 monitor species will be described. In order for AQ database population to work, there must
 be a mapping between the model species and the various observational network species.
 This mapping is accomplished through a combination of post-processing the CMAQ model data and
-species formulas in the AQ_species_list.input file, which is located in the
-$AMETBASE/scripts_db/input_files directory. The model data used in the
+species formulas in the AQ_species_list.input or AQ_species_list.input.CRACMM file, which are 
+located in the $AMETBASE/scripts_db/input_files directory. The model data used in the
 aqExample project (Section 6.3) have already been post-processed.
 For a new project, the CMAQ data will need to be post-processed before they
 are ingested into the AMET database. This post-processing is accomplished
@@ -1727,7 +1727,7 @@ species\_NewAQNet <- paste(\"<br>
 species\_cutoff\_NewAQNet <- ""<br>
 species\_AE6\_NewAQNet <- ""<br>
 
-Once you have setup the species for a new network as above, move to the bottom of the AQ_species_list.input file. In that file, you will find three lists containing the species definition names for all the exising networks in AMET. You will need to add your new network to each of those lists, using the names above (i.e. species\_NewAQNet, species\_cutoff\_NewAQNet, and species\_AE6\_NewAQNet). Follow the formatting of the existing networks. Once you've done that, you can save your modified AQ_species_list.input file and move on to step 3.
+Once you have setup the species for a new network as above, move to the bottom of the AQ_species_list.input or AQ_species_list.input.CRACMM file. In that file, you will find three lists (one list in the .CRACMM file) containing the species definition names for all the exising networks in AMET. You will need to add your new network to each of those lists, using the names above (i.e. species\_NewAQNet, species\_cutoff\_NewAQNet, and species\_AE6\_NewAQNet). Follow the formatting of the existing networks. Once you've done that, you can save your modified AQ_species_list.input or AQ_species_list.input.CRACMM file and move on to step 3.
 
 **3. Add your new network to the AQ_matching.R code**
 
@@ -2077,7 +2077,7 @@ scripts. This file does not need to be modified unless adding new AQ networks to
 
 ## AQ Species List Input File
 
-The input file **$AMETBASE/scripts\_db/input_files/AQ_species_list.input** describes the mapping of observation species from each network to CMAQ model species (post-processed using combine) for use with the program `site compare`. This file is read as an input file to the AQ_matching.R script and used to create the `site compare` scripts for each network. This file is necessary since most air quality networks use different names to represent species. Site compare requires the observed and modeled species names to work correctly. The basic structure to map observation and species names for `site compare` is:
+The input files **$AMETBASE/scripts\_db/input_files/AQ_species_list.input** and **$AMETBASE/scripts\_db/input_files/AQ_species_list.input.CRACMM** describe the mapping of observation species from each network to CMAQ model species (post-processed using combine) for use with the program `site compare`. This file is read as an input file to the AQ_matching.R script and used to create the `site compare` scripts for each network. This file is necessary since most air quality networks use different names to represent species. Site compare requires the observed and modeled species names to work correctly. The basic structure to map observation and species names for `site compare` is:
 
 ob_species_name, ob_species_unit, model_species_name, model_species_unit, output_species_name
 
@@ -2087,5 +2087,5 @@ SO4f_val, ug/m3, ASO4IJ, ug/m3, SO4
 
 where SO4f_val is the name given to SO4 in the IMPROVE observation file, ASO4IJ is the name given to fine SO4 in the CMAQ combine file, and SO4 is the column name used to identify SO4 in the `site compare` output .csv file. Note that the units only need to be specified for either the observation or model species if they are the same (typically they are), but can be specified for both species.
 
-The **AQ_species_list.input** is setup to work with the default AQ networks in AMET. However, it can be modified to work with additional networks, or the species for existing networks can be modified if desired. Just follow the existing entries in the file to add additional species. Note that the species are numbered sequentially, and therefore when adding or removing species be careful to correctly number the remaining species.
+The **AQ_species_list.input** and **AQ_species_list.input.CRACMM** are setup to work with the default AQ networks in AMET. However, it can be modified to work with additional networks, or the species for existing networks can be modified if desired. Just follow the existing entries in the file to add additional species. Note that the species are numbered sequentially, and therefore when adding or removing species be careful to correctly number the remaining species.
 
