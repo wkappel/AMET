@@ -7,10 +7,10 @@
 
 [1. Overview](#Overview)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[1.1 Overall Objective and Basic Structure](#basic_structure)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[1.2 Concept of an AMET “Project”](#AMET_Project)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[1.3 Organization of This User’s Guide](#Users_Guide)<br>
-[2. Directory Structure](#Directory_Structure)<br>
-[3. Configuration](#Configuration)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1.2 Concept of an AMET “Project”](#amet_project)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1.3 Organization of This User’s Guide](#users_guide)<br>
+[2. Directory Structure](#directory_structure)<br>
+[3. Configuration](#configuration)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.1 R Configuration File (amet-config.R)](#Configuration_File)<br>
 [4. Datasets](#Datasets)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.1 Model Data](#Model_Data)<br>
@@ -65,13 +65,13 @@ The basic structure of AMET consists of two *fields* and two *processes*.
 Practically, a user may be interested in using only one of the fields (either MET or AQ), or may be interested in using both fields. That decision is based on the scope of the study. The two main software components of AMETv1.4+ are **MySQL** (an open-source database software system) and **R** (a free software environment for statistical computing and graphics). The previous versions of AMET also utilized **Perl** (an open-source cross-platform programming language), but the **Perl** requirement was removed from AMETv1.3 and beyond in an effort to streamline the tool.
 
 
-<a id="AMET_Project"></a>
+<a id="amet_project"></a>
 1.2 Concept of an AMET “Project”
 ----------------------------
 
 A central organizing structure for AMET applications is a project. A project organizes a particular model simulation (specific model, physics, spatial domain, grid scale, etc.) with AMET database tables that correspond to that simulation, the scripts necessary to populate that database, the scripts required to analyze that project and statistical analysis outputs. For example, you might have one project for a 2016 12-km continental U.S. simulation, and another project for a 2016 4-km Eastern U.S. simulation. A project can be for either MET or AQ, not for both. It is essential that you both uniquely and concisely name each project. It is recommended that you follow the directory structure when creating new projects, by copying one of the example directories (aqExample, metExample_wrf/mpas/mcip) provided with the installation and then renaming it to the new project’s name.
 
-<a id="Users_Guide"></a>
+<a id="users_guide"></a>
 1.3 Organization of This User’s Guide
 ---------------------------------
 
@@ -118,7 +118,7 @@ community to increase AMET functionality.*
 Before using AMET and this user’s guide, you must first install the AMET package on your
 system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.5/docs/AMET_Install_Guide_v15.md).
 
-<a id="Directory_Structure"></a>
+<a id="directory_structure"></a>
 2. Directory Structure
 ===================
 
@@ -154,7 +154,7 @@ Table 2-1 shows the directories contained in the $AMETBASE directory.
 
 
 
-<a id="Configuration"></a>
+<a id="configuration"></a>
 3. Configuration
 =============
 
@@ -162,7 +162,7 @@ After installing the AMET code and data,
 the next step is to configure the
 AMET system. In the $AMETBASE/configure directory, you will find the R MySQL configuration file `amet-config.R`.
 
-<a id="Configuration_File"></a>
+<a id="configuration_file"></a>
 3.1 R Configuration File (amet-config.R)
 ------------------------------------
 
