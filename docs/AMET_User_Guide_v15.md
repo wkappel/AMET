@@ -6,7 +6,7 @@
 ## Contents
 
 [1. Overview](#Overview)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[1.1 Overall Objective and Basic Structure](#Basic_Structure)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1.1 Overall Objective and Basic Structure](#basic_structure)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[1.2 Concept of an AMET “Project”](#AMET_Project)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[1.3 Organization of This User’s Guide](#Users_Guide)<br>
 [2. Directory Structure](#Directory_Structure)<br>
@@ -50,7 +50,7 @@
 ===========
 
 
-1.1 Overall Objective and Basic Structure<a id="Basic_Structure"></a>
+1.1 Overall Objective and Basic Structure<a id="basic_structure"></a>
 -------------------------------------
 The Atmospheric Model Evaluation Tool (AMET) (Appel et al., 2011) is a suite of software designed to facilitate the analysis and evaluation of predictions from meteorological and air quality models. AMET matches the model output for particular locations to the corresponding observed values from one or more networks of monitors. These pairings of values (model and observation) are then used to statistically and graphically analyze the model’s performance.
 
