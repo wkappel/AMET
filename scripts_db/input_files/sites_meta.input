@@ -17,29 +17,40 @@
 #       PURPOSE: Specifies the site metadata files to be #
 #                used.	                                 #
 #                                                        #
+#	LAST UPDATE: 03/2025				 #
 ##------------------------------------------------------##
 
 ## North American Networks
 
 site_file     <- NULL
-site_file[1]  <- "TOAR_full_site_list.csv"			# Global TOAR site list
-site_file[2]  <- "CASTNET_full_site_list.csv"                   # CASTNet site list
-site_file[3]  <- "IMPROVE_full_site_list.csv"                   # IMPROVE site list
-site_file[4]  <- "NADP_full_site_list.csv"                      # NADP site list
-site_file[5]  <- "SEARCH_full_site_list.csv"                    # SEARCH site list
-site_file[6]  <- "AIRMON_full_site_list.csv"                    # AIRMON (NDN) site list
-site_file[7]  <- "CAPMoN_full_site_list.csv"                    # Canadian CAPMON network
-site_file[8]  <- "NAPS_full_site_list.csv"                      # Canadian NAPS network
-site_file[9]  <- "FLUXNET_full_site_list.csv"                   # FLUXNET network
-site_file[10] <- "NOAA_ESRL_full_site_list.csv"			# NOAA ESRL O3 network
-site_file[11] <- "AQS_full_site_list.csv"			# AQS full site list. Also covers the CSN network
 
-## European Networks
+## Global Network Compilations
+site_file[1]  	<- "TOAR_full_site_list.csv"                      # Global TOAR site list
+site_file[2]  	<- "TOAR2_full_site_list.csv"                     # Global TOAR site list
+site_file[3]  	<- "AirNow_full_site_list.csv"			# AirNow site list (mostly AQS, but includes U.S. Embassy sites)
+site_file[4]  	<- "PurpleAir_full_site_list.csv"			# Global PurpleAir site list
 
-site_file[12] <- "ADMN_full_site_list.csv"
-site_file[13] <- "AGANET_full_site_list.csv"
-site_file[14] <- "AIRBASE_full_site_list.csv"
-site_file[15] <- "AURN_full_site_list.csv"
-site_file[16] <- "EMEP_full_site_list.csv"
-site_file[17] <- "NAMN_full_site_list.csv"
+## North America Networks
+site_file[5] 	<- "AMTIC_full_site_list.csv"
+site_file[6]	<- "CASTNET_full_site_list.csv"                 # CASTNet site list
+site_file[7]  	<- "IMPROVE_full_site_list.csv"                 # IMPROVE site list
+site_file[8]  	<- "NADP_full_site_list.csv"                    # NADP site list
+site_file[9]  	<- "SEARCH_full_site_list.csv"                  # SEARCH site list
+site_file[10]  	<- "AIRMON_full_site_list.csv"                  # AIRMON (NDN) site list
+site_file[11]  	<- "CAPMoN_full_site_list.csv"                  # Canadian CAPMON network
+site_file[12]  	<- "NAPS_full_site_list.csv"                    # Canadian NAPS network
+site_file[13] 	<- "FLUXNET_full_site_list.csv"                 # FLUXNET network
+site_file[14] 	<- "NOAA_ESRL_full_site_list.csv"		# NOAA ESRL O3 network
+site_file[15] 	<- "AQS_full_site_list.csv"			# AQS sites list
+#site_file[16] <- "NYCCAS_full_site_list.csv"			# NY CASS site list (NY City sites)
+
+## Europe Networks
+site_file[16] 	<- "ADMN_full_site_list.csv"
+site_file[17] 	<- "AGANET_full_site_list.csv"
+site_file[18] 	<- "AIRBASE_full_site_list.csv"
+site_file[19] 	<- "AURN_full_site_list.csv"
+site_file[20] 	<- "EMEP_full_site_list.csv"
+site_file[21] 	<- "NAMN_full_site_list.csv"
+
+
 

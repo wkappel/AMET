@@ -84,12 +84,20 @@ if ((inc_aqs_hourly == "y") || (inc_aqs_hourly == "Y") || (inc_aqs_hourly == "t"
    network_names <- c(network_names,"AQS_Hourly")        
    network_label <- c(network_label,"AQS")
 }
+if ((inc_aqs_hourly_voc == "y") || (inc_aqs_hourly_voc == "Y") || (inc_aqs_hourly_voc == "t") || (inc_aqs_hourly_voc == "T")) {
+   network_names <- c(network_names,"AQS_Hourly_VOC")
+   network_label <- c(network_label,"AQS")
+}
 if ((inc_aqs_daily_O3 == "y") || (inc_aqs_daily_O3 == "Y") || (inc_aqs_daily_O3 == "t") || (inc_aqs_daily_O3 == "T")) {
    network_names <- c(network_names,"AQS_Daily_O3")
    network_label <- c(network_label,"AQS")
 }
 if ((inc_aqs_daily == "y") || (inc_aqs_daily == "Y") || (inc_aqs_daily == "t") || (inc_aqs_daily == "T")) {
    network_names <- c(network_names,"AQS_Daily")
+   network_label <- c(network_label,"AQS")
+}
+if ((inc_aqs_daily_voc == "y") || (inc_aqs_daily_voc == "Y") || (inc_aqs_daily_voc == "t") || (inc_aqs_daily_voc == "T")) {
+   network_names <- c(network_names,"AQS_Daily_VOC")
    network_label <- c(network_label,"AQS")
 }
 if ((inc_search == "y") || (inc_search == "Y") || (inc_search == "t") || (inc_search == "T")) {
@@ -107,6 +115,14 @@ if ((inc_naps == "y") || (inc_naps == "Y") || (inc_naps == "t") || (inc_naps == 
 if ((inc_naps_daily_o3 == "y") || (inc_naps_daily_o3 == "Y") || (inc_naps_daily_o3 == "t") || (inc_naps_daily_o3 == "T")) {
    network_names <- c(network_names,"NAPS_Daily_O3")
    network_label <- c(network_label,"NAPS")
+}
+if ((inc_purpleair_hourly == "y") || (inc_purpleair_hourly == "Y") || (inc_purpleair_hourly == "t") || (inc_purpleair_hourly == "T")) {
+   network_names <- c(network_names,"PurpleAir_Hourly")
+   network_label <- c(network_label,"PurpleAir")
+}
+if ((inc_purpleair_daily == "y") || (inc_purpleair_daily == "Y") || (inc_purpleair_daily == "t") || (inc_purpleair_daily == "T")) {
+   network_names <- c(network_names,"PurpleAir_Daily")
+   network_label <- c(network_label,"PurpleAir")
 }
 
 ### Europe Networks ###
@@ -155,6 +171,22 @@ if ((inc_noaa_esrl_o3 == "y") || (inc_noaa_esrl_o3 == "Y") || (inc_noaa_esrl_o3 
 if ((inc_toar == "y") || (inc_toar == "Y") || (inc_toar == "t") || (inc_toar == "T")) {
    network_names <- c(network_names,"TOAR")
    network_label <- c(network_label,"TOAR")
+}
+if ((inc_toar2_daily == "y") || (inc_toar2_daily == "Y") || (inc_toar2_daily == "t") || (inc_toar2_daily == "T")) {
+   network_names <- c(network_names,"TOAR2_Daily")
+   network_label <- c(network_label,"TOAR2")
+}
+if ((inc_toar2_hourly == "y") || (inc_toar2_hourly == "Y") || (inc_toar2_hourly == "t") || (inc_toar2_hourly == "T")) {
+   network_names <- c(network_names,"TOAR2_Hourly")
+   network_label <- c(network_label,"TOAR2")
+}
+if ((inc_toar2_daily == "y") || (inc_toar2_daily == "Y") || (inc_toar2_daily == "t") || (inc_toar2_daily == "T")) {
+   network_names <- c(network_names,"TOAR2_Daily")
+   network_label <- c(network_label,"TOAR2")
+}
+if ((inc_toar2_daily_o3 == "y") || (inc_toar2_daily_o3 == "Y") || (inc_toar2_daily_o3 == "t") || (inc_toar2_daily_o3 == "T")) {
+   network_names <- c(network_names,"TOAR2_Daily_O3")
+   network_label <- c(network_label,"TOAR2")
 }
 
 total_networks<-length(network_names)

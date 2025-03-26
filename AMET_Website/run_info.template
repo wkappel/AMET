@@ -1,0 +1,438 @@
+### Indicate this as a MET database query ###
+Met_query <- "F"
+TIME_FORMAT <- "LST"
+### Use MySQL database for queries
+AMET_DB <- "T"
+#### Main Database Query String ###
+query <- 
+### Process ID number ###
+pid<-
+### Database Name ###
+dbase<-
+### Parameter Occurrence (PO) Code ###
+POCode<-""
+### Directory to write figures ###
+figdir<-
+### Use only common sites among mulitple simulations ###
+common_sites <- "y"
+### Species ###
+species_in<-""
+custom_species<-""
+custom_species_name<-""
+custom_units<-""
+### Project ID Name 1 ###
+run_name1<-""
+### Additional Run Names (used for model-to-model comparisons) ###
+run_name2<-
+run_name3<-
+run_name4<-
+run_name5<-
+run_name6<-
+run_name7<-
+run_name8<-
+run_name9<-
+run_name10<-
+run_name11<-
+run_name12<-
+run_name13<-
+run_name14<-
+run_name15<-
+run_name16<-
+run_name17<-
+run_name18<-
+run_name19<-
+run_name20<-
+### Array of Observation Network Flags ###
+#inc_networks<-
+inc_csn<-
+inc_improve<-
+inc_castnet<-
+inc_castnet_hr<-
+inc_castnet_daily<-
+inc_castnet_drydep<-
+inc_capmon<-
+inc_naps<-
+inc_naps_daily_o3<-
+inc_nadp<-
+inc_airmon_dep<-
+inc_amon<-
+inc_aqs_hourly<-
+inc_aqs_daily_o3<-
+inc_aqs_daily<-
+inc_aqs_daily_pm<-
+inc_aqs_daily_voc<-
+inc_search<-
+inc_search_daily<-
+inc_aeronet<-
+inc_fluxnet<-
+inc_noaa_esrl_o3<-
+inc_toar<-
+inc_toar2_hourly<-
+inc_toar2_daily<-
+inc_toar2_daily_o3<-
+inc_purpleair_hourly<-
+inc_purpleair_daily<-
+inc_airnow_daily_o3<-
+inc_airnow_hourly<-
+inc_mdn<-
+inc_amtic<-
+inc_mod<-
+inc_nyccas<-
+## European Networks ##
+inc_admn<-
+inc_aganet<-
+inc_airbase_hourly<-
+inc_airbase_daily<-
+inc_aurn_hourly<-
+inc_aurn_daily<-
+inc_emep_hourly<-
+inc_emep_daily<-
+inc_emep_daily_o3<-
+inc_emep_dep<-
+inc_namn<-
+## Campaigns ##
+inc_calnex<-
+inc_soas<-
+inc_special<-
+### Universal Plot Options ###
+dates<-
+custom_title<-''
+png_from_html<-
+png_res<-
+x_label_angle<-0
+leg_size_fac<-1
+text_size_fac<-1
+### Plotly Options ###
+img_height<-
+img_width<-
+### Flags for Time Averaging ###
+averaging<-"n"
+remove_negatives<-"y"
+use_avg_stats<-"n"
+rm_negs_query<-"n"
+aggregate_data<-"n"
+aggregate_data_gc<-"n"
+merge_statid_POC<-"y"
+### Time Series Plot Options ###
+inc_legend<-"y"
+inc_points<-"y"
+inc_bias<-
+inc_rmse<-
+inc_corr<-
+inc_nmb<-
+inc_nme<-
+use_var_mean<-"n"
+obs_per_day_limit<-0
+avg_func<-
+avg_func_name<-as.character(avg_func)
+line_width<-
+### Kelly Plot Options ###
+inc_kelly_stats<-"n"
+nmb_max<-NULL
+nme_min<-NULL
+nme_max<-NULL
+mb_max<-NULL
+me_min<-NULL
+me_max<-NULL
+rmse_min<-NULL
+rmse_max<-NULL
+cor_min<-NULL
+cor_max<-NULL
+mb_int<-NULL
+nmb_int<-NULL
+nme_int<-NULL
+cor_int<-NULL
+### Unique color ranges for some plots ###
+color_ranges<-"n"
+### Monitoring Sites to Include ###
+site<-"All"
+### States to Include ###
+state<-"All"
+### Regional Planning Organizations to Include ###
+rpo<-'None'
+### Priciple Component Analysis (PCA) Region ###
+pca<-'None'
+### Climate Region ###
+clim_reg <-'None'
+### Binned Plot Options ###
+pca_flag<-"n"
+bin_by_mod<-"n"
+inc_error<-"n"
+### Landuse Category
+loc_setting<-
+### Flag to Include or Remove Zero Precipitation Observations ###
+zeroprecip<-"n"
+### Numerical Limit for Data Completeness as percentage (used when calulating site statistics or averages)###
+coverage_limit<-75
+all_valid<-
+all_valid_amon<-
+### Numerical Limit for Data Completeness as minimum number of required observations (used when calulating site statistics or averages)###
+num_obs_limit<-
+### Flag for Soccer and Bugle Plots Setting NMB/NME or FB/FE ###
+soccerplot_opt<-
+### Flag for PAVE Overlay; 1=hourly, 2=daily ###
+overlay_opt<-
+### Flags for Confidence Lines / Trend Line to Plot on Scatterplots ###
+conf_line<-
+trend_line<-
+### Scatterplot x and y axes limits ###
+x_axis_min<-NULL
+x_axis_max<-NULL
+y_axis_min<-NULL
+y_axis_max<-NULL
+bias_y_axis_min<-NULL
+bias_y_axis_max<-NULL
+density_zlim<-NULL
+num_dens_bins<-NULL
+max_limit<-75
+### Boxplot Options ###
+inc_whiskers<-'n'
+inc_ranges<-"y"
+inc_median_lines<-'y'
+remove_mean<-"n"
+overlap_boxes<-"n"
+### File containing list of stations created dynamically by the user ###
+stat_file<-
+### Spatial Plot Options ###
+near_zero_color<-
+symbsizfac<-
+plot_radius<-
+outlier_radius<-
+fill_opacity<-
+num_ints<-
+perc_error_max<-
+abs_error_max<-
+rmse_range_max<-
+perc_range_min<-
+perc_range_max<-
+abs_range_min<-
+abs_range_max<-
+diff_range_min<-
+diff_range_max<-
+popup_ts<-'n'
+greyscale<-'n'
+inc_counties<-'y'
+hist_max<- NULL
+map_type<-
+quantile_min<-
+quantile_max<-
+### Stacked Bar Charts Options ###
+inc_FRM_adj<-"y"
+use_median<-"y"
+### Array of flags for which statistics to include on scatter plots ###
+stats_flags<- 
+### Flag to include run info text on plots ###
+run_info_text<-
+### Set Scatter Plot Symbols and Colors ###
+plot_colors<-
+plot_colors2<-
+plot_symbols<-
+plot_chars<-
+### Start and End Year/Month ###
+year_start<-
+year_end<-
+month_start<-
+month_end<-
+day_start<-
+day_end<-
+start_date <- as.integer(paste(year_start,sprintf("%02d",month_start),sprintf("%02d",day_start),sep=""))
+end_date   <- as.integer(paste(year_end,sprintf("%02d",month_end),sprintf("%02d",day_end),sep=""))
+#############################
+### Setup Networks Arrays ###
+#############################
+network_names <- NULL
+network_label <- NULL
+if (inc_improve == "y") {   
+   network_names <- c(network_names,"IMPROVE")     
+   network_label <- c(network_label,"IMPROVE")
+}
+if (inc_csn == "y") {   
+   network_names <- c(network_names,"CSN")         
+   network_label <- c(network_label,"CSN")
+}
+if (inc_castnet == "y") {
+   network_names <- c(network_names,"CASTNET")
+   network_label <- c(network_label,"CASTNET Weekly")
+}
+if (inc_castnet_hr == "y") {
+   network_names <- c(network_names,"CASTNET_Hourly")
+   network_label <- c(network_label,"CASTNET Hourly")
+}
+if (inc_castnet_daily == "y") {
+   network_names <- c(network_names,"CASTNET_Daily")
+   network_label <- c(network_label,"CASTNET Daily")
+}
+if (inc_castnet_drydep == "y") {
+   network_names <- c(network_names,"CASTNET_Drydep")
+   network_label <- c(network_label,"CASTNET Drydep")
+}
+if (inc_capmon == "y") {
+   network_names <- c(network_names,"CAPMoN")
+   network_label <- c(network_label,"CAPMoN")
+}
+if (inc_naps == "y") {
+   network_names <- c(network_names,"NAPS")
+   network_label <- c(network_label,"NAPS Hourly")
+}
+if (inc_naps_daily_o3 == "y") {
+   network_names <- c(network_names,"NAPS_Daily_O3")
+   network_label <- c(network_label,"NAPS Daily")
+}
+if (inc_nadp == "y") {
+   network_names <- c(network_names,"NADP")
+   network_label <- c(network_label,"NADP NTN")
+}
+if (inc_airmon_dep == "y") {
+   network_names <- c(network_names,"AIRMON")
+   network_label <- c(network_label,"AIRMON")
+}
+if (inc_amon == "y") {
+   network_names <- c(network_names,"AMON")
+   network_label <- c(network_label,"NADP AMON")
+}
+if (inc_aqs_hourly == "y") {
+   network_names <- c(network_names,"AQS_Hourly")        
+   network_label <- c(network_label,"AQS Hourly")
+}
+if (inc_aqs_daily_o3 == "y") {
+   network_names <- c(network_names,"AQS_Daily_O3") 
+   network_label <- c(network_label,"AQS Daily")
+}
+if (inc_aqs_daily == "y") {
+   network_names <- c(network_names,"AQS_Daily")
+   network_label <- c(network_label,"AQS Daily")
+}
+if (inc_aqs_daily_pm == "y") {
+   network_names <- c(network_names,"AQS_Daily_PM")
+   network_label <- c(network_label,"AQS Daily")
+}
+if (inc_aqs_daily_voc == "y") {
+   network_names <- c(network_names,"AQS_Daily_VOC")
+   network_label <- c(network_label,"AQS Daily VOC (PAMS)")
+}
+if (inc_search == "y") {
+   network_names <- c(network_names,"SEARCH_Hourly")      
+   network_label <- c(network_label,"SEARCH Hourly")
+}
+if (inc_search_daily == "y") {
+   network_names <- c(network_names,"SEARCH_Daily")
+   network_label <- c(network_label,"SEARCH Daily")
+}
+if (inc_aeronet == "y") {
+   network_names <- c(network_names,"AERONET")
+   network_label <- c(network_label,"AERONET")
+}
+if (inc_fluxnet == "y") {
+   network_names <- c(network_names,"FLUXNET")
+   network_label <- c(network_label,"FluxNet")
+}
+if (inc_noaa_esrl_o3 == "y") {
+   network_names <- c(network_names,"NOAA_ESRL_O3")
+   network_label <- c(network_label,"NOAA ESRL")
+}
+if (inc_toar == "y") {
+   network_names <- c(network_names,"TOAR")
+   network_label <- c(network_label,"TOAR")
+}
+if (inc_toar2_hourly == "y") {
+   network_names <- c(network_names,"TOAR2_Hourly")
+   network_label <- c(network_label,"TOAR2_Hourly")
+}
+if (inc_toar2_daily_o3 == "y") {
+   network_names <- c(network_names,"TOAR2_Daily_O3")
+   network_label <- c(network_label,"TOAR2_Daily_O3")
+}
+if (inc_toar2_daily == "y") {
+   network_names <- c(network_names,"TOAR2_Daily")
+   network_label <- c(network_label,"TOAR2_Daily")
+}
+if (inc_purpleair_hourly == "y") {
+   network_names <- c(network_names,"PurpleAir_Hourly")
+   network_label <- c(network_label,"PurpleAir_Hourly")
+}
+if (inc_purpleair_daily == "y") {
+   network_names <- c(network_names,"PurpleAir_Daily")
+   network_label <- c(network_label,"PurpleAir_Daily")
+}
+if (inc_airnow_hourly == "y") {
+   network_names <- c(network_names,"AIRNOW")
+   network_label <- c(network_label,"AirNow")
+}
+if (inc_airnow_daily_o3 == "y") {
+   network_names <- c(network_names,"AIRNOW_Daily_O3")
+   network_label <- c(network_label,"AirNow")
+}
+if (inc_mdn == "y") {
+   network_names <- c(network_names,"MDN")         
+   network_label <- c(network_label,"MDN")
+}
+if (inc_amtic == "y") {
+   network_names <- c(network_names,"AMTIC") 
+   network_label <- c(network_label,"AMTIC")
+}
+if (inc_mod == "y") {
+   network_names <- c(network_names,"Model_Model")
+   network_label <- c(network_label,"Mod v. Mod")
+}
+if (inc_admn == "y") {
+   network_names <- c(network_names,"ADMN")
+   network_label <- c(network_label,"ADMN")
+}
+if (inc_aganet == "y") {
+   network_names <- c(network_names,"AGANET")
+   network_label <- c(network_label,"AGANET")
+}
+if (inc_airbase_hourly == "y") {
+   network_names <- c(network_names,"AirBase_Hourly")
+   network_label <- c(network_label,"AirBase Hourly")
+}
+if (inc_airbase_daily == "y") {
+   network_names <- c(network_names,"AirBase_Daily")
+   network_label <- c(network_label,"AirBase Daily")
+}
+if (inc_aurn_hourly == "y") {
+   network_names <- c(network_names,"AURN_Hourly")
+   network_label <- c(network_label,"AURN Hourly")
+}
+if (inc_aurn_daily == "y") {
+   network_names <- c(network_names,"AURN_Daily")
+   network_label <- c(network_label,"AURN Daily")
+}
+if (inc_emep_hourly == "y") {
+   network_names <- c(network_names,"EMEP_Hourly")
+   network_label <- c(network_label,"EMEP Hourly")
+}
+if (inc_emep_daily == "y") {
+   network_names <- c(network_names,"EMEP_Daily")
+   network_label <- c(network_label,"EMEP Daily")
+}
+if (inc_emep_daily_o3 == "y") {
+   network_names <- c(network_names,"EMEP_Daily_O3")
+   network_label <- c(network_label,"EMEP Daily")
+}
+if (inc_emep_dep == "y") {
+   network_names <- c(network_names,"EMEP_Dep")
+   network_label <- c(network_label,"EMEP Dep")
+}
+if (inc_calnex == "y") {
+   network_names <- c(network_names,"CALNEX")
+   network_label <- c(network_label,"CALNEX")
+}
+if (inc_soas == "y") {
+   network_names <- c(network_names,"SOAS")
+   network_label <- c(network_label,"SOAS")
+}
+if (inc_special == "y") {
+   network_names <- c(network_names,"Special")
+   network_label <- c(network_label,"Special")
+}
+if (inc_nyccas == "y") {
+   network_names <- c(network_names,"NYCCAS")
+   network_label <- c(network_label,"NYCCAS")
+}
+
+species <- unlist(strsplit(species_in,","))
+species <- gsub("_ob","",species)
+total_networks<-length(network_names)
+network1 <- network_names[[1]]
+ametptype <- "both"

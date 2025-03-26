@@ -211,7 +211,11 @@ run_info_text	<- "y"
 
 ### Remove Negatives Flag ###
 remove_negatives	<- 'y'
+rm_negs_query		<- 'n'
+
+### Remove mean values from some time series plots ###
 remove_mean 		<- 'n'
+
 color_ranges 		<- 'n'
 
 ### Numerical Limit for Data Completeness as minimum number of required observations (used when calulating site statistics or averages)###
@@ -313,6 +317,10 @@ hist_max	<- NULL
 map_type	<- 1
 quantile_min	<- 0.001
 quantile_max	<- 0.999
+
+### Embed pop-up time series plots on some leaflet spatial plots. 
+### Only applies to queries < 100 sites due to time contraints ###
+popup_ts        <- 'y'
 
 #######################
 ### Boxplot Options ###

@@ -6,11 +6,11 @@
 ## Contents
 
 [1. Overview](#Overview)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[1.1 Overall Objective and Basic Structure](#Basic_Structure)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[1.2 Concept of an AMET “Project”](#AMET_Project)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[1.3 Organization of This User’s Guide](#Users_Guide)<br>
-[2. Directory Structure](#Directory_Structure)<br>
-[3. Configuration](#Configuration)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1.1 Overall Objective and Basic Structure](#basic_structure)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1.2 Concept of an AMET “Project”](#amet_project)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1.3 Organization of This User’s Guide](#users_guide)<br>
+[2. Directory Structure](#directory_structure)<br>
+[3. Configuration](#configuration)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[3.1 R Configuration File (amet-config.R)](#Configuration_File)<br>
 [4. Datasets](#Datasets)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.1 Model Data](#Model_Data)<br>
@@ -50,7 +50,7 @@
 ===========
 
 
-<a id="Basic_Structure"></a>1.1 Overall Objective and Basic Structure
+1.1 Overall Objective and Basic Structure<a id="basic_structure"></a>
 -------------------------------------
 The Atmospheric Model Evaluation Tool (AMET) (Appel et al., 2011) is a suite of software designed to facilitate the analysis and evaluation of predictions from meteorological and air quality models. AMET matches the model output for particular locations to the corresponding observed values from one or more networks of monitors. These pairings of values (model and observation) are then used to statistically and graphically analyze the model’s performance.
 
@@ -65,13 +65,13 @@ The basic structure of AMET consists of two *fields* and two *processes*.
 Practically, a user may be interested in using only one of the fields (either MET or AQ), or may be interested in using both fields. That decision is based on the scope of the study. The two main software components of AMETv1.4+ are **MySQL** (an open-source database software system) and **R** (a free software environment for statistical computing and graphics). The previous versions of AMET also utilized **Perl** (an open-source cross-platform programming language), but the **Perl** requirement was removed from AMETv1.3 and beyond in an effort to streamline the tool.
 
 
-<a id="AMET_Project"></a>
+<a id="amet_project"></a>
 1.2 Concept of an AMET “Project”
 ----------------------------
 
 A central organizing structure for AMET applications is a project. A project organizes a particular model simulation (specific model, physics, spatial domain, grid scale, etc.) with AMET database tables that correspond to that simulation, the scripts necessary to populate that database, the scripts required to analyze that project and statistical analysis outputs. For example, you might have one project for a 2016 12-km continental U.S. simulation, and another project for a 2016 4-km Eastern U.S. simulation. A project can be for either MET or AQ, not for both. It is essential that you both uniquely and concisely name each project. It is recommended that you follow the directory structure when creating new projects, by copying one of the example directories (aqExample, metExample_wrf/mpas/mcip) provided with the installation and then renaming it to the new project’s name.
 
-<a id="Users_Guide"></a>
+<a id="users_guide"></a>
 1.3 Organization of This User’s Guide
 ---------------------------------
 
@@ -118,7 +118,7 @@ community to increase AMET functionality.*
 Before using AMET and this user’s guide, you must first install the AMET package on your
 system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.5/docs/AMET_Install_Guide_v15.md).
 
-<a id="Directory_Structure"></a>
+<a id="directory_structure"></a>
 2. Directory Structure
 ===================
 
@@ -154,7 +154,7 @@ Table 2-1 shows the directories contained in the $AMETBASE directory.
 
 
 
-<a id="Configuration"></a>
+<a id="configuration"></a>
 3. Configuration
 =============
 
@@ -162,7 +162,7 @@ After installing the AMET code and data,
 the next step is to configure the
 AMET system. In the $AMETBASE/configure directory, you will find the R MySQL configuration file `amet-config.R`.
 
-<a id="Configuration_File"></a>
+<a id="configuration_file"></a>
 3.1 R Configuration File (amet-config.R)
 ------------------------------------
 
@@ -188,13 +188,13 @@ The amet_login and amet_pass variables are MySQL database credentials. The MySQL
 
 For simplicity, it is suggested that the MySQL credentials specified in the amet-config.R file be for a user with full database permissions. For database security purposes, it is recommended that **the amet-config.R file be made read-only by the user**.
 
-<a id="Datasets"></a>
+<a id="datasets"></a>
 4. Datasets
 ========
 
 The AMET release includes example datasets of both model and observational data.
 
-<a id="Model_Data"></a>
+<a id="model_data"></a>
 4.1 Model Data
 ----------
 
@@ -258,7 +258,7 @@ CMAQ, after they have been postprocessed with the combine utility.
 All of the spatial domains cover the continental U.S. and have a 12-km
 grid resolution.
 
-<a id="Observational_Data"></a>
+<a id="observational_data"></a>
 4.2 Observational Data
 ------------------
 
@@ -481,7 +481,7 @@ the AQS. The pre-generated files on this site need to be combined into a
 single data file in order to work best with AMET. AMET compatible AQS data
 files are available for download from the CMAS website.
 
-*Hourly AQS species used with AMET:*
+*Hourly AQS species used with AMET (not a complete list of all species):*
 
 > O3; O3 (ppb)<br>
 > NO; NO (ppb)<br>
@@ -503,7 +503,7 @@ files are available for download from the CMAS website.
 > ; SOL_RAD (watts/m2)<br>
 > ; 10*precip (mm/hr)
 
-*Daily AQS species used with AMET:*
+*Daily AQS species used with AMET (not a complete list of all species):*
 
 > PM25; ATOTIJ (ug/m3)<br>
 > PM25_88101; ATOTIJ (ug/m3)<br>
@@ -537,14 +537,115 @@ files are available for download from the CMAS website.
 > 0.8\*OC; ANCOMIJ (NCOM, ug/m3)<br>
 > PM25-SO4-NO3-NH4-OC-EC-[Na]-[Cl]-2.2\*Al-2.49\*Si-1.63\*Ca-2.42\*Fe-1.94\*Ti-0.8\*OC; UNSPEC2IJ (OTHER_REM, ug/m3)<br>
 
+*Hourly and Daily AQS VOC species used with AMET:*
+
+> Benzene <br>
+> Propylene <br>
+> Toluene <br>
+> Butadiene <br>
+> Ethane <br>
+> Ethylene <br>
+> Isoprene <br>
+> Acetylene <br>
+> Sum_PAMS_Target_Compounds <br>
+> Total_NMOC <br>
+> Acrolein <br>
+> Acrolein_Unverified <br>
+> Acetone <br>
+> Acetaldehyde <br>
+> Formaldehyde <br>
+> Methyl_ethyl_ketone<br>
+> Isopropylbenzene<br>
+> m_Diethylbenzene <br>
+> m_ethyltoluene<br>
+> n_Propylbenzene <br>
+> o_Ethyltoluene <br>
+> o_Xylene<br>
+> p_Diethylbenzene<br>
+> p_Ethyltoluene<br>
+> Trimethylbenzene_1_2_3<br>
+> Trimethylbenzene_1_2_4 <br>
+> Trimethylbenzene_1_3_5 <br>
+> m_p_Xylene<br>
+> chlorotoluene_2<br>
+> Benzyl_chloride<br>
+> Styrene<br>
+> Ethylbenzene<br>
+> Trichloroethylene<br>
+> cis_1_2_Dichloroethene<br>
+> cis_1_3_Dichloropropene<br>
+> cis_2_Pentene<br>
+> trans_1_2_Dichloroethylene<br>
+> trans_1_3_Dichloropropene<br>
+> trans_2_Butene<br>
+> trans_2_Pentene<br>
+> Dichloroethylene_1_1<br>
+> Butene_1<br>
+> Pentene_1<br>
+> Acrylonitrile<br>
+> Chloroprene<br>
+> Ethyl_acrylate<br>
+> Methyl_methacrylate<br>
+> Propylene<br>
+> Vinyl_acetate<br>
+> Vinyl_bromide<br>
+> Vinyl_chloride<br>
+> cis_2_Butene<br>
+> Chloropropene_3<br>
+> Dioxane_1_4<br>
+> Trimethylpentane_2_3_4<br>
+> Methylheptane_2<br>
+> Methylheptane_3<br>
+> Cyclohexane<br>
+> Methylcyclohexane<br>
+> Methylcyclopentane<br>
+> n_Decane<br>
+> n_Heptane<br>
+> n_Nonane<br>
+> n_Octane<br>
+> n_Undecane<br>
+> tert_Butyl_ethyl_ether<br>
+> Trimethylpentane_2_2_4 <br>
+> Dimethylbutane_2_3<br>
+> Dimethylpentane_2_3<br>
+> Dimethylpentane_2_4<br>
+> Methylhexane_2<br>
+> Methylpentane_2<br>
+> Methylhexane_3<br>
+> Methylpentane_3<br>
+> Cyclopentane<br>
+> Isopentane<br>
+> Tert_amyl_methyl_ether<br>
+> n_Hexane<br>
+> n_Pentane<br>
+> Dimethylbutane_2_2<br>
+> Ethyl_acetate<br>
+> Isobutane<br>
+> Methyl_tert_butyl_ether<br>
+> Propane<br>
+> n_Butane<br>
+> alpha_Pinene<br>
+> beta_Pinene<br>
+
+### PurpleAir
+
+*PurpleAir hourly and daily species used with AMET:*
+> PM2.5; ATOTIJ(ppb)<br>
+
+### NOAA ESRL
+
 *NOAA ESRL species used with AMET:*
 > O3; O3(ppb)<br>
+
+### Tropospheric Ozone Assessment Report
 
 *TOAR species used with AMET:*
 > O3; O3(ppb)<br>
 
+*TOAR2 hourly and daily (including MDA8 O3) species used with AMET:*
+> O3; O3(ppb)<br>
 
-<a id="Database_Setup"></a>
+<a id="database_setup"></a>
 5. Database Setup
 ==============
 
@@ -586,7 +687,7 @@ processing AQ data and not employing the use of the database, those portions of
 the instructions that deal with setup and interfacing with the database
 can be ignored.
 
-<a id="AMET_Setup"></a>
+<a id="amet_setup"></a>
 5.1 AMET Setup
 ---------
 
@@ -704,7 +805,7 @@ mysql> select distinct network from aqExample;
 
 Note: It is wise for users to understand simple queries like this or to download an interactive MySQL database tool as a means to look at the database, table structure and even sample data therein in the case of problems.
 
-<a id="Project_Creation"></a>
+<a id="project_creation"></a>
 6. Project Creation and Database Population
 ========================================
 
@@ -726,7 +827,7 @@ addition to the dbSetup directory described earlier. The projects are
 
 In the following subsections, we describe how to run each project.
 
-<a id="MET_Project"></a>
+<a id="met_project"></a>
 6.1 The metExample Projects
 ----------------------
 
@@ -783,7 +884,7 @@ Recommend using the `loop_over_days.csh` script.
 ```
 
 
-<a id="AQ_Project"></a>
+<a id="aq_project"></a>
 6.2 The aqExample Project
 ---------------------
 
@@ -822,7 +923,7 @@ defines the physical units of the species variables for this network (e.g., ppb 
 summary information for the aqExample project.
 
 
-<a id="New_MET_Project"></a>
+<a id="new_met_project"></a>
 6.3 Creating a New MET Project
 --------------------------
 
@@ -900,7 +1001,7 @@ The matching_raob.csh script will put upper-air meteorology data in a wrfNC2007_
 Once this script completes, the AMET database will be ready to produce meteorology model 
 performance analysis plots and statistics.
 
-<a id="New_AQ_Project"></a>
+<a id="new_aq_project"></a>
 6.4 Creating a New AQ Project
 -------------------------
 
@@ -1068,7 +1169,7 @@ will create a new row in the aq\_project\_log table, a series of new
 rows (one for each network) in the project\_units table, and a new
 project table called aqNC2007.
 
-<a id="Analysis"></a>
+<a id="analysis"></a>
 7. Analysis
 ========
 
@@ -1102,7 +1203,7 @@ files set up everything that is necessary to configure and run the underlying AM
 allows users who are not very familiar with R to perform a set of predefined
 analyses with AMET.
 
-<a id="metExample"></a>
+<a id="metexample"></a>
 7.1 metExample_wrf, metExample_mcip or metExample_mpas
 ----------
 
@@ -1214,7 +1315,7 @@ A brief summary of each of the C-shell scripts that drive the main R analyses, w
 - The new AMET GUI will also allow have capability from a user interface. 
 
 
-<a id="aqExample"></a>
+<a id="aqexample"></a>
 7.2 aqExample
 ---------
 
@@ -1277,8 +1378,10 @@ variable OUTDIR must be set indicating where the site compare files are located.
 | **AMET\_NADP**                   | y/n; Flag to include the NADP weekly deposition data in the analysis |
 | **AMET\_CSN**                    | y/n; Flag to include the CSN daily data in the analysis |
 | **AMET\_AQS\_HOURLY**            | y/n; Flag to include the AQS hourly data in the analysis |
+| **AMET\_AQS\_HOURLY\_VOC**       | y/n; Flag to include the AQS hourly VOC data in the analysis |
 | **AMET\_AQS\_DAILY\_O3**         | y/n; Flag to include the AQS daily O3 (e.g. MDA8 O3) data in the analysis |
 | **AMET\_AQS\_DAILY**             | y/n; Flag to include the AQS daily data in the analysis |
+| **AMET\_AQS\_DAILY_VOC**         | y/n; Flag to include the AQS daily data VOC in the analysis |
 | **AMET\_SEARCH\_HOURLY**         | y/n; Flag to include the SEARCH hourly data in the analysis |
 | **AMET\_SEARCH\_DAILY**          | y/n; Flag to include the SEARCH daily data in the analysis |
 | **AMET\_NAPS\_HOURLY**           | y/n; Flag to include the NAPS hourly data in the analysis |
@@ -1288,6 +1391,9 @@ variable OUTDIR must be set indicating where the site compare files are located.
 | **AMET\_AMON**                   | y/n; Flag to include the AMON data in the analysis |
 | **AMET\_MDN**                    | y/n; Flag to include the MDN data in the analysis |
 | **AMET\_FLUXNET**                | y/n; Flag to include the FLUXNET data in the analysis |
+| **AMET\_PURPLEAIR_HOURLY**       | y/n; Flag to include the PurpleAir hourly PM2.5 data in the analysis |
+| **AMET\_PURPLEAIR_DAILY**        | y/n; Flag to include the PurpleAir daily PM2.5 data in the analysis |
+| **AMET\_AMTIC**                  | y/n; Flag to include the AMTIC HAP data in the analysis |
 | **AMET\_AIRBASE\_HOURLY**        | y/n; Flag to include the AIRBASE hourly data in the analysis |
 | **AMET\_AIRBASE\_DAILY**         | y/n; Flag to include the AIRBASE daily data in the analysis |
 | **AMET\_AURN\_HOURLY**           | y/n; Flag to include the AURN hourly data in the analysis |
@@ -1299,6 +1405,9 @@ variable OUTDIR must be set indicating where the site compare files are located.
 | **AMET\_NAMN**                   | y/n; Flag to include the NAMN data in the analysis |
 | **AMET\_NOAA\_ESRL\_O3**         | y/n; Flag to include the NOAA ESLR ozone data in the analysis |
 | **AMET\_TOAR**                   | y/n; Flag to include the TOAR global network data in the analysis |
+| **AMET\_TOAR2\_HOURLY**          | y/n; Flag to include the TOAR2 global network hourly data in the analysis |
+| **AMET\_TOAR2\_DAILY**           | y/n; Flag to include the TOAR2 global network daily data in the analysis |
+| **AMET\_TOAR2\_DAILY_O3**        | y/n; Flag to include the TOAR2 global network daily O3 data in the analysis |
 
 Also note that all AQ analysis scripts make use of the Network
 input file. This file contains information about each observational
@@ -1538,7 +1647,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - single network;single species; multiple simulations
 
 **run\_timeseries\_mtom.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries_mtom.png))
-   - Creates a model to model time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the and model
+   - Creates a model to model time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
    - single network;single species; multiple simulations
 
 **run\_timeseries\_multi\_species.csh** ([Example Plot](./images/aqExample_1_timeseries_multi_species.png))
@@ -1561,7 +1670,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Creates four plots: a CDF plot; a Q-Q plot; a Taylor diagram; and a periodogram
    - single network; single species; multiple simulations
 
-<a id="New_Analysis_Project"></a>
+<a id="new_analysis_project"></a>
 7.4 Creating a New MET Analysis Project
 -------------------------------
 
@@ -1595,7 +1704,7 @@ Edit each of the C-shell analysis scripts to set the variable
 AMET\_PROJECT to wrfNC2007. The scripts will likely require other changes, like the
 analysis dates, output options, plot format, etc.
 
-<a id="Adding_New_AQ_Network"></a>
+<a id="adding_new_aq_network"></a>
 8. How to Add a New AQ Network to AMET
 =====================
 
@@ -1672,20 +1781,20 @@ Once you have done that, you can save your modified version of the Network.input
 
 After you have completed all the steps above, you should be ready to process your new network with AMET. The modifications above will allow you to run site compare to create paired model/ob data files and add those data to the database, and also allow you to run analysis scripts using your new network.
 
-<a id="CMAS_Support"></a>
+<a id="cmas_support"></a>
 9. CMAS Support for AMET
 =====================
 
 AMET is supported by the Community Modeling and Analysis System (CMAS) Center. See the
 [CMAS Center Help Desk](https://www.cmascenter.org/help-desk.cfm) for instructions on how to get technical support for using AMET.  
 
-<a id="References"></a>
+<a id="references"></a>
 References
 ==========
 
 Appel, K.W., Gilliam, R.C., Davis, N., Zubrow, A., and Howard, S.C.: Overview of the Atmospheric Model Evaluation Tool (AMET) v1.1 for evaluating meteorological and air quality models, Environ. Modell. Softw.,26, 4, 434-443, 2011.
 
-<a id="Appendix_A"></a>
+<a id="appendix_A"></a>
 Appendix A  
 ==========
 **Overview Flow Diagram**
@@ -1693,12 +1802,12 @@ Appendix A
 <a id="AMET_Flow_Diagram"></a> ![](./images/AMET_Flow_Diagram.png "AMET_Flow_Diagram.png")
 
 
-<a id="Appendix_B"></a>
+<a id="appendix_B"></a>
 Appendix B
 ==========
 **Configuration and Input Files**
 
-<a id="Appendix_C"></a>
+<a id="appendix_C"></a>
 Appendix C
 ==========
 [Statisical metric reference document](./modelperformancestatisticsdefinitions_AMET.pdf)
@@ -1849,7 +1958,8 @@ files all\_script.input and AMET\_batch.input.
 | **abs\_rang\_min**       | Specify the minimum value for the absolute value axis on spatial plots. **NULL**” – script defined limit |
 | **abs\_range\_max**      | Specify the maximum value for the absolute value axis on spatial plots. **NULL**” – script defined limit |
 | **add\_query**           | Additional query syntax to add to the MySQL query. |
-| **aggregate\_data**      | Flag (y/n) to indicate whether or not to aggregate data from sites with multiple Parameter Occurrence Codes (POCs). If set to Y, data with different POCs from the same site will be averaged and compared to the model grid-cell value as a single data point. If set to N, the data will be treated as unique observations and each POC data point will be paired to the same model grid-cell value.    |
+| **aggregate\_data**      | Flag (y/n) to indicate whether or not to aggregate data from sites with multiple Parameter Occurrence Codes (POCs). If set to Y, data with different POCs from the same site will be averaged and compared to the model grid-cell value as a single data point. If set to N, the data will be treated as unique observations and each POC data point will be paired to the same model grid-cell value.
+| **aggregate\_data\_gc**  | Flag (y/n) to indicate whether or not to aggregate data from sites with multiple Parameter Occurrence Codes (POCs). If set to Y, obs data within the same gridcell will be averaged and compared to the model grid-cell value as a single data point. If set to N, the data will be treated as unique observations and each POC data point will be paired to the same model grid-cell value. |
 | **all\_valid**           | Option to include only and all valid samples from the NADP (NTN) network:  “**y**” or “**n**”. Valid samples are based on the valid flag provided in the NADP obs file |
 | **all\_valid\_amon**     | Option to include only and all valid samples from the NADP AMON network:  “**y**” or “**n**”. Valid samples are based on the valid and replicates flags in the NTN obs file |
 | **aq\_database**         | AQ MySQL database. Most likely “**amet**”. |
@@ -1866,6 +1976,7 @@ files all\_script.input and AMET\_batch.input.
 | **bias\_y\_axis\_min**   | Specify the minimum value for the y-axis on a bias plot. **NULL**” – script defined limit |
 | **bias\_y\_axis\_max**   | Specify the maximum value for the y-axis on a bias plot. **NULL**” – script defined limit |
 | **Bldoverlay\_exe**      | The location of the **bldoverlay** Fortran executable. Most likely **$AMETBASE/bin/bldoverlay**. (AQ only) |
+| **color\_ranges**        | Use unique color ranges for some plots
 | **conf\_line**           | Add confidence lines to scatterplots: “**y**” or “**n**”. |
 | **coverage\_limit**      | **%** necessary for data completeness (e.g., **75** means 75% data completeness). |
 | **custom\_title**        | Custom title for plots: ““ – no custom title |
@@ -1921,6 +2032,7 @@ files all\_script.input and AMET\_batch.input.
 | **plotsize**             | Scale factor to increase or decrease the size of a 541 x 700 pixel (**png**) or 8.5 x 11 inch (**pdf**) plot. |
 | **png\_from\_html**      | Create png file from html file “**y**” or “**n**” |
 | **png\_res**             | Set resolution of output png files in DPI. Default is 300 dpi |
+| **popup\_ts**            | Flag to embed popup time series plots on some leaflet spatial plots. If set to 'y', when you click on a site on a leaflet plot a time series plot will appear. Note that due to computational limiations, this option is limited to queries of 100 sites or less. If set to 'n', clicking on a site on a leaflet plot will provide popup text data.
 | **quantile\_max**        | This is used to remove outliers when determining the plot scale to prevent very large scale values. Value between 0 and 1. Default is 0.999.  |
 | **quantile\_min**        | This is used to remove outliers when determining the plot scale to prevent very large scale values. Value between 0 and 1. Default is 0.001.  |
 | **query**                | MySQL query to select data from database. In most cases, this is only part of the query. The complete query is constructed in the corresponding R script. |
