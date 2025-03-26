@@ -1203,7 +1203,7 @@ files set up everything that is necessary to configure and run the underlying AM
 allows users who are not very familiar with R to perform a set of predefined
 analyses with AMET.
 
-<a id="metExample"></a>
+<a id="metexample"></a>
 7.1 metExample_wrf, metExample_mcip or metExample_mpas
 ----------
 
@@ -1315,7 +1315,7 @@ A brief summary of each of the C-shell scripts that drive the main R analyses, w
 - The new AMET GUI will also allow have capability from a user interface. 
 
 
-<a id="aqExample"></a>
+<a id="aqexample"></a>
 7.2 aqExample
 ---------
 
