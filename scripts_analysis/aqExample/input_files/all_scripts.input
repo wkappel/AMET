@@ -127,7 +127,11 @@ clim_reg <- "None"
 merge_statid_POC <-"y"
 
 ### Aggregate multiple PO Codes from the same site ###
-aggregate_data	<- "n"
+aggregate_data 	  <- "n"
+aggregate_data_gc <-"n"
+
+### Landuse Category
+loc_setting<-""
 
 ######################################
 
@@ -155,9 +159,13 @@ overlay_opt	<- 1
 ### Flag to include run info text on plots ###
 run_info_text	<- "y"
 
-### Remove Negatives Flag ###
+### Remove Negatives Flags ###
 remove_negatives	<- 'y'
+rm_negs_query 		<- 'n'
+
+### Remove mean values from some time series plots ###
 remove_mean 		<- 'n'
+
 color_ranges 		<- 'n'
 
 ### Numerical Limit for Data Completeness as minimum number of required observations (used when calulating site statistics or averages)###
@@ -238,6 +246,7 @@ rmse_max        <- NULL
 ############################
 ### Spatial Plot Options ###
 ############################
+near_zero_color <- "grey50"
 plot_radius     <- 0
 outlier_radius  <- 40
 fill_opacity    <- 0.8
@@ -259,6 +268,9 @@ hist_max	<- NULL
 map_type	<- 1
 quantile_min	<- 0.001
 quantile_max	<- 0.999
+
+### Embed pop-up time series plots on some leaflet plots. Only applies to queries < 100 sites due to time contraints ###
+popup_ts	<- 'y'
 
 #######################
 ### Boxplot Options ###
@@ -299,7 +311,8 @@ density_zlim	<- NULL
 num_dens_bins	<- NULL
 
 ### Skill plot criteria line ###
-max_limit	<- 70
+O3_max_limit<-70
+PM_max_limit<-25
 
 ##################################
 ### Stacked Bar Charts Options ###
@@ -319,3 +332,4 @@ stat_file	<- ""
 ametNetworkInput <- Sys.getenv("AMET_NET_INPUT")
 source(ametNetworkInput) # Network related input
 
+if (by_site != 'y') { site <- site_id }
