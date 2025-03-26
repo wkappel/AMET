@@ -188,13 +188,13 @@ The amet_login and amet_pass variables are MySQL database credentials. The MySQL
 
 For simplicity, it is suggested that the MySQL credentials specified in the amet-config.R file be for a user with full database permissions. For database security purposes, it is recommended that **the amet-config.R file be made read-only by the user**.
 
-<a id="Datasets"></a>
+<a id="datasets"></a>
 4. Datasets
 ========
 
 The AMET release includes example datasets of both model and observational data.
 
-<a id="Model_Data"></a>
+<a id="model_data"></a>
 4.1 Model Data
 ----------
 
@@ -258,7 +258,7 @@ CMAQ, after they have been postprocessed with the combine utility.
 All of the spatial domains cover the continental U.S. and have a 12-km
 grid resolution.
 
-<a id="Observational_Data"></a>
+<a id="observational_data"></a>
 4.2 Observational Data
 ------------------
 
@@ -645,7 +645,7 @@ files are available for download from the CMAS website.
 *TOAR2 hourly and daily (including MDA8 O3) species used with AMET:*
 > O3; O3(ppb)<br>
 
-<a id="Database_Setup"></a>
+<a id="database_setup"></a>
 5. Database Setup
 ==============
 
@@ -687,7 +687,7 @@ processing AQ data and not employing the use of the database, those portions of
 the instructions that deal with setup and interfacing with the database
 can be ignored.
 
-<a id="AMET_Setup"></a>
+<a id="amet_setup"></a>
 5.1 AMET Setup
 ---------
 
@@ -805,7 +805,7 @@ mysql> select distinct network from aqExample;
 
 Note: It is wise for users to understand simple queries like this or to download an interactive MySQL database tool as a means to look at the database, table structure and even sample data therein in the case of problems.
 
-<a id="Project_Creation"></a>
+<a id="project_creation"></a>
 6. Project Creation and Database Population
 ========================================
 
@@ -827,7 +827,7 @@ addition to the dbSetup directory described earlier. The projects are
 
 In the following subsections, we describe how to run each project.
 
-<a id="MET_Project"></a>
+<a id="met_project"></a>
 6.1 The metExample Projects
 ----------------------
 
@@ -884,7 +884,7 @@ Recommend using the `loop_over_days.csh` script.
 ```
 
 
-<a id="AQ_Project"></a>
+<a id="aq_project"></a>
 6.2 The aqExample Project
 ---------------------
 
@@ -923,7 +923,7 @@ defines the physical units of the species variables for this network (e.g., ppb 
 summary information for the aqExample project.
 
 
-<a id="New_MET_Project"></a>
+<a id="new_met_project"></a>
 6.3 Creating a New MET Project
 --------------------------
 
@@ -1001,7 +1001,7 @@ The matching_raob.csh script will put upper-air meteorology data in a wrfNC2007_
 Once this script completes, the AMET database will be ready to produce meteorology model 
 performance analysis plots and statistics.
 
-<a id="New_AQ_Project"></a>
+<a id="new_aq_project"></a>
 6.4 Creating a New AQ Project
 -------------------------
 
@@ -1169,7 +1169,7 @@ will create a new row in the aq\_project\_log table, a series of new
 rows (one for each network) in the project\_units table, and a new
 project table called aqNC2007.
 
-<a id="Analysis"></a>
+<a id="analysis"></a>
 7. Analysis
 ========
 
@@ -1670,7 +1670,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Creates four plots: a CDF plot; a Q-Q plot; a Taylor diagram; and a periodogram
    - single network; single species; multiple simulations
 
-<a id="New_Analysis_Project"></a>
+<a id="new_analysis_project"></a>
 7.4 Creating a New MET Analysis Project
 -------------------------------
 
@@ -1704,7 +1704,7 @@ Edit each of the C-shell analysis scripts to set the variable
 AMET\_PROJECT to wrfNC2007. The scripts will likely require other changes, like the
 analysis dates, output options, plot format, etc.
 
-<a id="Adding_New_AQ_Network"></a>
+<a id="adding_new_aq_network"></a>
 8. How to Add a New AQ Network to AMET
 =====================
 
@@ -1781,20 +1781,20 @@ Once you have done that, you can save your modified version of the Network.input
 
 After you have completed all the steps above, you should be ready to process your new network with AMET. The modifications above will allow you to run site compare to create paired model/ob data files and add those data to the database, and also allow you to run analysis scripts using your new network.
 
-<a id="CMAS_Support"></a>
+<a id="cmas_support"></a>
 9. CMAS Support for AMET
 =====================
 
 AMET is supported by the Community Modeling and Analysis System (CMAS) Center. See the
 [CMAS Center Help Desk](https://www.cmascenter.org/help-desk.cfm) for instructions on how to get technical support for using AMET.  
 
-<a id="References"></a>
+<a id="references"></a>
 References
 ==========
 
 Appel, K.W., Gilliam, R.C., Davis, N., Zubrow, A., and Howard, S.C.: Overview of the Atmospheric Model Evaluation Tool (AMET) v1.1 for evaluating meteorological and air quality models, Environ. Modell. Softw.,26, 4, 434-443, 2011.
 
-<a id="Appendix_A"></a>
+<a id="appendix_A"></a>
 Appendix A  
 ==========
 **Overview Flow Diagram**
@@ -1802,12 +1802,12 @@ Appendix A
 <a id="AMET_Flow_Diagram"></a> ![](./images/AMET_Flow_Diagram.png "AMET_Flow_Diagram.png")
 
 
-<a id="Appendix_B"></a>
+<a id="appendix_B"></a>
 Appendix B
 ==========
 **Configuration and Input Files**
 
-<a id="Appendix_C"></a>
+<a id="appendix_C"></a>
 Appendix C
 ==========
 [Statisical metric reference document](./modelperformancestatisticsdefinitions_AMET.pdf)
