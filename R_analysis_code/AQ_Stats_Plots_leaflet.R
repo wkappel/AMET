@@ -10,7 +10,7 @@ header <- "
 ### self-contained using PANDOC. If PANDOC is unavailable, the selfcontained options at
 ### the end of this code should be set to false.
 ###
-### Last modified by Wyat Appel: Feb 2022
+### Last modified by Wyat Appel: 03/2025
 ##################################################################################
 "
 
@@ -22,14 +22,11 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required Libraries 
-#if(!require(leaflet)){stop("Required Package leaflet was not loaded")}
-#if(!require(htmlwidgets)){stop("Required Package htmlwidgets was not loaded")}
-#if(!require(maps)){stop("Required Package maps was not loaded")}
-#if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
 if(!require(webshot)){stop("Required Package webshot was not loaded")}
 library(lattice)
 library(leafpop)
 library(leaflet.extras)
+library(latticeExtra)
 
 if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
@@ -463,16 +460,10 @@ for (i in 1:8) {
        my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=plot_names[i], radius=plot_rad*symbsizfac,stroke=TRUE,weight=1,data=data.df,opacity=1,fillOpacity=fill_opacity,popup=contents,label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
     }
     my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal2, values = c(min.data,max.data), group = (plot_names[i]), layerId = plot_names[i], title = plot_title, opacity = 2) 
-    my.leaf2 <- my.leaf %>% addProviderTiles(leaflet_map[1],group="Street Map") %>% setView(center_lon,center_lat,zoom=zoom_level)
     my.leaf <- my.leaf %>% addControl(main_title,position="topright",className="map-title")
-    my.leaf2 <- my.leaf2 %>% addControl(main_title_png,position="topright",className="map-title")
 #    my.leaf <- my.leaf %>% hideGroup(c("NME","FB","FE","RMSE","MB","ME","CORR"))
     my.leaf <- my.leaf %>%
     addLayersControl(baseGroups = base_Groups, overlayGroups = plot_names, options =  layersControlOptions(collapsed = FALSE,position="topleft"))
   }
 saveWidget(my.leaf, file=filename_html,selfcontained=T)	# Use if PANDOC is available
-#saveWidget(my.leaf2, file="Rplot.html",selfcontained=T)
-#if (png_from_html == "y") {
-#  webshot("Rplot.html", file = filename_png[1],cliprect = "viewport",zoom=2,vwidth=max(lon_diff*24.5,1600),vheight=max(lat_diff*36.5,800))
-#}
 

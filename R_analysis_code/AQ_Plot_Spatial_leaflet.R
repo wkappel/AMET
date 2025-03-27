@@ -8,7 +8,7 @@ header <- "
 ### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: Feb 2022 
+### Last modified by Wyat Appel: 03/2025 
 ######################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -22,9 +22,14 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(maps)){stop("Required Package maps was not loaded")}
 if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
 if(!require(webshot)){stop("Required Package webshot was not loaded")}
-library(lattice)
+if(!require(lattice)){stop("Required Package lattice was not loaded")}
+
 library(leafpop)
 library(leaflet.extras)
+
+### The current release of leaflet.extras does not contain the groupedLayerControlOptions function.
+### Hopefully it will be added a a future release of the leaflet.extras library. In the interim, the
+### function can be loaded using the instructions here:https://rdrr.io/github/bhaskarvk/leaflet.extras/.
 
 if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.999 }
@@ -67,7 +72,7 @@ all_network	<- NULL
 aqdat_out.df	<- NULL
 ########################################
 
-remove_negatives_in <- remove_negatives
+remove_negatives_in <- remove_negatives	# Store option to remove negatives (applied later in the code)
 remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
 total_networks <- length(network_names)
 k <- 1
@@ -95,10 +100,6 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
    #######################
-#   count <- sum(is.na(aqdat_query.df[,9]))
-#   len   <- length(aqdat_query.df[,9])
-
-#   if (count != len) {	# Continue if query returned non-missing data
 
    ob_col_name <- paste(species,"_ob",sep="")
    mod_col_name <- paste(species,"_mod",sep="")
@@ -111,9 +112,7 @@ for (j in 1:total_networks) {							# Loop through for each network
          ####################################
          ## Compute Averages for Each Site ##
          ####################################
-#         if (averaging == "n") {
-            averaging <- "e"
-#         }
+         averaging <- "e"	# For data to be averaged across all data for each site
          aqdat_in.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,State=aqdat_query.df$state,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
          if ((network == "NADP") || (network == "AMON")) {
             aqdat_in.df$precip_ob <- aqdat_query.df$precip_ob
@@ -131,10 +130,6 @@ for (j in 1:total_networks) {							# Loop through for each network
          ## Store values for each network in array lists ##
          ##################################################
          sinfo_data_tmp<-data.frame(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,State=aqdat.df$State,Obs_Val=aqdat.df$Obs_Value,Mod_Val=aqdat.df$Mod_Value,Diff_Val=aqdat.df$Mod_Obs_Diff,Network=network,Network_Number=k)
-#         sinfo_mod_data[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Value,network=network)
-#         sinfo_diff_data[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff,network=network)
-#         sinfo_rat_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Rat,network=network)
-
 
          all_site     <- c(all_site,aqdat.df$Stat_ID)
 	 all_state    <- c(all_state,aqdat.df$State)
@@ -177,9 +172,7 @@ if ((lat_diff < 9) && (lon_diff < 18)) { zoom_level <- 7 }
 
 my.diff.colors <- colorRampPalette(c("darkorchid4","purple", "#002FFF", "deepskyblue", "lightblue", "palegoldenrod", "yellow", "orange", "red", "brown"))
 my.colors <- colorRampPalette(c(grey(.8),"mediumpurple","darkorchid4", "#002FFF", "green", "yellow", "orange", "red", "brown"))
-#if (quantile_max == 1 && quantile_min == 0) {
-#   my.colors <- colorRampPalette(c("mediumpurple","darkorchid4", "#002FFF", "green", "yellow", "orange", "red", "brown"))
-#}
+
 if (length(num_ints) == 0) {
    num_ints <- 20
 }
@@ -215,74 +208,59 @@ Markers_Diff <- NULL
 sinfo_data_in <- sinfo_data
 for (i in 1:3) {
    if (custom_title == "") {
-      plot_title <- paste(run_name1,species,dates,sep=" ") }
-#      if (i == 1) { plot_title <- paste(run_name1,species,"Ob Values",dates,sep=" ") }
-#      if (i == 2) { plot_title <- paste(run_name1,species,"Model Values",dates,sep=" ") }
-#      if (i == 3) { plot_title <- paste(run_name1,species,"Bias",dates,sep=" ") }
-#   }
-#   tag.map.title.png <- tag_map_title_png_func(30)
+      plot_title <- paste(run_name1,species,dates,sep=" ") 
+   }
    main_title_html <- tags$div(tag.map.title.html, HTML(plot_title))
    main_title_png  <- tags$div(tag.map.title.png, HTML(plot_title))
-#  aqs.dat <- subset(o3.obs.df,date==pick.days[i])
-#  xyz <- data.frame(x=expand.grid(x.proj.12,y.proj.12)[,1]*1000,y=expand.grid(x.proj.12,y.proj.12)[,2]*1000,z=matrix(o3.mod.array[,,i]))
-#  o3.mod.raster <- rasterFromXYZ(xyz,crs="+proj=lcc +lat_1=33 +lat_2=45 +lat_0=40 +lon_0=-97 +a=6370000 +b=6370000")
 
-  if (i == 3) {
-     range_max <- max(abs(min(quantile(plot_data[[i]],probs=quantile_min),na.rm=T)),max(quantile(plot_data[[i]],probs=quantile_max),na.rm=T))
-     data.seq <- pretty(c(-range_max,range_max),n=num_ints)
-     if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
-  #      data.seq <- pretty(seq(diff_range_min,diff_range_max,na.rm=T),n=num_ints)
-	 data.seq <- pretty(c(diff_range_min,diff_range_max),n=num_ints)	#Changed from the line above to this, as having the seq made ranges less than 1 came out asymetrical. Not sure why.
-     }
-#     my.col.cool.n <- sum(data.seq < 0)
-#     my.col.warm.n <- max(0,sum(data.seq >= 0)-1)
+   if (i == 3) {
+      range_max <- max(abs(min(quantile(plot_data[[i]],probs=quantile_min),na.rm=T)),max(quantile(plot_data[[i]],probs=quantile_max),na.rm=T))
+      data.seq <- pretty(c(-range_max,range_max),n=num_ints)
+      if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
+      	  data.seq <- pretty(c(diff_range_min,diff_range_max),n=num_ints)	#Changed from the line above to this, as having the seq made ranges less than 1 came out asymetrical. Not sure why.
+      }
 
-     min.data <- min(data.seq)
-     max.data <- max(data.seq)
-     n.bins <- length(data.seq)
-#     binpal2 <- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
-     colors_cool_n <- abs(min.data)
-     colors_warm_n <- abs(max.data)
-     if ((abs(min.data) < 5) || (abs(max.data) < 5)) {
-        colors_cool_n <- 10*(abs(min.data))
-        colors_warm_n <- 10*(abs(max.data))
-     }
-     colors_cool <- colorRampPalette(colors=c("darkorchid4","purple", "#002FFF", "deepskyblue", "lightblue","gray80"))(colors_cool_n)
-     colors_warm <- colorRampPalette(colors=c("gray80","palegoldenrod", "yellow", "orange", "red", "brown"))(colors_warm_n)
-     rampcols <- c(colors_cool,colors_warm)
-     binpal2 <- colorBin(palette=rampcols, c(min.data,max.data), n.bins-1 , pretty = FALSE)
-  }
+      min.data <- min(data.seq)
+      max.data <- max(data.seq)
+      n.bins <- length(data.seq)
+      colors_cool_n <- abs(min.data)
+      colors_warm_n <- abs(max.data)
+      if ((abs(min.data) < 5) || (abs(max.data) < 5)) {
+         colors_cool_n <- 10*(abs(min.data))
+         colors_warm_n <- 10*(abs(max.data))
+      }
+      colors_cool <- colorRampPalette(colors=c("darkorchid4","purple", "#002FFF", "deepskyblue", "lightblue","gray80"))(colors_cool_n)
+      colors_warm <- colorRampPalette(colors=c("gray80","palegoldenrod", "yellow", "orange", "red", "brown"))(colors_warm_n)
+      rampcols <- c(colors_cool,colors_warm)
+      binpal2 <- colorBin(palette=rampcols, c(min.data,max.data), n.bins-1 , pretty = FALSE)
+   }
 
-#        addRasterImage(o3.mod.raster,colors=binpal2,opacity=.5) %>%
-#        addCircles(all_lons,all_lats,color=~binpal2(plot_data[[i]]),radius=100,data=data.df,opacity=1,fillOpacity=1,popup=contents)%>%
-#     my.leaf <- my.leaf.base
-        for (j in 1:length(network_names)) {
-           sinfo_data <- subset(sinfo_data_in,Network==network_names[j])
-           Marker <- c(paste(network_names[j],plot_names[i],sep="_"))
-           if(i == 1) { 
-	      plot_val <- sinfo_data$Obs_Val 
-	      Markers_Obs <-  c(Markers_Obs,Marker)
-	      min.data.obs <- min.data
-	      max.data.obs <- max.data
-	      binpal_obs <- binpal2
-	   }
-           if(i == 2) { 
-	      plot_val <- sinfo_data$Mod_Val 
-	      Markers_Mod <-  c(Markers_Mod,Marker)
-	      min.data.mod <- min.data
-              max.data.mod <- max.data
-	      binpal_mod <- binpal2
-	   }
-           if(i == 3) { 
-	      plot_val <- sinfo_data$Diff_Val 
-	      Markers_Diff <-  c(Markers_Diff,Marker)
-	      min.data.diff <- min.data
-              max.data.diff <- max.data
-	      binpal_diff <- binpal2
-	   }
-           data.df <- data.frame(network=sinfo_data$Network,site.id=sinfo_data$stat_id,latitude=sinfo_data$lat,longitude=sinfo_data$lon,data.obs=plot_val)
-#           data.df <- subset(data.df,network==network_names[j])
-	   contents <- paste("Site: ", sinfo_data$stat_id,
+   for (j in 1:length(network_names)) {
+      sinfo_data <- subset(sinfo_data_in,Network==network_names[j])
+      Marker <- c(paste(network_names[j],plot_names[i],sep="_"))
+      if(i == 1) { 
+         plot_val <- sinfo_data$Obs_Val 
+         Markers_Obs <-  c(Markers_Obs,Marker)
+         min.data.obs <- min.data
+         max.data.obs <- max.data
+         binpal_obs <- binpal2
+      }
+      if(i == 2) { 
+         plot_val <- sinfo_data$Mod_Val 
+         Markers_Mod <-  c(Markers_Mod,Marker)
+         min.data.mod <- min.data
+         max.data.mod <- max.data
+         binpal_mod <- binpal2
+      }
+      if(i == 3) { 
+         plot_val <- sinfo_data$Diff_Val 
+         Markers_Diff <-  c(Markers_Diff,Marker)
+         min.data.diff <- min.data
+         max.data.diff <- max.data
+         binpal_diff <- binpal2
+      }
+      data.df <- data.frame(network=sinfo_data$Network,site.id=sinfo_data$stat_id,latitude=sinfo_data$lat,longitude=sinfo_data$lon,data.obs=plot_val)
+      contents <- paste("Site: ", sinfo_data$stat_id,
                   "<br/>",
                   "Network: ", sinfo_data$Network, 
                   "<br/>",
@@ -298,15 +276,14 @@ for (i in 1:3) {
                   "<br/>",
                   "Diff:", round(sinfo_data$Diff_Val, 2),units, sep=" ")
 
-           contents2 <- paste("Site: ", sinfo_data$stat_id,
-                              "  Network: ", sinfo_data$Network,
-                              "  Value: ", round(plot_val, 2), units, sep=" ")
-           stations <- unique(data.df$site.id)
-#           aqdat_in.df$Date_Hour <- as.POSIXlt(paste(aqdat_in.df$Start_Date," ",aqdat_in.df$Hour,":00:00",sep=""))
-	   aqdat_out.df$Date_Hour <- (paste(aqdat_out.df$Start_Date," ",aqdat_out.df$Hour,":00:00",sep=""))
-	   if ((i == 1) && (length(stations) <= 100) && (popup_ts == 'y')) {
-	   plist <- lapply(stations,
-			    function(m)
+      contents2 <- paste("Site: ", sinfo_data$stat_id,
+                  "  Network: ", sinfo_data$Network,
+                  "  Value: ", round(plot_val, 2), units, sep=" ")
+      stations <- unique(data.df$site.id)
+      aqdat_out.df$Date_Hour <- (paste(aqdat_out.df$Start_Date," ",aqdat_out.df$Hour,":00:00",sep=""))
+      if ((i == 1) && (length(stations) <= 100) && (popup_ts == 'y')) {
+         plist <- lapply(stations,
+                         function(m)
 				xyplot(Obs_Value + Mod_Value + (Mod_Value-Obs_Value) ~ as.POSIXct(Date_Hour), data = aqdat_out.df,
                                        subset = (Stat_ID == m),
 				       superpose=T,
@@ -323,58 +300,45 @@ for (i in 1:3) {
 				       ylab = list(label=paste(species," (",units,")",sep=""),cex=1.5) 
 				)
 		          )
-	   }
-           if(!exists("plot_radius")) { plot_radius <- 0 }
-           if(!exists("outlier_radius")) { outlier_radius <- 40 }
-           if(!exists("fill_opacity")) { fill_opacity <- 0.8 }
-           plot_rad <- plot_radius
-           if (plot_rad == 0) {
-              max.radius <- 20
-              min.radius <- 4
-              ecdf_data <- c(all_obs,all_mod)
-              if (i == 3) { ecdf_data <- all_diff }
-                 plot_rad <- ecdf(abs(ecdf_data))(abs(plot_val))*max.radius
-                 plot_rad[plot_rad < min.radius] <- min.radius
-#           plot_rad[abs(plot_val) > max.data] <- outlier_radius
-  	      if (quantile_max != 1 || quantile_min != 0) {
-                 plot_rad[abs(plot_val) > max.data] <- outlier_radius
-              }
-	   #           plot_rad[plot_rad > 19.98] <- 40
-#           }
-#           my.leaf <- my.leaf.base
-	   my_icons2 <- iconList(
+      }
+      if(!exists("plot_radius")) { plot_radius <- 0 }
+      if(!exists("outlier_radius")) { outlier_radius <- 40 }
+      if(!exists("fill_opacity")) { fill_opacity <- 0.8 }
+      plot_rad <- plot_radius
+      if (plot_rad == 0) {
+         max.radius <- 20
+         min.radius <- 4
+         ecdf_data <- c(all_obs,all_mod)
+         if (i == 3) { ecdf_data <- all_diff }
+            plot_rad <- ecdf(abs(ecdf_data))(abs(plot_val))*max.radius
+            plot_rad[plot_rad < min.radius] <- min.radius
+         if (quantile_max != 1 || quantile_min != 0) {
+            plot_rad[abs(plot_val) > max.data] <- outlier_radius
+         }
+	 my_icons2 <- iconList(
               	  circle = makeIcon(iconUrl = "https://www.freeiconspng.com/uploads/black-circle-icon-23.png",
                           iconWidth = 18, iconHeight = 18),
 		  square = makeIcon(iconUrl = "https://www.freeiconspng.com/uploads/black-square-frame-23.png",
                           iconWidth = 18, iconHeight = 18),
 		  triangle = makeIcon(iconUrl = "https://www.freeiconspng.com/uploads/triangle-png-28.png",
                             iconWidth = 18, iconHeight = 18)
-	   )
-	   if ((length(stations) <= 100) && (popup_ts == 'y')) {
-              my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=Marker,radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=popupGraph(plist,width=1000,height=1000),label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px")) 
-	   }
-	   else {
-	      my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=Marker,radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents, label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
-           }
-#           my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=~sinfo_data$Network,layerId=plot_names[i],radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents,label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
+	 )
+	 if ((length(stations) <= 100) && (popup_ts == 'y')) {
+            my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=Marker,radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=popupGraph(plist,width=1000,height=1000),label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px")) 
+	 }
+	 else {
+	    my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=Marker,radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents, label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
          }
       }
-   }
-   my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min.data.obs,max.data.obs), group=Markers_Obs, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
-#         my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_mod, values = c(min.data.mod,max.data.mod), group = c(Markers_Mod), layerId=Markers_Mod, title = paste(species,"<br/> (",units,")",sep=""), opacity = 2)
-   my.leaf <- my.leaf %>% addLegend("bottomleft", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
-   my.leaf2 <- my.leaf %>% addProviderTiles(leaflet_map[1],group="Street Map") %>% setView(center_lon,center_lat,zoom=zoom_level)
-   my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")
-   my.leaf2 <- my.leaf2 %>% addControl(main_title_png,position="topright",className="map-title")
-   my.leaf <- my.leaf %>%
-        addGroupedLayersControl(
-          baseGroups = base_Groups, overlayGroups = list("OBS" = Markers_Obs,"MODEL"=Markers_Mod,"DIFF"=Markers_Diff),position="topleft",
-	   options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = FALSE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
-	)
-   saveWidget(my.leaf, file=filename,selfcontained=T)
-   saveWidget(my.leaf2, file="Rplot.html",selfcontained=T)
-   if (png_from_html == "y") {
-      webshot("Rplot.html", file = filename_png,cliprect = "viewport",zoom=2,vwidth=max(lon_diff*24.5,1600),vheight=max(lat_diff*36.5,800))
-   }
-#}
+   } # End network loop
+} # End plot val loop
 
+my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min.data.obs,max.data.obs), group=Markers_Obs, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
+my.leaf <- my.leaf %>% addLegend("bottomleft", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
+my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")
+my.leaf <- my.leaf %>%
+  addGroupedLayersControl(
+    baseGroups = base_Groups, overlayGroups = list("OBS" = Markers_Obs,"MODEL"=Markers_Mod,"DIFF"=Markers_Diff),position="topleft",
+       options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = FALSE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
+  )
+saveWidget(my.leaf, file=filename,selfcontained=T)
