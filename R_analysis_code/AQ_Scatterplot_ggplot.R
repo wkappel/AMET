@@ -17,9 +17,6 @@ library(htmlwidgets)
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 
-#Sys.setenv("plotly_username"="kwappel")
-#Sys.setenv("plotly_api_key"="wD4Ys6si30CVxyNfkl3N")
-
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
@@ -181,7 +178,6 @@ if (trend_line == 'y') {
    sp <- sp + geom_smooth(method=lm, linetype="dashed", color="black")
 }
 sp <- sp + geom_abline(intercept = 0, slope=1)
-#ggsave(filename_pdf,height=8,width=8)
 sp
 dev.off()
 

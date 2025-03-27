@@ -19,15 +19,6 @@ library(processx)
 library(RColorBrewer)
 library(pandoc)
 
-print("Pandoc Version:")
-rmarkdown::pandoc_version()
-
-print("Pandoc Executable:")
-rmarkdown::pandoc_exec()
-sessionInfo()
-
-pandoc_path <- "/usr/bin/pandoc"
-
 ## get some environmental variables and setup some directories
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory

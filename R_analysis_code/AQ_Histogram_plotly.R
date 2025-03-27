@@ -1,9 +1,9 @@
 header <- "
 ########################### MODEL TO OBS SCATTERPLOT ############################# 
-### AMET CODE: R_Scatterplot_multisim_plotly.r 
+### AMET CODE: R_Histogram_plotly.R 
 ###
 ### This script is part of the AMET-AQ system.  This script uses the plotly R package
-### to create an interactive model-to-obs scatterplot. This script will plot a single 
+### to create an interactive histogram plot. This script will plot a single 
 ### species from a single network and multiple simulations on a single plot.
 ###
 ### Last Updated by Wyat Appel: 03/2025
@@ -19,8 +19,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-filename_html <- paste(run_name1,species,pid,"scatterplot_multi.html",sep="_")             # Set PDF filename
-filename_txt  <- paste(run_name1,species,pid,"scatterplot_multi.csv",sep="_")       # Set output file name
+filename_html <- paste(run_name1,species,pid,"histogram.html",sep="_")             # Set PDF filename
+filename_txt  <- paste(run_name1,species,pid,"histogram.csv",sep="_")       # Set output file name
 
 
 ## Create a full path to file
@@ -29,13 +29,11 @@ filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 
 #################################
 
-sinfo 		<- NULL
-axis.max 	<- NULL
-axis.min 	<- NULL
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+
 run_count 	<- 1
 num_runs        <- 1
-scatter_colors  <- NULL                                                                   # Set number of runs to 1
-scatter_symbols <- NULL
 run_names       <- run_name1               # Set default to just one run being plotted
 
 {
@@ -124,14 +122,15 @@ for (j in 1:num_runs) {
    {
       if (j == 1) {
          aqdat_out.df <- aqdat.df
+         p <- plot_ly(data = aqdat.df, x=~Obs_Value,type='histogram',alpha=0.6,name=network)
+         p <- p %>% add_histogram(data=aqdat.df,x=~Mod_Value,name=run_name)
       }
       else {
          aqdat_out.df <- rbind(aqdat_out.df, aqdat.df)
+         p <- p %>% add_histogram(data=aqdat.df,x=~Mod_Value,name=run_name)
       }
    }
-   scatter_colors[j]  <- plot_colors[j]
-   scatter_symbols[j] <- plot_symbols[j]
-}    # End for loop for networks
+}    # End for loop for simulations 
 
 ### Error check for no data ###
 if (length(aqdat_out.df$Stat_ID) == 0) {
@@ -139,22 +138,7 @@ if (length(aqdat_out.df$Stat_ID) == 0) {
 }
 ###############################
 
-axis.min <- axis.max * .033
-
-### If user sets axis maximum, compute axis minimum ###
-if ((length(y_axis_max) > 0) || (length(x_axis_max) > 0)) {
-   axis.max <- max(y_axis_max,x_axis_max)
-   axis.min <- axis.max * 0.033
-
-}
-if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
-   axis.min <- min(y_axis_min,x_axis_min)
-}
-#######################################################
-
-
-p <- plot_ly(data = aqdat_out.df, x=~Obs_Value,y=~Mod_Value,height=img_height,width=img_width,type='scatter',mode='markers',symbol=~Simulation,symbols=scatter_symbols,colors=scatter_colors,marker=list(size=10),text= ~paste("Site:",Stat_ID,"<br>Lat/Lon:",lat,"/",lon,"<br>State:",State,"<br>Obs:", round(Obs_Value,3), '<br>Mod:', round(Mod_Value,3))) %>%
-   add_segments(x=0,xend=axis.max,y=0,yend=axis.max,size=I(0.5),line=list(color="black"))
+  p <- p %>% layout(title=list(text=main.title,font=list(size=25),y=0.97),barmode="overlay",xaxis=list(title=paste(species," (",units,")",sep=""),titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Frequency",titlefont=list(size=25),tickfont=list(size=15)),legend=list(font=list(size=20)))
   
 saveWidget(p, file=filename_html,selfcontained=T)
 
