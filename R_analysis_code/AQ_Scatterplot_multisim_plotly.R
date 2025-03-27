@@ -6,7 +6,7 @@ header <- "
 ### to create an interactive model-to-obs scatterplot. This script will plot a single 
 ### species from a single network and multiple simulations on a single plot.
 ###
-### Last Updated by Wyat Appel: June, 2019
+### Last Updated by Wyat Appel: 03/2025
 ##################################################################################
 "
 
@@ -15,9 +15,6 @@ library(plotly)
 library(htmlwidgets)
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
-
-#Sys.setenv("plotly_username"="kwappel")
-#Sys.setenv("plotly_api_key"="wD4Ys6si30CVxyNfkl3N")
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
@@ -40,7 +37,6 @@ num_runs        <- 1
 scatter_colors  <- NULL                                                                   # Set number of runs to 1
 scatter_symbols <- NULL
 run_names       <- run_name1               # Set default to just one run being plotted
-legend_names    <- NULL                    # Set default for legend
 
 {
    if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
@@ -136,8 +132,6 @@ for (j in 1:num_runs) {
    scatter_colors[j]  <- plot_colors[j]
    scatter_symbols[j] <- plot_symbols[j]
 }    # End for loop for networks
-#run_count <- run_count+1
-#run_name <- run_name2
 
 ### Error check for no data ###
 if (length(aqdat_out.df$Stat_ID) == 0) {
@@ -162,9 +156,6 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 p <- plot_ly(data = aqdat_out.df, x=~Obs_Value,y=~Mod_Value,height=img_height,width=img_width,type='scatter',mode='markers',symbol=~Simulation,symbols=scatter_symbols,colors=scatter_colors,marker=list(size=10),text= ~paste("Site:",Stat_ID,"<br>Lat/Lon:",lat,"/",lon,"<br>State:",State,"<br>Obs:", round(Obs_Value,3), '<br>Mod:', round(Mod_Value,3))) %>%
    add_segments(x=0,xend=axis.max,y=0,yend=axis.max,size=I(0.5),line=list(color="black"))
   
-#htmlwidgets::saveWidget(as_widget(p), filename_html)
 saveWidget(p, file=filename_html,selfcontained=T)
-#chart_link = api_create(p, filename="scatter-basic")
-#chart_link
 
 

@@ -8,7 +8,7 @@ header <- "
 ### the R htmlwidgets package and PANDOC. If PANDOC is not available, the selfcontained option
 ### should be set to F. Output format is html.
 ###
-### Last updated by Wyat Appel: Jan 2022
+### Last updated by Wyat Appel: 03/2025
 ############################################################################################
 "
 
@@ -18,15 +18,6 @@ library(htmlwidgets)
 library(processx)
 library(RColorBrewer)
 library(pandoc)
-
-print("Pandoc Version:")
-rmarkdown::pandoc_version()
-
-print("Pandoc Executable:")
-rmarkdown::pandoc_exec()
-sessionInfo()
-
-pandoc_path <- "/usr/bin/pandoc"
 
 ## get some environmental variables and setup some directories
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
@@ -344,8 +335,6 @@ write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # W
       }
    }
    if ((state != "All") && (custom_title == "")) {
-#      main.title      <- paste(run_name1,species,"for",network,"State:",aqdat_query.df$state[1],sep=" ")
-#      state <- paste(state,collapse=" ")
       main.title      <- paste(run_name1,species,"for",network,"State:",state,sep=" ")
    }
    if ((site != "All") && (custom_title == "")) {
@@ -353,18 +342,12 @@ write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # W
    }
    main.title <- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
 ##################
-#pal <- c("gray",brewer.pal(12,"Paired"))
-#colors <- brewer.pal(12,"Paired")
 colors <- c(brewer.pal(9,"Set1"),brewer.pal(8,"Dark2"),brewer.pal(9,"Set1"))
-#colors <- c("firebrick","blue","green","yellow4","orange","brown","purple")
-#colors[6] <- "#CCCC00"
 colors[colors=="#FFFF33"] <- "#8B8000"	# Replace vivid yellow with dark yellow
 
 inc_nmb <- "n"
 inc_nme <- "n"
 
-#data.df <- data.frame(Dates=Dates[[1]],Obs=Obs_Mean[[1]])
-#data_temp.df <- data.frame(Dates=Dates,Obs=Obs_Mean)
 data.df <- unique(data.df)	# Eliminate duplicate rows in the obs data frame
 
 xaxis <- list(title= x_label, automargin = TRUE,font=list(size=10),tickfont=list(size=20))
@@ -372,7 +355,6 @@ yaxis <- list(title=paste(species," (",units,")"),automargin=TRUE,font=list(size
 if (inc_corr == 'y') { yaxis <- list(title=paste(species," (",units,") / Correlation"),automargin=TRUE,font=list(size=30),tickfont=list(size=20)) }
 
 p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color='black'), marker=list(symbol='circle',color='black',size=10), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
-#p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', color=I('black'), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
      layout(title=main.title,font=list(size=15),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5)),margin=list(t=50,b=110)) %>%
      layout(annotations=list(x=Dates[[j]],y=~Obs,text=network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE))
 
@@ -400,8 +382,6 @@ for (j in 1:num_runs) {
            layout(annotations = list(x=Dates[[j]],y=NME_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
    }
 }
-
-#api_create(p, filename = "r-timeseries")
 
 saveWidget(p, file=filename_html,selfcontained=T)
 

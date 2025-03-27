@@ -145,7 +145,5 @@ p <- plot_ly(data = aqdat_out.df, x=~Obs_Value,y=~Mod_Value,height=img_height,wi
   
 #htmlwidgets::saveWidget(as_widget(p), filename_html)
 saveWidget(p, file=filename_html,selfcontained=T)
-#chart_link = api_create(p, filename="scatter-basic")
-#chart_link
 
 
