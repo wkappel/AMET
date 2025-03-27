@@ -6,7 +6,7 @@ header <- "
 ### scatterplot using the R plotly package. This script will plot a single species for multiple
 ### networks and simulations on a single plot.  
 ###
-### Last Updated by Wyat Appel: June, 2019
+### Last Updated by Wyat Appel: 03/2025 
 #####################################################################################
 "
 
@@ -15,9 +15,6 @@ library(plotly)
 library(htmlwidgets)
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
-
-#Sys.setenv("plotly_username"="kwappel")
-#Sys.setenv("plotly_api_key"="wD4Ys6si30CVxyNfkl3N")
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
