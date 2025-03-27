@@ -29,7 +29,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[7.3 Summary of the AQ Analysis Scripts](#aq_analysis_scripts)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[7.4 Creating a New Analysis Project](#New_Analysis_Project)<br>
 [8. Adding a New AQ Network to AMET](#Adding_New_AQ_Network)<br>
-[9. CMAS Support for AMET](#CMAS_Support)<br>
+[9. AMET Website GUI](#amet_website_gui)<br>
+[10. CMAS Support for AMET](#CMAS_Support)<br>
 [References](#References)<br>
 [Appendix A: Overview Flow Diagram](#Appendix_A)<br>
 [Appendix B: Configuration and Input Files](#Appendix_B)<br>
@@ -1484,7 +1485,11 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - single network; single species; multiple simulations allowed;
 
 **run\_monthly\_stat\_plot.csh** ([Example Plot])
-   - Creates a monthly average time series of obs/mod concentration, bias, RMSE, NMB, NME and correlation.
+   - Creates a monthly average time series of obs/mod concentration, MB, ME, RMSE, NMB, NME, and correlation.
+   - single network; single species; multi simulation; full year data required
+
+**run\_monthly\_stat\_plot\_plotly.csh** ([Example Plot])
+   - Creates a interactive monthly average time series html plot of MB, ME, RMSE, NMB, NME, and correlation.
    - single network; single species; multi simulation; full year data required
 
 **run\_plot\_spatial.csh** ([Example Plot](./images/aqExample_SO4_1_spatialplot_diff.png))
@@ -1499,7 +1504,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Plots the difference in bias and error between two model simulations each site. Multiple values for a site are averaged to a single value for plotting purposes
    - multiple networks; single species; multi simulations required
 
-**run\_plot\_spatial\_diff_leaflet.csh** ([Example Leaflet HTML](./images/aqExample_SO4_1_spatialplot_bias_diff.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_spatialplot_bias_diff.html.png))
+**run\_plot\_spatial\_diff\_leaflet.csh** ([Example Leaflet HTML](./images/aqExample_SO4_1_spatialplot_bias_diff.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_spatialplot_bias_diff.html.png))
    - Plots the difference in bias and error between two model simulations each site. Multiple values for a site are averaged to a single value for plotting purposes. Uses R leaflet package to allow map zooming
    - multiple networks; single species; multi simulations required
 
@@ -1781,8 +1786,26 @@ Once you have done that, you can save your modified version of the Network.input
 
 After you have completed all the steps above, you should be ready to process your new network with AMET. The modifications above will allow you to run site compare to create paired model/ob data files and add those data to the database, and also allow you to run analysis scripts using your new network.
 
+<a id="amet_website_gui"></a>
+9. AMET Website GUI
+=====================
+
+A HTML/PHP based interface has been developed as a Graphical User Interface (GUI) to the analysis portion of AMET. The website allows for the easy selection of various analysis criteria (e.g., geographical location, date ranges, networks, species) and plot criteria (axis ranges, colors, averaging period). The website is provided with minimal support and will need to be setup and configured for an individual system. However, the setup is fairly minimal. The requirements for using the AMET website are:
+
+- AMET installed with database access
+- Apache and PHP installed
+
+The AMET website files are located in the AMET_Website directory in the distributed AMETv1.6 code. The required php files are:
+
+- querygen_aq.php
+- querygen_met.php
+- run_info.template
+- run_info_met.template
+
+There are are number of support files provided in the AMET_Website directory as well. In addition to the files in the AMET_Website directory, there is also a AMET website specific configuration file, **amet-www-config.php**, in the configuration directory that needs to be configured similarly to the amet-config.R file in the same directory.
+
 <a id="cmas_support"></a>
-9. CMAS Support for AMET
+10. CMAS Support for AMET
 =====================
 
 AMET is supported by the Community Modeling and Analysis System (CMAS) Center. See the
