@@ -1790,19 +1790,26 @@ After you have completed all the steps above, you should be ready to process you
 9. AMET Website GUI
 =====================
 
-A HTML/PHP based interface has been developed as a Graphical User Interface (GUI) to the analysis portion of AMET. The website allows for the easy selection of various analysis criteria (e.g., geographical location, date ranges, networks, species) and plot criteria (axis ranges, colors, averaging period). The website is provided with minimal support and will need to be setup and configured for an individual system. However, the setup is fairly minimal. The requirements for using the AMET website are:
+An HTML/PHP based system has been developed as a Graphical User Interface (GUI) to the analysis portion of AMET. The website allows for the easy selection of various analysis criteria (e.g., geographical location, date ranges, networks, species) and plot criteria (axis ranges, colors, averaging period). The website is provided with minimal support and will need to be setup and configured for an individual system. The requirements for using the AMET website are:
 
 - AMET installed with database access
 - Apache and PHP installed
+- cache directory with read/write/execute permission for Apache
 
 The AMET website files are located in the AMET_Website directory in the distributed AMETv1.6 code. The required php files are:
 
-- querygen_aq.php
-- querygen_met.php
-- run_info.template
-- run_info_met.template
+- querygen_aq.php (AQ interface)
+- querygen_met.php (Met interface)
+- run_info.template (AQ template configuration file)
+- run_info_met.template (Met template configuration file)
 
-There are are number of support files provided in the AMET_Website directory as well. In addition to the files in the AMET_Website directory, there is also a AMET website specific configuration file, **amet-www-config.php**, in the configuration directory that needs to be configured similarly to the amet-config.R file in the same directory.
+There are a number of additinoal support files provided in the AMET_Website directory as well. In addition to the files in the AMET_Website directory, there is also a AMET website specific configuration file, **amet-www-config.php**, in the $AMETBASE/configuration directory that needs to be configured similarly to the amet-config.R file in the same directory. Additional information required in the website configruation file are:
+
+- http_server (http server name)
+- http_amet (extension to the location of the AMET php file)
+- cache_amet (AMET cache directory location)
+
+By default, Apache should look for the index.php file in the /var/www/html directory. However, Apache can be configured to point to html/php files elsewhere with other names. Please follow the instructions online for setting up Apache (and installing PHP). A cache directory must also be created where Apache has permission to write files. This cache directory is where the configuration file, run script, and output files will be written. The location of the cache directory is specified in the amet-www-config.php file. Be sure that the cache directory is setup with the ability for Apache to write and execute files in that directory.
 
 <a id="cmas_support"></a>
 10. CMAS Support for AMET
