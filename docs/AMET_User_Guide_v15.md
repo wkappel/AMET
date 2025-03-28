@@ -1661,35 +1661,35 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
 
 **run\_timeseries.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
    - Creates a time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias and error between the obs and model
-   - single network;single species; multiple simulations
+   - single network; single species; multiple simulations
 
 **run\_timeseries\_bysite.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
    - Creates a collection of time series plots by creating individual time series plots for each site specified by the query. Output is zip file of the individual plots in png and pdf formats.
-   - single network;single species; multiple simulations
+   - single network; single species; multiple simulations
 
 **run\_timeseries\_plotly\_bysite.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
    - Creates a collection of time series plots by creating individual time series plots for each site specified by the query. Output is zip file of the individual plots in HTML format.
-   - single network;single species; multiple simulations
+   - single network; single species; multiple simulations
    
 **run\_timeseries\_dygraph.csh** ([Example Leaflet HTML](./images/aqExample_O3_8hrmax_1_timeseries_dygraph.html))([Example Leaflet Plot - Screenshot](./images/aqExample_O3_8hrmax_1_timeseries_dygraph.html.png))
    - Creates an interactive time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias and error between the obs and model. Uses R dygraph package to allow time-series zooming
-   - single network;single species; multiple simulations
+   - single network ;single species; multiple simulations
 
 **run\_timeseries\_mtom.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries_mtom.png))
    - Creates a model to model time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
-   - single network;single species; multiple simulations
+   - single network; single species; multiple simulations
 
 **run\_timeseries\_multi\_species.csh** ([Example Plot](./images/aqExample_1_timeseries_multi_species.png))
    - Creates a time series plot for multiple species. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
-   - single network;multiple species; multiple simulations
+   - single network ;multiple species; multiple simulations
 
 **run\_timeseries\_multi\_species\_plotly.csh** ([Example Plot](./images/aqExample_1_timeseries_multi_species_plotly.png))
    - Creates a interactive (html) time series plot for multiple species. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
-   - single network;multiple species; multiple simulations
+   - single network; multiple species; multiple simulations
 
 **run\_timeseries\_multi_networks.csh** ([Example Plot](./images/aqExample_SO4_1_timeseries_multi_networks.png))
    - Creates a time series plot for up to two networks. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
-   - multiple networks;single species; multiple simulations
+   - multiple networks; single species; multiple simulations
 
 **run\_timeseries\_plotly.csh** ([Example Leaflet HTML](./images/aqExample_O3_8hrmax_1_timeseries.html)) ([Example Leaflet Plot - Screenshot](./images/aqExample_O3_8hrmax_1_timeseries.html.png))
    - Creates an interactive time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias and error between the obs and model. Uses R plotly package to allow time-series zooming
