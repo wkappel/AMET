@@ -1475,14 +1475,26 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
 **run\_kellyplot.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_NMB.png))
    - Creates a kellyplot of model performance color coded by season and NOAA climate region
    - single network; single species; single simulation; full year data required
+
+**run\_kellyplot\_plotly.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_NMB.html))
+   - Creates an interactive HTML Kelly plot of model performance color coded by season and NOAA climate region
+   - single network; single species; single simulation; full year data required
    
-**run\_kellyplot_region.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_region_NMB.png))
+**run\_kellyplot\_region.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_region_NMB.png))
    - Creates a kellyplot of model performance color coded by simulation and NOAA climate region
-   - single network; single species; multiple simulations allowed; 
+   - single network; single species; multiple simulations allowed
+
+**run\_kellyplot_\region\_plotly.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_region_NMB.html))
+   - Creates an interactive HTML Kelly plot of model performance color coded by simulation and NOAA climate region
+   - single network; single species; multiple simulations allowed
 
 **run\_kellyplot_season.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_season_NMB.png))
    - Creates a kellyplot of model performance color coded by simulation and season (winter, spring, summer, and fall)
    - single network; single species; multiple simulations allowed;
+
+**run\_kellyplot\_season\_plotly.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_season_NMB.html))
+   - Creates an interactive HTML Kelly plot of model performance color coded by simulation and season (winter, spring, summer, and fall)
+   - single network; single species; multiple simulations allowed
 
 **run\_monthly\_stat\_plot.csh** ([Example Plot])
    - Creates a monthly average time series of obs/mod concentration, MB, ME, RMSE, NMB, NME, and correlation.
@@ -1496,8 +1508,12 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes
    - multiple networks; single species; single simulation
 
-**run\_plot\_spatial_leaflet.csh** ([Example Leaflet HTML](./aqExample_SO4_1_spatialplot_diff.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_spatialplot_diff.html.png))
-   - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes. Uses R leaflet package to allow map zooming
+**run\_plot\_spatial\_leaflet.csh** ([Example Leaflet HTML](./aqExample_SO4_1_spatialplot.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_spatialplot.html.png))
+   - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes. Uses R leaflet and leaflet.extras packages to allow map zooming and selection of both metric and network. Also uses the lattice package to create popup time series plots for each site. Due to computational restraints, only queries with less 100 sites currently allow popup time series plots.
+   - multiple networks; single species; single simulation
+
+**run\_plot\_spatial\_leaflet_network.csh** ([Example Leaflet HTML](./aqExample_SO4_1_spatialplot.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_spatialplot.html.png))
+   - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes. This is the original version of this plot that creates separate plots for each metric (obs, mod, diff). This plot is retained because the new version of this plot requires R functions that are currently not included in the leaflet.extras package.
    - multiple networks; single species; single simulation
 
 **run\_plot\_spatial\_diff.csh** ([Example Plot](./images/aqExample_SO4_1_spatialplot_bias_diff.png))
@@ -1549,7 +1565,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - multiple networks; single species; single simulation
    
 **run\_scatterplot\_density\_ggplot.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_scatterplot_mtom_density.png))
-   - Creates a single model vs. obs scatterplot with shading to represent the density of points. Uses the ggplot2 R package
+   - Creates two (png and HTML) model vs. obs scatter plots with shading to represent the density of points. Uses the ggplot2 and plotly R packages
    - multiple networks; single species; single simulation
 
 **run\_scatterplot\_mtom.csh** ([Example Plot](./images/aqExample_SO4_1_scatterplot_mtom_density.png))
@@ -1557,7 +1573,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - multiple networks; single species; multiple simulations
 
 **run\_scatterplot\_mtom\_denisty.csh** ([Example Plot](./images/aqExample_SO4_1_scatterplot_mtom_density.png))
-   - Creates a single model-to-model scatterplot with shanding to represent the density of points. *Note*: The model points correspond to network’s site locations only
+   - Creates a single model-to-model scatterplot with shanding to represent the density of points. *Note*: The model points correspond to network site locations only
    - multiple networks; single species; multiple simulations required
 
 **run\_scatterplot\_multi.csh** ([Example Plot](./images/aqExample_SO4_1_scatterplot_multi.png))
@@ -1645,6 +1661,14 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
 
 **run\_timeseries.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
    - Creates a time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias and error between the obs and model
+   - single network;single species; multiple simulations
+
+**run\_timeseries\_bysite.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
+   - Creates a collection of time series plots by creating individual time series plots for each site specified by the query. Output is zip file of the individual plots in png and pdf formats.
+   - single network;single species; multiple simulations
+
+**run\_timeseries\_plotly\_bysite.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
+   - Creates a collection of time series plots by creating individual time series plots for each site specified by the query. Output is zip file of the individual plots in HTML format.
    - single network;single species; multiple simulations
    
 **run\_timeseries\_dygraph.csh** ([Example Leaflet HTML](./images/aqExample_O3_8hrmax_1_timeseries_dygraph.html))([Example Leaflet Plot - Screenshot](./images/aqExample_O3_8hrmax_1_timeseries_dygraph.html.png))
