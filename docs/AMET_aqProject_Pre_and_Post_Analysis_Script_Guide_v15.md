@@ -41,7 +41,8 @@ The setting of environment variables in the run script is divided into 8 differe
  REMAKE_PROJECT         Remake an existing AMET project. Note that all existing data will be deleted. Choices are T,F.
  DELETE_PROJECT         Delete an existing AMET project. This will delete all data in the existing
                         AMET table and remove the table from the database. Choices are T,F.
- RENAME_PROJECT         Rename an existing AMET project, retaining all existing data. Must also set CREATE_PROJECT to T to invoke. Must also specify new project name using the environment variable NEW_AMET_PROJECT_NAME. Choices are T,F.
+ RENAME_PROJECT         Rename an existing AMET project, retaining all existing data. Must also set CREATE_PROJECT to T to invoke.
+                        Must also specify new project name using the environment variable NEW_AMET_PROJECT_NAME. Choices are T,F.
  NEW_AMET_PROJECT_NAME  New name for AMET project you are renaming. 
  AMET_DB                Use the AMET database for evaluation plotting? Choices are T,F.
  spatial_plots          Create maps of bias and error from site compare output? Choices are T,F. 
