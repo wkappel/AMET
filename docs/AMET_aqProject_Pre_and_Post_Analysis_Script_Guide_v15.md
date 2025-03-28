@@ -1,4 +1,4 @@
-AMET aqProject Pre- and Post- Analysis Script Guide v1.5
+AMET aqProject Pre- and Post- Analysis Script Guide v1.6
 ========
 
 ## Contents
@@ -31,24 +31,26 @@ The setting of environment variables in the run script is divided into 8 differe
 <a id="picksteps"></a>Section 1: Select which analysis steps you want to execute
 -------------------------------------
 ```
- RUN_COMBINE       Run combine on CCTM output? Choices are T,F.
- RUN_HR2DAY        Run hr2day program on combine ouput? Choices are T,F.
- WRITE_SITEX       Write scripts for running site compare for each selected network? Choices are T,F.
- RUN_SITEX         Run site compare scripts for each selected network? Choices are T,F.
- CREATE_PROJECT    Create AMET project? Choices are T,F.
- LOAD_SITEX        Load site compare output for each selected network into AMET database? Choices are T,F.
- UPDATE_PROJECT    Update the AMET project info for an existing project (all data are retained)? Choices are T,F.
- REMAKE_PROJECT    Remake an existing AMET project. Note that all existing data will be deleted. Choices are T,F.
- DELETE_PROJECT    Delete an existing AMET project. This will delete all data in the existing
-                   AMET table and remove the table from the database. Choices are T,F. 
- AMET_DB           Use the AMET database for evaluation plotting? Choices are T,F.
- spatial_plots     Create maps of bias and error from site compare output? Choices are T,F. 
- stacked_barplots  Create stacked bar plots of PM2.5 species from site compare output? Choices are T,F.
- time_plots        Create time series plots from site compare output? Choices are T,F.
- scatter_plots     Create scatter plots from site compare output? Choices are T,F.
- misc_plots        Create bugle plots and soccer goal plots from site compare output? Choices are T,F.
+ RUN_COMBINE            Run combine on CCTM output? Choices are T,F.
+ RUN_HR2DAY             Run hr2day program on combine ouput? Choices are T,F.
+ WRITE_SITEX            Write scripts for running site compare for each selected network? Choices are T,F.
+ RUN_SITEX              Run site compare scripts for each selected network? Choices are T,F.
+ CREATE_PROJECT         Create AMET project? Choices are T,F.
+ LOAD_SITEX             Load site compare output for each selected network into AMET database? Choices are T,F.
+ UPDATE_PROJECT         Update the AMET project info for an existing project (all data are retained)? Choices are T,F.
+ REMAKE_PROJECT         Remake an existing AMET project. Note that all existing data will be deleted. Choices are T,F.
+ DELETE_PROJECT         Delete an existing AMET project. This will delete all data in the existing
+                        AMET table and remove the table from the database. Choices are T,F.
+ RENAME_PROJECT         Rename an existing AMET project, retaining all existing data. Must also set CREATE_PROJECT to T to invoke. Must also specify new project name using the environment variable NEW_AMET_PROJECT_NAME. Choices are T,F.
+ NEW_AMET_PROJECT_NAME  New name for AMET project you are renaming. 
+ AMET_DB                Use the AMET database for evaluation plotting? Choices are T,F.
+ spatial_plots          Create maps of bias and error from site compare output? Choices are T,F. 
+ stacked_barplots       Create stacked bar plots of PM2.5 species from site compare output? Choices are T,F.
+ time_plots             Create time series plots from site compare output? Choices are T,F.
+ scatter_plots          Create scatter plots from site compare output? Choices are T,F.
+ misc_plots             Create bugle plots and soccer goal plots from site compare output? Choices are T,F.
 ```
-All 15 environment variables in this section are T/F flags.  Flags can be set to T or F depending on what post-processing files are needed and which steps have already been completed. While the flags can be set in many different permutations, the post-processing must take place in a specific order:
+All 16 of the 17 environment variables in this section are T/F flags (the other is a project name to specify).  Flags can be set to T or F depending on what post-processing files are needed and which steps have already been completed. While the flags can be set in many different permutations, the post-processing must take place in a specific order:
 1. Run the combine utility on CCTM output to create COMBINE_ACONC and COMBINE_DEP files. 
 2. [Required if including TOAR network] Run the hr2day utility on the combine output to create daily average values (e.g. daily 8hrmax ozone).
 3. Create "sitex" run scripts for controlling the execution of the sitecmp and sitecmp_dailyo3 utilities.
@@ -59,7 +61,7 @@ All 15 environment variables in this section are T/F flags.  Flags can be set to
 A user can choose to do all of the steps at once or run the script multiple times.  For example, the script can be set to only run combine by setting the first flag to T and the remaining flags to F.  The user can then rerun the script at a later time to create the sitecmp files and evaluation plots.  In this case the first flag can be set to F since the combine files already exist.
 
 *Notes*
-* A user has the option to create an AMET project and load the model/obs data into the AMET MYSQL database. Loading the data into the database allows users who have access to the RTP campus Intranet to access the data online through the [AMET web interface](http://newton.rtpnc.epa.gov/wyat/AMET_AMAD/querygen_aq.php).  The web interface allows for more refined control over the evaluation plots.  Loading the data into the AMET database also allows the users to evaluate the model output across all of the model/obs data in the simulation period rather than the default mode which produces monthly summaries.  This option is set in section 7. 
+* A user has the option to create an AMET project and load the model/obs data into the AMET MYSQL database. Loading the data into the database allows users more refined control over the evaluation plots. Loading the data into the AMET database also allows the users to evaluate the model output across all of the model/obs data in the simulation period rather than the default mode which produces monthly summaries. This option is set in section 7. 
 * AMET_DB should only be set to T if LOAD_SITEX=T (or if LOAD_SITEX has been set to T previously).
 * An AMET project does not have to be created in order to use the AMET batch plotting scripts.  If the user chooses not to load the data into the AMET database, they should set the AMET_DB flag to F.  In this case the batch plotting scripts will read the data directly from the .csv sitecmp and sitecmp_dailyo3 files. 
 
@@ -274,29 +276,34 @@ The following table provides the list of available observations from each networ
 
 | Network       | Available Species                                     | Notes |
 | ------------- |-------------------------------------------------------| -------|
-| AERONET       | AOD_340, AOD_380, AOD_440, AOD_500, AOD_555, AOD_675, AOD_870, AOD_1020, AOD_1640| Data available for 2000 - 2015|          
-| AMON          | NH3             |      Data available for 2009 - 2014   |
-| AQS_HOURLY    | O3, NO, NOY, NO2, NOX, CO, SO2, PM2.5, PM10, Isoprene, Ethylene, Ethane, Toluene |  Data available for 2000 - 2016|
-| AQS_DAILY_O3  | O3_1hrmax, O3_1hrmax_9cell, O3_1hrmax_time, O3_8rhmax, O3_8hrmax_9cell, O3_8hrmax_time, W126, SUM06|Data available for 2000 - 2016 |                
-| AQS_DAILY    | PM2.5, PM10, Isoprene, Ethylene, Ethane, Toluene, Acetaldehyde, Formaldehyde, OC, EC, TC, Na, Cl, NaCl, SO4, NO3, NH4, Fe, Al, Si, Ti, Ca, Mg, K, Mn, soil, OTHER, NCOM|Data available for 2000 - 2016  |                
-| CASTNET      | SO4, NO3, NH4, TNO3, Mg, Ca, K, Na, Cl, HNO3, SO2|  Data available for 2000 - 2016     |           
-| CASTNET_HOURLY|  O3, surface temp, RH, solar radiation, precip, WSPD | Data available for 2000 - 2016  |             
-| CASTNET_DAILY_O3| O3_1hrmax, O3_1hrmax_9cell, O3_1hrmax_time, O3_8rhmax, O3_8hrmax_9cell, O3_8hrmax_time, W126, SUM06|Data available for 2000 - 2016 |
-| CASTNET_DRYDEP| SO2, HNO3, TNO3, SO4, NO3, NH4 | Data available for 2000 - 2016 |
-| CSN           | SO4, NO3, NH4, PM2.5, OC, EC, TC, Na, Cl, Fe, Al, Si, Ti, Ca, Mg, K, Mn, soil, NaCl, OTHER, NCOM| Data available for 2000 - 2016 |                 
-| IMPROVE       | SO4, NO3, NH4, PM2.5, OC, EC, TC, Cl, PM10, PM Coarse, Na, NaCl, Fe, Al, Si, Ti, Ca, Mg, K, Mn, soil, OTHER, NCOM|Data available for 2000 - 2016 |
-| NADP          | NH4 wet dep, NO3 wet dep, SO4 wet dep, Cl wet dep, Na wet dep, Ca wet dep, Ca wet dep, Mg wet dep, K wet dep, Precip| Data available for 2000 - 2016 | 
+| AERONET       | AOD_340, AOD_380, AOD_440, AOD_500, AOD_555, AOD_675, AOD_870, AOD_1020, AOD_1640| Data available for 2000 - 2023|          
+| AMON          | NH3             |      Data available for 2009 - 2024   |
+| AMTIC         | Numerous HAP species | Currently, data are available for 2016 - 2022 |
+| AQS_HOURLY    | O3, NO, NOY, NO2, NOX, CO, SO2, PM2.5, PM10, Isoprene, Ethylene, Ethane, Toluene |  Data available for 2000 - 2024|
+| AQS_HOURLY_VOC | Numerous VOC species | Data available for 2000 - 2024 |
+| AQS_DAILY_O3  | O3_1hrmax, O3_1hrmax_9cell, O3_1hrmax_time, O3_8rhmax, O3_8hrmax_9cell, O3_8hrmax_time, W126, SUM06|Data available for 2000 - 2024 |                
+| AQS_DAILY    | PM2.5, PM10, Isoprene, Ethylene, Ethane, Toluene, Acetaldehyde, Formaldehyde, OC, EC, TC, Na, Cl, NaCl, SO4, NO3, NH4, Fe, Al, Si, Ti, Ca, Mg, K, Mn, soil, OTHER, NCOM|Data available for 2000 - 2024  |                
+| AQS_DAILY_VOC | Numerous VOC species | Data available for 2000 - 2024 |
+| CASTNET      | SO4, NO3, NH4, TNO3, Mg, Ca, K, Na, Cl, HNO3, SO2|  Data available for 2000 - 2024     |           
+| CASTNET_HOURLY|  O3, surface temp, RH, solar radiation, precip, WSPD | Data available for 2000 - 2024  |             
+| CASTNET_DAILY_O3| O3_1hrmax, O3_1hrmax_9cell, O3_1hrmax_time, O3_8rhmax, O3_8hrmax_9cell, O3_8hrmax_time, W126, SUM06|Data available for 2000 - 2024 |
+| CASTNET_DRYDEP| SO2, HNO3, TNO3, SO4, NO3, NH4 | Data available for 2000 - 2024 |
+| CSN           | SO4, NO3, NH4, PM2.5, OC, EC, TC, Na, Cl, Fe, Al, Si, Ti, Ca, Mg, K, Mn, soil, NaCl, OTHER, NCOM| Data available for 2000 - 2024 |                 
+| IMPROVE       | SO4, NO3, NH4, PM2.5, OC, EC, TC, Cl, PM10, PM Coarse, Na, NaCl, Fe, Al, Si, Ti, Ca, Mg, K, Mn, soil, OTHER, NCOM|Data available for 2000 - 2024 |
+| NADP          | NH4 wet dep, NO3 wet dep, SO4 wet dep, Cl wet dep, Na wet dep, Ca wet dep, Ca wet dep, Mg wet dep, K wet dep, Precip| Data available for 2000 - 2024 | 
+| PurpleAir     | PM2.5 | Data available for 2019 |
 | SEARCH_HOURLY | O3, CO, SO2, NO, NO2, NOY, HNO3, NH3, EC, OC, TC, PM2.5, NH4, SO4, WSPD, RH, SFC_TMP, precip, solar radiation |Data available for 2002 - 2013  |      
 | SEARCH_DAILY  | SO4, NO3, NH4, TNO3, Na, OC, EC, PM2.5, Al, Si, K, Ca, Ti, Mn, Fe| Data available for 2002 - 2013  |             
 | EMEP_HOURLY   | O3, PM2.5, PM10, CO, NO, NO2, NOX, SO2 | Data not currently available from CMAS; Must obtain individually |
 | EMEP_DAILY    | O3, PM2.5, PM10, CO, NO, NO2, NOX, SO2 | Data not currently available from CMAS; Must obtain individually |
 | EMEP_DAILY_O3 | O3_1hrmax, O3_1hrmax_9cell, O3_1hrmax_time, O3_8rhmax, O3_8hrmax_9cell, O3_8hrmax_time, W126, SUM06 | Data not currently available from CMAS; Must obtain individually |
 | FLUXNET       | USTAR, Soil Heat Flux, Sensible Heat Flux, Latent Heat Flux, Soil H2O Concentration, Soil Temp., Surface Temp., 10-m Wind Speed | Currently limited data available |       
-| MDN           | Mercury wet deposition    | Data available for 2000-2014|   
-| NAPS_HOURLY   | O3, PM2.5, PM10, CO, NO, NO2, NOX, SO2 | Data currently available for only 2011 |
+| MDN           | Mercury wet deposition    | Data available for 2000-2024|   
+| NAPS_HOURLY   | O3, PM2.5, PM10, CO, NO, NO2, NOX, SO2 | Data currently available for 2000 - 2022 |
 | NAPS_DAILY_O3 | O3_1hrmax, O3_1hrmax_9cell, O3_1hrmax_time, O3_8rhmax, O3_8hrmax_9cell, O3_8hrmax_time, W126, SUM06 |
-| NOAA_ESRL_O3  | O3 | Data available for 2000 - 2016 |   
+| NOAA_ESRL_O3  | O3 | Data available for 2000 - 2024 |   
 | TOAR          | daily average O3, O3_8rhmax, daytime average O3, nighttime average O3 |
+| TOAR2         | daily average O3, O3_8rhmax, daytime average O3, nighttime average O3 | Data available 2000 - 2022 |
 
 <a id="amet"></a> Section 6: AMET configuration options
 -------------------------------------
