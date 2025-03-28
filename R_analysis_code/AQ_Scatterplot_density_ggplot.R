@@ -2,12 +2,13 @@ header <- "
 ####################### MODEL TO OBS DENSITY SCATTERPLOT ##########################
 ### AMET CODE: R_Scatterplot_density_ggplot.r 
 ###
-### This script is part of the AMET-AQ system.  This script creates a single model-to-obs
-### density scatterplot, where higher density areas of the plot are shaded differently
+### This script is part of the AMET-AQ system.  This script creates a two model-to-obs
+### density scatterplots, a static png plot using ggplot2 and an interactive html plot
+### using ggplotly. Higher density areas of the plot are shaded differently
 ### from lower density areas. This script will plot a single species for a single network
-### using the R ggplot package.  
+### using the R ggplot and plotly packages.  
 ###
-### Last Updated by Wyat Appel: Feb 2020
+### Last Updated by Wyat Appel: 03/2025
 ####################################################################################
 "
 
@@ -19,6 +20,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 require(ggplot2)
+require(plotly)
+require(htmlwidgets)
 
 ### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
@@ -30,11 +33,13 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_density_ggplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_density_ggplot.png",sep="_")             # Set PNG filename
 filename_txt <- paste(run_name1,species,pid,"scatterplot_density_ggplot.csv",sep="_")       # Set output file name
+filename_html <- paste(run_name1,species,pid,"scatterplot_density_ggplot.html",sep="_")
 
 ## Create a full path to file
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
+filename_html <- paste(figdir,filename_html,sep="/")
 
 #################################
 
@@ -134,6 +139,8 @@ if (length(density_zlim) > 0) {
 axis.length <- (axis.max - axis.min)
 x1 <- axis.max*0.12
 x2 <- axis.max*0.02
+x3 <- axis.max*0.14
+x4 <- axis.max*0.10
 y1 <- axis.max - (axis.length * 0.890)                    # define y for labels
 y2 <- axis.max - (axis.length * 0.860)                    # define y for run name
 y3 <- axis.max - (axis.length * 0.920)                    # define y for network 1
@@ -152,16 +159,13 @@ y15 <- axis.max - (axis.length * 0.260)
 y16 <- axis.max - (axis.length * 0.290)
 y17 <- axis.max - (axis.length * 0.320)
 y18 <- axis.max - (axis.length * 0.070)
-x <- c(x1,x2)
+x <- c(x1,x2,x3)
 y <- c(y1,y2,y3,y4,y5,y6,y7,y8,y9,y10,y11,y12,y13,y14,y15,y16,y17,y18)  # set vector of y offsets
 
 
-##############################################
-########## MAKE SCATTERPLOT: ALL US ##########
-##############################################
-#pdf(file=filename_pdf,width=8,height=8)
-#plot.density.scatter.plot(x=aqdat.df$Obs_Value,y=aqdat.df$Mod_Value,xlim=c(axis.min,axis.max),ylim=c(axis.min,axis.max),zlim=dens_zlim,main=title,num.bins=number_bins)
-
+#########################################################
+########## MAKE SCATTERPLOT: GGPLOT and PLOTLY ##########
+#########################################################
 y.x.lm <- lm(aqdat.df$Mod_Value~aqdat.df$Obs_Value)$coeff
 
 options(bitmapType='cairo')
@@ -169,18 +173,44 @@ options(bitmapType='cairo')
 #sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + stat_density_2d(aes(fill = ..level..), geom="polygon") + scale_fill_gradient(low="blue", high="red") + geom_abline(intercept = 0, slope=1)
 print(axis.max)
 sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=title,x=network,y=model_name) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position=c(0.98,0.02), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5))
+p <- ggplotly(sp, width=1250, height=1250)
 sp <- sp + annotate("text",0.02*(axis.max),0.97*(axis.max),label=paste("Y =",signif(y.x.lm[1],2),"+",signif(y.x.lm[2],2),"* X"),hjust=0,vjust=1,size=5)
 sp <- sp + annotate("text",x[1],y[18],label=paste("(",units,")                          (%)",sep=""),hjust=.55,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[10],label=paste("r = ",sprintf("%.2f",corr),"                    NMB = ",sprintf("%.1f",nmb)),hjust=0,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[11],label=paste("RMSE = ",sprintf("%.2f",rmse),"           NME = ",sprintf("%.1f",nme)),hjust=0,vjust=1,size=3)
-sp <- sp + annotate("text",x[2],y[12],label=paste(expression(RMSE[s])," = ",sprintf("%.2f",rmse_sys),"      NMdnB = ",sprintf("%.1f",nmdnb)),hjust=0,vjust=1,size=3)
-sp <- sp + annotate("text",x[2],y[13],label=paste(expression(RMSE[u])," = ",sprintf("%.2f",rmse_unsys),"      NMdnE = ",sprintf("%.1f",nmdne)),hjust=0,vjust=1,size=3)
+sp <- sp + annotate("text",x[2],y[12],label=paste("RMSE[s] = ",sprintf("%.2f",rmse_sys),"      NMdnB = ",sprintf("%.1f",nmdnb)),hjust=0,vjust=1,size=3)
+sp <- sp + annotate("text",x[2],y[13],label=paste("RMSE[u] = ",sprintf("%.2f",rmse_unsys),"      NMdnE = ",sprintf("%.1f",nmdne)),hjust=0,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[14],label=paste("MB = ",sprintf("%.2f",mb),"                FB = ",sprintf("%.1f",fb)),hjust=0,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[15],label=paste("ME = ",sprintf("%.2f",me),"                FE = ",sprintf("%.1f",fe)),hjust=0,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[16],label=paste("MdnB = ",sprintf("%.2f",med_bias)),hjust=0,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[17],label=paste("MdnE = ",sprintf("%.2f",med_error)),hjust=0,vjust=1,size=3)
+
 ggsave(filename_pdf,height=8,width=8)
-#sp
+
+### Create new y plot values for plotly version ###
+y9  <- axis.max - (axis.length * 0.030)
+y10 <- axis.max - (axis.length * 0.080)
+y11 <- axis.max - (axis.length * 0.100)
+y12 <- axis.max - (axis.length * 0.120)
+y13 <- axis.max - (axis.length * 0.140)
+y14 <- axis.max - (axis.length * 0.160)
+y15 <- axis.max - (axis.length * 0.180)
+y16 <- axis.max - (axis.length * 0.200)
+y17 <- axis.max - (axis.length * 0.220)
+y18 <- axis.max - (axis.length * 0.240)
+
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("Y =",signif(y.x.lm[1],2),"+",signif(y.x.lm[2],2),"* X"),x=x2,y=y9,showarrow=FALSE))
+p <- p %>% layout(annotations=list(text=paste("(",units,")                          (%)",sep=""),x=x[3],y=y10,showarrow=FALSE,align="left"))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("r = ",sprintf("%.2f",corr),"                    NMB = ",sprintf("%.1f",nmb)),x=x2,y=y11,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("RMSE = ",sprintf("%.2f",rmse),"             NME = ",sprintf("%.1f",nme)),x=x2,y=y12,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("RMSE[s] = ",sprintf("%.2f",rmse_sys),"        NMdnB = ",sprintf("%.1f",nmdnb)),x=x2,y=y13,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("RMSE[u] = ",sprintf("%.2f",rmse_unsys),"        NMdnE = ",sprintf("%.1f",nmdne)),x=x2,y=y14,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("MB = ",sprintf("%.2f",mb),"                FB = ",sprintf("%.1f",fb)),x=x2,y=y15,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("ME = ",sprintf("%.2f",me),"                  FE = ",sprintf("%.1f",fe)),x=x2,y=y16,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("MdnB = ",sprintf("%.2f",med_bias)),x=x2,y=y17,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("MdnE = ",sprintf("%.2f",med_error)),x=x2,y=y18,showarrow=FALSE))
+
+saveWidget(p, file=filename_html,selfcontained=T)
 
 ### Convert pdf file to png file ###
 #dev.off()

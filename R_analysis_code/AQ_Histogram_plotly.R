@@ -101,7 +101,6 @@ for (j in 1:num_runs) {
             aqdat.df <- data.frame(Network=aqdat.df$network,Stat_ID=aqdat.df$stat_id,lat=aqdat.df$lat,lon=aqdat.df$lon,State=aqdat.df$state,Obs_Value=round(aqdat.df[[ob_col_name]],5),Mod_Value=round(aqdat.df[[mod_col_name]],5),Month=aqdat.df$month)      # Create dataframe of network values to be used to create a list
          }
          aqdat.df$Simulation <- run_name
-         axis.max <- max(c(axis.max,aqdat.df$Obs_Value,aqdat.df$Mod_Value))
          #########################################################
       }  # End no data if/else statement
    }
