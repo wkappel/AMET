@@ -1,8 +1,8 @@
-# Atmospheric Model Evaluation Tool (AMET) v1.5  
+# Atmospheric Model Evaluation Tool (AMET) v1.6  
 ## Quick Start Guide
 -----
-This guide provides a quick start to getting AMET version 1.5 installed and running on a Linux system.
-Additional details of the steps outlined here are available in the AMET [Installation Guide](https://github.com/USEPA/AMET/blob/1.5/docs/AMET_Install_Guide_v15.md) and [User's Guide](https://github.com/USEPA/AMET/blob/1.5/docs/AMET_Users_Guide_v15.md).
+This guide provides a quick start to getting AMET version 1.6 installed and running on a Linux system.
+Additional details of the steps outlined here are available in the AMET [Installation Guide](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Install_Guide_v15.md) and [User's Guide](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Users_Guide_v15.md).
 
 ## 1.  Install AMET source code and scripts using Git
 
@@ -17,14 +17,14 @@ CMAS: Community Modeling and Analysis System
 www.cmascenter.org
 The US EPA has funded the Institute for the Environment to establish a Community Modeling and Analysis System (CMAS). The CMAS is an approach to the development, application, and analysis of environmental models that leverages the community's complementary talents and resources in order to set new standards for quality in science and in the reliability of the application of the models.
 2.	Click the Software pulldown menu on the horizontal menu bar and choose AMET.
-3.	Click DOWNLOAD on the right-hand side of the page and choose AMETv1.5, platform, and compiler for your machine and click submit.
+3.	Click DOWNLOAD on the right-hand side of the page and choose AMETv1.6, platform, and compiler for your machine and click submit.
 4.	Click "Download Datasets" to download MetExample Meterology datasets from WRF and MPAS.
 
 ## 3.  Download AMET-AQ CMAQ Test Case Data
 
 1.	Download Meterology test model output data by navigating to https://www.cmascenter.org/ and logging into the site using the "Log In" shortcut on the top horizontal menu.
 2.	Click the Software pulldown menu on the horizontal menu bar and choose AMET.
-3.	Click DOWNLOAD on the right-hand side of the page and choose AMETv1.5, platform, and compiler for your machine and click submit.
+3.	Click DOWNLOAD on the right-hand side of the page and choose AMETv1.6, platform, and compiler for your machine and click submit.
 4.	Click "Download Datasets" to download AQExample datasets from CMAQ.
 
 ## 4. Check/Install Related Software
@@ -71,16 +71,32 @@ mysql> \q
 
 AMET also requires the following additional R packages:
 
-* RMySQL
+* akima
+* data.table
 * date
+* dplyr
+* dygraphs
+* fields
+* ggplot2
+* htmltools
+* htmlwidgets
+* lattice
+* latticeExtra
+* leaflet (optional for some analysis scripts)
+* leaflet.extras (optional for some analysis scripts)
+* leafpop
+* lubridate
 * maps
 * mapdata
-* stats
+* plotly
 * plotrix
-* fields
-* leaflet (optional for some analysis scripts)
-* htmlwidgets (optional for some analysis scripts)
-* akima
+* processx
+* reshape2
+* RColorBrewer
+* RMySQL
+* stats
+* webshot
+* xts
 
 The easiest way to install R packages, is through the R package manager.  Once R is installed, use the following commands to install these packages (note that the ">" denotes the Linux command prompt):
 
