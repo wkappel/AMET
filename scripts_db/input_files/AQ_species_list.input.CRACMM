@@ -2,13 +2,13 @@
 #   FILE NAME: AQ_species_list.input.CRACMM (R file)	 #
 #							 #
 #   This file is required by the AMET R script           #
-#   amet_extract_all.R. It establishes the species       #
-#   that will be extracted for each network.  This is    #
-#   the default version of this file for the CRACMM	 #
-#   mechanism.  Changes can be made and used with the	 #
-#   amet_extract_all.R script     			 #
+#   aqProject_pre_and_post.csh. It establishes the 	 #
+#   species that will be extracted for each network.	 #
+#   This is the default version of this file for the 	 #
+#   CRACMM mechanism.  Changes can be made and used	 # 
+#   with the aqProject_pre_and_post.csh script		 #
 #							 #
-#       REQUIRED: amet_extract_all.R	 		 #
+#       REQUIRED: aqProject_pre_and_post.csh 		 #
 #	                                                 #
 #       PURPOSE: Species configuration file for CRACMM   #
 #                                                        #
