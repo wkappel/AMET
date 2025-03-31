@@ -117,7 +117,7 @@ community to increase AMET functionality.*
     be set by the user for a given evaluation.
 
 Before using AMET and this user’s guide, you must first install the AMET package on your
-system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.5/docs/AMET_Install_Guide_v15.md).
+system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Install_Guide_v15.md).
 
 <a id="directory_structure"></a>
 2. Directory Structure
@@ -125,10 +125,10 @@ system. For information on the installation process, please see the [Atmospheric
 
 In this guide, the top level of the AMET directory structure is referred to
 as “AMETBASE”. This environment variable is actually set in many of the
-scripts discussed below. For example, if you were to run the AMET (example for version 1.5) installation Git command in user's home directory /home/user:
+scripts discussed below. For example, if you were to run the AMET (example for version 1.6) installation Git command in user's home directory /home/user:
 
 ```
-git clone -b 1.5 https://github.com/USEPA/AMET.git AMET_v15
+git clone -b 1.6 https://github.com/USEPA/AMET.git AMET_v15
 
 ```
 The setting of AMETBASE would be /home/user/AMET_v15
@@ -867,7 +867,7 @@ pairs are inserted in the wrfExample_wrf_surface table. The script will automati
 matching_radiation.csh script. Users should contact the BSRN organization and request access, which will
 follow with a login and password that should be specified (RAD_LOGIN and RAD_PASS) https://bsrn.awi.de/data/data-retrieval-via-ftp/ . SURFRAD uses anonymous FTP + a users email for their internal tracking. BSRN files are
 monthly text files with 1 minute data. It takes a few minutes of processing to read these file, but
-after, the script runs very fast. This is a new option in AMETv1.4. AMETv1.5 adds the SURFRAD capability. These data are hourly like MADIS and seperate files for each site, but autoFTP coordinates this more complex retrieval so this option is advised. 
+after, the script runs very fast. 
 
 ```
 ./matching_raob.csh |& tee log.populate.raob
@@ -1026,7 +1026,7 @@ also a more comprehensive script that performs both the pre analysis functions (
 and the post analysis functions (e.g. running site compare and AMET). That script is named 
 aqExample_pre_and_post.csh and can also found in the $AMETBASE/scripts_db/aqExample directory. 
 Instructions for using that script can be found in a separate guide here:
-[aqProject Pre and Post Analysis Script Guide](https://github.com/USEPA/AMET/tree/1.5/docs/AMET_aqProject_Pre_and_Post_Analysis_Script_Guide_v15.md). 
+[aqProject Pre and Post Analysis Script Guide](https://github.com/USEPA/AMET/tree/1.6/docs/AMET_aqProject_Pre_and_Post_Analysis_Script_Guide_v15.md). 
 
 *TIP: Name the directory of each new project the same name as the AMET_PROJECT
 variable in the database and analysis scripts.*
@@ -1309,7 +1309,6 @@ A brief summary of each of the C-shell scripts that drive the main R analyses, w
 - Users have the flexibility to use Verdi, Ncview, IDV or other software to plot as desired or read via NetCDF modules and do external analysis on the data.
 
 **wrapper.csh** 
-- A new script in AMETv1.5 that acts as a wrapper for most of the scripts listed above (spatial, daily barplot, summary, raob and radiation).
 - Uses an wrapper run code (e.g., DB.RM) that drives an analysis script and analysis mode. DB.MN for example runs the daily barplot (DB) statistics for each US Climate Region & Month of a defined year (RM). Example script only does July 2016 for each region. SM.RM is another option activated in example script for summary statistics (SM) for each region and month (RM). Notes in script provide all options.
 - The script lists all availiable options that include monthly, seasonal, regional-monthly and regional-seasonal statistics for the various analysis scripts.
 - The `run_info_MET.R` configuration allows further refinement so users can build a complete model evaluation protocol and run from a single script execution.
