@@ -244,11 +244,16 @@ The hr2day Fortran utility takes hourly model data and computes various daily av
  INC_CUTOFF                Include PM2.5 species in which a size cut was applied based on modeled aerosol 
                            mode parameters. Choices are T,F.
 #> The following flags (T/F or Y/N) are used to select which standard network should be used in the analysis.  
- AERONET               
- AMON                    
- AQS_HOURLY               
+ AERONET
+ AIRNOW
+ AIRNOW_DAILY_O3               
+ AMON
+ AMTIC                    
+ AQS_HOURLY
+ AQS_HOURLY_VOC               
  AQS_DAILY_O3             
- AQS_DAILY               
+ AQS_DAILY
+ AQS_DAILY_VOC               
  CASTNET                  
  CASTNET_HOURLY          
  CASTNET_DAILY_O3        
@@ -262,7 +267,9 @@ The hr2day Fortran utility takes hourly model data and computes various daily av
  EMEP_DAILY               
  EMEP_DAILY_O3
  FLUXNET                  
- MDN                      
+ MDN
+ PURPLEAIR_HOURLY
+ PURPLEAIR_DAILY                      
  NAPS_HOURLY
  NAPS_DAILY_O3
  NOAA_ESRL_O3
