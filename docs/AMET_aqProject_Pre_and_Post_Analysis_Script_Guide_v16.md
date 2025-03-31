@@ -52,7 +52,7 @@ The setting of environment variables in the run script is divided into 8 differe
  scatter_plots          Create scatter plots from site compare output? Choices are T,F.
  misc_plots             Create bugle plots and soccer goal plots from site compare output? Choices are T,F.
 ```
-All 16 of the 17 environment variables in this section are T/F flags (the other is a project name to specify).  Flags can be set to T or F depending on what post-processing files are needed and which steps have already been completed. While the flags can be set in many different permutations, the post-processing must take place in a specific order:
+16 of the 17 environment variables in this section are T/F flags (the other is a project name to specify).  Flags can be set to T or F depending on what post-processing files are needed and which steps have already been completed. While the flags can be set in many different permutations, the post-processing must take place in a specific order:
 1. Run the combine utility on CCTM output to create COMBINE_ACONC and COMBINE_DEP files. 
 2. [Required if including TOAR network] Run the hr2day utility on the combine output to create daily average values (e.g. daily 8hrmax ozone).
 3. Create "sitex" run scripts for controlling the execution of the sitecmp and sitecmp_dailyo3 utilities.
