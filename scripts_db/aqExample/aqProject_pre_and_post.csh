@@ -14,7 +14,6 @@
 ## of the aqExample_post_only.csh script, with all the same 
 ## capabilities with additional functionality.
 ## 
-##
 ## This script can be used to both setup an AMET project
 ## and populate the AMET project table. If the database and/or project
 ## do not exist, they will be created. If the project has already
@@ -26,9 +25,11 @@
 ## Three input files required by this script are:
 ## - sites_meta.input (required when first setting up the database)
 ## - AQ_species_list.input (likely does not need to be altered)
-## - AMET_batch.input (likely will be altered by user)
+## - AQ_species_list.input.CRACMM (needed if using the new CRACMM mechanism)
+## - AMET_batch.input (needed if creating plots using this script; 
+##		       likely will be altered by user)
 ##
-## Last modified by K. Wyat Appel: Jun, 2019
+## Last modified by K. Wyat Appel: 03/2025
 ##
 ##########################################################
 
@@ -256,8 +257,10 @@ setenv RUNID ${APPL}
  setenv AERONET           T
  setenv AMON              T
  setenv AQS_HOURLY        T
+ setenv AQS_HOURLY_VOC    F
  setenv AQS_DAILY_O3      T 
  setenv AQS_DAILY         T
+ setenv AQS_DAILY_VOC	  F
  setenv CASTNET_WEEKLY    T
  setenv CASTNET_HOURLY    T
  setenv CASTNET_DAILY_O3  T
@@ -272,6 +275,9 @@ setenv RUNID ${APPL}
  setenv NAPS_DAILY_O3     T
 
 #> Non-standard networks (should be set to F unless specifically required). 
+ setenv AIRNOW		  F
+ setenv AIRNOW_DAILY_O3	  F
+ setenv AMTIC		  F
  setenv EMEP_HOURLY       F
  setenv EMEP_DAILY        F
  setenv EMEP_DAILY_O3	  F
@@ -279,7 +285,12 @@ setenv RUNID ${APPL}
  setenv FLUXNET           F
  setenv MDN               F
  setenv NOAA_ESRL_O3	  F
+ setenv PURPLEAIR_HOURLY  F
+ setenv PURPLEAIR_DAILY   F
  setenv TOAR		  F
+ setenv TOAR2_HOURLY	  F
+ setenv TOAR2_DAILY	  F
+ setenv TOAR2_DAILY_O3	  F
 
 #> Flags to set ozone factors and units (do not change if using standard SPEC_DEF file) 
  setenv O3_OBS_FACTOR    1	# Ozone factor to apply to obs values (1 by default)
