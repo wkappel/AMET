@@ -1,4 +1,4 @@
-# Atmospheric Model Evaluation Tool (AMET) v1.5  
+# Atmospheric Model Evaluation Tool (AMET) v1.6  
 ## Installation Guide
 -----
 **Contents**
@@ -76,11 +76,11 @@ Note that this command assumes that git is installed on the Linux system.
 * Go to http://www.cmascenter.org and log in using your existing CMAS account. If you do not already have an account, you will need to create one.
 * Navigate to the CMAS Software Clearinghouse by selected Download -> Software from the drop-down menu at the top of the CMAS Center home page.
 * Use the Select Software to Download box, select AMET, and click on the “**Submit”** button.
-* Choose “AMET 1.5” as the product, “Linux PC” as the operating system, and “GNU compilers” as the choice of compiler, and then click on the “**Submit”** button.
+* Choose “AMET 1.6” as the product, “Linux PC” as the operating system, and “GNU compilers” as the choice of compiler, and then click on the “**Submit”** button.
 * The following items are available for download:
- * a link to the AMET 1.5 Installation Guide (this document)
- * a link to the AMET 1.5 User’s Guide
- * a link to the AMET 1.5 Quick Start Guide
+ * a link to the AMET 1.6 Installation Guide (this document)
+ * a link to the AMET 1.6 User’s Guide
+ * a link to the AMET 1.6 Quick Start Guide
  * Download the CMAQ model test data and air quality observation from the Google Drive. Note, the example CMAQ output files contain all of the species needed by AMET-AQ, but are a subset of the full CMAQ output files. The files contain hourly data for the entire month of July 2017. They contain only the species that AMET needs, and only layer one.
  * Download the WRF and MPAS model test data and meteorology observations from the Google drive. There are 31 files for each set of data, one for each day in July 2016. The example meteorology output files from WRF and MPAS contain all of the species needed by AMET-MET, but are a subset of the full WRF or MPAS output files.
 
@@ -466,7 +466,7 @@ Meteorology observational data are installed under **$AMETBASE/obs/MET**.
 #### Air quality data
 (35 GB uncompressed; 30 GB compressed)
 
-Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.5_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2011 00:00 UTC to July 31 2011 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2011 and sample AMET analysis plots.
+Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.6_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2011 00:00 UTC to July 31 2011 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2011 and sample AMET analysis plots.
 
 After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample** will contain the following files.
 
@@ -477,22 +477,28 @@ After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample
  6.5G Nov 20  2018 COMBINE_DEP_CMAQv521_AMET_201607.nc
 
 ```
-Download the Air Quality Observational data from the Google Drive CMAS Data Warehouse > AMET > v1.5_example > 2000_2020_NAmerican_AQ_Obs_Data
+Download the Air Quality Observational data from the Google Drive CMAS Data Warehouse > AMET > v1.6_example > 2000_2024_NAmerican_AQ_Obs_Data
 for 2016, download the AMET_obsdata_2016.tar.gz file and extract to the $AMETBASE/obs/AQ/All_Years directory.
 
-Air quality observational data for the following networks are installed under **$AMETBASE/obs/AQ/All_Years :
+Air quality observational data for the following networks are available in **$AMETBASE/obs/AQ/All_Years :
 
 *North America*
 * Air Quality System (AQS) network
+* Aerosol Robotic Network (AERONET)
+* Ambient Monitoring Archive for HAPs (AMTIC)
+* Ammonia Monitoring Network (AMON)
 * Clean Air Status and Trends Network (CASTNET)
 * Interagency Monitoring of Protected Visual Environments (IMPROVE)
 * Chemical Speciation Network (CSN)
-* National Atmospheric Deposition Program (NADP) network
+* National Air Pollution Surveillance (NAPS) program
+* National Atmospheric Deposition Program National Trends Network (NADP-NTN)
 * SouthEastern Aerosol Research and Characterization Study (SEARCH)
 
 *Global/Europe*
 * Aerosol Robotic Network (AERONET)
 * Regional and global analysis of CO2, water vapor and energy (FLUXNET)
+* Tropospheric Ozone Assessment Report (TOAR)
+* Tropospheric Ozone Assessment Report 2 (TOAR2)
 
 A brief description of data from each of these networks is provided in the AMET User’s Guide included in this release. Refer to the respective web sites for additional information on these datasets, monitoring protocols, updates, etc. The observational datasets have been preprocessed and reformatted (in some instances from their original sources) for access by AMET. We have also provided the monitoring station locations in a set of .csv files in the subdirectory **$AMETBASE/obs/AQ/site\_files**. The site lists are an important set of metadata files that allow AMET to match modeled and observed data at the available locations from each network, and is critical to the database loading.
 
