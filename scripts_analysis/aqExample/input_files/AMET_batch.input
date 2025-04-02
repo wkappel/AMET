@@ -367,7 +367,6 @@ PM_max_limit	<- 25
 ##################################
 ### Stacked Bar Charts Options ###
 ##################################
-inc_FRM_adj	<- 'y'
 use_median	<- 'n'
 remove_other 	<- 'n'
 

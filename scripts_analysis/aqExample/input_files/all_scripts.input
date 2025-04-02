@@ -216,6 +216,7 @@ inc_nmb			<- 'n'
 inc_nme			<- 'n'
 obs_per_day_limit	<- 0
 line_width		<- "1"
+zip_file		<- "n"
 
 ##################################
 ### Averaging Function Options ###
@@ -275,6 +276,9 @@ popup_ts	<- 'y'
 #######################
 ### Boxplot Options ###
 #######################
+### Legend size factor ###
+leg_size_fac<-1
+
 ### Include whiskers on box plots ###
 inc_whiskers	<- 'n'
 
@@ -311,13 +315,11 @@ density_zlim	<- NULL
 num_dens_bins	<- NULL
 
 ### Skill plot criteria line ###
-O3_max_limit<-70
-PM_max_limit<-25
+max_limit<-70
 
 ##################################
 ### Stacked Bar Charts Options ###
 ##################################
-inc_FRM_adj	<- 'y'
 use_median	<- 'n'
 remove_other 	<- 'n'
 

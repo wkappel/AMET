@@ -15,7 +15,7 @@
 #
 # Initial version:  Wyat Appel - Jul, 2017
 #
-# Revised version:  Wyat Appel - Jul, 2022
+# Revised version:  Wyat Appel - 04/2025
 # -----------------------------------------------------------------------
 #
 
@@ -34,8 +34,8 @@ setenv MYSQL_CONFIG	$AMETBASE/configure/amet-config.R
 ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
 ### Note that the date environment variable name in this script is different than the other AMET run scripts
 ### to mathcn the enviroment name used in the AMET pre_and_post_analysis.csh script
-setenv AMET_SDATE "2016-07-01"
-setenv AMET_EDATE "2016-07-31"
+setenv AMET_SDATE "2018-07-01"
+setenv AMET_EDATE "2018-07-31"
 
 ### Set the project name to be used for model-to-model comparisons ###
 setenv AMET_PROJECT2 aqExample 

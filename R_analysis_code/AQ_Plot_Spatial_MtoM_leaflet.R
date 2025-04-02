@@ -189,7 +189,7 @@ if (lat_diff*lon_diff < 500) { zoom_level <- 6 }
 }
    else {
       title <- custom_title
-      title_bias <- custom_title
+      title2 <- custom_title
    }
 }
 

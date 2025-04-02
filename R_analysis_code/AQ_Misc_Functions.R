@@ -1626,7 +1626,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
          aqdat_query.df<-try(db_Query(qs,mysql))
       }
    }
-   print(names(aqdat_query.df))
+#   print(names(aqdat_query.df))
    if ((network == "EMEP_Daily") || (network == "NADP")) { aqdat_query.df$ob_hour <- 0 }
    aqdat_query.df$ob_hour <- sprintf("%02d",as.integer(aqdat_query.df$ob_hour)) 
 #   ob_col_name <- paste(species,"_ob",sep="")

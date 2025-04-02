@@ -9,30 +9,35 @@
 ###############################################
 ### Network selection flags from run script ###
 ###############################################
+inc_amtic		<-Sys.getenv("AMET_AMTIC")
 inc_csn			<-Sys.getenv("AMET_CSN")
 inc_improve		<-Sys.getenv("AMET_IMPROVE")
 inc_castnet		<-Sys.getenv("AMET_CASTNET")
-inc_castnet_hr		<-Sys.getenv("AMET_CASTNET_Hourly")
-inc_castnet_daily_O3	<-Sys.getenv("AMET_CASTNET_Daily_O3")
-inc_castnet_drydep	<-Sys.getenv("AMET_CASTNET_Drydep")
+inc_castnet_hr		<-Sys.getenv("AMET_CASTNET_HOURLY")
+inc_castnet_daily_O3	<-Sys.getenv("AMET_CASTNET_DAILY_O3")
+inc_castnet_drydep	<-Sys.getenv("AMET_CASTNET_DRYDEP")
 inc_nadp		<-Sys.getenv("AMET_NADP")
 inc_mdn			<-Sys.getenv("AMET_MDN")
 inc_airmon_dep		<-Sys.getenv("AMET_AIRMON")
-inc_aqs_hourly		<-Sys.getenv("AMET_AQS_Hourly")
-inc_aqs_daily_O3	<-Sys.getenv("AMET_AQS_Daily_O3")
-inc_aqs_daily		<-Sys.getenv("AMET_AQS_Daily")
+inc_aqs_hourly		<-Sys.getenv("AMET_AQS_HOURLY")
+inc_aqs_hourly_voc	<-Sys.getenv("AMET_AQS_HOURLY_VOC")
+inc_aqs_daily_O3	<-Sys.getenv("AMET_AQS_DAILY_O3")
+inc_aqs_daily		<-Sys.getenv("AMET_AQS_DAILY")
+inc_aqs_daily_voc	<-Sys.getenv("AMET_AQS_DAILY_VOC")
+inc_purpleair_hourly	<-Sys.getenv("AMET_PURPLEAIR_HOURLY")
+inc_purpleair_daily     <-Sys.getenv("AMET_PURPLEAIR_DAILY")
 inc_search		<-Sys.getenv("AMET_SEARCH")
-inc_search_daily	<-Sys.getenv("AMET_SEARCH_Ddaily")
-inc_naps		<-Sys.getenv("AMET_NAPS_Hourly")
-inc_naps_daily_o3	<-Sys.getenv("AMET_NAPS_Daily_O3")
+inc_search_daily	<-Sys.getenv("AMET_SEARCH_DAILY")
+inc_naps		<-Sys.getenv("AMET_NAPS_HOURLY")
+inc_naps_daily_o3	<-Sys.getenv("AMET_NAPS_DAILY_O3")
 
 ### Europe Networks ###
-inc_airbase_hourly	<-Sys.getenv("AMET_AirBase_Hourly")
-inc_airbase_daily	<-Sys.getenv("AMET_AirBase_Daily")
-inc_aurn_hourly		<-Sys.getenv("AMET_AURN_Hourly")
-inc_aurn_daily		<-Sys.getenv("AMET_AURN_Daily")
-inc_emep_hourly		<-Sys.getenv("AMET_EMEP_Hourly")
-inc_emep_daily		<-Sys.getenv("AMET_EMEP_Daily")
+inc_airbase_hourly	<-Sys.getenv("AMET_AIRBASE_HOURLY")
+inc_airbase_daily	<-Sys.getenv("AMET_AIRBASE_DAILY")
+inc_aurn_hourly		<-Sys.getenv("AMET_AURN_HOURLY")
+inc_aurn_daily		<-Sys.getenv("AMET_AURN_DAILY")
+inc_emep_hourly		<-Sys.getenv("AMET_EMEP_HOURLY")
+inc_emep_daily		<-Sys.getenv("AMET_EMEP_DAILY")
 inc_aganet		<-Sys.getenv("AMET_AGANET")
 inc_namn		<-Sys.getenv("AMET_NAMN")
 inc_admn		<-Sys.getenv("AMET_ADMN")
@@ -40,6 +45,9 @@ inc_admn		<-Sys.getenv("AMET_ADMN")
 ### Global Networks ###
 inc_noaa_esrl_o3	<-Sys.getenv("AMET_NOAA_ESRL_O3")
 inc_toar		<-Sys.getenv("AMET_TOAR")
+inc_toar2_hourly	<-Sys.getenv("AMET_TOAR2_HOURLY")
+inc_toar2_daily 	<-Sys.getenv("AMET_TOAR2_DAILY")
+inc_toar2_daily_o3	<-Sys.getenv("AMET_TOAR2_DAILY_O3")
 
 #############################
 ### Setup Networks Arrays ###
@@ -47,7 +55,7 @@ inc_toar		<-Sys.getenv("AMET_TOAR")
 
 network_names <- NULL
 network_label <- NULL
-
+print(inc_aqs_daily)
 if ((inc_improve == "y") || (inc_improve == "Y") || (inc_improve == "t") || (inc_improve == "T")) {   
    network_names <- c(network_names,"IMPROVE")     
    network_label <- c(network_label,"IMPROVE")

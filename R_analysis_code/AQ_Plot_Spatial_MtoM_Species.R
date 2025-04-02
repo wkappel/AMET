@@ -348,8 +348,9 @@ for (l in 1:total_networks) {
    }
    else {
       title_diff <- custom_title
-      title_max <- custom_title
-      title_min <- custom_title
+      title_max  <- custom_title
+      title_min  <- custom_title
+      title_perc <- custom_title
    }
 }
 ###########################

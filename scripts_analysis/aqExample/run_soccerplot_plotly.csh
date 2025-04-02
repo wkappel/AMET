@@ -1,19 +1,13 @@
 #!/bin/csh -f
 # --------------------------------
-# Scatterplot - Model to Model Denisty Plot
+# Soccergoal Plot
 # -----------------------------------------------------------------------
-# Purpose:
+# Purpose: This script creates a "soccergoal" plot by plotting NMB along the
+# x-axis and NME along the y-axis along with goal and criteria lines for each
+# which form a rectangular box (i.e. goal). The script is designed to plot
+# multiple networks and species for a single simulation.
 #
-# This is an example c-shell script to run the R-script that generates
-# single model-to-model density sctterplot.  
-#
-# Note: the model points correspond to network observation sites, and
-# does not use all the model grid points (only what is in the
-# database).  Two model runs must be provided and one or more
-# networks.  The script attempts to match all points in one run to all
-# points in the other run.
-#
-# Initial version:  Wyat Appel - Apr, 2018
+# Initial version: Wyat Appel - 04/2025 
 # -----------------------------------------------------------------------
 
   
@@ -21,7 +15,7 @@
   # These are the main controlling variables for the R script
   
   ###  Top of AMET directory
-  setenv AMETBASE       /home/AMETv15
+  setenv AMETBASE       /home/AMETv16
   setenv AMET_DATABASE  amet
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
@@ -32,18 +26,12 @@
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
   #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output
 
-  ### Set the project name to be used for model-to-model comparisons ###
-  setenv AMET_PROJECT2  aqExample
-
-  ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
-  #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
-
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_mtom_density
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/soccerplot_plotly
   
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
-  setenv AMET_SDATE "2016-07-01"
-  setenv AMET_EDATE "2016-07-31"
+  setenv AMET_SDATE "2018-07-01"
+  setenv AMET_EDATE "2018-07-31"
 
   ### Process ID. This can be set to anything. It will be added to the file output name. Default is 1.
   ### The PID is particularly important if using the AMET web interface and is determined there through
@@ -52,11 +40,11 @@
 
   ###  Custom title (if not set will autogenerate title based on variables 
   ###  and plot type)
-  setenv AMET_TITLE "Model to Model Density Scatterplot: $AMET_PROJECT vs $AMET_PROJECT2 $AMET_SDATE - $AMET_EDATE"
+  #  setenv AMET_TITLE "Scatterplot $AMET_PROJECT $AMET_SDATE - $AMET_EDATE"
 
 
-  ###  Plot Type, options are "pdf", "png", or "both"
-  setenv AMET_PTYPE both 
+  ###  Plot Type, option is "html"
+  setenv AMET_PTYPE html
 
 
   ### Species to Plot ###
@@ -65,50 +53,59 @@
   ### AE6 (CMAQv5.0) Species
   ### Na,Cl,Al,Si,Ti,Ca,Mg,K,Mn,Soil,Other,Ca_dep,Ca_conc,Mg_dep,Mg_conc,K_dep,K_conc
 
-  setenv AMET_AQSPECIES SO4
+  ### Important: If multiple species are desired, they should be in a comma separated list 
 
-  ### Observation Network to plot -- One only
-  ### Uncomment to set to 'T' and process that nework,
-  ### default is off (commented out)
-  ### NOTE: species are not available in every network
+#  setenv AMET_AQSPECIES SO4
+  setenv AMET_AQSPECIES SO4,NO3,NH4
+
+  ### Observation Network to plot
+  ### Set to 'T' to process that nework
+  ### NOTE: all species are not available for every network
   ### See AMET User's guide for details on each network
 
-  ### North America Networks ###
+#> Standard North America networks
+  setenv AMET_AERONET           F
+  setenv AMET_AMON              F
+  setenv AMET_AQS_HOURLY        F
+  setenv AMET_AQS_HOURLY_VOC    F
+  setenv AMET_AQS_DAILY_O3      F
+  setenv AMET_AQS_DAILY         F
+  setenv AMET_AQS_DAILY_VOC     F
+  setenv AMET_CASTNET_WEEKLY    T
+  setenv AMET_CASTNET_HOURLY    F
+  setenv AMET_CASTNET_DAILY_O3  F
+  setenv AMET_CASTNET_DRYDEP    F
+  setenv AMET_CASTNET_DRYDEP_O3 F
+  setenv AMET_CSN               T
+  setenv AMET_IMPROVE           T
+  setenv AMET_NADP              F
+  setenv AMET_NAPS_HOURLY       F
+  setenv AMET_NAPS_DAILY_O3     F
 
-    setenv AMET_CSN            T
-    setenv AMET_IMPROVE        T
-    setenv AMET_CASTNET        T
-  #  setenv AMET_CASTNET_Hourly T
-  #  setenv AMET_CASTNET_Drydep T
-  #  setenv AMET_NADP           T
-  #  setenv AMET_AIRMON         T
-  #  setenv AMET_AQS_Hourly     T
-  #  setenv AMET_AQS_Daily_O3   T
-  #  setenv AMET_AQS_Daily      T
-  #  setenv AMET_SEARCH         T
-  #  setenv AMET_SEARCH_Daily   T
-  #  setenv AMET_NAPS_Hourly    T
-  #  setenv AMET_NAPS_Daily_O3  T
-
-  ### Europe Networks ###
-
-  #  setenv AMET_AirBase_Hourly T
-  #  setenv AMET_AirBase_Daily  T
-  #  setenv AMET_AURN_Hourly    T
-  #  setenv AMET_AURN_Daily     T
-  #  setenv AMET_EMEP_Hourly    T
-  #  setenv AMET_EMEP_Daily     T
-  #  setenv AMET_AGANET         T
-  #  setenv AMET_ADMN           T
-  #  setenv AMET_NAMN           T
-
-  ### Gloabl Networks ###
-
-  # setenv AMET_NOAA_ESRL_O3    T
-  # setenv AMET_TOAR            T
+#> Non-standard networks (should probably be set to F unless specifically required)
+  setenv AMET_AIRNOW            F
+  setenv AMET_AIRNOW_DAILY_O3   F
+  setenv AMET_AMTIC             F
+  setenv AMET_CAPMoN            F
+  setenv AMET_EMEP_HOURLY       F
+  setenv AMET_EMEP_DAILY        F
+  setenv AMET_EMEP_DAILY_O3     F
+  setenv AMET_EMEP_DEP          F
+  setenv AMET_FLUXNET           F
+  setenv AMET_MDN               F
+  setenv AMET_NOAA_ESRL_O3      F
+  setenv AMET_NYCCAS            F
+  setenv AMET_PURPLEAIR_DAILY   F
+  setenv AMET_PURPLEAIR_HOURLY  F
+  setenv AMET_SEARCH_HOURLY     F
+  setenv AMET_SEARCH_DAILY      F
+  setenv AMET_TOAR              F
+  setenv AMET_TOAR2_HOURLY      F
+  setenv AMET_TOAR2_DAILY       F
+  setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG scatterplot_mtom_density.log
+  setenv AMET_LOG soccerplot_plotly.log
 
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
@@ -124,14 +121,15 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Scatterplot_mtom_density.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Soccerplot.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots -- --------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_mtom_density.$AMET_PTYPE
+		echo "Plots -----------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_PID}_soccerplot.$AMET_PTYPE"
+		echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_PID}_soccerplot_data.csv"
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else
@@ -139,3 +137,4 @@
      echo "Often, this indicates no data matched the specified criteria (e.g., wrong dates for project). Please check and re-run!"
   		exit 1  
   endif
+

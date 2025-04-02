@@ -25,6 +25,8 @@ network <- network_names[1] 														# Use first network to set units
 ################################################
 
 require(ggplot2)
+require(plotly)
+require(htmlwidgets)
 
 networks_title <- network_label[1]
 n <- 2 
@@ -40,12 +42,14 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
    else { title <- custom_title }
 }
 
-filename_pdf <- paste(run_name1,species,pid,"scatterplot_mtom_density.pdf",sep="_")   # Set filename for pdf format file
-filename_png <- paste(run_name1,species,pid,"scatterplot_mtom_density.png",sep="_")   # Set filename for png format file
+filename_pdf	<- paste(run_name1,species,pid,"scatterplot_mtom_density.pdf",sep="_")   # Set filename for pdf format file
+filename_png 	<- paste(run_name1,species,pid,"scatterplot_mtom_density.png",sep="_")   # Set filename for png format file
+filename_html	<- paste(run_name1,species,pid,"scatterplot_mtom_density.html",sep="_")   # Set filename for html format file
 
 ## Create a full path to file
-filename_pdf <- paste(figdir,filename_pdf,sep="/")                          # Set PDF filename
-filename_png <- paste(figdir,filename_png,sep="/")                          # Set PNG filenam
+filename_pdf 	<- paste(figdir,filename_pdf,sep="/")                          # Set PDF filename
+filename_png 	<- paste(figdir,filename_png,sep="/")                          # Set PNG filename
+filename_html	<- paste(figdir,filename_html,sep="/")                          # Set HTML filename
 
 #################################
 
@@ -165,7 +169,14 @@ print(max(aqdat.df$Mod_Value))
 
 #sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + stat_density_2d(aes(fill = ..level..), geom="polygon") + scale_fill_gradient(low="blue", high="red") + geom_abline(intercept = 0, slope=1)
 sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=title,x=run_name2,y=run_name1) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.title = element_text(size=14), legend.text = element_text(size=12), legend.justification=c(1,0), legend.position=c(0.98,0.02), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5))
+p <- ggplotly(sp, width=1450, height=1250)
+
 sp <- sp + annotate("text",0.02*(axis.max),0.97*(axis.max),label=paste("Y =",signif(y.x.lm[1],2),"+",signif(y.x.lm[2],2),"* X"),hjust=0,vjust=1,size=5)
+sp <- sp + annotate("text",0.02*(axis.max),0.93*(axis.max),label=paste("Units =",units),hjust=0,vjust=1,size=5)
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("Y =",signif(y.x.lm[1],2),"+",signif(y.x.lm[2],2),"* X"),x=axis.max*0.02,y=axis.max*0.97,showarrow=FALSE))
+p <- p %>% layout(annotations=list(xanchor="left",align="left",text=paste("Units = ",units),x=axis.max*0.02,y=axis.max*0.93,showarrow=FALSE))
+
+saveWidget(p, file=filename_html,selfcontained=T)
 ggsave(filename_pdf,height=8,width=8)
 
 ### Convert pdf file to png file ###

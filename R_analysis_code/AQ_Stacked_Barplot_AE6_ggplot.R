@@ -49,7 +49,7 @@ if (use_median == "y") {
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { 
-      title <- get_title(run_names=run_names,species="Multiple Species",dates=dates,state=state,pca=pca,clim_reg=clim_reg)
+      title <- get_title(run_names=run_names,network_label=network_label,species="Multiple Species",dates=dates,state=state,pca=pca,clim_reg=clim_reg)
    }
    else { title <- custom_title }
 }
@@ -135,7 +135,7 @@ for (j in 1:length(run_names)) {
   if (method == "Median") { avg_fun <- "median" }
 
 #   aqdat_all.df[aqdat_all.df < 0] <- NA
-   aqdat_all.df <- aqdat_all.df[ -c(1,3,4,6,7,8,43,44)]
+   aqdat_all.df <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,45,46,47)]
    aqdat_agg.df <- aggregate(aqdat_all.df, by=list(aqdat_all.df$stat_id,aqdat_all.df$ob_dates), FUN=avg_fun, na.rm=TRUE)
    complete_records <- complete.cases(aqdat_agg.df[,5:36])
    aqdat_sub.df <- aqdat_agg.df[complete_records,]

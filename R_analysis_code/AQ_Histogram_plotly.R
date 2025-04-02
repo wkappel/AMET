@@ -21,12 +21,10 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 filename_html 		<- paste(run_name1,species,pid,"histogram.html",sep="_")             # Set PDF filename
 filename_txt  		<- paste(run_name1,species,pid,"histogram.csv",sep="_")       # Set output file name
-filename_html_bias 	<- paste(run_name1,species,pid,"histogram_bias.html",sep="_")             # Set PDF filename
 
 ## Create a full path to file
 filename_html 		<- paste(figdir,filename_html,sep="/")      # Set PDF filename
 filename_txt  		<- paste(figdir,filename_txt,sep="/")      # Set output file name
-filename_html_bias 	<- paste(figdir,filename_html_bias,sep="/")      # Set PDF filename
 
 #################################
 
@@ -155,5 +153,5 @@ vline <- function(x = 0, color = "black") {
 }
 
   p <- p %>% layout(shapes=list(vline(0)),title=list(text=main.title,font=list(size=25),y=0.97),barmode="overlay",xaxis=list(title=paste(species,"Bias (",units,")",sep=""),titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Frequency",titlefont=list(size=25),tickfont=list(size=15)),legend=list(font=list(size=20)))
-saveWidget(p, file=filename_html_bias,selfcontained=T)
+saveWidget(p, file=filename_html,selfcontained=T)
 
