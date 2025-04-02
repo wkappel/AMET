@@ -130,7 +130,7 @@ for (j in 1:length(run_names)) {
    }
    
 #   aqdat_all.df[aqdat_all.df < 0] <- NA
-   aqdat_all.df <- aqdat_all.df[ -c(1,3,4,6,7,8,43,44)]
+   aqdat_all.df <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,45,46,47)]
    aqdat_agg.df <- aggregate(aqdat_all.df, by=list(aqdat_all.df$stat_id,aqdat_all.df$ob_dates), FUN=mean, na.rm=TRUE)
    complete_records <- complete.cases(aqdat_agg.df[,5:36])
    aqdat_sub.df <- aqdat_agg.df[complete_records,]

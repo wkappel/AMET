@@ -338,11 +338,12 @@ cat("done. \n")
 cat("Loading data into MySQL database using temporary file (may take some time)...")
 mysql_command <- paste("mysql --host=",mysql$server," --user=",mysql$login," --password='",mysql$passwd,"' --database=",mysql$dbase," < ",mysql_query_file,sep="")
 system(mysql_command)
-delete_command <- paste("rm ",mysql_query_file,sep="")
+cat("\ndone. \n")
 if((delete_tmp_mysql_file == "T") || (delete_tmp_mysql_file == "t") || (delete_tmp_mysql_file == "Y") || (delete_tmp_mysql_file == "y")) {
+   cat("\nFlag to delete temporary MySQL file set to true...deleteing temporary file. To retain the MySQL input file, set the environment variable DLT_TMP_MYSQL_FILE to false.\n")
+   delete_command <- paste("rm ",mysql_query_file,sep="")
    system(delete_command)
 }
-cat("done. \n")
 
 #####################################################################################################################################
 ### This section automatically updates the min and max dates in the project_log table each time the add_aq2dbase.R script is run  ###
@@ -352,7 +353,7 @@ cat("done. \n")
 min_date <- min(start_time)
 max_date <- max(end_time)
 
-cat("Updating project log...")
+cat("\nUpdating project log...")
 query_all <- paste("SELECT proj_code,model,user_id,passwd,email,description,DATE_FORMAT(proj_date,'%Y%m%d'),proj_time,DATE_FORMAT(min_date,'%Y%m%d'),DATE_FORMAT(max_date,'%Y%m%d') from aq_project_log where proj_code='",project_id,"' ",sep="")    # set query for project log table for all information regarding current project
 info_all <- dbGetQuery(con,query_all)
 model        <- info_all[,2] 

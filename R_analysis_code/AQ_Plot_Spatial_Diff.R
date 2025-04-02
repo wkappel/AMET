@@ -593,6 +593,9 @@ for (k in 1:total_networks) {
       title_error_1	<- custom_title
       title_error_2	<- custom_title
       title_error_diff	<- custom_title
+      title_corr_1	<- custom_title
+      title_corr_2	<- custom_title
+      title_corr_diff	<- custom_title
    }
 }
 ###########################

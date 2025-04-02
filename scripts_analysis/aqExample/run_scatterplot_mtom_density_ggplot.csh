@@ -1,16 +1,21 @@
 #!/bin/csh -f
 # --------------------------------
-# Interactive Timeseries using dygraph
+# Scatterplot - Model to Model Denisty Plot
 # -----------------------------------------------------------------------
 # Purpose:
+#
 # This is an example c-shell script to run the R-script that generates
-# an interactive timeseries plot.  The script can accept multiple sites, 
-# as they will be time averaged to create the timeseries plot.  The script
-# also plots the bias, RMSE and correlation between the obs and model.
+# single model-to-model density sctterplot.  
 #
-# This script is new to AMET as of AMETv1.4.
+# Note: the model points correspond to network observation sites, and
+# does not use all the model grid points (only what is in the
+# database).  Two model runs must be provided and one or more
+# networks.  The script attempts to match all points in one run to all
+# points in the other run.
 #
-# Initial version:  Wyat Appel - Sep, 2018
+# Initial version:  Wyat Appel - Apr, 2018
+#
+# Revised version: 04/2025
 # -----------------------------------------------------------------------
 
   
@@ -30,17 +35,17 @@
   #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output
 
   ### Set the project name to be used for model-to-model comparisons ###
-  #setenv AMET_PROJECT2  aqExample
+  setenv AMET_PROJECT2  aqExample
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
   #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
 
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/timeseries_dygraph
-
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_mtom_density
+  
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
-  setenv AMET_SDATE "2016-07-01"
-  setenv AMET_EDATE "2016-07-31"
+  setenv AMET_SDATE "2018-07-01"
+  setenv AMET_EDATE "2018-07-31"
 
   ### Process ID. This can be set to anything. It will be added to the file output name. Default is 1.
   ### The PID is particularly important if using the AMET web interface and is determined there through
@@ -49,22 +54,12 @@
 
   ###  Custom title (if not set will autogenerate title based on variables 
   ###  and plot type)
-  setenv AMET_TITLE ""
-  #  setenv AMET_TITLE "Time Series Plot $AMET_PROJECT $AMET_SDATE - $AMET_EDATE"
+  setenv AMET_TITLE "Model to Model Density Scatterplot: $AMET_PROJECT vs $AMET_PROJECT2 $AMET_SDATE - $AMET_EDATE"
 
-  ###  Plot Type, options are only html with the interactive plots
-  setenv AMET_PTYPE html
 
-  # Additional query to subset the data.
-  # Averages over all monitors that meet this additional criteria
-  # Note: This is added to the sql query. If commented out, it will
-  # automatically get all monitors for the above network.
-  # Select by Monitor ID: 
-  # Note: the monitor must correspond to the network and species
-#  setenv AMET_ADD_QUERY "and s.stat_id='170310064'"
+  ###  Plot Type, options are "pdf", "png", or "both"
+  setenv AMET_PTYPE both 
 
-  # Select by state(s)
-#  setenv AMET_ADD_QUERY "and (s.state='NY' or s.state='MA')"
 
   ### Species to Plot ###
   ### Acceptable Species Names: SO4,NO3,NH4,HNO3,TNO3,PM_TOT,PM25_TOT,PM_FRM,PM25_FRM,EC,OC,TC,O3,O3_1hrmax,O3_8hrmax
@@ -72,50 +67,63 @@
   ### AE6 (CMAQv5.0) Species
   ### Na,Cl,Al,Si,Ti,Ca,Mg,K,Mn,Soil,Other,Ca_dep,Ca_conc,Mg_dep,Mg_conc,K_dep,K_conc
 
-  setenv AMET_AQSPECIES O3_8hrmax 
-#  setenv AMET_AQSPECIES SO4
+  setenv AMET_AQSPECIES SO4
 
-  ### Observation Network to plot -- One only
-  ###  set to 'y' to turn on, default is off
-  ###  NOTE: species are not available in every network
-#  setenv AMET_CSN y
-#  setenv AMET_IMPROVE y
-#  setenv AMET_CASTNET y
-#  setenv AMET_CASTNET_Hourly y
-#  setenv AMET_CASTNET_Daily_O3 y
-#  setenv AMET_CASTNET_Drydep y
-#  setenv AMET_NADP y
-#  setenv AMET_AIRMON y
-#  setenv AMET_AQS_Hourly y
-  setenv AMET_AQS_Daily_O3 y
-#  setenv AMET_AQS_Daily y
-#  setenv AMET_SEARCH y
-#  setenv AMET_SEARCH_Daily y
-#  setenv AMET_CAPMON y
-#  setenv AMET_NAPS_Hourly y
+  ### Observation Network to plot
+  ### Set to 'T' to process that nework
+  ### NOTE: all species are not available for every network
+  ### See AMET User's guide for details on each network
 
-### Europe Networks ###
+#> Standard North America networks
+  setenv AMET_AERONET           F
+  setenv AMET_AMON              F
+  setenv AMET_AQS_HOURLY        F
+  setenv AMET_AQS_HOURLY_VOC    F
+  setenv AMET_AQS_DAILY_O3      F
+  setenv AMET_AQS_DAILY         F
+  setenv AMET_AQS_DAILY_VOC     F
+  setenv AMET_CASTNET_WEEKLY    T
+  setenv AMET_CASTNET_HOURLY    F
+  setenv AMET_CASTNET_DAILY_O3  F
+  setenv AMET_CASTNET_DRYDEP    F
+  setenv AMET_CASTNET_DRYDEP_O3 F
+  setenv AMET_CSN               T
+  setenv AMET_IMPROVE           T
+  setenv AMET_NADP              F
+  setenv AMET_NAPS_HOURLY       F
+  setenv AMET_NAPS_DAILY_O3     F
 
-#  setenv AMET_AirBase_Hourly y
-#  setenv AMET_AirBase_Daily y
-#  setenv AMET_AURN_Hourly y
-#  setenv AMET_AURN_Daily y
-#  setenv AMET_EMEP_Hourly y
-#  setenv AMET_EMEP_Daily y
-#  setenv AMET_AGANET y
-#  setenv AMET_ADMN y
-#  setenv AMET_NAMN y
+#> Non-standard networks (should probably be set to F unless specifically required)
+  setenv AMET_AIRNOW            F
+  setenv AMET_AIRNOW_DAILY_O3   F
+  setenv AMET_AMTIC             F
+  setenv AMET_CAPMoN            F
+  setenv AMET_EMEP_HOURLY       F
+  setenv AMET_EMEP_DAILY        F
+  setenv AMET_EMEP_DAILY_O3     F
+  setenv AMET_EMEP_DEP          F
+  setenv AMET_FLUXNET           F
+  setenv AMET_MDN               F
+  setenv AMET_NOAA_ESRL_O3      F
+  setenv AMET_NYCCAS            F
+  setenv AMET_PURPLEAIR_DAILY   F
+  setenv AMET_PURPLEAIR_HOURLY  F
+  setenv AMET_SEARCH_HOURLY     F
+  setenv AMET_SEARCH_DAILY      F
+  setenv AMET_TOAR              F
+  setenv AMET_TOAR2_HOURLY      F
+  setenv AMET_TOAR2_DAILY       F
+  setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG timeseries_interactive_dygraph.log
-  
+  setenv AMET_LOG scatterplot_mtom_density.log
+
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
 ##--------------------------------------------------------------------------##
 
   ## Set the input file for this R script
-#  setenv AMETRINPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/timeseries.input  
-setenv AMETRINPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/all_scripts.input
+  setenv AMETRINPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/all_scripts.input  
   setenv AMET_NET_INPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/Network.input
   
   # Check for plot and text output directory, create if not present
@@ -124,15 +132,15 @@ setenv AMETRINPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/all_scrip
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Timeseries_dygraph.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Scatterplot_mtom_density_ggplot.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_timeseries_dygraph.$AMET_PTYPE
-		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_timeseries_dygraph_data.csv
+		echo "Plots -- --------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_mtom_density.$AMET_PTYPE
+                echo "Plots -- --------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_mtom_density.html
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else

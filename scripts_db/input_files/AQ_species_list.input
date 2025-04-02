@@ -170,7 +170,7 @@ CSN_EC_88321 	 <- "EC_88321"
 CSN_EC_88307_adj <- "EC_88307_adj"	# EC_88307_adj = 1.081525*EC_88307 - 0.104071
 CSN_PM_FRM_SPEC  <- "PM25"
 
-k <- 21 # default AERO offset value if the sharp cutoff is not envoked
+k <- 20 # default AERO offset value if the sharp cutoff is not envoked
 species_CSN <- paste("
   setenv AERO_1 \"SO4,ug/m3, ASO4IJ,,SO4\"                     		     # sulfate
   setenv AERO_2 \"NO3,ug/m3, ANO3IJ,,NO3\"                     		     # nitrate
@@ -178,37 +178,35 @@ species_CSN <- paste("
   setenv AERO_4 \"",CSN_PM_FRM_SPEC,",ug/m3,",PM_MOD_SPEC,",,PM_TOT\"        # PM2.5 (88101 and 88502)
   setenv AERO_5 \"PM25_88101,ug/m3,",PM_MOD_SPEC,",,PM_TOT_88101\"  	     # PM2.5 (88101 only)
   setenv AERO_6 \"PM25_88502,ug/m3,",PM_MOD_SPEC,",,PM_TOT_88502\"	     # PM2.5 (88502 only)
-  setenv AERO_7 \"",CSN_PM_FRM_SPEC,",ug/m3,",PM_FRM_MOD_SPEC,",,PM_FRM\"               # FRM Equivalent PM2.5
-  setenv AERO_8 \"PM10_81102,ug/m3,",PM10_IJK_MOD_SPEC,",,PM10_IJK\"         # PM10 (81102 vs ATOTIJK)
-  setenv AERO_9 \"OC,ug/m3, AOCIJ,,OC\"      				     # Organic Carbon (best available)
-  setenv AERO_10 \"EC,ug/m3, AECIJ,,EC\"                        		     # Elemental Carbon (best available)
-  setenv AERO_11 \"OC+EC,ug/m3,AOCIJ+AECIJ,,TC\"     			     # Total Carbon (best available)
-  setenv AERO_12 \"OC_88305,ug/m3, AOCIJ,,OC_88305\"                          # Organic Carbon (88305 raw)
-  setenv AERO_13 \"OC_88305_adj,ug/m3,AOCIJ,,OC_88305_adj\"                  # Organic Carbon (88305 adjusted)
-  setenv AERO_14 \"OC_88370,ug/m3, AOCIJ,,OC_88370\"                         # Organic Carbon (88370 raw)
-  setenv AERO_15 \"OC_88370_adj,ug/m3,AOCIJ,,OC_88370_adj\"                  # Organic Carbon (88370 adjusted)
-  setenv AERO_16 \"OC_88320,ug/m3,AOCIJ,,OC_88320\"                          # Organic Carbon (88320)
-  setenv AERO_17 \"EC_88307,ug/m3, AECIJ,,EC_88307\"                         # Elemental Carbon (88307 raw)
-  setenv AERO_18 \"EC_88307_adj,ug/m3,AECIJ,,EC_88307_adj\"                  # Elemental Carbon (88307 adjusted)
-  setenv AERO_19 \"EC_88380,ug/m3, AECIJ,,EC_88380\"                         # Elemental Carbon (88380)
-  setenv AERO_20 \"EC_88321,ug/m3,AECIJ,,EC_88321\"                          # Elemental Carbon (88321)
+  setenv AERO_7 \"PM10_81102,ug/m3,",PM10_IJK_MOD_SPEC,",,PM10_IJK\"         # PM10 (81102 vs ATOTIJK)
+  setenv AERO_8 \"OC,ug/m3, AOCIJ,,OC\"      				     # Organic Carbon (best available)
+  setenv AERO_9 \"EC,ug/m3, AECIJ,,EC\"                        		     # Elemental Carbon (best available)
+  setenv AERO_10 \"OC+EC,ug/m3,AOCIJ+AECIJ,,TC\"     			     # Total Carbon (best available)
+  setenv AERO_11 \"OC_88305,ug/m3, AOCIJ,,OC_88305\"                          # Organic Carbon (88305 raw)
+  setenv AERO_12 \"OC_88305_adj,ug/m3,AOCIJ,,OC_88305_adj\"                  # Organic Carbon (88305 adjusted)
+  setenv AERO_13 \"OC_88370,ug/m3, AOCIJ,,OC_88370\"                         # Organic Carbon (88370 raw)
+  setenv AERO_14 \"OC_88370_adj,ug/m3,AOCIJ,,OC_88370_adj\"                  # Organic Carbon (88370 adjusted)
+  setenv AERO_15 \"OC_88320,ug/m3,AOCIJ,,OC_88320\"                          # Organic Carbon (88320)
+  setenv AERO_16 \"EC_88307,ug/m3, AECIJ,,EC_88307\"                         # Elemental Carbon (88307 raw)
+  setenv AERO_17 \"EC_88307_adj,ug/m3,AECIJ,,EC_88307_adj\"                  # Elemental Carbon (88307 adjusted)
+  setenv AERO_18 \"EC_88380,ug/m3, AECIJ,,EC_88380\"                         # Elemental Carbon (88380)
+  setenv AERO_19 \"EC_88321,ug/m3,AECIJ,,EC_88321\"                          # Elemental Carbon (88321)
 ",sep = "")
 
 species_cutoff_CSN <- paste("
 ## PM2.5 Sharp Cutoff Species
 ## Requires preprocessing using setenv AERODIAM file
-  setenv AERO_21 \"SO4,ug/m3, PM25_SO4,,PM25_SO4\"                   	     # sulfate (sharp cutoff)
-  setenv AERO_22 \"NO3,ug/m3, PM25_NO3,,PM25_NO3\"                  	     # nitrate (sharp cutoff)
-  setenv AERO_23 \"NH4,ug/m3, PM25_NH4,,PM25_NH4\"                  	     # ammonium (sharp cutoff)
-  setenv AERO_24 \"OC,ug/m3, PM25_OC,,PM25_OC\"                    	     # Organic Carbon (sharp cutoff)
-  setenv AERO_25 \"",CSN_EC_SPEC,",ug/m3, PM25_EC,,PM25_EC\"                 # Elemental Carbon (sharp cutoff)
-  setenv AERO_26 \"OC+",CSN_EC_SPEC,",ug/m3,PM25_OC+PM25_EC,,PM25_TC\"       # Total Carbon (sharp cutoff)
-  setenv AERO_27 \"",CSN_PM_FRM_SPEC,",ug/m3,PM25_TOT,ug/m3,PM25_TOT\"       # Total PM2.5 (sharp cutoff)
-  setenv AERO_28 \"",CSN_PM_FRM_SPEC,",ug/m3,",PM_FRM_MOD_SPEC,",ug/m3,PM25_FRM\"       # FRM Equivalent PM2.5 (sharp cutoff)
-  setenv AERO_29 \"PM10_81102,ug/m3,",PM10_CUT_MOD_SPEC,",ug/m3,PM10\"      # PM10 (sharp cutoff)
+  setenv AERO_20 \"SO4,ug/m3, PM25_SO4,,PM25_SO4\"                   	     # sulfate (sharp cutoff)
+  setenv AERO_21 \"NO3,ug/m3, PM25_NO3,,PM25_NO3\"                  	     # nitrate (sharp cutoff)
+  setenv AERO_22 \"NH4,ug/m3, PM25_NH4,,PM25_NH4\"                  	     # ammonium (sharp cutoff)
+  setenv AERO_23 \"OC,ug/m3, PM25_OC,,PM25_OC\"                    	     # Organic Carbon (sharp cutoff)
+  setenv AERO_24 \"",CSN_EC_SPEC,",ug/m3, PM25_EC,,PM25_EC\"                 # Elemental Carbon (sharp cutoff)
+  setenv AERO_25 \"OC+",CSN_EC_SPEC,",ug/m3,PM25_OC+PM25_EC,,PM25_TC\"       # Total Carbon (sharp cutoff)
+  setenv AERO_26 \"",CSN_PM_FRM_SPEC,",ug/m3,PM25_TOT,ug/m3,PM25_TOT\"       # Total PM2.5 (sharp cutoff)
+  setenv AERO_27 \"PM10_81102,ug/m3,",PM10_CUT_MOD_SPEC,",ug/m3,PM10\"      # PM10 (sharp cutoff)
 ",sep = "")
 
-if ((cutoff == "y") || (cutoff == "Y") || (cutoff == "t") || (cutoff == "T")) { k <- 30 }
+if ((cutoff == "y") || (cutoff == "Y") || (cutoff == "t") || (cutoff == "T")) { k <- 28 }
 species_AE6_CSN <- paste("
 # setenv AERO6 species
 ## note we use Sodium Ion instead of sodium (XRF) becasue XRF is not reliable for sodium
@@ -640,26 +638,24 @@ species_AQS_Hourly <- paste("
      setenv GAS_6 \"CO,ppb,CO,ppb,CO\"                           # CO
      setenv GAS_7 \"SO2,ppb,SO2,ppb,SO2\"                        # SO2
      setenv GAS_8 \"PM25,ug/m3,",PM_MOD_SPEC,",ug/m3,PM_TOT\"    # PM25
-     setenv GAS_9 \"PM25,ug/m3,",PM_FRM_MOD_SPEC,",ug/m3,PM_FRM\"           # PM25
-     setenv GAS_10 \"PM10_81102,ug/m3,",PM10_IJK_MOD_SPEC,",ug/m3,PM10_IJK\"       # PM10
-     setenv GAS_11 \"Isoprene,ppb,ISOP,ppb,Isoprene\"            # Isoprene
-     setenv GAS_12 \"Ethylene,ppb,ETH,ppb,Ethylene\"             # Ethene (Ethylene)
-     setenv GAS_13 \"Ethane,ppb,ETHA,ppb,Ethane\"                # Ethane
-     setenv GAS_14 \"Toluene,ppb,TOL,ppb,Toluene\"               # Toluene
-     setenv GAS_15 \"Temperature,C,SFC_TMP,C,SFC_TMP\"           # Surface Temperature
-     setenv GAS_16 \"RH,%,RH,%,RH\"                              # Relative Humidity
-     setenv GAS_17 \"Wind_Speed,m/s,WSPD10,m/s,WSPD10\"          # Wind Speed
-     setenv GAS_18 \",,PBLH,m,PBLH\"                             # PBL Height
-     setenv GAS_19 \",,SOL_RAD,watts/m2,Solar_Rad\"              # Solar Radiation
-     setenv GAS_20 \",,10*precip,mm/hr,precip\"                  # Precipitation
+     setenv GAS_9 \"PM10_81102,ug/m3,",PM10_IJK_MOD_SPEC,",ug/m3,PM10_IJK\"       # PM10
+     setenv GAS_10 \"Isoprene,ppb,ISOP,ppb,Isoprene\"            # Isoprene
+     setenv GAS_11 \"Ethylene,ppb,ETH,ppb,Ethylene\"             # Ethene (Ethylene)
+     setenv GAS_12 \"Ethane,ppb,ETHA,ppb,Ethane\"                # Ethane
+     setenv GAS_13 \"Toluene,ppb,TOL,ppb,Toluene\"               # Toluene
+     setenv GAS_14 \"Temperature,C,SFC_TMP,C,SFC_TMP\"           # Surface Temperature
+     setenv GAS_15 \"RH,%,RH,%,RH\"                              # Relative Humidity
+     setenv GAS_16 \"Wind_Speed,m/s,WSPD10,m/s,WSPD10\"          # Wind Speed
+     setenv GAS_17 \",,PBLH,m,PBLH\"                             # PBL Height
+     setenv GAS_18 \",,SOL_RAD,watts/m2,Solar_Rad\"              # Solar Radiation
+     setenv GAS_19 \",,10*precip,mm/hr,precip\"                  # Precipitation
 
    ",sep="")
    species_cutoff_AQS_Hourly <- paste("
    ## PM2.5 Sharp Cutoff Species
    ## Requires preprocessing using setenv AERODIAM file
-     setenv GAS_21 \"PM25,ug/m3,PM25_TOT,ug/m3,PM25_TOT\"       # PM2.5 Total Mass with sharp cutoff
-     setenv GAS_22 \"PM25,ug/m3,",PM_FRM_MOD_SPEC,",,PM25_FRM\"            # PM2.5 Total Mass (cutoff with FRM adjustment)
-     setenv GAS_22 \"PM10_81102,ug/m3,",PM10_CUT_MOD_SPEC,",ug/m3,PM10\"       # PM10
+     setenv GAS_20 \"PM25,ug/m3,PM25_TOT,ug/m3,PM25_TOT\"       # PM2.5 Total Mass with sharp cutoff
+     setenv GAS_21 \"PM10_81102,ug/m3,",PM10_CUT_MOD_SPEC,",ug/m3,PM10\"       # PM10
    ",sep="")
 
    species_AE6_AQS_Hourly <- ""
@@ -724,26 +720,25 @@ k <- 31
    ## PM2.5 Sharp Cutoff Species
    ## Requires preprocessing using setenv AERODIAM file
      setenv AERO_31 \"PM25,ug/m3,PM25_TOT,ug/m3,PM25_TOT\"       # PM2.5 Total Mass with sharp cutoff
-     setenv AERO_32 \"PM25,ug/m3,",PM_FRM_MOD_SPEC,",,PM25_FRM\"            # PM2.5 Total Mass (cutoff with FRM adjustment)
-     setenv AERO_33 \"SO4,ug/m3, PM25_SO4,,PM25_SO4\"            # sulfate (sharp cutoff)
-     setenv AERO_34 \"NO3,ug/m3, PM25_NO3,,PM25_NO3\"            # nitrate (sharp cutoff)
-     setenv AERO_35 \"NH4,ug/m3, PM25_NH4,,PM25_NH4\"            # ammonium (sharp cutoff)
-     setenv AERO_36 \"",AQS_OC_SPEC,",ug/m3, PM25_OC,,PM25_OC\"               # Organic Carbon (sharp cutoff)
-     setenv AERO_37 \"",AQS_EC_SPEC,",ug/m3, PM25_EC,,PM25_EC\"               # Elemental Carbon (sharp cutoff)
-     setenv AERO_38 \"",AQS_OC_SPEC,"+",AQS_EC_SPEC,",ug/m3,PM25_OC+PM25_EC,,PM25_TC\"     # Total Carbon (sharp cutoff)
-     setenv AERO_39 \"",AQS_OC_SPEC2,",ug/m3,PM25_OC,ug/m3,PM25_OC_88305\"            # OC blank adjusted Mass
-     setenv AERO_40 \"",AQS_EC_SPEC2,",ug/m3,PM25_EC,ug/m3,PM25_EC_88307\"            # EC Mass
-     setenv AERO_41 \"",AQS_OC_SPEC2,"+",AQS_EC_SPEC2,",ug/m3,AOCIJ+AECIJ,,PM25_TC_88305\"  # Total Carbon
-     setenv AERO_42 \"",AQS_OC_SPEC3,",ug/m3,PM25_OC,ug/m3,PM25_OC_88370\"            # OC blank adjusted Mass
-     setenv AERO_43 \"",AQS_EC_SPEC3,",ug/m3,PM25_EC,ug/m3,PM25_EC_88380\"            # EC Mass
-     setenv AERO_44 \"",AQS_OC_SPEC3,"+",AQS_EC_SPEC3,",ug/m3,AOCIJ+AECIJ,,PM25_TC_88370\"  # Total Carbon
-     setenv AERO_45 \"",AQS_OC_SPEC4,",ug/m3,PM25_OC,ug/m3,PM25_OC_88320\"            # OC blank adjusted Mass
-     setenv AERO_46 \"",AQS_EC_SPEC4,",ug/m3,PM25_EC,ug/m3,PM25_EC_88321\"            # EC Mass
-     setenv AERO_47 \"",AQS_OC_SPEC4,"+",AQS_EC_SPEC3,",ug/m3,AOCIJ+AECIJ,,PM25_TC_88320\"  # Total Carbon
-     setenv AERO_48 \"PM10_81102,ug/m3,",PM10_CUT_MOD_SPEC,",ug/m3,PM10\"       # PM10 Total Mass 
+     setenv AERO_32 \"SO4,ug/m3, PM25_SO4,,PM25_SO4\"            # sulfate (sharp cutoff)
+     setenv AERO_33 \"NO3,ug/m3, PM25_NO3,,PM25_NO3\"            # nitrate (sharp cutoff)
+     setenv AERO_34 \"NH4,ug/m3, PM25_NH4,,PM25_NH4\"            # ammonium (sharp cutoff)
+     setenv AERO_35 \"",AQS_OC_SPEC,",ug/m3, PM25_OC,,PM25_OC\"               # Organic Carbon (sharp cutoff)
+     setenv AERO_36 \"",AQS_EC_SPEC,",ug/m3, PM25_EC,,PM25_EC\"               # Elemental Carbon (sharp cutoff)
+     setenv AERO_37 \"",AQS_OC_SPEC,"+",AQS_EC_SPEC,",ug/m3,PM25_OC+PM25_EC,,PM25_TC\"     # Total Carbon (sharp cutoff)
+     setenv AERO_38 \"",AQS_OC_SPEC2,",ug/m3,PM25_OC,ug/m3,PM25_OC_88305\"            # OC blank adjusted Mass
+     setenv AERO_39 \"",AQS_EC_SPEC2,",ug/m3,PM25_EC,ug/m3,PM25_EC_88307\"            # EC Mass
+     setenv AERO_40 \"",AQS_OC_SPEC2,"+",AQS_EC_SPEC2,",ug/m3,AOCIJ+AECIJ,,PM25_TC_88305\"  # Total Carbon
+     setenv AERO_41 \"",AQS_OC_SPEC3,",ug/m3,PM25_OC,ug/m3,PM25_OC_88370\"            # OC blank adjusted Mass
+     setenv AERO_42 \"",AQS_EC_SPEC3,",ug/m3,PM25_EC,ug/m3,PM25_EC_88380\"            # EC Mass
+     setenv AERO_43 \"",AQS_OC_SPEC3,"+",AQS_EC_SPEC3,",ug/m3,AOCIJ+AECIJ,,PM25_TC_88370\"  # Total Carbon
+     setenv AERO_44 \"",AQS_OC_SPEC4,",ug/m3,PM25_OC,ug/m3,PM25_OC_88320\"            # OC blank adjusted Mass
+     setenv AERO_45 \"",AQS_EC_SPEC4,",ug/m3,PM25_EC,ug/m3,PM25_EC_88321\"            # EC Mass
+     setenv AERO_46 \"",AQS_OC_SPEC4,"+",AQS_EC_SPEC3,",ug/m3,AOCIJ+AECIJ,,PM25_TC_88320\"  # Total Carbon
+     setenv AERO_47 \"PM10_81102,ug/m3,",PM10_CUT_MOD_SPEC,",ug/m3,PM10\"       # PM10 Total Mass 
    ",sep="")
 
-   if ((cutoff == "y") || (cutoff == "Y") || (cutoff == "t") || (cutoff == "T")) { k <- 49 }
+   if ((cutoff == "y") || (cutoff == "Y") || (cutoff == "t") || (cutoff == "T")) { k <- 48 }
    species_AE6_AQS_Daily <- paste("
    # setenv AERO6 species
    ## note we use Sodium Ion instead of sodium (XRF) becasue XRF is not reliable for sodium
@@ -1259,7 +1254,6 @@ species_TOAR2_Daily <- paste("
  setenv GAS_5 \"NO+NO2,ppb,NO+NO2,ppb,NOX\"
  setenv GAS_6 \"SO2,ppb,SO2,ppb,SO2\"
  setenv AERO_1 \"PM25,ug/m3,",PM_MOD_SPEC,",ug/m3,PM_TOT\"    # PM25
- setenv AERO_2 \"PM25,ug/m3,",PM_FRM_MOD_SPEC,",ug/m3,PM_FRM\"           # PM25
   ",sep="")
 species_cutoff_TOAR2_Daily <- ""
 species_AE6_TOAR2_Daily <- ""
@@ -1278,7 +1272,6 @@ species_TOAR2_Hourly <- paste("
  setenv GAS_5 \"NO+NO2,ppb,NO+NO2,ppb,NOX\"
  setenv GAS_6 \"SO2,ppb,SO2,ppb,SO2\"
  setenv AERO_1 \"PM25,ug/m3,",PM_MOD_SPEC,",ug/m3,PM_TOT\"    # PM25
- setenv AERO_2 \"PM25,ug/m3,",PM_FRM_MOD_SPEC,",ug/m3,PM_FRM\"           # PM25 
   ",sep="")
 species_cutoff_TOAR2_Hourly <- ""
 species_AE6_TOAR2_Hourly <- ""

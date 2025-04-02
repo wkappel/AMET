@@ -7,7 +7,7 @@ header <- "
 ### NCOM, PMother and total PM2.5. These averages are then plotted on a stacked bar plot,
 ### along with the percent of the total PM2.5 that each species comprises.
 ###
-### Last updated by Wyat Appel: Nov 2020
+### Last updated by Wyat Appel: 04/2025
 ######################################################################################
 "
 
@@ -22,11 +22,6 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network <- network_names[1]
 network_name <- network_label[1]
 num_runs <- 1
-
-### Retrieve units and model labels from database table ###
-#units_qs <- paste("SELECT Fe from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
 
 ### Set filenames and titles ###
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_AE6.pdf",sep="_")
@@ -76,9 +71,7 @@ rmse_unsys2    <- NULL
 merge_statid_POC <- "n"	# Do not merge statid and POC. Need them separate from CSN merging of PM_TOT and speciated data
 remove_negatives <- "n"	# Do not remove negatives. This will be handled in another fuction
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
-#species <- c("SO4","NO3","NH4","PM_TOT","PM_FRM","EC","OC","TC","soil","NCOM","NaCl","OTHER","OTHER_REM")
 species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") 
-if (network == 'CSN') { species <- c("SO4","NO3","NH4","PM_TOT","PM_FRM","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") }
 #############################################
 ### Read sitex file or query the database ###
 #############################################
@@ -125,7 +118,6 @@ if (num_runs > 1) {
    aqdat_all2.df[aqdat_all2.df == -999] <- NA
    ### Calculate NH4 from NO3 and SO4 if unavailable ###
    aqdat_all2.df$NH4_ob[aqdat_all2.df$NH4 == -999] <- 0.2903*aqdat_all2.df$NO3_ob+0.375*aqdat_all2.df$SO4_ob
-#   aqdat_all2.df$OTHER_ob[aqdat_all2.df$OTHER_ob == -999] <- aqdat_all2.df$PM_TOT_ob-aqdat_all2.df$SO4_ob-aqdat_all2.df$NO3_ob-(0.2903*aqdat_all2.df$NO3_ob+0.375*aqdat_all2.df$SO4_ob)-aqdat_all2.df$OC_ob-aqdat_all2.df$EC_ob-aqdat_all2.df$NaCl_ob-aqdat_all2.df$soil_ob
     aqdat_all2.df$NCOM_ob <- 0.8*aqdat_all2.df$OC_ob
 }
 
@@ -140,28 +132,16 @@ if (network == 'CSN') {
    blank_ob   <- 0
    blank_ob2  <- 0
 }
-if (network != 'CSN') {
-   aqdat_all.df$PM_FRM_ob <- aqdat_all.df$PM_TOT_ob
-   aqdat_all.df$PM_FRM_mod <- aqdat_all.df$PM_TOT_mod
-}
-if ((network != 'CSN') && (num_runs > 1)) {
-   aqdat_all2.df$PM_FRM_ob <- aqdat_all2.df$PM_TOT_ob
-   aqdat_all2.df$PM_FRM_mod <- aqdat_all2.df$PM_TOT_mod
-}
 
-aqdat_all.df     <- aqdat_all.df[ -c(1,3,4,6,7,8,31,32,33,34,35,36)]
-if (inc_FRM_adj != "y") { aqdat_all.df <- aqdat_all.df[ -c(11,12)] }
+aqdat_all.df     <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,33,34,35,36,37,38)]
 aqdat_agg.df     <- aggregate(aqdat_all.df, by=list(aqdat_all.df$stat_id,aqdat_all.df$ob_dates), FUN=mean, na.rm=TRUE)
-#aqdat_agg.df$OTHER_ob[is.na(aqdat_agg.df$OTHER_ob)] <- aqdat_agg.df$PM_TOT_ob-aqdat_agg.df$SO4_ob-aqdat_agg.df$NO3_ob-(0.2903*aqdat_agg.df$NO3_ob+0.375*aqdat_agg.df$SO4_ob)-aqdat_agg.df$OC_ob-aqdat_agg.df$EC_ob-aqdat_agg.df$NaCl_ob-aqdat_agg.df$soil_ob
 complete_records <- complete.cases(aqdat_agg.df[,5:24])
 aqdat_sub.df     <- aqdat_agg.df[complete_records,]
 data.df 	 <- aqdat_sub.df
 
 if (num_runs > 1) {
-   aqdat_all2.df    <- aqdat_all2.df[ -c(1,3,4,6,7,8,31,32,33,34,35,36)]
-   if (inc_FRM_adj != "y") { aqdat_all2.df <- aqdat_all2.df[ -c(11,12)] }
+   aqdat_all2.df    <- aqdat_all2.df[ -c(1,3,4,5,6,8,9,10,33,34,35,36,37,38)]
    aqdat_agg2.df    <- aggregate(aqdat_all2.df, by=list(aqdat_all2.df$stat_id,aqdat_all2.df$ob_dates), FUN=mean, na.rm=TRUE)
-#   aqdat_agg2.df$OTHER_ob[is.na(aqdat_agg2.df$OTHER_ob)] <- aqdat_agg2.df$PM_TOT_ob-aqdat_agg2.df$SO4_ob-aqdat_agg2.df$NO3_ob-(0.2903*aqdat_agg2.df$NO3_ob+0.375*aqdat_agg2.df$SO4_ob)-aqdat_agg2.df$OC_ob-aqdat_agg2.df$EC_ob-aqdat_agg2.df$NaCl_ob-aqdat_agg2.df$soil_ob
    complete_records <- complete.cases(aqdat_agg2.df[,5:24])
    aqdat_sub2.df    <- aqdat_agg2.df[complete_records,]
    data2.df	    <- aqdat_sub2.df
@@ -173,8 +153,6 @@ if (num_runs > 1) {
 ##########################################################
 num_sites    <- length(unique(aqdat_sub.df$Group.1))
 num_pairs    <- length(aqdat_sub.df$Group.1)
-
-#print(names(data.df))
 
 data.df              <- aqdat_sub.df[5:length(aqdat_sub.df)]
 {
@@ -206,39 +184,14 @@ if (num_runs > 1) {
 ########################################################################################
 ### Calculate percent of total PM2.5 (without other category) each species comprises ###
 ########################################################################################
-#   print(medians.df)
    water_ob             <- 0
-#   NCOM_ob              <- 0.8*medians.df$OC_ob
    other_ob             <- medians.df$PM_TOT_ob-(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+medians.df$NaCl_ob+medians.df$soil_ob+medians.df$NCOM_ob)-(water_ob+blank_ob)
    if (other_ob < 0) {
       other_ob <- 0
    }
-#   other_ob             <- medians.df$OTHER_ob-(water_ob+blank_ob+NCOM_ob)
-#   if (other_ob < 0) {
-#      other_ob <- 0
-#   }
-#   other_mod            <- medians.df$OTHER_REM_mod
    other_mod             <- medians.df$PM_TOT_mod-(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$NaCl_mod+medians.df$soil_mod+medians.df$NCOM_mod)
    medians_tot_ob       <- medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$TC_ob+medians.df$soil_ob+medians.df$NaCl_ob+medians.df$NCOM_ob+other_ob+blank_ob+water_ob
    medians_tot_mod      <- medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$TC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+other_mod+blank_mod
-#   total_ob            <- data.df$SO4_ob+data.df$NO3_ob+data.df$NH4_ob+data.df$TC_ob+data.df$soil_ob+data.df$NaCl_ob++water_ob+NCOM_ob
-#   total_mod           <- data.df$SO4_mod+data.df$NO3_mod+data.df$NH4_mod+data.df$TC_mod+data.df$soil_mod+data.df$NaCl_mod+data.df$NCOM_mod+data.df$OTHER_REM_mod+blank_mod
-   if ((inc_FRM_adj == 'y') && (network == 'CSN')) {
-      water_ob             <- 0.24*(medians.df$SO4_ob+medians.df$NH4_ob)
-      FRM_adj                <- data.df$PM_FRM_mod-data.df$PM_TOT_mod
-      if (FRM_adj < 0) {
-         FRM_adj <- 0
-      }
-      FRM_adj_median         <- medians.df$PM_FRM_mod-medians.df$PM_TOT_mod
-      if (FRM_adj_median < 0) {
-         FRM_adj_median <- 0
-      }
-      other_ob  <- other_ob  - water_ob
-      other_mod <- other_mod - FRM_adj_median
-      if (other_mod < 0) { other_mod <- 0 }
-#      total_mod		     <- data.df$SO4_mod+data.df$NO3_mod+data.df$NH4_mod+data.df$TC_mod+data.df$soil_mod+data.df$NaCl_mod+data.df$NCOM_mod+blank_mod+data.df$OTHER_REM_mod+FRM_adj
-      medians_tot_mod	     <- medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$TC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+other_mod+blank_mod+FRM_adj_median
-   }
 
    SO4_ob_percent	<- round(medians.df$SO4_ob/(medians_tot_ob)*100,1)
    NO3_ob_percent	<- round(medians.df$NO3_ob/(medians_tot_ob)*100,1)
@@ -266,10 +219,6 @@ if (num_runs > 1) {
    other_rem_mod_percent<- round(other_mod/(medians_tot_mod)*100,1)
    blank_mod_percent    <- round(blank_mod/(medians_tot_mod)*100,1)
  
-   if ((inc_FRM_adj == 'y') && (network == 'CSN')) {
-      FRM_adj_mod_percent	<- round(FRM_adj_median/(medians_tot_mod)*100,1)
-   }
-
    correlation	<- round(cor(data.df$PM_TOT_mod, data.df$PM_TOT_ob),2)
    rmse		<- round(sqrt(c(rmse, sum((data.df$PM_TOT_mod - data.df$PM_TOT_ob)^2)/length(data.df$PM_TOT_ob))),2)
    ls_regress	<- lsfit(data.df$PM_TOT_ob,data.df$PM_TOT_mod)
@@ -280,35 +229,12 @@ if (num_runs > 1) {
    index_agree	<- round(1-((sum((data.df$PM_TOT_ob-data.df$PM_TOT_mod)^2))/(sum((abs(data.df$PM_TOT_mod-mean(data.df$PM_TOT_ob))+abs(data.df$PM_TOT_ob-mean(data.df$PM_TOT_ob)))^2))),2)
    
    if (num_runs > 1) {
-       water_ob2            <- 0
-#       NCOM_ob2             <- 0.8*medians2.df$OC_ob
-       other_mod2             <- medians2.df$PM_TOT_mod-(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$NaCl_mod+medians2.df$soil_mod+medians2.df$NCOM_mod)
-       if ((inc_FRM_adj == 'y') && (network == 'CSN')) {
-          other_mod2 <- other_mod2 - FRM_adj_median
-       }
-       if (other_mod2 < 0) {
-          other_mod2 <- 0
-       }      
-#       other_ob2            <- medians2.df$OTHER_ob-(water_ob2+blank_ob2+NCOM_ob2)
-#       if (other_ob2 < 0) {
-#          other_ob2 <- 0
-#       }
-
-#       total_ob2	<- data2.df$SO4_ob+data2.df$NO3_ob+data2.df$NH4_ob+data2.df$TC_ob+data2.df$soil_ob+data2.df$NaCl_ob+data2.df$OTHER_ob+water_ob2+NCOM_ob2
-#       total_mod2	<- data2.df$SO4_mod+data2.df$NO3_mod+data2.df$NH4_mod+data2.df$TC_mod+data2.df$soil_mod+data2.df$NaCl_mod+data2.df$NCOM_mod+data2.df$OTHER_REM_mod
-       medians_tot_mod2     <- medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$TC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+other_mod2+blank_mod
-
-      if ((inc_FRM_adj == 'y') && (network == 'CSN')) {
-         water_ob2            <- 0.24*(medians2.df$SO4_ob+medians2.df$NH4_ob)
-         FRM_adj2               <- data2.df$PM_FRM_mod-data2.df$PM_TOT_mod
-         if (FRM_adj2 < 0) { FRM_adj2 <- 0 }
-         FRM_adj_median2        <- medians2.df$PM_FRM_mod-medians2.df$PM_TOT_mod
-         if (FRM_adj_median2 < 0) { FRM_adj_median2 <- 0 }
-         other_mod2 <- other_mod2 - FRM_adj_median2
-#         total_mod2             <- data2.df$SO4_mod+data2.df$NO3_mod+data2.df$NH4_mod+data2.df$TC_mod+data2.df$soil_mod+data2.df$NaCl_mod+data2.df$NCOM_mod+data2.df$OTHER_REM_mod+FRM_adj2
-         medians_tot_mod2       <- medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$TC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+other_mod2+blank_ob+FRM_adj_median2
-      }
-
+      water_ob2            <- 0
+      other_mod2             <- medians2.df$PM_TOT_mod-(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$NaCl_mod+medians2.df$soil_mod+medians2.df$NCOM_mod)
+      if (other_mod2 < 0) {
+         other_mod2 <- 0
+      }      
+      medians_tot_mod2     <- medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$TC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+other_mod2+blank_mod
 
       SO4_mod_percent2		<- round(medians2.df$SO4_mod/(medians_tot_mod2)*100,1)
       NO3_mod_percent2		<- round(medians2.df$NO3_mod/(medians_tot_mod2)*100,1)
@@ -323,9 +249,6 @@ if (num_runs > 1) {
       other_rem_mod_percent2	<- round(other_mod2/(medians_tot_mod2)*100,1)
       blank_mod_percent2        <- round(blank_mod2/(medians_tot_mod2)*100,1)
 
-      if (inc_FRM_adj == 'y') {
-         FRM_adj_mod_percent2       <- round(FRM_adj_median2/(medians_tot_mod2)*100,1)
-      }
 
       correlation2 <- round(cor(data2.df$PM_TOT_mod, data2.df$PM_TOT_ob),2) 
       rmse2        <- round(sqrt(c(rmse2, sum((data2.df$PM_TOT_mod - data2.df$PM_TOT_ob)^2)/length(data2.df$PM_TOT_ob))),2)
@@ -339,11 +262,7 @@ if (num_runs > 1) {
 ###############################################################
 
 {
-   if ((network == 'CSN') && (inc_FRM_adj == 'y')) {
-      data_matrix <- matrix(c(medians.df$SO4_ob,medians.df$SO4_mod,medians.df$NO3_ob,medians.df$NO3_mod,medians.df$NH4_ob,medians.df$NH4_mod,medians.df$EC_ob,medians.df$EC_mod,medians.df$OC_ob,medians.df$OC_mod,medians.df$soil_ob,medians.df$soil_mod,medians.df$NaCl_ob,medians.df$NaCl_mod,medians.df$NCOM_ob,medians.df$NCOM_mod,other_ob,other_mod,blank_ob,blank_mod,water_ob,FRM_adj_median),byrow=T,ncol=2)  # create matrix of average values needed by barplot, 2 columns (ob,model) and species by row
-      out_matrix <- matrix(c(medians.df$SO4_ob,medians.df$SO4_mod,SO4_ob_percent,SO4_mod_percent,medians.df$NO3_ob,medians.df$NO3_mod,NO3_ob_percent,NO3_mod_percent,medians.df$NH4_ob,medians.df$NH4_mod,NH4_ob_percent,NH4_mod_percent,medians.df$EC_ob,medians.df$EC_mod,EC_ob_percent,EC_mod_percent,medians.df$OC_ob,medians.df$OC_mod,OC_ob_percent,OC_mod_percent,medians.df$soil_ob,medians.df$soil_mod,soil_ob_percent,soil_mod_percent,medians.df$NaCl_ob,medians.df$NaCl_mod,NaCl_ob_percent,NaCl_mod_percent,medians.df$NCOM_ob,medians.df$NCOM_mod,NCOM_ob_percent,NCOM_mod_percent,other_ob,other_mod,other_ob_percent,other_rem_mod_percent,blank_ob,blank_mod,blank_ob_percent,blank_mod_percent,water_ob,FRM_adj_median,water_ob_percent,FRM_adj_mod_percent),byrow=T,ncol=4)
-   }
-   else if (network == 'CSN') {
+   if (network == 'CSN') {
       data_matrix <- matrix(c(medians.df$SO4_ob,medians.df$SO4_mod,medians.df$NO3_ob,medians.df$NO3_mod,medians.df$NH4_ob,medians.df$NH4_mod,medians.df$EC_ob,medians.df$EC_mod,medians.df$OC_ob,medians.df$OC_mod,medians.df$soil_ob,medians.df$soil_mod,medians.df$NaCl_ob,medians.df$NaCl_mod,medians.df$NCOM_ob,medians.df$NCOM_mod,other_ob,other_mod,blank_ob,blank_mod,0,0),byrow=T,ncol=2)  # create matrix of average values needed by barplot, 2 columns (ob,model) and species by row
       out_matrix <- matrix(c(medians.df$SO4_ob,medians.df$SO4_mod,SO4_ob_percent,SO4_mod_percent,medians.df$NO3_ob,medians.df$NO3_mod,NO3_ob_percent,NO3_mod_percent,medians.df$NH4_ob,medians.df$NH4_mod,NH4_ob_percent,NH4_mod_percent,medians.df$EC_ob,medians.df$EC_mod,EC_ob_percent,EC_mod_percent,medians.df$OC_ob,medians.df$OC_mod,OC_ob_percent,OC_mod_percent,medians.df$soil_ob,medians.df$soil_mod,soil_ob_percent,soil_mod_percent,medians.df$NaCl_ob,medians.df$NaCl_mod,NaCl_ob_percent,NaCl_mod_percent,medians.df$NCOM_ob,medians.df$NCOM_mod,NCOM_ob_percent,NCOM_mod_percent,other_ob,other_mod,other_ob_percent,other_rem_mod_percent,blank_ob,blank_mod,blank_ob_percent,blank_mod_percent,water_ob,water_ob_percent),byrow=T,ncol=4)
       
@@ -355,10 +274,7 @@ if (num_runs > 1) {
 }
 
 if (num_runs > 1) {
-   if ((network == 'CSN') && (inc_FRM_adj == 'y')) {
-      data_matrix <- matrix(c(medians.df$SO4_ob,medians.df$SO4_mod,medians2.df$SO4_mod,medians.df$NO3_ob,medians.df$NO3_mod,medians2.df$NO3_mod,medians.df$NH4_ob,medians.df$NH4_mod,medians2.df$NH4_mod,medians.df$EC_ob,medians.df$EC_mod,medians2.df$EC_mod,medians.df$OC_ob,medians.df$OC_mod,medians2.df$OC_mod,medians.df$soil_ob,medians.df$soil_mod,medians2.df$soil_mod,medians.df$NaCl_ob,medians.df$NaCl_mod,medians2.df$NaCl_mod,medians.df$NCOM_ob,medians.df$NCOM_mod,medians2.df$NCOM_mod,other_ob,other_mod,other_mod2,blank_ob,blank_mod,blank_mod2,water_ob,FRM_adj_median,FRM_adj_median2),byrow=T,ncol=3)  # create matrix of average values needed by barplot, 2 columns (ob,model) and species by row
-   }
-   else if (network == 'CSN') {
+   if (network == 'CSN') {
       data_matrix <- matrix(c(medians.df$SO4_ob,medians.df$SO4_mod,medians2.df$SO4_mod,medians.df$NO3_ob,medians.df$NO3_mod,medians2.df$NO3_mod,medians.df$NH4_ob,medians.df$NH4_mod,medians2.df$NH4_mod,medians.df$EC_ob,medians.df$EC_mod,medians2.df$EC_mod,medians.df$OC_ob,medians.df$OC_mod,medians2.df$OC_mod,medians.df$soil_ob,medians.df$soil_mod,medians2.df$soil_mod,medians.df$NaCl_ob,medians.df$NaCl_mod,medians2.df$NaCl_mod,medians.df$NCOM_ob,medians.df$NCOM_mod,medians2.df$NCOM_mod,other_ob,other_mod,other_mod2,blank_ob,blank_mod,blank_mod2,water_ob,0,0),byrow=T,ncol=3)  # create matrix of average values needed by barplot, 2 columns (ob,model) and species by row
    }
    else {
@@ -397,16 +313,8 @@ write.table("Values used to create figure:",file=filename_txt,append=T,row.names
 }
 
 {
-   if ((network == 'CSN') && (inc_FRM_adj == "y")) {
+   if (network == 'CSN') {
       write.table(out_matrix,file=filename_txt,append=T,col.names=F,row.names=c("SO4","NO3","NH4","EC","OC","Soil","NaCl","NCOM","Other","blank","water"),sep=",")
-#       write.table(out_matrix,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
-      species_names <- c("H2O/FRM Adj","Blank Adj","Other","NCOM","NaCl","Soil","OC","EC",expression(paste(NH[4]^"  +")),expression(paste(NO[3]^"  -")),expression(paste(SO[4]^"  2-")))
-      plot_cols     <- c("yellow","red","orange","black","grey","brown4","seagreen1","pink","white","grey35","light blue")
-      plot_cols_leg <- c("light blue","grey35","white","pink","seagreen1","brown4","grey","black","orange","red","yellow") 
-   }
-   else if (network == 'CSN') {
-      write.table(out_matrix,file=filename_txt,append=T,col.names=F,row.names=c("SO4","NO3","NH4","EC","OC","Soil","NaCl","NCOM","Other","blank","water"),sep=",")
-#       write.table(out_matrix,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
       species_names <- c("Blank Adj","Other","NCOM","NaCl","Soil","OC","EC",expression(paste(NH[4]^"  +")),expression(paste(NO[3]^"  -")),expression(paste(SO[4]^"  2-")))
       plot_cols     <- c("yellow","red","orange","black","grey","brown4","seagreen1","pink","white","grey35")
       plot_cols_leg <- c("grey35","white","pink","seagreen1","brown4","grey","black","orange","red","yellow")
@@ -455,72 +363,35 @@ text(x1,(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+
 text(x1,(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+medians.df$soil_ob+medians.df$NaCl_ob+medians.df$NCOM_ob+(other_ob/2)),paste(other_ob_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
 if (network == 'CSN') {
    text(x1,(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+medians.df$soil_ob+medians.df$NaCl_ob+medians.df$NCOM_ob+other_ob+(blank_ob/2)),paste(blank_ob_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   if (inc_FRM_adj == 'y') {
-      text(x1,(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+medians.df$soil_ob+medians.df$NaCl_ob+medians.df$NCOM_ob+other_ob+blank_ob+(water_ob/2)),paste(water_ob_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   }
 }
 
-{
-if ((network == 'CSN') && (inc_FRM_adj == 'y')) {
-   text(x2,(medians.df$SO4_mod/2),paste(SO4_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+(medians.df$NO3_mod/2)),paste(NO3_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+(medians.df$NH4_mod/2)),paste(NH4_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+(medians.df$EC_mod/2)),paste(EC_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+(medians.df$OC_mod/2)),paste(OC_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+(medians.df$soil_mod/2)),paste(soil_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+(medians.df$NaCl_mod/2)),paste(NaCl_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+(medians.df$NCOM_mod/2)),paste(NCOM_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+(other_mod/2)),paste(other_rem_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod/2),paste(SO4_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+(medians.df$NO3_mod/2)),paste(NO3_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+(medians.df$NH4_mod/2)),paste(NH4_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+(medians.df$EC_mod/2)),paste(EC_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+(medians.df$OC_mod/2)),paste(OC_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+(medians.df$soil_mod/2)),paste(soil_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+(medians.df$NaCl_mod/2)),paste(NaCl_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+(medians.df$NCOM_mod/2)),paste(NCOM_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+(other_mod/2)),paste(other_rem_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+if (network == 'CSN') {
    text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+other_mod+(blank_mod/2)),paste(blank_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+other_mod+blank_mod+(FRM_adj_median/2)),paste(FRM_adj_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-
-}
-
-else {
-   text(x2,(medians.df$SO4_mod/2),paste(SO4_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+(medians.df$NO3_mod/2)),paste(NO3_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+(medians.df$NH4_mod/2)),paste(NH4_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+(medians.df$EC_mod/2)),paste(EC_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+(medians.df$OC_mod/2)),paste(OC_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+(medians.df$soil_mod/2)),paste(soil_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+(medians.df$NaCl_mod/2)),paste(NaCl_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+(medians.df$NCOM_mod/2)),paste(NCOM_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+(other_mod/2)),paste(other_rem_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   if (network == 'CSN') {
-      text(x2,(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$soil_mod+medians.df$NaCl_mod+medians.df$NCOM_mod+other_mod+(blank_mod/2)),paste(blank_mod_percent,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-   }
-}
 }
 
 if (num_runs > 1) {
-   if ((network == 'CSN') && (inc_FRM_adj == 'y')) {
-      text(x3,(medians2.df$SO4_mod/2),paste(SO4_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+(medians2.df$NO3_mod/2)),paste(NO3_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+(medians2.df$NH4_mod/2)),paste(NH4_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+(medians2.df$EC_mod/2)),paste(EC_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+(medians2.df$OC_mod/2)),paste(OC_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+(medians2.df$soil_mod/2)),paste(soil_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+(medians2.df$NaCl_mod/2)),paste(NaCl_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+(medians2.df$NCOM_mod/2)),paste(NCOM_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+(other_mod2/2)),paste(other_rem_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod/2),paste(SO4_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+(medians2.df$NO3_mod/2)),paste(NO3_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+(medians2.df$NH4_mod/2)),paste(NH4_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+(medians2.df$EC_mod/2)),paste(EC_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+(medians2.df$OC_mod/2)),paste(OC_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+(medians2.df$soil_mod/2)),paste(soil_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+(medians2.df$NaCl_mod/2)),paste(NaCl_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+(medians2.df$NCOM_mod/2)),paste(NCOM_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+(other_mod2/2)),paste(other_rem_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
+   if (network == 'CSN') {
       text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+other_mod2+(blank_mod2/2)),paste(blank_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+other_mod2+blank_mod2+(FRM_adj_median2/2)),paste(FRM_adj_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
    }
-   else {
-      text(x3,(medians2.df$SO4_mod/2),paste(SO4_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+(medians2.df$NO3_mod/2)),paste(NO3_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+(medians2.df$NH4_mod/2)),paste(NH4_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+(medians2.df$EC_mod/2)),paste(EC_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+(medians2.df$OC_mod/2)),paste(OC_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+(medians2.df$soil_mod/2)),paste(soil_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+(medians2.df$NaCl_mod/2)),paste(NaCl_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+(medians2.df$NCOM_mod/2)),paste(NCOM_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+(other_mod2/2)),paste(other_rem_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      if (network == 'CSN') {
-         text(x3,(medians2.df$SO4_mod+medians2.df$NO3_mod+medians2.df$NH4_mod+medians2.df$EC_mod+medians2.df$OC_mod+medians2.df$soil_mod+medians2.df$NaCl_mod+medians2.df$NCOM_mod+other_mod2+(blank_mod2/2)),paste(blank_mod_percent2,"% --",sep=""),cex=1.2,adj=c(1,0.5))
-      }
-   }  
-}
+}  
 ##########################################################################
 
 ############################################################

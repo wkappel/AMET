@@ -300,7 +300,7 @@ setenv RUNID ${APPL}
 
 
 # =====================================================================
-#> 7. AMET Configuration Options (Ignore if not using AMET)
+#> 7. AMET Configuration Options (Ignore if not using AMET database)
 # =====================================================================
 
 #> Project name and details. Project will be created if it does not already exist.
@@ -498,12 +498,12 @@ endif #End RUN_HR2DAY
  set amet_login = "config_file"
  set amet_pass = "config_file"
 
-#> No need to change this.
- setenv AMET_OBS	 $OBS_DATA_DIR
- setenv SITES_META_LIST  $AMETBASE/scripts_db/input_files/sites_meta.input
- setenv AQ_SPECIES_LIST  $AMETBASE/scripts_db/input_files/AQ_species_list.input
- setenv RELOAD_METADATA  F
-
+#> Probably no need to change this. Setting RELOAD_METADATA to T is good practice.
+ setenv AMET_OBS	   $OBS_DATA_DIR
+ setenv SITES_META_LIST    $AMETBASE/scripts_db/input_files/sites_meta.input
+ setenv AQ_SPECIES_LIST    $AMETBASE/scripts_db/input_files/AQ_species_list.input
+ setenv RELOAD_METADATA    T 
+ setenv DLT_TMP_MYSQL_FILE T
 
 # =====================================================================
 #> 8e. Create AMET database (if needed) and project table
