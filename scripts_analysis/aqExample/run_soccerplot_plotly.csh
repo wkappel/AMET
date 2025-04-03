@@ -1,11 +1,12 @@
 #!/bin/csh -f
-# --------------------------------
-# Soccergoal Plot
+# -----------------------------------------------------------------------
+# Soccergoal Plot Plotly
 # -----------------------------------------------------------------------
 # Purpose: This script creates a "soccergoal" plot by plotting NMB along the
 # x-axis and NME along the y-axis along with goal and criteria lines for each
 # which form a rectangular box (i.e. goal). The script is designed to plot
-# multiple networks and species for a single simulation.
+# multiple networks and species for a single simulation. This version of the
+# soccergoal plot is interactive using the plotly package.
 #
 # Initial version: Wyat Appel - 04/2025 
 # -----------------------------------------------------------------------

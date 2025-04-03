@@ -1,5 +1,5 @@
 #!/bin/csh -f
-# --------------------------------
+# -----------------------------------------------------------------------
 # Multi-simulation scatterplot using plotly
 # -----------------------------------------------------------------------
 # Purpose:
@@ -22,7 +22,7 @@
   # These are the main controlling variables for the R script
   
   ###  Top of AMET directory
-  setenv AMETBASE       /home/AMETv15
+  setenv AMETBASE       /home/AMETv16
   setenv AMET_DATABASE  amet
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
