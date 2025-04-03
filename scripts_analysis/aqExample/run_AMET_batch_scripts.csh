@@ -26,8 +26,8 @@ setenv AMET_DB	T
 #setenv OUTDIR	$AMETBASE/output/$AMET_PROJECT/sitex_output
 
 ### Set the location of the base AMET installation, database name and project name ###
-setenv AMETBASE		/work/MOD3EVAL/wtt/AMETv15
-setenv AMET_DATABASE 	amad_amet 
+setenv AMETBASE		/home/AMETv16
+setenv AMET_DATABASE 	amet 
 setenv AMET_PROJECT	aqExample
 setenv MYSQL_CONFIG	$AMETBASE/configure/amet-config.R
 

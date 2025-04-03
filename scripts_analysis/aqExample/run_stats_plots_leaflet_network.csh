@@ -1,6 +1,6 @@
 #!/bin/csh -f
 # -----------------------------------------------------------------------
-# Stats plots
+# Stats plots using leaflet R package
 # -----------------------------------------------------------------------
 # Purpose:
 #
@@ -9,11 +9,12 @@
 # the available statistics in AMET are created for the domain
 # as a whole and for each individual site. The script accepts
 # mulitple networks, but only a single species and single model
-# simulation.
+# simulation. The output from this plot is a set of interactive html plots
+# created using the R leaflet package.
 #
-# Initial version:  Alexis Zubrow IE UNC - Nov, 2007
+# Initial version:  Wyat Appel - May, 2019
 #
-# Revised version:  Wyat Appel - 04/2025
+# Revised version: 04/2025
 # -----------------------------------------------------------------------
 
   
@@ -33,7 +34,7 @@
   #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output
 
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/stats_plots
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/stats_plots_leaflet
   
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
   setenv AMET_SDATE "2018-07-01"
@@ -44,8 +45,8 @@
   ### a random number generator.
   setenv AMET_PID 1
 
-  ###  Plot Type, options are "pdf", "png", or "both"
-  setenv AMET_PTYPE both
+  ###  Plot Type, options are "html"
+  setenv AMET_PTYPE html 
 
   ### Species to Plot ###
   ### Acceptable Species Names: SO4,NO3,NH4,HNO3,TNO3,PM_TOT,PM25_TOT,PM_FRM,PM25_FRM,EC,OC,TC,O3,O3_1hrmax,O3_8hrmax
@@ -68,7 +69,7 @@
   setenv AMET_AQS_DAILY_O3      F
   setenv AMET_AQS_DAILY         F
   setenv AMET_AQS_DAILY_VOC     F
-  setenv AMET_CASTNET_WEEKLY    T
+  setenv AMET_CASTNET_WEEKLY    T 
   setenv AMET_CASTNET_HOURLY    F
   setenv AMET_CASTNET_DAILY_O3  F
   setenv AMET_CASTNET_DRYDEP    F
@@ -102,7 +103,7 @@
   setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG stats_plots.log
+  setenv AMET_LOG stats_plots_leaflet_network.log
 
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
@@ -118,15 +119,16 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Stats_Plots.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Stats_Plots_leaflet_network.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots -----------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_plot_<METRIC>.$AMET_PTYPE"
-		echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_data.csv"
+                echo "-----------------------------------------------------------------------------------------"
+                echo "Plots -----------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_plot_<METRIC>.$AMET_PTYPE"
+                echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_data.csv"
                 echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_sites_stats.csv"
                 echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats.csv"
 		echo "-----------------------------------------------------------------------------------------"

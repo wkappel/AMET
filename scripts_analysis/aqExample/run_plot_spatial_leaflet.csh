@@ -5,13 +5,16 @@
 # Purpose:
 #
 # This is an example c-shell script to run the R-script that generates
-# a series of interactive spatial plots. It takes a single species from 
+# a single interactive spatial plot. It takes a single species from 
 # one or more networks and plots the observation value, model value, 
 # and difference between the model and ob for each site for each 
 # corresponding network.  Mutiple values for a site are averaged
 # to a single value for plotting purposes.  The map area plotted
 # is dynamically generated from the input data. The output from this script
-# is a set of interactive html files.
+# is a set of interactive html files. With this version, all three metrics
+# are plotted in the same html file and are selectable via, but you lose the
+# ability to select the network separately. For that functionality, please use
+# the run_plot_spatial_leaflet_network.csh script.
 #
 # Initial version:  Wyat Appel - May, 2019
 #
@@ -23,7 +26,7 @@
   # These are the main controlling variables for the R script
   
   ###  Top of AMET directory
-  setenv AMETBASE       /home/AMETv15
+  setenv AMETBASE       /home/AMETv16
   setenv AMET_DATABASE  amet
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
@@ -137,9 +140,7 @@
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.$AMET_PTYPE"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.$AMET_PTYPE"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.$AMET_PTYPE"
+		echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot.$AMET_PTYPE"
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else

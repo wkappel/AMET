@@ -4,15 +4,17 @@
 # -----------------------------------------------------------------------
 # Purpose:
 #
-# This code creates a set of spatial plots of NMB, NME, MB, ME
-# FB, FE, RMSE and correlation. In addition, csv files of all
-# the available statistics in AMET are created for the domain
+# This code creates a single html spatial plot of NMB, NME, MB, ME
+# FB, FE, RMSE and correlation, selectable via the legend. In addition, csv 
+# files of all the available statistics in AMET are created for the domain
 # as a whole and for each individual site. The script accepts
 # mulitple networks, but only a single species and single model
 # simulation. The output from this plot is a set of interactive html plots
-# created using the R leaflet package.
+# created using the R leaflet package. With this version, the different
+# networks are not selectable. For that functionality, use the 
+# run_stats_plots_leaflet_network.csh script.
 #
-# Initial version:  Wyat Appel - May, 2019
+# Initial version:  Wyat Appel - 04/2025 
 # -----------------------------------------------------------------------
 
   
@@ -20,7 +22,7 @@
   # These are the main controlling variables for the R script
   
   ###  Top of AMET directory
-  setenv AMETBASE       /home/AMETv15
+  setenv AMETBASE       /home/AMETv16
   setenv AMET_DATABASE  amet
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
@@ -125,7 +127,7 @@
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
                 echo "-----------------------------------------------------------------------------------------"
-                echo "Plots -----------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_plot_<METRIC>.$AMET_PTYPE"
+                echo "Plots -----------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_plot.$AMET_PTYPE"
                 echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_data.csv"
                 echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_sites_stats.csv"
                 echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats.csv"

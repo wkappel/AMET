@@ -1,19 +1,19 @@
 #!/bin/csh -f
 # -----------------------------------------------------------------------
-# Stats plots
+# Interactive Spatial plot
 # -----------------------------------------------------------------------
 # Purpose:
 #
-# This code creates a set of spatial plots of NMB, NME, MB, ME
-# FB, FE, RMSE and correlation. In addition, csv files of all
-# the available statistics in AMET are created for the domain
-# as a whole and for each individual site. The script accepts
-# mulitple networks, but only a single species and single model
-# simulation.
+# This is an example c-shell script to run the R-script that generates
+# a series of interactive spatial plots. It takes a single species from 
+# one or more networks and plots the observation value, model value, 
+# and difference between the model and ob for each site for each 
+# corresponding network.  Mutiple values for a site are averaged
+# to a single value for plotting purposes.  The map area plotted
+# is dynamically generated from the input data. The output from this script
+# is a set of interactive html files.
 #
-# Initial version:  Alexis Zubrow IE UNC - Nov, 2007
-#
-# Revised version:  Wyat Appel - 04/2025
+# Initial version:  Wyat Appel - May, 2019
 # -----------------------------------------------------------------------
 
   
@@ -22,19 +22,25 @@
   
   ###  Top of AMET directory
   setenv AMETBASE       /home/AMETv16
-  setenv AMET_DATABASE  amet
+  setenv AMET_DATABASE  amet 
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
- 
+
   ### T/F; Set to T if the model/obs pairs are loaded in the AMET database (i.e. by setting LOAD_SITEX = T)
   setenv AMET_DB  T
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
   #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output
 
+  ### Set the project name to be used for model-to-model comparisons ###
+#  setenv AMET_PROJECT2  aqExample
+
+  ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
+  #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
+
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/stats_plots
-  
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/plot_spatial_leaflet
+
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
   setenv AMET_SDATE "2018-07-01"
   setenv AMET_EDATE "2018-07-31"
@@ -44,8 +50,12 @@
   ### a random number generator.
   setenv AMET_PID 1
 
-  ###  Plot Type, options are "pdf", "png", or "both"
-  setenv AMET_PTYPE both
+  ###  Custom title (if not set will autogenerate title based on variables 
+  ###  and plot type)
+  setenv AMET_TITLE "Spatial plot <br> $AMET_PROJECT <br> $AMET_SDATE - $AMET_EDATE"
+
+  ###  Plot Type, options are only html for interactive plots
+  setenv AMET_PTYPE html
 
   ### Species to Plot ###
   ### Acceptable Species Names: SO4,NO3,NH4,HNO3,TNO3,PM_TOT,PM25_TOT,PM_FRM,PM25_FRM,EC,OC,TC,O3,O3_1hrmax,O3_8hrmax
@@ -55,54 +65,48 @@
 
   setenv AMET_AQSPECIES SO4
 
-  ### Observation Network to plot
-  ### Set to 'T' to process that nework
-  ### NOTE: all species are not available for every network
+  ### Observation Network to plot -- One only
+  ### Uncomment to set to 'T' and process that nework,
+  ### default is off (commented out)
+  ### NOTE: species are not available in every network
   ### See AMET User's guide for details on each network
 
-#> Standard North America networks
-  setenv AMET_AERONET           F
-  setenv AMET_AMON              F
-  setenv AMET_AQS_HOURLY        F
-  setenv AMET_AQS_HOURLY_VOC    F
-  setenv AMET_AQS_DAILY_O3      F
-  setenv AMET_AQS_DAILY         F
-  setenv AMET_AQS_DAILY_VOC     F
-  setenv AMET_CASTNET_WEEKLY    T
-  setenv AMET_CASTNET_HOURLY    F
-  setenv AMET_CASTNET_DAILY_O3  F
-  setenv AMET_CASTNET_DRYDEP    F
-  setenv AMET_CASTNET_DRYDEP_O3 F
-  setenv AMET_CSN               T
-  setenv AMET_IMPROVE           T
-  setenv AMET_NADP              F
-  setenv AMET_NAPS_HOURLY       F
-  setenv AMET_NAPS_DAILY_O3     F
+  ### North America Networks ###
 
-#> Non-standard networks (should probably be set to F unless specifically required)
-  setenv AMET_AIRNOW            F
-  setenv AMET_AIRNOW_DAILY_O3   F
-  setenv AMET_AMTIC             F
-  setenv AMET_CAPMoN            F
-  setenv AMET_EMEP_HOURLY       F
-  setenv AMET_EMEP_DAILY        F
-  setenv AMET_EMEP_DAILY_O3     F
-  setenv AMET_EMEP_DEP          F
-  setenv AMET_FLUXNET           F
-  setenv AMET_MDN               F
-  setenv AMET_NOAA_ESRL_O3      F
-  setenv AMET_NYCCAS            F
-  setenv AMET_PURPLEAIR_DAILY   F
-  setenv AMET_PURPLEAIR_HOURLY  F
-  setenv AMET_SEARCH_HOURLY     F
-  setenv AMET_SEARCH_DAILY      F
-  setenv AMET_TOAR              F
-  setenv AMET_TOAR2_HOURLY      F
-  setenv AMET_TOAR2_DAILY       F
-  setenv AMET_TOAR2_DAILY_O3    F
+    setenv AMET_CSN            T
+    setenv AMET_IMPROVE        T
+    setenv AMET_CASTNET        T
+  #  setenv AMET_CASTNET_Hourly T
+  #  setenv AMET_CASTNET_Drydep T
+  #  setenv AMET_NADP           T
+  #  setenv AMET_AIRMON         T
+  #  setenv AMET_AQS_Hourly     T
+  #  setenv AMET_AQS_Daily_O3   T
+  #  setenv AMET_AQS_Daily      T
+  #  setenv AMET_SEARCH         T
+  #  setenv AMET_SEARCH_Daily   T
+  #  setenv AMET_NAPS_Hourly    T
+  #  setenv AMET_NAPS_Daily_O3  T
+
+  ### Europe Networks ###
+
+  #  setenv AMET_AirBase_Hourly T
+  #  setenv AMET_AirBase_Daily  T
+  #  setenv AMET_AURN_Hourly    T
+  #  setenv AMET_AURN_Daily     T
+  #  setenv AMET_EMEP_Hourly    T
+  #  setenv AMET_EMEP_Daily     T
+  #  setenv AMET_AGANET         T
+  #  setenv AMET_ADMN           T
+  #  setenv AMET_NAMN           T
+
+  ### Gloabl Networks ###
+
+  # setenv AMET_NOAA_ESRL_O3    T
+  # setenv AMET_TOAR            T
 
   # Log File for R script
-  setenv AMET_LOG stats_plots.log
+  setenv AMET_LOG plot_spatial_leaflet_network.log
 
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
@@ -118,17 +122,16 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Stats_Plots.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Plot_Spatial_leaflet_network.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots -----------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_plot_<METRIC>.$AMET_PTYPE"
-		echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats_data.csv"
-                echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_sites_stats.csv"
-                echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_stats.csv"
+		echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.$AMET_PTYPE"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.$AMET_PTYPE"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.$AMET_PTYPE"
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else

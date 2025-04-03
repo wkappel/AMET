@@ -81,6 +81,7 @@ run_script_command5 <- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_Ratio.R
 run_script_command6 <- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_leaflet.R",sep="")
 run_script_command7 <- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_Diff_leaflet.R",sep="")
 run_script_command8 <- paste(amet_base,"/R_analysis_code/AQ_Stats_Plots_leaflet.R",sep="")
+run_script_command9 <- paste(amet_base,"/R_analysis_code/AQ_Stats_Plots_leaflet_network.R",sep="")
 
 ##########################################################################################
 ### This portion of the code will create monthly spatial plots for the various species ###
@@ -99,8 +100,6 @@ if (hourly_ozone_analysis == 'y') {
       }
       mkdir_command	<- paste("mkdir -p",figdir)
       dates 		<- batch_names[m]
-#      network_names 	<- c("AQS_Hourly","CASTNET_Hourly","NAPS","EMEP_Hourly")
-#      network_label 	<- c("AQS","CASTNET","NAPS","EMEP")
       network_names    	<- c("AQS_Hourly","CASTNET_Hourly","NAPS")
       network_label    	<- c("AQS","CASTNET","NAPS")
       total_networks 	<- length(network_names)
@@ -110,7 +109,8 @@ if (hourly_ozone_analysis == 'y') {
       system(mkdir_command)
       if (stat_plots    == 'y')	{ 
          try(source(run_script_command1))
-         try(source(run_script_command8)) 
+         try(source(run_script_command8))
+ 	 try(source(run_script_command9)) 
       }
       if (spatial_plots == 'y')	{ 
          try(source(run_script_command2)) 
@@ -134,18 +134,16 @@ if (daily_ozone_analysis == 'y') {
       }
       mkdir_command  	<- paste("mkdir -p",figdir)
       dates 		<- batch_names[m]
-#      network_names 	<- c("AQS_Daily_O3","CASTNET_Daily","NAPS_Daily_O3","EMEP_Daily_O3")
-#      network_label 	<- c("AQS","CASTNET","NAPS","EMEP")
       network_names    	<- c("AQS_Daily_O3","CASTNET_Daily","NAPS_Daily_O3")
       network_label    	<- c("AQS","CASTNET","NAPS")
       total_networks 	<- length(network_names)
       pid            	<- paste(pid_date,"multi_network",sep="_")
       query 		<- paste(query_string,"and (",batch_query[m],")",sep=" ")
-#      print(query)
       system(mkdir_command)
       if (stat_plots    == 'y') { 
          try(source(run_script_command1)) 
          try(source(run_script_command8))
+	 try(source(run_script_command9))
       }
       if (spatial_plots == 'y') {
          try(source(run_script_command2))
@@ -165,8 +163,6 @@ if (daily_ozone_analysis == 'y') {
       }
       mkdir_command  	<- paste("mkdir -p",figdir)
       dates 		<- batch_names[m]
-#      network_names 	<- c("AQS_Daily_O3","CASTNET_Daily","NAPS_Daily_O3","EMEP_Daily_O3")
-#      network_label 	<- c("AQS","CASTNET","NAPS","EMEP")
       network_names    	<- c("AQS_Daily_O3","CASTNET_Daily","NAPS_Daily_O3")
       network_label    	<- c("AQS","CASTNET","NAPS")
       total_networks 	<- length(network_names)
@@ -175,7 +171,8 @@ if (daily_ozone_analysis == 'y') {
       system(mkdir_command)
       if (stat_plots    == 'y') { 
          try(source(run_script_command1))
-         try(source(run_script_command8)) 
+         try(source(run_script_command8))
+ 	 try(source(run_script_command9)) 
       }
       if (spatial_plots == 'y') {
          try(source(run_script_command2))
@@ -211,6 +208,7 @@ if (aerosol_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1)) 
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -242,6 +240,7 @@ if (aerosol_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1))
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -275,6 +274,7 @@ if (aerosol_analysis == 'y') {
       if (stat_plots    == 'y') { 
          try(source(run_script_command1))
          try(source(run_script_command8))
+	 try(source(run_script_command9))
       }
       if (spatial_plots == 'y') {
          try(source(run_script_command2))
@@ -306,6 +306,7 @@ if (aerosol_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1))
             try(source(run_script_command8)) 
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -343,6 +344,7 @@ if (dep_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1)) 
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -378,6 +380,7 @@ if (gas_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1)) 
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -407,6 +410,7 @@ if (gas_analysis == 'y') {
       if (stat_plots    == 'y') { 
          try(source(run_script_command1)) 
          try(source(run_script_command8))
+	 try(source(run_script_command9))
       }
       if (spatial_plots == 'y') {
          try(source(run_script_command2))
@@ -440,6 +444,7 @@ if (AE6_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1))
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -474,6 +479,7 @@ if (AOD_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1)) 
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -507,6 +513,7 @@ if (PAMS_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1)) 
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
@@ -538,6 +545,7 @@ if (PAMS_analysis == 'y') {
          if (stat_plots    == 'y') { 
             try(source(run_script_command1)) 
             try(source(run_script_command8))
+	    try(source(run_script_command9))
          }
          if (spatial_plots == 'y') {
             try(source(run_script_command2))
