@@ -18,6 +18,8 @@ species_in<-""
 custom_species<-""
 ### Project ID Name 1 ###
 run_name1<-""
+### Use only common sites among mulitple simulations ###
+common_sites <- "n"
 ### Additional Run Names (used for model-to-model comparisons) ###
 run_name2<-
 run_name3<-
@@ -48,9 +50,10 @@ img_width<-
 averaging<-"n"
 remove_negatives<-"y"
 use_avg_stats<-"n"
+rm_negs_query<-"n"
 aggregate_data<-"n"
 aggregate_data_gc<-"n"
-merge_statid_POC<-"n"
+merge_statid_POC<-"y"
 ### Time Series Plot Options ###
 inc_legend<-"y"
 inc_points<-"y"
@@ -149,6 +152,7 @@ diff_range_min<-
 diff_range_max<-
 greyscale <- 'n'
 inc_counties <- 'y'
+popup_ts<-'n'
 hist_max <- NULL
 map_type <-
 quantile_min<-
