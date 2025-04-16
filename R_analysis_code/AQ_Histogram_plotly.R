@@ -152,6 +152,6 @@ vline <- function(x = 0, color = "black") {
   )
 }
 
-  p <- p %>% layout(shapes=list(vline(0)),title=list(text=main.title,font=list(size=25),y=0.97),barmode="overlay",xaxis=list(title=paste(species,"Bias (",units,")",sep=""),titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Frequency",titlefont=list(size=25),tickfont=list(size=15)),legend=list(font=list(size=20)))
+  p <- p %>% layout(shapes=list(vline(0)),title=list(text=main.title,font=list(size=25),y=0.97),barmode="overlay",xaxis=list(title=paste(species," Bias (",units,")",sep=""),titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Frequency",titlefont=list(size=25),tickfont=list(size=15)),legend=list(font=list(size=20)))
 saveWidget(p, file=filename_html,selfcontained=T)
 

@@ -2116,6 +2116,16 @@ if ($_POST['run_program'] == "AQ_Histogram.R") {
 }
 echo "         </td>";
 echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Histogram_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_histogram.html")) {
+     echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.html\">Histogram Plot (HTML)</a> ";
+       echo "&nbsp;&nbsp;";
+    echo "      <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.csv\">Histogram Data (CSV)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting histogram plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
    if ($_POST['run_program'] == "AQ_Temporal_Plots.R") {
    if(file_exists("$cache_amet/${project_id}_${species}_${pid}_ecdf.pdf"))	{
      echo "ECDF Plot ";
