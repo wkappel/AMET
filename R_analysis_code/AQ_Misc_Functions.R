@@ -1777,7 +1777,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    }
    species_query_string <- met_query_string
    if (criteria == "Default") {
-      criteria <- paste(" WHERE d.",species_ob[1],"_ob is not NULL and s.ob_network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+      criteria <- paste(" WHERE d.",species_ob[1],"_ob is not NULL ",query,sep="")                       # Set first part of the MYSQL query
       if (network != "All") {
          criteria <- paste(criteria," and s.ob_network='",network,"'",sep="")             # Set part of the MYSQL query
       }

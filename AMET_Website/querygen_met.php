@@ -857,848 +857,1353 @@ fclose($f);
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //	Execute Shell Script
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	`chmod +x $cache_amet/run_script.csh`;
-	`$cache_amet/run_script.csh !&> $cache_amet/web_query.txt`;
+`chmod +x $cache_amet/run_script.csh`;
+`$cache_amet/run_script.csh !&> $cache_amet/web_query.txt`;
 /////////////////////////////////////////////////////////////////
 
-   echo "        <p align=\"left\"><font color=\"#FF0000\" size=\"6\">Your MySQL query:";
-   echo "          </font><br>$query <br></p>";
-   echo "       ";
+echo "        <p align=\"left\"><font color=\"#FF0000\" size=\"6\">Your MySQL query:";
+echo "          </font><br>$query <br></p>";
+echo "       ";
 
-   if ($_POST['run_program'] == "AQ_Stats_Plots.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats.csv"))	{
-         echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats.csv\" >LINK to CSV Domain Wide Statistics File </a>" ;
-         echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_sites_stats.csv\" >LINK to CSV Site Specific Statistics File </a><p>" ;
-	 echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_hourly_stats.csv\" >LINK to CSV Hourly Specific Statistics File </a><p>" ;
-	 echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_data.csv\" >LINK to Raw Query Data (CSV)</a><p>" ;
+if ($_POST['run_program'] == "AQ_Stats_Plots.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats.csv"))	{
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats.csv\" >LINK to CSV Domain Wide Statistics File </a>" ;
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_sites_stats.csv\" >LINK to CSV Site Specific Statistics File </a><p>" ;
+ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_hourly_stats.csv\" >LINK to CSV Hourly Specific Statistics File </a><p>" ;
+ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_data.csv\" >LINK to Raw Query Data (CSV)</a><p>" ;
 echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plots.zip\" >LINK to Zip File Containing All Files (.zip)</a><p>" ;
 
-      }
    }
+}
 
-   echo "<table width=\"650\" border=\"0\">";// align=\"center\">";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Stats_Plots.R") {
-	if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats_plot_NMB.png"))	{
-		echo "        <tr align=\"center\">  ";
-		echo " <p align=\"center\">";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NMB.png\">NMB (PNG)</a> ";
-        	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NME.png\">NME (PNG)</a> ";
-         	echo "&nbsp;&nbsp;";
-  		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_MB.png\">MB (PNG)</a> ";
-         	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_ME.png\">ME (PNG)</a> ";
-         	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FB.png\">FB (PNG)</a> ";
-          	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FE.png\">FE (PNG)</a> ";
-          	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_RMSE.png\">RMSE (PNG)</a>";
-   			echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_Corr.png\">Corr (PNG)</a>";
-	    echo "	<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NMB.pdf\">NMB (PDF)</a> ";
-          	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NME.pdf\">NME (PDF)</a> ";
-          	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_MB.pdf\">MB (PDF)</a> ";
-          	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_ME.pdf\">ME (PDF)</a> ";
-          	echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FB.pdf\">FB (PDF)</a> ";
-	        echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FE.pdf\">FE (PDF)</a> ";
-	        echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_RMSE.pdf\">RMSE (PDF)</a> ";
-			echo "&nbsp;&nbsp;";
-		echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_Corr.pdf\">Corr (PDF)</a> ";
-	        echo "        </tr>";
-	}
-		else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting stats plots.";  
-	}
-   }
-   echo "         </td>";
-   echo "          <td> ";
+echo "<table width=\"900\" border=\"0\">";// align=\"center\">";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stats_Plots.R") {
+if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats_plot_NMB.png"))	{
+   echo " <tr align=\"center\">  ";
+   echo " <p align=\"center\">";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NMB.png\">NMB (PNG)</a> ";
+        echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NME.png\">NME (PNG)</a> ";
+         echo "&nbsp;&nbsp;";
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_MB.png\">MB (PNG)</a> ";
+         echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_ME.png\">ME (PNG)</a> ";
+         echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FB.png\">FB (PNG)</a> ";
+          echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FE.png\">FE (PNG)</a> ";
+          echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_RMSE.png\">RMSE (PNG)</a>";
+         echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_Corr.png\">Corr (PNG)</a>";
+    echo "	<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NMB.pdf\">NMB (PDF)</a> ";
+          echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NME.pdf\">NME (PDF)</a> ";
+          echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_MB.pdf\">MB (PDF)</a> ";
+          echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_ME.pdf\">ME (PDF)</a> ";
+          echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FB.pdf\">FB (PDF)</a> ";
+        echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FE.pdf\">FE (PDF)</a> ";
+        echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_RMSE.pdf\">RMSE (PDF)</a> ";
+      echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_Corr.pdf\">Corr (PDF)</a> ";
+        echo "        </tr>";
+}
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting stats plots.";  
+}
+}
+echo "         </td>";
+echo "          <td> ";
 
-   if ($_POST['run_program'] == "AQ_Stats_Plots_leaflet.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats.csv"))  {
-         echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats.csv\" >LINK to CSV Domain Wide Statistics File </a>" ;
-         echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_sites_stats.csv\" >LINK to CSV Site Specific Statistics File </a><p>" ;
-         echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_hourly_stats.csv\" >LINK to CSV Hourly Specific Statistics File </a><p>" ;
-         echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_data.csv\" >LINK to Raw Query Data (CSV)</a><p>" ;
+if ($_POST['run_program'] == "AQ_Stats_Plots_leaflet_network.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats.csv"))  {
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats.csv\" >LINK to CSV Domain Wide Statistics File </a>" ;
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_sites_stats.csv\" >LINK to CSV Site Specific Statistics File </a><p>" ;
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_data.csv\" >LINK to Raw Query Data (CSV)</a><p>" ;
 echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plots.zip\" >LINK to Zip File Containing All Files (.zip)</a><p>" ;
 
-      }
    }
+}
 
-   echo "<table width=\"650\" border=\"0\">";// align=\"center\">";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Stats_Plots_leaflet.R") {
-        if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats_plot_NMB.html"))       {
-                echo "        <tr align=\"center\">  ";
-                echo " <p align=\"center\">";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NMB.html\">NMB</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NME.html\">NME</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_MB.html\">MB</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_ME.html\">ME</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FB.html\">FB</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FE.html\">FE</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_RMSE.html\">RMSE</a>";
-                        echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_Corr.html\">Corr</a>";
-                echo "        </tr>";
-        }
-                else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting stats plots.";
-        }
+echo "<table width=\"900\" border=\"0\">";// align=\"center\">";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stats_Plots_leaflet_network.R") {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats_plot_NMB.html"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NMB.html\">NMB</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NME.html\">NME</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_MB.html\">MB</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_ME.html\">ME</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FB.html\">FB</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FE.html\">FE</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_RMSE.html\">RMSE</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_Corr.html\">Corr</a>";
+             echo "        </tr>";
+     }
+             else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting stats plots.";
+     }
+             if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats_plot_NMB.png"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NMB.png\">NMB</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_NME.png\">NME</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_MB.png\">MB</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_ME.png\">ME</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FB.png\">FB</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_FE.png\">FE</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_RMSE.png\">RMSE</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot_Corr.png\">Corr</a>";
+             echo "        </tr>";
+     }
+             else {echo "PNG from HTML not requested. Check flag to create static png files from html files.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stats_Plots_leaflet.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats.csv"))  {
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats.csv\" >LINK to CSV Domain Wide Statistics File </a>" ;
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_sites_stats.csv\" >LINK to CSV Site Specific Statistics File </a><p>" ;
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_data.csv\" >LINK to Raw Query Data (CSV)</a><p>" ;
+echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plots.zip\" >LINK to Zip File Containing All Files (.zip)</a><p>" ;
+
    }
-   echo "         </td>";
-   echo "          <td> ";
+}
 
-   if ($_POST['run_program'] == "AQ_Stats.R") {
-      if(file_exists("$cache_amet/${project_id}_${pid}_stats.zip"))      {
-         echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stats.zip\" >Zip File Containing All Files (.zip)</a><p>" ;
-        }
-        else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting stats plots."; 
+echo "<table width=\"900\" border=\"0\">";// align=\"center\">";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stats_Plots_leaflet.R") {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_stats_plot.html"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot.html\">All Stats (html)</a> ";
+     }
+             else {echo "PNG from HTML not requested. Check flag to create static png files from html files.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
 
-      }
+if ($_POST['run_program'] == "AQ_Stats.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stats.zip"))      {
+      echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stats.zip\" >Zip File Containing All Files (.zip)</a><p>" ;
+     }
+     else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting stats plots."; 
+
    }
-   echo "         </td>";
-   echo "          <td> ";   
+}
+echo "         </td>";
+echo "          <td> ";   
 
-   if ($_POST['run_program'] == "AQ_Raw_Data.R") {
+if ($_POST['run_program'] == "AQ_Raw_Data.R") {
 //      if(file_exists("$cache_amet/${project_id}_${pid}_rawdata.csv"))	{
-      if(glob("$cache_amet/${project_id}_${pid}_rawdata.csv"))	{
-	     echo " <p align=\"center\">";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${pid}_rawdata.csv\">Raw Network Data (CSV)</a> ";
-	  }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered creating raw data file."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.pdf"))	{
-	     echo " <p align=\"center\">";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
+   if(glob("$cache_amet/${project_id}_${pid}_rawdata.csv"))	{
+     echo " <p align=\"center\">";
+    echo "	<a href=\"$cache_amet2/${project_id}_${pid}_rawdata.csv\">Raw Network Data (CSV)</a> ";
+  }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered creating raw data file."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.pdf"))	{
+     echo " <p align=\"center\">";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
 //        echo "          <td> ";
-		 echo "&nbsp;";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.png\">Mod/Ob Scatterplot (PNG)</a> ";
+    echo "&nbsp;";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.png\">Mod/Ob Scatterplot (PNG)</a> ";
 //		 echo "         </td>";
 //         echo "          <td> ";
 //		 echo "&nbsp;";
-                 echo "<p align=\"center\">";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
-	  }   
-      else {
-         echo "An error was encountered plotting Scatter Plot. See log file below.";
-         echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_ggplot.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_ggplot.pdf"))    {
-             echo " <p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_ggplot.pdf\">Scatterplot (PDF)</a> ";
-             echo "&nbsp;";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_ggplot.png\">Scatterplot (PNG)</a> ";
-             echo "<p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_ggplot.csv\">Scatterplot Data (CSV)</a> ";
-          }
-      else {
-         echo "An error was encountered plotting Scatter Plot. See log file below.";
-         echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_plotly.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.html"))    {
-             echo " <p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.html\">Mod/Ob Scatterplot (HTML)</a> ";
-             echo "&nbsp;";
-             echo "<p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
-          }
-      else {
-         echo "An error was encountered plotting Scatter Plot. See log file below.";
-         echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_Multisim_plotly.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.html"))    {
-             echo " <p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.html\">Mod/Ob Scatterplot (HTML)</a> ";
-             echo "&nbsp;";
-             echo "<p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
-          }
-      else {
-         echo "An error was encountered plotting Scatter Plot. See log file below.";
-         echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_single.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_single.pdf"))	{
-	     echo " <p align=\"center\">";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
+              echo "<p align=\"center\">";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
+  }   
+   else {
+      echo "An error was encountered plotting Scatter Plot. See log file below.";
+      echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_ggplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_ggplot.pdf"))    {
+          echo " <p align=\"center\">";
+          echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_ggplot.pdf\">Scatterplot (PDF)</a> ";
+          echo "&nbsp;";
+          echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_ggplot.png\">Scatterplot (PNG)</a> ";
+          echo "<p align=\"center\">";
+          echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_ggplot.csv\">Scatterplot Data (CSV)</a> ";
+       }
+   else {
+      echo "An error was encountered plotting Scatter Plot. See log file below.";
+      echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.html"))    {
+          echo " <p align=\"center\">";
+          echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.html\">Mod/Ob Scatterplot (HTML)</a> ";
+          echo "&nbsp;";
+          echo "<p align=\"center\">";
+          echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
+       }
+   else {
+      echo "An error was encountered plotting Scatter Plot. See log file below.";
+      echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_multisim_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_multi.html"))    {
+          echo " <p align=\"center\">";
+          echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_multi.html\">Mod/Ob Scatterplot (HTML)</a> ";
+          echo "&nbsp;";
+          echo "<p align=\"center\">";
+          echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_multi.csv\">Scatterplot Data (CSV)</a> ";
+       }
+   else {
+      echo "An error was encountered plotting Scatter Plot. See log file below.";
+      echo "<p><a href=\"$cache_amet2/web_query.txt\">Query_Log.txt</a>"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_single.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_single.pdf"))	{
+     echo " <p align=\"center\">";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
 //         echo "          <td> ";
-         echo "&nbsp;";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.png\">Mod/Ob Scatterplot (PNG)</a> ";
+      echo "&nbsp;";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.png\">Mod/Ob Scatterplot (PNG)</a> ";
 //		 echo "         </td>";
 //         echo "          <td> ";
-           echo "<p align=\"center\">";
-           echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.csv\">Scatterplot Data (CSV)</a> ";
-	  }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Scatter Plot"; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_density.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density.pdf"))	{
-	     echo " <p align=\"center\">";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
+        echo "<p align=\"center\">";
+        echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.csv\">Scatterplot Data (CSV)</a> ";
+  }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Scatter Plot"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_density.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density.pdf"))	{
+     echo " <p align=\"center\">";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
 //        echo "          <td> ";
-		 echo "&nbsp;";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.png\">Mod/Ob Scatterplot (PNG)</a> ";
+    echo "&nbsp;";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.png\">Mod/Ob Scatterplot (PNG)</a> ";
 //		 echo "         </td>";
 //         echo "          <td> ";
-                 echo "<p align=\"center\">";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.csv\">Scatterplot Data (CSV)</a> ";
-	  }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Density Scatter Plot"; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_density_ggplot.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf"))    {
-             echo " <p align=\"center\">";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
+              echo "<p align=\"center\">";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.csv\">Scatterplot Data (CSV)</a> ";
+  }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Density Scatter Plot"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_density_ggplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf"))    {
+          echo " <p align=\"center\">";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
 //        echo "          <td> ";
-                 echo "&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.png\">Mod/Ob Scatterplot (PNG)</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.png\">Mod/Ob Scatterplot (PNG)</a> ";
 //               echo "         </td>";
 //         echo "          <td> ";
-                 echo "<p align=\"center\">";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.csv\">Scatterplot Data (CSV)</a> ";
-          }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Density Scatter Plot"; }
+              echo "<p align=\"center\">";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.csv\">Scatterplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Density Scatter Plot"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_log.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_log.pdf"))	{
+     echo " <p align=\"center\">";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.pdf\">Model/Ob Log-Log Scatterplot (PDF)</a> ";
+      echo "         </td>";
+      echo "          <td> ";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.png\">Model/Ob Log-Log Scatterplot (PNG)</a> ";
+    echo "         </td>";
+              echo "<p align=\"center\">";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.csv\">Scatterplot Data (CSV File)</a> ";
+  }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Log-Log Scatter Plot"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_mtom.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_mtom.pdf"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom.pdf\">Model/Model Scatterplot (PDF)</a> ";
+    echo "         </td>";
+      echo "          <td> ";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom.png\">Model/Model Scatterplot (PNG)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_log.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_log.pdf"))	{
-	     echo " <p align=\"center\">";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.pdf\">Model/Ob Log-Log Scatterplot (PDF)</a> ";
-         echo "         </td>";
-         echo "          <td> ";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.png\">Model/Ob Log-Log Scatterplot (PNG)</a> ";
-		 echo "         </td>";
-                 echo "<p align=\"center\">";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.csv\">Scatterplot Data (CSV File)</a> ";
-	  }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Log-Log Scatter Plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Model-Model Scatter Plot";   }
+}
+echo "         </td>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Scatterplot_mtom_density.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_mtom_density.pdf"))       {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom_density.pdf\">MtoM Density Scatterplot (PDF)</a> ";
+              echo "         </td>";
+      echo "          <td> ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom_density.png\">MtoM Density Scatterplot (PNG)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_mtom.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_mtom.pdf"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom.pdf\">Model/Model Scatterplot (PDF)</a> ";
-		 echo "         </td>";
-         echo "          <td> ";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom.png\">Model/Model Scatterplot (PNG)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Model-Model Scatter Plot";   }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Model-Model Scatter Plot";   }
+}
+echo "         </td>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Scatterplot_percentiles.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_percentiles.pdf"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_percentiles.pdf\">Percentile Scatterplot (PDF)</a> ";
+    echo "         </td>";
+      echo "          <td> ";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_percentiles.png\">Percentile Scatterplot (PNG)</a> ";
    }
-   echo "         </td>";
-   echo "         <td>";  
-   if ($_POST['run_program'] == "AQ_Scatterplot_percentiles.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_percentiles.pdf"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_percentiles.pdf\">Percentile Scatterplot (PDF)</a> ";
-		 echo "         </td>";
-         echo "          <td> ";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_percentiles.png\">Percentile Scatterplot (PNG)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting percentile scatter plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting percentile scatter plot"; }
+}
+echo "         </td>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Scatterplot_soil.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_soil.pdf")) {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_soil.pdf\">Model/Ob Soil Scatterplot (PDF)</a> ";
+              echo "         </td>";
+      echo "          <td> ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_soil.png\">Model/Ob Soil Scatterplot (PNG)</a> ";
    }
-   echo "         </td>";
-   echo "         <td>"; 
-   if ($_POST['run_program'] == "AQ_Scatterplot_soil.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_soil.pdf")) {
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_soil.pdf\">Model/Ob Soil Scatterplot (PDF)</a> ";
-                 echo "         </td>";
-         echo "          <td> ";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_soil.png\">Model/Ob Soil Scatterplot (PNG)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting soil scatter plot"; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_skill.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_skill.pdf"))  {
-                 echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.pdf\">Skill Plot (PDF)</a> ";
-                 echo "&nbsp;&nbsp;";
-                 echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.png\">Skill Plot (PNG)</a> ";
-                 echo "&nbsp;&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.csv\">Skill Plot Data (CSV)</a> ";
-          }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting skill scatter plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_bins.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.pdf"))   {
-         echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.png\">Mean Bias Plot (PNG)</a> ";
-         echo "&nbsp;&nbsp;";
-         echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.pdf\">Mean Bias Plot (PDF)</a> ";
-         echo "&nbsp;&nbsp;";
-         echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.csv\">Raw Data File (CSV)</a> ";
-      }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting binned scatter plots."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_bins_plotly.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.html"))   {
-         echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.html\">Binned Plot (HTML)</a> ";
-         echo "&nbsp;&nbsp;";
-         echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.csv\">Raw Data File (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting binned scatter plots."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Scatterplot_multi.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.pdf"))    {
-         echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.pdf\">Scatterplot (PDF)</a> ";
-         echo "&nbsp;&nbsp;";
-         echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.png\">Scatterplot (PNG)</a> ";
-         echo "&nbsp;&nbsp;";
-         echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
-      }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting multi scatter plot."; }
-   }
-   echo "         </td>";
-   echo "         <td>"; 
-   if ($_POST['run_program'] == "AQ_Soccerplot.R") {
-      if(file_exists("$cache_amet/${project_id}_${pid}_soccerplot.pdf"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${pid}_soccerplot.png\">Soccergoal Plot (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo " <a href=\"$cache_amet2/${project_id}_${pid}_soccerplot.pdf\">Soccergoal Plot (PDF)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Soccergoal Plot"; }
-   }
-   echo "         </td>";
-   echo "         <td>";  
-   if ($_POST['run_program'] == "AQ_Bugleplot.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_bugle_plot_error.pdf"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_bias.png\">Bugle Plot Bias (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_error.png\">Bugle Plot Error (PNG)</a> ";
-		 echo " <p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_bias.pdf\">Bugle Plot Bias(PDF)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_error.pdf\">Bugle Plot Error (PDF)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bulge plot."; }
-   }
-   echo "         </td>";
-   echo "         <td>";  
-   if ($_POST['run_program'] == "AQ_Timeseries.R") {
-      echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
-      echo "<center>";
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.png"))	{
-      echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.png\"> Time Series (PNG)</a> ";
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting soil scatter plot"; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_skill.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_skill.pdf"))  {
+              echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.pdf\">Skill Plot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.png\">Skill Plot (PNG)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.csv\">Skill Plot Data (CSV)</a> ";
+       }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting skill scatter plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_bins.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.pdf"))   {
+      echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.png\">Mean Bias Plot (PNG)</a> ";
       echo "&nbsp;&nbsp;";
-      echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.pdf\"> Time Series (PDF)</a> ";
-      echo "<p>";
-      echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+      echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.pdf\">Mean Bias Plot (PDF)</a> ";
+      echo "&nbsp;&nbsp;";
+      echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.csv\">Raw Data File (CSV)</a> ";
+   }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting binned scatter plots."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_bins_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.html"))   {
+      echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.html\">Binned Plot (HTML)</a> ";
+      echo "&nbsp;&nbsp;";
+      echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.csv\">Raw Data File (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "</center>";
-   echo "         <td>"; 
-   if ($_POST['run_program'] == "AQ_Timeseries_dygraph.R") {
-      echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
-      echo "<center>";
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.html"))     {
-      echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.html\"> Time Series (HTML)</a> ";
-      echo "<p>";
-      echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries interactive plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting binned scatter plots."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Scatterplot_multi.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.pdf"))    {
+      echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.pdf\">Scatterplot (PDF)</a> ";
+      echo "&nbsp;&nbsp;";
+      echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.png\">Scatterplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+      echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
+   }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting multi scatter plot."; }
+}
+echo "         </td>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Soccerplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_soccerplot.pdf"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${pid}_soccerplot.png\">Soccergoal Plot (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo " <a href=\"$cache_amet2/${project_id}_${pid}_soccerplot.pdf\">Soccergoal Plot (PDF)</a> ";
    }
-   echo "         </td>";
-   echo "</center>";
-   echo "         <td>";
-   if ($_POST['run_program'] == "AQ_Timeseries_plotly.R") {
-      echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
-      echo "<center>";
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.html"))     {
-      echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.html\"> Time Series (HTML)</a> ";
-      echo "<p>";
-      echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries interactive plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Soccergoal Plot"; }
+}
+echo "         </td>";
+echo "         <td>";
+if ($_POST['run_program'] == "AQ_Soccerplot_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_soccerplot_norm.html"))        {
+          echo "     <a href=\"$cache_amet2/${project_id}_${pid}_soccerplot_norm.html\">NMB/NME Soccergoal Plot (HTML)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_soccerplot_frac.html\">FB/FE Soccergoal Plot (HTML)</a> ";
    }
-   echo "         </td>";
-   echo "</center>";
-   echo "         <td>";
-   if ($_POST['run_program'] == "AQ_Timeseries_networks_plotly.R") {
-      echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
-      echo "<center>";
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.html"))     {
-      echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.html\"> Time Series (HTML)</a> ";
-      echo "<p>";
-      echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries interactive plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Soccergoal Plot"; }
+}
+echo "         </td>";
+echo "         <td>";  
+if ($_POST['run_program'] == "AQ_Bugleplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_bugle_plot_error.pdf"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_bias.png\">Bugle Plot Bias (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_error.png\">Bugle Plot Error (PNG)</a> ";
+    echo " <p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_bias.pdf\">Bugle Plot Bias(PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_bugle_plot_error.pdf\">Bugle Plot Error (PDF)</a> ";
    }
-   echo "         </td>";
-   echo "</center>";
-   echo "         <td>"; 
-   if ($_POST['run_program'] == "AQ_Timeseries_multi_networks.R") {
-      echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
-	  echo "<center>";
-	  if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.png"))	{
-         echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.pdf\">Timeseries Plot (PDF)</a> ";
-		 echo "&nbsp;&nbsp;";
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.png\">Timeseries Plot (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bulge plot."; }
+}
+echo "         </td>";
+echo "         <td>";  
+if ($_POST['run_program'] == "AQ_Timeseries.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+   echo "<center>";
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.png"))	{
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.png\"> Time Series (PNG)</a> ";
+   echo "&nbsp;&nbsp;";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.pdf\"> Time Series (PDF)</a> ";
+   echo "<p>";
+   echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "</center>";
-   echo "         <td>"; 
-   if ($_POST['run_program'] == "AQ_Timeseries_multi_species.R") {
-      echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
-          echo "<center>";
-          if(file_exists("$cache_amet/${project_id}_${pid}_timeseries.png"))     {
-         echo " <a href=\"$cache_amet2/${project_id}_${pid}_timeseries.pdf\">Timeseries Plot (PDF)</a> ";
-                 echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${pid}_timeseries.png\">Timeseries Plot (PNG)</a> ";
-                 echo "&nbsp;&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>";
+if ($_POST['run_program'] == "AQ_Timeseries_bysite.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+   echo "<center>";
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.zip"))     {
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.zip\"> Time Series (zip)</a> ";
+   echo "&nbsp;&nbsp;";
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_csv.zip\">Timeseries Data (zip)</a> ";
    }
-   echo "         </td>";
-   echo "</center>";
-   echo "         <td>";
-   if ($_POST['run_program'] == "AQ_Timeseries_MtoM.R") {
-      echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
-          echo "<center>";
-          if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries_mtom.png"))  {
-         echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_mtom.pdf\">Timeseries Plot (PDF)</a> ";
-                 echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_mtom.png\">Timeseries Plot (PNG)</a> ";
-                 echo "&nbsp;&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_mtom.csv\">Timeseries Data (CSV)</a> ";
-      }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries model to model plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Timeseries_dygraph.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+   echo "<center>";
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries_dygraph.html"))     {
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_dygraph.html\"> Time Series (HTML)</a> ";
+   echo "<p>";
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_dygraph.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "</center>";
-   echo "         <td>"; 
-   if ($_POST['run_program'] == "AQ_Boxplot_Hourly.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_hourly.pdf"))	{
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_hourly.pdf\">Boxplot (PDF format)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_hourly.png\">Boxplot (PNG format)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${pid}_boxplot_data.csv\">Median Data (CSV format)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting hourly box plot."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting dygraph timeseries plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>";
+if ($_POST['run_program'] == "AQ_Timeseries_plotly.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+   echo "<center>";
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.html"))     {
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.html\"> Time Series (HTML)</a> ";
+   echo "<p>";
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Boxplot_plotly.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot.html")) {
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot.html\">Boxplot (HTML)</a> ";
-                 echo "&nbsp;&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias.html\">Bias Boxplot (HTML)</a> ";
-                 echo "&nbsp;&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot.csv\">Data (CSV)</a> ";
-          }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting box plot."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plotly plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>";
+if ($_POST['run_program'] == "AQ_Timeseries_plotly_bysite.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+   echo "<center>";
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.zip"))     {
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.zip\"> Time Series (zip)</a> ";
+   echo "&nbsp;&nbsp;";
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_csv.zip\">Timeseries Data (zip)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Boxplot_MDA8.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_MDA8.pdf"))	{
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_MDA8.pdf\">MDA8 Boxplot (PDF)</a> ";
-		 echo "         </td>";
-         echo "          <td> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_MDA8.png\">MDA8 Boxplot (PNG)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting MDA8 boxplot."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>";
+if ($_POST['run_program'] == "AQ_Timeseries_networks_plotly.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+   echo "<center>";
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.html"))     {
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.html\"> Time Series (HTML)</a> ";
+   echo "<p>";
+   echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Boxplot.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_all.pdf"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_all.png\">Boxplot (PNG)</a> ";
-         echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_all.pdf\">Boxplot (PDF)</a> ";
-		 echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias.png\">Bias Boxplot (PNG)</a> ";
-         echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias.pdf\">Bias Boxplot (PDF)</a> ";
-		 echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_norm_bias.png\">Normalized Bias Boxplot (PNG)</a> ";
-         echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_norm_bias.pdf\">Normalized Bias Boxplot (PDF)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting box plot."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plotly plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>";
+if ($_POST['run_program'] == "AQ_Timeseries_species_plotly.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+   echo "<center>";
+   if(file_exists("$cache_amet/${project_id}_multispec_${pid}_timeseries.html"))     {
+   echo "    <a href=\"$cache_amet2/${project_id}_multispec_${pid}_timeseries.html\"> Time Series (HTML)</a> ";
+   echo "<p>";
+   echo "    <a href=\"$cache_amet2/${project_id}_multispec_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Boxplot_ggplot.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_ggplot.pdf"))    {
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_ggplot.png\">Boxplot (PNG)</a> ";
-         echo "&nbsp;&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_ggplot.pdf\">Boxplot (PDF)</a> ";
-                 echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias_ggplot.png\">Bias Boxplot (PNG)</a> ";
-         echo "&nbsp;&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias_ggplot.pdf\">Bias Boxplot (PDF)</a> ";
-          }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting box plot."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plotly plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Timeseries_multi_networks.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+  echo "<center>";
+  if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.png"))	{
+      echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.pdf\">Timeseries Plot (PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.png\">Timeseries Plot (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Boxplot_DofW.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_dow.pdf"))	{
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_dow.pdf\">Day of Week Boxplot (PDF)</a> ";
-		 echo "         </td>";
-         echo "          <td> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_dow.png\">Day of Week Boxplot (PNG)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting day of week boxplot."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Timeseries_multi_species.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+       echo "<center>";
+       if(file_exists("$cache_amet/${project_id}_${pid}_timeseries.png"))     {
+      echo " <a href=\"$cache_amet2/${project_id}_${pid}_timeseries.pdf\">Timeseries Plot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${pid}_timeseries.png\">Timeseries Plot (PNG)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_timeseries.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Boxplot_Roselle.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_roselle.pdf"))	{
-	     echo "<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle.png\">Roselle Boxplot (PNG)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle_bias.png\">Roselle Boxplot Bias (PNG)</a> ";
-             echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle.pdf\">Roselle Boxplot (PDF)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle_bias.pdf\">Roselle Boxplot Bias (PDF)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Roselle box plot."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>";
+if ($_POST['run_program'] == "AQ_Timeseries_MtoM.R") {
+   echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
+       echo "<center>";
+       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries_mtom.png"))  {
+      echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_mtom.pdf\">Timeseries Plot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_mtom.png\">Timeseries Plot (PNG)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_mtom.csv\">Timeseries Data (CSV)</a> ";
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Overlay_File.R") {
-      if(file_exists("$cache_amet/${project_id}_${pid}_overlay.ncf"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${pid}_overlay.ncf\">PAVE Obs Overlay File (IOAPI file)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered creating overlay file."; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries model to model plot"; }
+}
+echo "         </td>";
+echo "</center>";
+echo "         <td>"; 
+if ($_POST['run_program'] == "AQ_Boxplot_Hourly.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_hourly.pdf"))	{
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_hourly.pdf\">Boxplot (PDF format)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_hourly.png\">Boxplot (PNG format)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_hourly_data.csv\">Median Data (CSV format)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting hourly box plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Boxplot_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot.html")) {
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot.html\">Boxplot (HTML)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias.html\">Bias Boxplot (HTML)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_nmb.html\">NMB Boxplot (HTML)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot.csv\">Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting box plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Boxplot_MDA8.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_MDA8.pdf"))	{
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_MDA8.pdf\">MDA8 Boxplot (PDF)</a> ";
+    echo "         </td>";
+      echo "          <td> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_MDA8.png\">MDA8 Boxplot (PNG)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting MDA8 boxplot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Boxplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_all.pdf"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_all.png\">Boxplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_all.pdf\">Boxplot (PDF)</a> ";
+    echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias.png\">Bias Boxplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias.pdf\">Bias Boxplot (PDF)</a> ";
+    echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_norm_bias.png\">Normalized Bias Boxplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_norm_bias.pdf\">Normalized Bias Boxplot (PDF)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting box plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Boxplot_ggplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_ggplot.pdf"))    {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_ggplot.png\">Boxplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_ggplot.pdf\">Boxplot (PDF)</a> ";
+              echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias_ggplot.png\">Bias Boxplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_bias_ggplot.pdf\">Bias Boxplot (PDF)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting box plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Boxplot_DofW.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_dow.pdf"))	{
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_dow.pdf\">Day of Week Boxplot (PDF)</a> ";
+    echo "         </td>";
+      echo "          <td> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_dow.png\">Day of Week Boxplot (PNG)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting day of week boxplot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Boxplot_Roselle.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_boxplot_roselle.pdf"))	{
+     echo "<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle.png\">Roselle Boxplot (PNG)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle_bias.png\">Roselle Boxplot Bias (PNG)</a> ";
+          echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle.pdf\">Roselle Boxplot (PDF)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "<a href=\"$cache_amet2/${project_id}_${species}_${pid}_boxplot_roselle_bias.pdf\">Roselle Boxplot Bias (PDF)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Roselle box plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot.pdf"))	{
+     echo "	<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot.pdf\">Stacked Barplot (PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_data.csv\">Barplot Data (CSV)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_panel.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_panel.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_panel.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_panel.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_panel_data.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_panel_AE6.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_panel_AE6.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"../$cache_amet2/${project_id}_${pid}_stacked_barplot_panel_AE6.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"../$cache_amet2/${project_id}_${pid}_stacked_barplot_panel_AE6.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"../$cache_amet2/${project_id}_${pid}_stacked_barplot_panel_AE6_data.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"../$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_AE6.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_AE6.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_data.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_AE6_ggplot.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_AE6_ggplot.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_ggplot.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_ggplot.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_data_ggplot.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_AE6_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_AE6.html"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6.html\">Stacked Barplot (HTML)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_data.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_AE6_ggplot_ts.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_AE6_ggplot.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_ggplot.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_ggplot.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_data_ggplot.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_AE6_ts.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_AE6_ts.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_ts.pdf\">Stacked Barplot (PDF)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_ts.png\">Stacked Barplot (PNG)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_ts.html\">Stacked Barplot (HTML)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_AE6_data_ts.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_panel_AE6_multi.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_panel_AE6_multi.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_panel_AE6_multi.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_panel_AE6_multi.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_panel_AE6_multi_data.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+   if ($_POST['run_program'] == "AQ_Stacked_Barplot_soil.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_soil.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_soil.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_soil.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_soil_data.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Stacked_Barplot_soil_multi.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_stacked_barplot_soil.pdf"))       {
+          echo "     <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_soil.png\">Stacked Barplot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_soil.pdf\">Stacked Barplot (PDF)</a> ";
+              echo "&nbsp;&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_stacked_barplot_soil_data.csv\">Barplot Data (CSV)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting soil bar plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Overlay_File.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_overlay.ncf"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${pid}_overlay.ncf\">PAVE Obs Overlay File (IOAPI file)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered creating overlay file."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Monthly_Stat_Plot.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_plot1.pdf"))	{
+     echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_plot1.pdf\">Obs/Mod Plot (PDF)</a> ";
+      echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_plot1.png\">Obs/Mod Plot (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats.csv\">Monthly Stat File (CSV)</a> ";
+      echo "&nbsp;&nbsp;";
+    echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot1.pdf\">NMB/NME/Corr Plot (PDF)</a> ";
+     echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot1.png\">NMB/NME/Corr Plot (PNG)</a> ";
+      echo "&nbsp;&nbsp;";
+    echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot2.pdf\">MdnB/MdnE/RMSE Plot (PDF)</a> ";
+     echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot2.png\">MdnB/MdnE/RMSE Plot (PNG)</a> ";  
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting yearly stat plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Plot_Spatial.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.png"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.png\">Obs (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.png\">Model (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.png\">Difference (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio.png\">Ratio (PNG)</a> ";
+      echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.pdf\">Obs (PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.pdf\">Model (PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.pdf\">Difference (PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio.pdf\">Ratio (PDF)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+   if ($_POST['run_program'] == "AQ_Plot_Spatial_leaflet.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot.html"))        {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot.html\">Spatial Plot (html)</a> ";
+        }
+   else { echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot.png"))        {
+          echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot.png\">Spatial Plot (png)</a> ";
+       }
+   else { echo "<p> PNG from HTML not requested. Check flag to create static png files from html files."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Plot_Spatial_leaflet_network.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.html"))        {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.html\">Obs (html)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.html\">Mod (html)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.html\">Diff (html)</a> ";
+        }
+   else { echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+          if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.png"))        {
+          echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.png\">Obs (png)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.png\">Mod (png)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.png\">Diff (png)</a> ";
+       }
+   else { echo "<p> PNG from HTML not requested. Check flag to create static png files from html files."; }
+}
+echo "         </td>";
+echo "          <td> ";
+   if ($_POST['run_program'] == "AQ_Plot_Spatial_Species_Diff_leaflet.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.html"))        {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.html\">Obs (html)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.html\">Mod (html)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.html\">Diff (html)</a> ";
+        }
+   else { echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+          if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.png"))        {
+          echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.png\">Obs (png)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.png\">Mod (png)</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.png\">Diff (png)</a> ";
+       }
+   else { echo "<p> PNG from HTML not requested. Check flag to create static png files from html files."; }
    }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Monthly_Stat_Plot.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_plot1.pdf"))	{
-	     echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_plot1.pdf\">Obs/Mod Plot (PDF)</a> ";
-         echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_plot1.png\">Obs/Mod Plot (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats.csv\">Monthly Stat File (CSV)</a> ";
- 	     echo "&nbsp;&nbsp;";
-		 echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot1.pdf\">NMB/NME/Corr Plot (PDF)</a> ";
-	     echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot1.png\">NMB/NME/Corr Plot (PNG)</a> ";
- 	     echo "&nbsp;&nbsp;";
-		 echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot2.pdf\">MdnB/MdnE/RMSE Plot (PDF)</a> ";
-	     echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_stats_plot2.png\">MdnB/MdnE/RMSE Plot (PNG)</a> ";  
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting yearly stat plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Plot_Spatial.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.png"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.png\">Obs (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.png\">Model (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.png\">Difference (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio.png\">Ratio (PNG)</a> ";
-         echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.pdf\">Obs (PDF)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.pdf\">Model (PDF)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.pdf\">Difference (PDF)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio.pdf\">Ratio (PDF)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-      if ($_POST['run_program'] == "AQ_Plot_Spatial_leaflet.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.html"))        {
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.html\">Obs (html)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.html\">Mod (html)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.html\">Diff (html)</a> ";
-          }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-      if ($_POST['run_program'] == "AQ_Plot_Spatial_Diff_leaflet.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_bias_diff.html"))        {
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_1.html\">Sim1 Bias (html)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_2.html\">Sim2 Bias (html)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff.html\">Bias Diff (html)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "  <p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_1.html\">Sim1 Error (html)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_2.html\">Sim2 Error (html)</a> ";
-             echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff.html\">Error Diff (html)</a> ";
-          }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
 
-      if ($_POST['run_program'] == "AQ_Plot_Spatial_Ratio.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_ratio_obs.png"))	{
-	     echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_obs.png\">Obs Spatial Plot (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_mod.png\">Model Spatial Plot (PNG)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_diff.png\">Difference Plot (PNG)</a> ";
-         echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_obs.pdf\">Obs Spatial Plot (PDF)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_mod.pdf\">Model Spatial Plot (PDF)</a> ";
-		 echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_diff.pdf\">Difference Plot (PDF)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial ratio plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Plot_Spatial_MtoM.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.png"))	{
-	     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.png\">MtoM Diff Avg Plot (PNG)</a> ";
-		 echo "&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_max.png\">MtoM Diff Max Plot (PNG)</a> ";
-		 echo "&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_min.png\">MtoM Diff Min Plot (PNG)</a> ";
-         echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.pdf\">MtoM Diff Avg Plot (PDF)</a> ";
-		 echo "&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_max.pdf\">MtoM Diff Max Plot (PDF)</a> ";
-		 echo "&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_min.pdf\">MtoM Diff Min Plot (PDF)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/model spatial diff plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Plot_Spatial_MtoM_Species.R") {
-      if(file_exists("$cache_amet/${project_id}_${pid}_spatialplot_mtom_species_diff_avg.png"))      {
-             echo "<a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_avg.png\">Avg Diff (PNG)</a> ";
-                 echo "&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_max.png\">Max Diff (PNG)</a> ";
-                 echo "&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_min.png\">Min Diff (PNG)</a> ";
-                 echo "&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_perc.png\">Percent Diff (PNG)</a> ";
-         echo "<p><a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_avg.pdf\">Avg Diff (PDF)</a> ";
-                 echo "&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_max.pdf\">Max Diff (PDF)</a> ";
-                 echo "&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_min.pdf\">Min Diff (PDF)</a> ";
-                 echo "&nbsp;";
-                 echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_perc.pdf\">Percent Diff (PDF)</a> ";
-          }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/model spatial diff plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Plot_Spatial_Diff.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_bias_1.png"))	{
-	     echo "Run 1 Bias";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_1.png\">(PNG)</a>";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_1.pdf\"> (PDF)</a>";
-         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		 echo "Run 1 Error ";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_1.png\">(PNG)</a>";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_1.pdf\"> (PDF)</a>";
-         echo "<p>Run 2 Bias ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_2.png\">(PNG)</a> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_2.pdf\"> (PDF)</a> ";
-         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		 echo "Run 2 Error ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_2.png\">(PNG)</a> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_2.pdf\"> (PDF)</a> ";
-		 echo "<p>Bias Diff ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff.png\">(PNG)</a> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff.pdf\"> (PDF)</a> ";
-         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;";
-		 echo "Error Diff ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff.png\">(PNG)</a> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff.pdf\"> (PDF)</a> ";
-                 echo "<p>Bias Diff Hist ";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff_hist.png\">(PNG)</a> ";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff_hist.pdf\"> (PDF)</a> ";
-         echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                 echo "Error Diff Hist ";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff_hist.png\">(PNG)</a> ";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff_hist.pdf\"> (PDF)</a> ";
-                 echo "<p>Plot Data File";
-                 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.csv\">(CSV)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial diff plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if (($_POST['run_program'] == "AQ_Kelly_Plot.R") || ($_POST['run_program'] == "AQ_Kelly_Plot_multisim.R")) {
-        if(file_exists("$cache_amet/${project_id}_${species}_${pid}_Kelly_Plot_NMB.png"))       {
-                echo "        <tr align=\"center\">  ";
-                echo " <p align=\"center\">";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_NMB.png\">NMB (PNG)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_NME.png\">NME (PNG)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_MB.png\">MB (PNG)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_ME.png\">ME (PNG)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_RMSE.png\">RMSE (PNG)</a>";
-                        echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_Corr.png\">Corr (PNG)</a>";
-            echo "      <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_NMB.pdf\">NMB (PDF)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_NME.pdf\">NME (PDF)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_MB.pdf\">MB (PDF)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_ME.pdf\">ME (PDF)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_FB.pdf\">FB (PDF)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_FE.pdf\">FE (PDF)</a> ";
-                echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_RMSE.pdf\">RMSE (PDF)</a> ";
-                        echo "&nbsp;&nbsp;";
-                echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kelly_Plot_Corr.pdf\">Corr (PDF)</a> ";
-                echo "        </tr>";
-        }
-                else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting stats plots.";
-        }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Histogram.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_histogram.pdf"))	{
-	     echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.png\">Histogram Plot(PNG)</a> ";
-		    echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_bias.png\">Histogram Bias Plot (PNG)</a> ";
-		 echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.pdf\">Histogram Plot(PDF)</a> ";
-		    echo "&nbsp;&nbsp;";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_bias.pdf\">Histogram Bias Plot (PDF)</a> ";
-	  }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting histogram plot."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-      if ($_POST['run_program'] == "AQ_Temporal_Plots.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_ecdf.pdf"))	{
-	     echo "ECDF Plot ";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_ecdf.png\">(PNG)</a>";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_ecdf.pdf\"> (PDF)</a>";
-		 echo "<p>Q-Q Plot ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_qq.png\">(PNG)</a> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_qq.pdf\"> (PDF)</a> ";
-		 echo "<p>Taylor Plot ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.png\">(PNG)</a> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.pdf\"> (PDF)</a> ";
-		 echo "<p>Periodogram Plot ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.png\">(PNG)</a> ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.pdf\"> (PDF)</a> ";	     
-	  }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting temporal plots."; }
-   }
-   echo "         </td>";
-   echo "          <td> ";
-   if ($_POST['run_program'] == "AQ_Spectral_Analysis.R") {
-      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spectrum.pdf"))	{
-	     echo "Spectrum Plot ";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spectrum.png\">(PNG)</a>";
-		 echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spectrum.pdf\"> (PDF)</a>";
-		 echo "<p>Individual Site Spectrum Plots ";
-		 echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spectrum_all.pdf\"> (PDF)</a> ";	     
-	  }   
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting spectrum plots."; }
-   }
-   echo "         </td>";
-   
-   echo "        </tr>";
-   echo "      </table>";
+echo "         </td>";
+echo "          <td> ";
+   if ($_POST['run_program'] == "AQ_Plot_Spatial_Diff_leaflet.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_diff.html"))        {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.html\">Spatial Plot</a> ";
+          echo "<p>";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_bias_diff.html\">Bias Hist</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_error_diff.html\">Error Hist</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_corr_diff.html\">Corr Hist</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+
+   if ($_POST['run_program'] == "AQ_Plot_Spatial_Diff_leaflet_network.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_bias_diff.html"))        {
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_1.html\">Bias1</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_2.html\">Bias2</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_1.html\">Error1</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_2.html\">Error2</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_1.html\">Corr1</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_2.html\">Corr2</a> ";
+          echo "<p>";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff.html\">Bias Diff</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff.html\">Error Diff</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_diff.html\">Corr Diff</a> ";
+          echo "<p>";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_bias_diff.html\">Bias Hist</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_error_diff.html\">Error Hist</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_corr_diff.html\">Corr Hist</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_bias_diff.png"))        {
+          echo "   <p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_1.png\">Bias1</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_2.png\">Bias2</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff.png\">Bias Diff</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_1.png\">Error1</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_2.png\">Error2</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff.png\">Error Diff</a> ";
+          echo "&nbsp;&nbsp;";
+          echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_diff.png\">Corr Diff</a> ";
+       }
+   else {echo "<p> PNG from HTML not requested. Check flag to create static png files from html files."; }
+}
+echo "         </td>";
+echo "          <td> ";
+
+   if ($_POST['run_program'] == "AQ_Plot_Spatial_Ratio.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_ratio_obs.png"))	{
+     echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_obs.png\">Obs Spatial Plot (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_mod.png\">Model Spatial Plot (PNG)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_diff.png\">Difference Plot (PNG)</a> ";
+      echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_obs.pdf\">Obs Spatial Plot (PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_mod.pdf\">Model Spatial Plot (PDF)</a> ";
+    echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_ratio_diff.pdf\">Difference Plot (PDF)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial ratio plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Plot_Spatial_MtoM.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.png"))	{
+     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.png\">MtoM Diff Avg Plot (PNG)</a> ";
+    echo "&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_max.png\">MtoM Diff Max Plot (PNG)</a> ";
+    echo "&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_min.png\">MtoM Diff Min Plot (PNG)</a> ";
+      echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.pdf\">MtoM Diff Avg Plot (PDF)</a> ";
+    echo "&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_max.pdf\">MtoM Diff Max Plot (PDF)</a> ";
+    echo "&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_min.pdf\">MtoM Diff Min Plot (PDF)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/model spatial diff plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Plot_Spatial_MtoM_leaflet.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.html"))      {
+          echo "<a align=left href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_avg.html\">MtoM Avg Plot</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_max.html\">MtoM Max Plot</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_diff_min.html\">MtoM Min Plot</a> ";
+              echo "&nbsp;";
+              echo " <p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mtom_ratio.html\">MtoM Ratio Plot</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/model spatial diff plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Plot_Spatial_MtoM_Species.R") {
+   if(file_exists("$cache_amet/${project_id}_${pid}_spatialplot_mtom_species_diff_avg.png"))      {
+          echo "<a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_avg.png\">Avg Diff (PNG)</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_max.png\">Max Diff (PNG)</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_min.png\">Min Diff (PNG)</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_perc.png\">Percent Diff (PNG)</a> ";
+      echo "<p><a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_avg.pdf\">Avg Diff (PDF)</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_max.pdf\">Max Diff (PDF)</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_min.pdf\">Min Diff (PDF)</a> ";
+              echo "&nbsp;";
+              echo " <a href=\"$cache_amet2/${project_id}_${pid}_spatialplot_mtom_species_diff_perc.pdf\">Percent Diff (PDF)</a> ";
+       }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/model spatial diff plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Plot_Spatial_Diff.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_bias_1.png"))	{
+      echo " <p align=\"left\">";
+      echo "Run 1 Bias";
+    echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_1.png\">(PNG)</a>";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_1.pdf\"> (PDF)</a>";
+      echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    echo "Run 1 Error ";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_1.png\">(PNG)</a>";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_1.pdf\"> (PDF)</a>";
+      echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+              echo "Run 1 Corr ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_1.png\">(PNG)</a>";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_1.pdf\"> (PDF)</a>";
+      echo "<p>Run 2 Bias ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_2.png\">(PNG)</a> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_2.pdf\"> (PDF)</a> ";
+     echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+    echo "Run 2 Error ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_2.png\">(PNG)</a> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_2.pdf\"> (PDF)</a> ";
+     echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+              echo "Run 2 Corr ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_2.png\">(PNG)</a> ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_2.pdf\"> (PDF)</a> ";
+echo "<p>Bias Diff ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff.png\">(PNG)</a> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff.pdf\"> (PDF)</a> ";
+     echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    echo "Error Diff ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff.png\">(PNG)</a> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff.pdf\"> (PDF)</a> ";
+     echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+              echo "Corr Diff ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_diff.png\">(PNG)</a> ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_diff.pdf\"> (PDF)</a> ";
+     echo "<p>Bias Diff Hist ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff_hist.png\">(PNG)</a> ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_bias_diff_hist.pdf\"> (PDF)</a> ";
+     echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+              echo "Error Diff Hist ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff_hist.png\">(PNG)</a> ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_error_diff_hist.pdf\"> (PDF)</a> ";
+     echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+              echo "Corr Diff Hist ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_diff_hist.png\">(PNG)</a> ";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_corr_diff_hist.pdf\"> (PDF)</a> ";
+     echo "<p>Plot Data File";
+              echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.csv\">(CSV)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial diff plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if (($_POST['run_program'] == "AQ_Kellyplot.R") || ($_POST['run_program'] == "AQ_Kellyplot.R")) {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_Kellyplot_NMB.png"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_NMB.png\">NMB (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_NME.png\">NME (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_MB.png\">MB (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_ME.png\">ME (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_RMSE.png\">RMSE (PNG)</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_Corr.png\">Corr (PNG)</a>";
+         echo "      <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_NMB.pdf\">NMB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_NME.pdf\">NME (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_MB.pdf\">MB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_ME.pdf\">ME (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_RMSE.pdf\">RMSE (PDF)</a> ";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_Corr.pdf\">Corr (PDF)</a> ";
+             echo "        </tr>";
+             echo "<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_stats_data.csv\">Kelly Plot Stats (CSV)</a> ";
+     }
+             else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Kelly plots.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
+if (($_POST['run_program'] == "AQ_Kellyplot_plotly.R") || ($_POST['run_program'] == "AQ_Kellyplot_plotly.R")) {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_Kellyplot_NMB.html"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_NMB.html\">NMB (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_NME.html\">NME (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_MB.html\">MB (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_ME.html\">ME (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_RMSE.html\">RMSE (HTML)</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_Corr.html\">Corr (HTML)</a>";
+             echo "        </tr>";
+             echo "<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_stats_data.csv\">Kelly Plot Stats (CSV)</a> ";
+     }
+             else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Kelly plots.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
+if (($_POST['run_program'] == "AQ_Kellyplot_region.R") || ($_POST['run_program'] == "AQ_Kellyplot_region.R")) {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_Kellyplot_region_NMB.png"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_NMB.png\">NMB (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_NME.png\">NME (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_MB.png\">MB (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_ME.png\">ME (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_RMSE.png\">RMSE (PNG)</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_Corr.png\">Corr (PNG)</a>";
+         echo "      <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_NMB.pdf\">NMB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_NME.pdf\">NME (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_MB.pdf\">MB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_ME.pdf\">ME (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_FB.pdf\">FB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_FE.pdf\">FE (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_RMSE.pdf\">RMSE (PDF)</a> ";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_Corr.pdf\">Corr (PDF)</a> ";
+             echo "        </tr>";
+             echo "<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_stats_data_region.csv\">Kelly Plot Stats (CSV)</a> ";
+     }
+             else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Kelly plots.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
+if (($_POST['run_program'] == "AQ_Kellyplot_region_plotly.R") || ($_POST['run_program'] == "AQ_Kellyplot_region_plotly.R")) {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_Kellyplot_region_NMB.html"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_NMB.html\">NMB (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_NME.html\">NME (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_MB.html\">MB (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_ME.html\">ME (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_RMSE.html\">RMSE (HTML)</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_region_Corr.html\">Corr (HTML)</a>";
+             echo "        </tr>";
+             echo "<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_stats_data_region.csv\">Kelly Plot Stats (CSV)</a> ";
+     }
+             else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Kelly plots.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
+if (($_POST['run_program'] == "AQ_Kellyplot_season.R") || ($_POST['run_program'] == "AQ_Kellyplot_season.R")) {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_Kellyplot_season_NMB.png"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_NMB.png\">NMB (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_NME.png\">NME (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_MB.png\">MB (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_ME.png\">ME (PNG)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_RMSE.png\">RMSE (PNG)</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_Corr.png\">Corr (PNG)</a>";
+         echo "      <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_NMB.pdf\">NMB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_NME.pdf\">NME (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_MB.pdf\">MB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_ME.pdf\">ME (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_FB.pdf\">FB (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_FE.pdf\">FE (PDF)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_RMSE.pdf\">RMSE (PDF)</a> ";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_Corr.pdf\">Corr (PDF)</a> ";
+             echo "        </tr>";
+             echo "<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_stats_data_season.csv\">Kelly Plot Stats (CSV)</a> ";
+     }
+             else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Kelly plots.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
+if (($_POST['run_program'] == "AQ_Kellyplot_season_plotly.R") || ($_POST['run_program'] == "AQ_Kellyplot_season_plotly.R")) {
+     if(file_exists("$cache_amet/${project_id}_${species}_${pid}_Kellyplot_season_NMB.html"))       {
+             echo "        <tr align=\"center\">  ";
+             echo " <p align=\"center\">";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_NMB.html\">NMB (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_NME.html\">NME (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_MB.html\">MB (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_ME.html\">ME (HTML)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_RMSE.html\">RMSE (HTML)</a>";
+                     echo "&nbsp;&nbsp;";
+             echo "  <a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_season_Corr.html\">Corr (HTML)</a>";
+             echo "        </tr>";
+             echo "<p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_Kellyplot_stats_data_season.csv\">Kelly Plot Stats (CSV)</a> ";
+     }
+             else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Kelly plots.";
+     }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Histogram.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_histogram.pdf"))	{
+     echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.png\">Histogram Plot(PNG)</a> ";
+       echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_bias.png\">Histogram Bias Plot (PNG)</a> ";
+    echo "	<p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.pdf\">Histogram Plot(PDF)</a> ";
+       echo "&nbsp;&nbsp;";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram_bias.pdf\">Histogram Bias Plot (PDF)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting histogram plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Histogram_plotly.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_histogram.html")) {
+     echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.html\">Histogram Plot (HTML)</a> ";
+       echo "&nbsp;&nbsp;";
+    echo "      <a href=\"$cache_amet2/${project_id}_${species}_${pid}_histogram.csv\">Histogram Data (CSV)</a> ";
+  }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting histogram plot."; }
+}
+echo "         </td>";
+echo "          <td> ";
+   if ($_POST['run_program'] == "AQ_Temporal_Plots.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_ecdf.pdf"))	{
+     echo "ECDF Plot ";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_ecdf.png\">(PNG)</a>";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_ecdf.pdf\"> (PDF)</a>";
+    echo "<p>Q-Q Plot ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_qq.png\">(PNG)</a> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_qq.pdf\"> (PDF)</a> ";
+    echo "<p>Taylor Plot ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.png\">(PNG)</a> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.pdf\"> (PDF)</a> ";
+    echo "<p>Periodogram Plot ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.png\">(PNG)</a> ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.pdf\"> (PDF)</a> ";	     
+  }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting temporal plots."; }
+}
+echo "         </td>";
+echo "          <td> ";
+if ($_POST['run_program'] == "AQ_Spectral_Analysis.R") {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spectrum.pdf"))	{
+     echo "Spectrum Plot ";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spectrum.png\">(PNG)</a>";
+    echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spectrum.pdf\"> (PDF)</a>";
+    echo "<p>Individual Site Spectrum Plots ";
+    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_spectrum_all.pdf\"> (PDF)</a> ";	     
+  }   
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting spectrum plots."; }
+}
+echo "         </td>";
+
+echo "        </tr>";
+echo "      </table>";
 //}
-   echo "  <p>&nbsp;</p>";
-   echo "  <p>&nbsp;</p>";
-   echo "   <hr>";
-}	
+echo "  <p>&nbsp;</p>";
+echo "  <p>&nbsp;</p>";
+echo "   <hr>";
+}
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
-?>     
+?>
 </p>
-            <p align="left"><font color="#333333" face="Arial, Helvetica, sans-serif">This 
-                web-based utility queries the AMET database for sub-sets of data, 
-                then performs a variety of statistics and generates user-defined 
+            <p align="left"><font color="#333333" face="Arial, Helvetica, sans-serif">This
+                web-based utility queries the AMET database for sub-sets of data,
+                then performs a variety of statistics and generates user-defined
                 plots.</a> </font>            </p>
-            <h4><font color="#333333" face="Arial, Helvetica, sans-serif">Data 
+            <h4><font color="#333333" face="Arial, Helvetica, sans-serif">Data
               Subset Specification</font></h4>
-            <p><font color="#333333" face="Arial, Helvetica, sans-serif">Currently 
-              there several categories with multiple criteria that allow the user 
-              to isolate a particular set of data. Please ignore criteria that do not apply 
-              to your particular need, as those criteria will not 
+            <p><font color="#333333" face="Arial, Helvetica, sans-serif">Currently
+              there several categories with multiple criteria that allow the user
+              to isolate a particular set of data. Please ignore criteria that do not apply
+              to your particular need, as those criteria will not
               be considered in the data selection.</font></p>
-			  <div align="center">
+                          <div align="center">
             <h2><br>
-            <?php 
-	  		/////////////////////////////////////////////// 
-			 include ( '/opt/amet/configure/amet-www-config.php'); 
-	 		///////////////////////////////////////////////
+            <?php
+                        ///////////////////////////////////////////////
+                         include ( '/opt/amet/configure/amet-www-config.php');
+                        ///////////////////////////////////////////////
 
-//       		echo " <form name=shell method=post action=querygen_met.php > ";
+//                      echo " <form name=shell method=post action=querygen_met.php > ";
                         echo " <form target=_blank name=shell method=post action=querygen_met.php > ";
-         	?>
-                
+                ?>
+
                     <div align="center">
                       <h2>Database Specification</h2>
                         <a name="station"></a>
-                        <?php 
+                        <?php
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
-//	Connect to Database via user supplied login and pass
-	 /////////////////////////////////////////////// 
-	 include ( '/opt/amet/configure/amet-www-config.php'); 
-	 ///////////////////////////////////////////////
-		//$dbase="test_avgAQ";
-//		$link = mysql_connect($mysql_server,$root_login,$root_pass) or die("Connect Error: ".mysql_error());
+//      Connect to Database via user supplied login and pass
+         ///////////////////////////////////////////////
+         include ( '/opt/amet/configure/amet-www-config.php');
+         ///////////////////////////////////////////////
+                //$dbase="test_avgAQ";
+//              $link = mysql_connect($mysql_server,$root_login,$root_pass) or die("Connect Error: ".mysql_error());
                 $mysqli = mysqli_init();
                 $mysqli->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
                 $mysqli->ssl_set(NULL, NULL, "/etc/pki/ca-trust/source/anchors/pki_epa_gov_chain.pem", NULL, NULL);
-//		$mysqli->ssl_set(NULL, NULL, "/etc/pki/ca-trust/source/anchors/epa_pki.crt", NULL, NULL);
+//              $mysqli->ssl_set(NULL, NULL, "/etc/pki/ca-trust/source/anchors/epa_pki.crt", NULL, NULL);
                 $mysqli->real_connect($mysql_server,$root_login,$root_pass);
                 if (! $mysqli) {
                    echo "MySQL Server Name: $mysql_server";
@@ -1720,40 +2225,40 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
                 }
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 // Check database logs for the existance of the requested project id
-		$i=0;
-		echo "<label for=\"database_id\">Choose a Database</label><br><select name=database_id id=database_id onChange=\"MM_jumpMenu('parent',this,0)\"> ";
+                $i=0;
+                echo "<label for=\"database_id\">Choose a Database</label><br><select name=database_id id=database_id onChange=\"MM_jumpMenu('parent',this,0)\"> ";
         echo " <option value= > Choose a Database  </option> ";
-		
-			
-		if ($row = mysqli_fetch_array($result)) {
-		do {
-			$did=$row['Database'];
-	         echo $row['Database'];
-				$select="";
-    		if ($did == $_GET['database_id']) {
-			   $select="SELECTED";
-			}
-		    $data_str[$i]="Database ID: ".$row["Database"];
-             echo " <option value=querygen_met.php?database_id=".$row["Database"]."&stat_id=".$_GET['stat_id']."&stat_file=".$_GET['stat_file']."  $select> $data_str[$i]  </option> ";
-//			 $proj_str[$i]="Project ID: ".$row["proj_code"].", User ID: ".$row["user_id"].", Setup Date: ".$row[5];
-//            echo " <option value=querygen_aq.php?project_id=".$row["proj_code"]."&stat_id=".$_GET['stat_id']."&stat_file=".$_GET['stat_file']."  $select> $proj_str[$i]  </option> ";
-	   	}
-		while($row = mysqli_fetch_assoc($result));
 
-		}
-		echo "</select> "; 
-		//else{
-		
-		//	print "this is a test<br>";
-		//	die("No project were found in the database, this is likely a connection error. Contact AMET system adminsitrator <br>".mysql_error());
-		//}
+
+                if ($row = mysqli_fetch_array($result)) {
+                do {
+                        $did=$row['Database'];
+                 echo $row['Database'];
+                                $select="";
+                if ($did == $_GET['database_id']) {
+                           $select="SELECTED";
+                        }
+                    $data_str[$i]="Database ID: ".$row["Database"];
+             echo " <option value=querygen_met.php?database_id=".$row["Database"]."&stat_id=".$_GET['stat_id']."&stat_file=".$_GET['stat_file']."  $select> $data_str[$i]  </option> ";
+//                       $proj_str[$i]="Project ID: ".$row["proj_code"].", User ID: ".$row["user_id"].", Setup Date: ".$row[5];
+//            echo " <option value=querygen_aq.php?project_id=".$row["proj_code"]."&stat_id=".$_GET['stat_id']."&stat_file=".$_GET['stat_file']."  $select> $proj_str[$i]  </option> ";
+                }
+                while($row = mysqli_fetch_assoc($result));
+
+                }
+                echo "</select> ";
+                //else{
+
+                //      print "this is a test<br>";
+                //      die("No project were found in the database, this is likely a connection error. Contact AMET system adminsitrator <br>".mysql_error());
+                //}
          echo " <option value= ></option> </select> ";
-//	    $_SESSION['database_id']=$_GET['database_id'];
-//        $statid		=$_GET['stat_id'];
-//		$stat_file	=$_GET['stat_file'];
-		$database_id	=$_GET['database_id'];
-		
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://			
+//          $_SESSION['database_id']=$_GET['database_id'];
+//        $statid               =$_GET['stat_id'];
+//              $stat_file      =$_GET['stat_file'];
+                $database_id    =$_GET['database_id'];
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 //if($_SESSION['database_id']){
 
 //}
@@ -3485,7 +3990,7 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 <div align="left"><font face="Arial, Helvetica, sans-serif">
     <label for=run_program><strong><span class="style4 style5 style3">Choose Program to Run</span></strong></label><br><br><select name="run_program" id="run_program">
     <option value="" selected><font face="Arial, Helvetica, sans-serif">Choose AMET Script to Execute</font></option>
-    <optgroup label="Scatter Plots">
+        <optgroup label="Scatter Plots">
     <option value="AQ_Scatterplot.R"><font face="Arial, Helvetica, sans-serif">Multiple Networks Model/Ob Scatterplot (select stats only)</font></option>
     <option value="AQ_Scatterplot_ggplot.R"><font face="Arial, Helvetica, sans-serif">GGPlot Scatterplot (multi network, single run)</font></option>
     <option value="AQ_Scatterplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Interactive Multiple Network Scatterplot</font></option>
@@ -3494,7 +3999,7 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     <option value="AQ_Scatterplot_density.R"><font face="Arial, Helvetica, sans-serif">Density Scatterplot (single run, single network)</font></option>
     <option value="AQ_Scatterplot_density_ggplot.R"><font face="Arial, Helvetica, sans-serif">GGPlot Density Scatterplot (single run, single network)</font></option>
     <option value="AQ_Scatterplot_mtom.R"><font face="Arial, Helvetica, sans-serif">Model/Model Scatterplot (multiple networks)</font></option>
-    <option value="AQ_Scatterplot_mtom_density.R"><font face="Arial, Helvetica, sans-serif">Model/Model Density Scatterplot (single network)</font></option>
+    <option value="AQ_Scatterplot_mtom_density_ggplot.R"><font face="Arial, Helvetica, sans-serif">Model/Model Density Scatterplot (single network)</font></option>
     <option value="AQ_Scatterplot_percentiles.R"><font face="Arial, Helvetica, sans-serif">Scatterplot of Percentiles (single network, single run)</font></option>
     <option value="AQ_Scatterplot_skill.R"><font face="Arial, Helvetica, sans-serif">Ozone Skill Scatterplot (single network, mult runs)</font></option>
     <option value="AQ_Scatterplot_bins.R"><font face="Arial, Helvetica, sans-serif">Binned MB & RMSE Scatterplots (single net., mult. run)</font></option>
@@ -3504,25 +4009,32 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     </optgroup>
     <optgroup label="Time Series Plots">
     <option value="AQ_Timeseries.R"><font face="Arial, Helvetica, sans-serif">Time-series Plot (single network, multiple sites averaged)</font></option>
+    <option value="AQ_Timeseries_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Time-series Plots (single network, multiple sites not average)</font></option>
     <option value="AQ_Timeseries_dygraph.R"><font face="Arial, Helvetica, sans-serif">Dygraph Time-series Plot (single network, multiple sites averaged)</font></option>
     <option value="AQ_Timeseries_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Muli-simulation Timeseries</font></option>
+    <option value="AQ_Timeseries_plotly_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Plotly Time-series Plots (single network, multiple sites not average)</font></option>
     <option value="AQ_Timeseries_networks_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-network Timeseries</font></option>
     <option value="AQ_Timeseries_species_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-species Timeseries</font></option>
     <option value="AQ_Timeseries_multi_networks.R"><font face="Arial, Helvetica, sans-serif">Multi-Network Time-series Plot (mult. net., single run)</font></option>
     <option value="AQ_Timeseries_multi_species.R"><font face="Arial, Helvetica, sans-serif">Multi-Species Time-series Plot (mult. species, single run)</font></option>
     <option value="AQ_Timeseries_MtoM.R"><font face="Arial, Helvetica, sans-serif">Model-to-Model Time-series Plot (single net., multi run)</font></option>
     <option value="AQ_Monthly_Stat_Plot.R"><font face="Arial, Helvetica, sans-serif">Year-long Monthly Statistics Plot (single network)</font></option>
+    <option value="AQ_Monthly_Stat_Plot_plotly.R"><font face="Arial, Helvetica, sans-serif">Interactive Year-long Monthly Statistics Plot (single network)</font></option>
     </optgroup>
     <optgroup label="Spatial Plots">
     <option value="AQ_Stats_Plots.R"><font face="Arial, Helvetica, sans-serif">Species Statistics and Spatial Plots (multi networks)</font></option>
-    <option value="AQ_Stats_Plots_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Species Statistics and Spatial Plots (multi networks)</font></option>
+    <option value="AQ_Stats_Plots_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Species Statistics and Spatial Plots (single plot)</font></option>
+    <option value="AQ_Stats_Plots_leaflet_network.R"><font face="Arial, Helvetica, sans-serif">Interactive Species Statistics and Spatial Plots (multiple plots)</font></option>
     <option value="AQ_Plot_Spatial.R"><font face="Arial, Helvetica, sans-serif">Spatial Plot (multi networks)</font></option>
-    <option value="AQ_Plot_Spatial_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot (multi networks)</font></option>
+    <option value="AQ_Plot_Spatial_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot (single plot)</font></option>
+    <option value="AQ_Plot_Spatial_leaflet_network.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot (multiple plots)</font></option>
+    <option value="AQ_Plot_Spatial_Species_Diff_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Species Diff Spatial Plot (multi networks,multi species)</font></option>
     <option value="AQ_Plot_Spatial_MtoM.R"><font face="Arial, Helvetica, sans-serif">Model/Model Diff Spatial Plot (multi network, multi run)</font></option>
     <option value="AQ_Plot_Spatial_MtoM_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Model/Model Diff Spatial Plot (multi network, multi run)</font></option>
     <option value="AQ_Plot_Spatial_MtoM_Species.R"><font face="Arial, Helvetica, sans-serif">Model/Model Species Diff Spatial Plot (multi network, multi run)</font></option>
     <option value="AQ_Plot_Spatial_Diff.R"><font face="Arial, Helvetica, sans-serif">Spatial Plot of Bias/Error Difference (multi network, multi run)</font></option>
-    <option value="AQ_Plot_Spatial_Diff_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (multi networks)</font></option>
+    <option value="AQ_Plot_Spatial_Diff_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (single plot)</font></option>
+    <option value="AQ_Plot_Spatial_Diff_leaflet_network.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (multiple plots )</font></option>
     <option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">Ratio Spatial Plot to total PM2.5 (multi network, multi run)</font></option>
     </optgroup>
     <optgroup label="Box Plots">
@@ -3546,15 +4058,20 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     <option value="AQ_Stacked_Barplot_panel_AE6.R"><font face="Arial, Helvetica, sans-serif">Multi-Panel Stacked Bar Plot AE6 (full year data)</font></option>
     <option value="AQ_Stacked_Barplot_panel_AE6_multi.R"><font face="Arial, Helvetica, sans-serif">Multi-Panel, Mulit Run Stacked Bar Plot AE6 (full year data)</font></option>
     </optgroup>
-    <optgroup label="Misc Scripts">
+        <optgroup label="Misc Scripts">
     <option value="AQ_Kellyplot.R"><font face="Arial, Helvetica, sans-serif">Kelly Plot (single species, single network, full year data)</font></option>
+    <option value="AQ_Kellyplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Kelly Plot (single species, single network, full year data)</font></option>
     <option value="AQ_Kellyplot_region.R"><font face="Arial, Helvetica, sans-serif">Climate Region Kelly Plot (single species, single network, multi sim)</font></option>
+    <option value="AQ_Kellyplot_region_plotly.R"><font face="Arial, Helvetica, sans-serif">Plolty Climate Region Kelly Plot (single species, single network, multi sim)</font></option>
     <option value="AQ_Kellyplot_season.R"><font face="Arial, Helvetica, sans-serif">Seasonal Kelly Plot (single species, single network, multi sim)</font></option>
+    <option value="AQ_Kellyplot_season_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Seasonal Kelly Plot (single species, single network, multi sim)</font></option>
     <option value="AQ_Stats.R"><font face="Arial, Helvetica, sans-serif">Species Statistics (multi species, single network)</font></option>
     <option value="AQ_Raw_Data.R"><font face="Arial, Helvetica, sans-serif">Create raw data csv file (single network, single simulation)</font></option>
     <option value="AQ_Soccerplot.R"><font face="Arial, Helvetica, sans-serif">"Soccergoal" plot (multiple networks)</font></option>
+    <option value="AQ_Soccerplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly "Soccergoal" plot (multiple networks/species)</font></option>
     <option value="AQ_Bugleplot.R"><font face="Arial, Helvetica, sans-serif">"Bugle" plot (multiple networks)</font></option>
     <option value="AQ_Histogram.R"><font face="Arial, Helvetica, sans-serif">Histogram (single network/species only)</font></option>
+    <option value="AQ_Histogram_plotly.R"><font face="Arial, Helvetica, sans-serif">Interactive Histogram (single network, single species, multi run)</font></option>
     <option value="AQ_Temporal_Plots.R"><font face="Arial, Helvetica, sans-serif">CDF, Q-Q, Taylor Plots (single network, multi run)</font></option>
         </optgroup>
         <optgroup label="Experimental Scripts (may not work correctly)">
@@ -3607,4 +4124,4 @@ Choose which program to run to create specific stats and figures. Note that some
 </TABLE>
 </BODY>
 <!-- InstanceEnd --></HTML>
-  
+ï¿½ï¿½
