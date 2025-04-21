@@ -348,7 +348,6 @@ if (length(cols) != (length(bounds)-1)) {
 #---------------------------------------------------------------------------------------------------##
 ######################################################################################################
 # Open Figure  for plot functions
-#  print(sinfo)
   cent_lat <-bounds[1]+(abs(bounds[1]-bounds[2]))/2
   aspect <- (abs(bounds[1]-bounds[2]))/((cent_lat/47)*(abs(bounds[3]-bounds[4])))
   if (aspect > 1) {  aspect <- 1 }
@@ -472,7 +471,6 @@ if (length(cols) != (length(bounds)-1)) {
 #  if (unique_labels == "n") {
 #     levLab<-sinfo[[1]]$levs[1:(length(sinfo[[1]]$levs)-1)]
 #  }
-#   print(legend_chars)
    legend("bottom",inset=c(0,-0.075),legend=legend_names, pch=legend_chars,bty="n",bg="white",horiz=TRUE,box.col="black")
 #   legend("bottom",inset=c(0,-0.075),legend=legend_names, pch=legend_chars,bty="n",bg="white",horiz=TRUE,col=c("#003FBF","#7FFF00","#FFBB00","#B22222"))
    mylegend(x=lone-legoffset3+legoffset,y=lats,labels=levLab,cols=sinfo[[1]]$cols_legend,bounds=sinfo[[1]]$levs_legend,cex=legend.size,xw=text_offset)
@@ -1162,7 +1160,6 @@ Average<-function(datain.df) {
                data_split.df <- data_split.df[!indic.na,]
                indic.na    <- is.na(data_split.df$Mod_Value)
                data_split.df <- data_split.df[!indic.na,]
-               #print(data_split.df)
             }
 #           if (averaging == "W126") {
 #               stat_id     <- unique(data_split.df$Stat_ID)
@@ -1170,7 +1167,6 @@ Average<-function(datain.df) {
 #               Lat         <- unique(data_split.df$lat)
 #               Lon         <- unique(data_split.df$lon)
 #               obs_sum     <- c(obs_sum,tapply(data_split.df$Obs_Value,data_split.df$YearMonth,sum))
-#               print(obs_sum)
 #            }
             Obs_Mean	<- c(Obs_Mean,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,mean,na.rm=T))
             Mod_Mean	<- c(Mod_Mean,tapply(data_split.df$Mod_Value,data_split.df$Stat_ID,mean,na.rm=T))
@@ -1626,7 +1622,6 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
          aqdat_query.df<-try(db_Query(qs,mysql))
       }
    }
-#   print(names(aqdat_query.df))
    if ((network == "EMEP_Daily") || (network == "NADP")) { aqdat_query.df$ob_hour <- 0 }
    aqdat_query.df$ob_hour <- sprintf("%02d",as.integer(aqdat_query.df$ob_hour)) 
 #   ob_col_name <- paste(species,"_ob",sep="")
@@ -1700,16 +1695,12 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    model_name_out  <- db_Query(model_name_qs,mysql)
    model_name      <- model_name_out[[1]]
    ### Use sites only contained in the first simulation specified ###
-#   print(sites)
-#   print(com_sites)
-#   print(aqdat_query.df$stat_id)
    if (data_exists_flag == "n") {
       if (!exists("sleep_time")) { sleep_time <- 0 }
       Sys.sleep(sleep_time)
    }
    if (common_sites == "y") { aqdat_query.df <- aqdat_query.df[as.character(aqdat_query.df$stat_id) %in% com_sites, ] }
    ###################################################################
-#   print(aqdat_query.df)
    return(list(aqdat_query.df,data_exists_flag,units,model_name))
 }
 ########################################
@@ -1785,12 +1776,16 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 #   criteria <- paste(" WHERE d.T_ob is not NULL",query,sep="")
 
 #   qs <- paste("SELECT d.network,d.stat_id,d.lat,d.lon,d.ob_dates,d.ob_datee,d.ob_hour,d.month",species_query_string,",s.state from ",run_name," as d, site_metadata as s",criteria,"ORDER BY",data_order,sep=" ")      # Set the rest of the MYSQL query
-   qs <- paste("SELECT s.ob_network,d.stat_id,s.lat,s.lon,DATE_FORMAT(ob_date,'%Y-%m-%d') as ob_date,ob_time,",species_query_string,",s.state from ",run_name,"_surface as d, stations as s",criteria," ORDER BY ob_date, ob_time ",sep="")      # Set the rest of the MYSQL query
+   if (network == "SRAD") {
+      qs <- paste("SELECT s.ob_network,d.stat_id,s.lat,s.lon,DATE_FORMAT(ob_date,'%Y-%m-%d') as ob_date,ob_time,",species_query_string,",s.state from ",run_name,"_surfrad_surface as d, stations as s",criteria," ORDER BY ob_date, ob_time ",sep="")      # Set the rest of the MYSQL query
+   }
+   else {
+      qs <- paste("SELECT s.ob_network,d.stat_id,s.lat,s.lon,DATE_FORMAT(ob_date,'%Y-%m-%d') as ob_date,ob_time,",species_query_string,",s.state from ",run_name,"_surface as d, stations as s",criteria," ORDER BY ob_date, ob_time ",sep="")      # Set the rest of the MYSQL query
+   }
    print(qs)
    aqdat_query_temp.df<-db_Query(qs,mysql)
     names(aqdat_query_temp.df)[7] <- paste(species,"_ob",sep="")
     names(aqdat_query_temp.df)[8] <- paste(species,"_mod",sep="")
-#   print(aqdat_query_temp.df)
    aqdat_query.df <- data.frame(network=aqdat_query_temp.df$ob_network,stat_id=aqdat_query_temp.df$stat_id,lat=aqdat_query_temp.df$lat,lon=aqdat_query_temp.df$lon,ob_dates=aqdat_query_temp.df$ob_date,ob_datee=aqdat_query_temp.df$ob_date,ob_hour=aqdat_query_temp.df$ob_time,aqdat_query_temp.df[7],aqdat_query_temp.df[8])
    aqdat_query.df$month <- substr(as.character(aqdat_query_temp.df$ob_date),9,10)
    
@@ -1798,7 +1793,6 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    aqdat_query.df$state <- aqdat_query_temp.df$state
    data_exists_flag <- "y"
    num_specs <- length(species)-1
-#   print(names(aqdat_query.df))
    for (k in 0:num_specs) {
       ob_col  <- 8+2*k
       mod_col <- 9+2*k
@@ -1848,7 +1842,7 @@ get_title <- function(run_names,species,network_label,dates,custom_title="",site
    {
       my_title <- custom_title
       {
-         network <- paste(network_label,collapse=",")
+         network <- paste(network_label,collapse=", ")
          if ((custom_title == "") && (length(run_names) == 1)) { 
             my_title <- paste(network,run_name1,species,sep=", ")
             if (bias == "T") { my_title <- paste(run_name1,species,"Bias",sep=", ") }

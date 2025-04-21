@@ -1,14 +1,17 @@
 header <- "
 ###################################### SPATIAL PLOT ######################################
-### AMET CODE: AQ_Plot_Spatial.R 
+### AMET CODE: AQ_Plot_Spatial_animation.R 
 ###
 ### This code is part of the AMET-AQ system.  The Plot Spatial code takes a MYSQL database
 ### query for a single species from one or more networks and plots the observation value, 
 ### model value, and difference between the model and ob for each site for each corresponding
-### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
+### network.  Mutiple values for a site are averaged to a single value for static plotting 
+### purposes, while the temporal data are retained and used to create an html plot with a
+### time slider bar. This script outputs static PDF files and non-static HTML files.
+###
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: Feb 2022
+### Create by Wyat Appel: Apr 2025
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -31,29 +34,32 @@ if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
 
 ### Retrieve units label from database table ###
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-#units_qs	<- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="") # Create MYSQL query from units table
 ################################################
 
 ### Set file names and titles ###
-filename_obs	<- paste(run_name1,species,pid,"spatialplot_obs.pdf",sep="_")           # Filename for obs spatial plot
-filename_mod	<- paste(run_name1,species,pid,"spatialplot_mod.pdf",sep="_")           # Filename for model spatial plot
-filename_diff	<- paste(run_name1,species,pid,"spatialplot_diff.pdf",sep="_")          # Filename for diff spatial plot
-filename_anim	<- paste(run_name1,species,pid,"spatialplot.html",sep="_")         # Filename for diff spatial plot
+filename_obs_png	<- paste(run_name1,species,pid,"spatialplot_obs.png",sep="_")           # Filename for obs spatial plot
+filename_mod_png	<- paste(run_name1,species,pid,"spatialplot_mod.png",sep="_")           # Filename for model spatial plot
+filename_diff_png	<- paste(run_name1,species,pid,"spatialplot_diff.png",sep="_")          # Filename for diff spatial plot
 
-filename_obs_anim    <- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
-filename_mod_anim    <- paste(run_name1,species,pid,"spatialplot_mod.html",sep="_")           # Filename for model spatial plot
-filename_diff_anim   <- paste(run_name1,species,pid,"spatialplot_diff.html",sep="_")          # Filename for diff spatial plot
+filename_obs_pdf	<- paste(run_name1,species,pid,"spatialplot_obs.pdf",sep="_")           # Filename for obs spatial plot
+filename_mod_pdf    	<- paste(run_name1,species,pid,"spatialplot_mod.pdf",sep="_")           # Filename for model spatial plot
+filename_diff_pdf   	<- paste(run_name1,species,pid,"spatialplot_diff.pdf",sep="_")          # Filename for diff spatial plot
+
+filename_obs_anim    	<- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
+filename_mod_anim    	<- paste(run_name1,species,pid,"spatialplot_mod.html",sep="_")           # Filename for model spatial plot
+filename_diff_anim   	<- paste(run_name1,species,pid,"spatialplot_diff.html",sep="_")          # Filename for diff spatial plot
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Create a full path to file
-filename_obs      <- paste(figdir,filename_obs,sep="/")           # Filename for obs spatial plot
-filename_mod      <- paste(figdir,filename_mod,sep="/")           # Filename for model spatial plot
-filename_diff     <- paste(figdir,filename_diff,sep="/")          # Filename for diff spatial plot
+filename_obs_png      <- paste(figdir,filename_obs_png,sep="/")           # Filename for obs spatial plot
+filename_mod_png      <- paste(figdir,filename_mod_png,sep="/")           # Filename for model spatial plot
+filename_diff_png     <- paste(figdir,filename_diff_png,sep="/")          # Filename for diff spatial plot
+
+filename_obs_pdf      <- paste(figdir,filename_obs_pdf,sep="/")           # Filename for obs spatial plot
+filename_mod_pdf      <- paste(figdir,filename_mod_pdf,sep="/")           # Filename for model spatial plot
+filename_diff_pdf     <- paste(figdir,filename_diff_pdf,sep="/")          # Filename for diff spatial plot
 
 filename_obs_anim      <- paste(figdir,filename_obs_anim,sep="/")           # Filename for obs spatial plot
 filename_mod_anim      <- paste(figdir,filename_mod_anim,sep="/")           # Filename for model spatial plot
@@ -88,6 +94,7 @@ sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
 legend_names    <- NULL
 legend_chars    <- NULL
+sub_title	<- NULL
 plot.symbols<-as.integer(plot_symbols)
 pick.symbol.name.fun<-function(x){
    master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
@@ -105,10 +112,11 @@ spch<-plot.symbols
 rm_negs <- remove_negatives
 remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
 total_networks <- length(network_names)
+network_names_in <- network_names
 k <- 1
 for (j in 1:total_networks) {							# Loop through for each network
    Mod_Obs_Diff   <- NULL							# Set model/ob difference to NULL
-   network        <- network_names[[j]]						# Determine network name from loop value
+   network        <- network_names_in[[j]]						# Determine network name from loop value
    network_number <- k 
    #########################
    ## Query the database ###
@@ -132,15 +140,10 @@ for (j in 1:total_networks) {							# Loop through for each network
 
    }
    #######################
-
-#   count <- sum(is.na(aqdat_query.df[,9]))
-#   len   <- length(aqdat_query.df[,9])
-
-#   if (count != len) {	# Continue if query returned non-missing data
-
    { 
       if (data_exists == "n") {
          total_networks <- (total_networks-1)
+         network_names <- network_names[-j]
          sub_title<-paste(sub_title,network_label[j],"=No Data; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
@@ -178,10 +181,10 @@ for (j in 1:total_networks) {							# Loop through for each network
          ##################################################
          ## Store values for each network in array lists ##
          ##################################################
-         sinfo_obs_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Obs_Value,date=aqdat.df$Start_Date,network=network)
-         sinfo_mod_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Value,date=aqdat.df$Start_Date,network=network)
-         sinfo_diff_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff,date=aqdat.df$Start_Date,network=network)
-         sinfo_rat_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Rat,date=aqdat.df$Start_Date,network=network)
+         sinfo_obs[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Obs_Value,date=aqdat.df$Start_Date,network=network)
+         sinfo_mod[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Value,date=aqdat.df$Start_Date,network=network)
+         sinfo_diff[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff,date=aqdat.df$Start_Date,network=network)
+         sinfo_rat[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Rat,date=aqdat.df$Start_Date,network=network)
 
 	 Mod_Obs_Diff <- aqdat_anim.df$Mod_Value-aqdat_anim.df$Obs_Value
          aqdat_anim.df$Mod_Obs_Diff <- Mod_Obs_Diff
@@ -190,19 +193,9 @@ for (j in 1:total_networks) {							# Loop through for each network
          ##################################################
          ## Store values for each network in array lists ##
          ##################################################
-#         if (k == 1) {
-   	    sinfo_obs_data_anim[[k]]	<-list(lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Obs_Value,date=aqdat_anim.df$Start_Date,network=network)
-            sinfo_mod_data_anim[[k]]	<-list(lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Value,date=aqdat_anim.df$Start_Date,network=network)
-            sinfo_diff_data_anim[[k]]	<-list(lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Obs_Diff,date=aqdat_anim.df$Start_Date,network=network)
-#	 }
-#	 if (k > 1) {
-#	    sinfo_obs_data_anim_tmp.df      <-data.frame(lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Obs_Value,date=aqdat_anim.df$Start_Date,network=network_number)
-#            sinfo_mod_data_anim_tmp.df      <-data.frame(lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Value,date=aqdat_anim.df$Start_Date,network=network_number)
-#            sinfo_diff_data_anim_tmp.df     <-data.frame(lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Obs_Diff,date=aqdat_anim.df$Start_Date,network=network_number)
-#	    sinfo_obs_data_anim.df 	    <-rbind(sinfo_obs_data_anim.df,sinfo_obs_data_anim_tmp.df)
-#	    sinfo_mod_data_anim.df          <-rbind(sinfo_mod_data_anim.df,sinfo_mod_data_anim_tmp.df)
-#	    sinfo_diff_data_anim.df         <-rbind(sinfo_diff_data_anim.df,sinfo_diff_data_anim_tmp.df)
-#	 }
+         sinfo_obs_anim[[k]]	<-list(stat_id=aqdat_anim.df$Stat_ID,lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Obs_Value,date=paste(aqdat_anim.df$Start_Date,aqdat_anim.df$Hour),network=network)
+         sinfo_mod_anim[[k]]	<-list(stat_id=aqdat_anim.df$Stat_ID,lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Value,date=paste(aqdat_anim.df$Start_Date,aqdat_anim.df$Hour),network=network)
+         sinfo_diff_anim[[k]]	<-list(stat_id=aqdat_anim.df$Stat_ID,lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Obs_Diff,date=paste(aqdat_anim.df$Start_Date,aqdat_anim.df$Hour),network=network)
          all_lats <- c(all_lats,aqdat.df$lat)
          all_lons <- c(all_lons,aqdat.df$lon)
          all_obs  <- c(all_obs,aqdat.df$Obs_Value)
@@ -210,7 +203,6 @@ for (j in 1:total_networks) {							# Loop through for each network
          all_diff <- c(all_diff,aqdat.df$Mod_Obs_Diff)
          all_rat  <- c(all_rat,aqdat.df$Mod_Obs_Rat)
          ##################################################
-#         sub_title<-paste(sub_title,symbols[k],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
          k <- k+1
       }
    }
@@ -219,6 +211,11 @@ for (j in 1:total_networks) {							# Loop through for each network
 ## plot format options ##
 #########################
 bounds<-c(min(all_lats,bounds[1]),max(all_lats,bounds[2]),min(all_lons,bounds[3]),max(all_lons,bounds[4]))
+xrange <- abs(bounds[4])-abs(bounds[3])
+x1 <- bounds[3]-0.85*xrange
+x2 <- bounds[3]-0.82*xrange
+x3 <- bounds[3]-0.85*xrange
+x4 <- bounds[3]-0.78*xrange
 plotsize<-1.50									# Set plot size
 symb<-15										# Set symbol character
 symbsiz<-1.1										# Set symbol size
@@ -247,90 +244,36 @@ intervals <- num_ints
       levs <- pretty(c(abs_range_min,abs_range_max),intervals,min.n=5)
    }
 }
-
-#levs_interval		<- (max(levs)-min(levs))/(length(levs)-1)
-#length_levs		<- length(levs)
-#levs_legend		<- c(levs,max(levs)+levs_interval)
-#leg_labels		<- levs
-#lev_lab 		<- levs
-#levs_max		<- length(levs)
-#leg_labels[levs_max]	<- paste("> ",max(levs),sep="")
-#leg_labels		<- c(leg_labels,"")
-#levs[levs_max+1] 	<- 10000		# set the level maximum to 1000 in order to include all values
-#colors 			<- NULL
-#colors			<- all_colors(levs_max)
-#leg_colors		<- colors
 ###########################################################################
 
 
 
 #################################################
-### Determine Color Scale for Difference Plot ###
-#################################################
-intervals <- num_ints
 {
    if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
       diff_max <- max(quantile(abs(all_diff),quantile_max))
-      levs_diff <- pretty(c(-diff_max,diff_max),intervals,min.n=5)
-      diff_range <- range(levs_diff)
-      power <- abs(levs_diff[1]) - abs(levs_diff[2])
-      if (abs(diff_range[1]) > diff_range[2]) {
-         diff_range[2] <- abs(diff_range[1])
-      }
-      else {
-         diff_range[1] <- -diff_range[2]
-      }
+      diff_min <- -diff_max
    }
    else {
-      levs_diff <- pretty(c(diff_range_min,diff_range_max),intervals,min.n=5)
-      power <- abs(levs_diff[1]) - abs(levs_diff[2])
-      diff_range <- range(levs_diff)
+      diff_max <- diff_range_max
+      diff_min <- diff_range_min
    }
-   levs_diff <- signif(round(seq(diff_range[1],diff_range[2],power),5),2)
 }
 #####################################################################
-
-for (k in 1:total_networks) {
-
-   sinfo_obs[[k]]<-list(lat=sinfo_obs_data[[k]]$lat,lon=sinfo_obs_data[[k]]$lon,plotval=sinfo_obs_data[[k]]$plotval)			# Create list to be used with PlotSpatial function
-   sinfo_mod[[k]]<-list(lat=sinfo_mod_data[[k]]$lat,lon=sinfo_mod_data[[k]]$lon,plotval=sinfo_mod_data[[k]]$plotval)			# Create model list to be used with PlotSpatial fuction
-   sinfo_diff[[k]]<-list(lat=sinfo_diff_data[[k]]$lat,lon=sinfo_diff_data[[k]]$lon,plotval=sinfo_diff_data[[k]]$plotval)	# Create diff list to be used with PlotSpatial fuction
-
-   sinfo_obs_anim[[k]]	<- list(lat=sinfo_obs_data_anim[[k]]$lat,lon=sinfo_obs_data_anim[[k]]$lon,plotval=sinfo_obs_data_anim[[k]]$plotval,date=sinfo_obs_data_anim[[k]]$date,network=sinfo_obs_data_anim[[k]]$network)
-   sinfo_mod_anim[[k]]	<- list(lat=sinfo_mod_data_anim[[k]]$lat,lon=sinfo_mod_data_anim[[k]]$lon,plotval=sinfo_mod_data_anim[[k]]$plotval,date=sinfo_mod_data_anim[[k]]$date,network=sinfo_mod_data_anim[[k]]$network)
-   sinfo_diff_anim[[k]]	<- list(lat=sinfo_diff_data_anim[[k]]$lat,lon=sinfo_diff_data_anim[[k]]$lon,plotval=sinfo_diff_data_anim[[k]]$plotval,date=sinfo_diff_data_anim[[k]]$date,network=sinfo_diff_data_anim[[k]]$network)
-}
-
-###########################
-### plot text options   ###
-###########################
-{
-   if (custom_title == "") {
-      title_obs<-paste("Observed ",species, " for run ",run_name1," for ", dates,sep="")			# Title for obs spatial plot
-      title_mod<-paste("Modeled ",species, " for run ",run_name1," for ", dates,sep="")				# Title for model spatial plot
-      title_diff<-paste("Modeled - Observed ",species, " for run ",run_name1," for ", dates,sep="")		# Title for diff spatial plot
-      title_rat<-paste("Modeled / Observed ",species, " for run ",run_name1," for ", dates,sep="")             # Title for diff spatial plot
-   }
-   else {
-      title_obs  <- custom_title
-      title_mod  <- custom_title
-      title_diff <- custom_title
-      title_rat <- custom_title
-   }
-}
-###########################
 
 ##############################################
 ## Create PNG and PDF plots for NMB and NME ##
 ##############################################
-
-for (i in 1:3) {
+plot_names <- c("Obs","Model","Difference")
+for (i in 1:3) { # Start ob, mod, diff plot loop
+   sub_title <- NULL
    if (i == 1) { 
       sinfo 		<- sinfo_obs
       sinfo_anim 	<- sinfo_obs_anim
       plot_range_min 	<- min(levs)
       plot_range_max 	<- max(levs)
-      filename_ggplot 	<- filename_obs
+      filename_pdf 	<- filename_obs_pdf
+      filename_png	<- filename_obs_png
       filename_anim	<- filename_obs_anim
       color_palette 	<- c("purple","violet","blue","green","yellow","orange","red","dark red") 
       color_direction 	<- -1
@@ -340,7 +283,8 @@ for (i in 1:3) {
       sinfo_anim 	<- sinfo_mod_anim
       plot_range_min 	<- min(levs)
       plot_range_max 	<- max(levs)
-      filename_ggplot 	<- filename_mod 
+      filename_pdf      <- filename_mod_pdf
+      filename_png      <- filename_mod_png
       filename_anim	<- filename_mod_anim
       color_palette 	<- c("purple","violet","blue","green","yellow","orange","red","dark red")
       color_direction 	<- -1
@@ -348,37 +292,41 @@ for (i in 1:3) {
    if (i == 3) { 
       sinfo 		<- sinfo_diff
       sinfo_anim 	<- sinfo_diff_anim
-      plot_range_min 	<- -diff_max
+      plot_range_min 	<- diff_min 
       plot_range_max 	<- diff_max
-      filename_ggplot	<- filename_diff
+      filename_pdf      <- filename_diff_pdf
+      filename_png      <- filename_diff_png
       filename_anim	<- filename_diff_anim
       color_palette 	<- c("dark red","red","orange","yellow","white","green","blue","violet","purple")
       color_direction 	<- 1
    } 
-#   filename_ggplot <- paste(figure,"_new.pdf",sep="")
    for (k in 1:total_networks) {
       library(sf)
       library(maps)
-      us <- map_data("state")
-      us2 <- st_as_sf(us,coords=c("long","lat"))
+      us_state 	<- map_data("state")
+      us_county <- map_data("county") 
+      canada 	<- map_data("worldHires", "Canada")
+      mexico 	<- map_data("worldHires", "Mexico")
+      world	<- map_data("world")
+      world	<- st_as_sf(world,coords=c("long","lat"))
       plot_data <- data.frame(lat=sinfo[[k]]$lat,lon=sinfo[[k]]$lon,plotval=sinfo[[k]]$plotval)
       if (k == 1) {
-         sp <- ggplot(data=us2) +
-#         geom_sf() +
-         geom_polygon(data=us, aes(x=long, y=lat, group=group), color="darkblue", fill="white", linewidth = .1 ) +
+         sub_title <- paste(network_names[k],": ",symbols[k],sep="")
+	 network_symbols <- spch[k]
+         sp <- ggplot(data=world) + theme(panel.background=element_rect(fill="dodgerblue",color="dodgerblue"),panel.grid.major=element_line(color="dodgerblue"),panel.grid.minor=element_line(color="dodgerblue")) 
+         if (inc_counties == 'y') {
+            sp <- sp + geom_polygon(data=us_county, aes(x=long, y=lat, group=group), fill='white', color="lightblue", linewidth = .01 ) +
+	    geom_polygon(data=us_state, aes(x=long, y=lat, group=group), color="darkblue", fill=NA, linewidth = .1 )
+         }
+	 else {
+	    sp <- sp + geom_polygon(data=us_state, aes(x=long, y=lat, group=group), color="darkblue", fill='white', linewidth = .1 ) 
+	 }
+	 sp <- sp + geom_polygon(data=canada, aes(x=long, y=lat, group=group), color="darkblue", fill="white", linewidth = .1 ) +
+	 geom_polygon(data=mexico, aes(x=long, y=lat, group=group), color="darkblue", fill="white", linewidth = .1 ) +
+	 coord_fixed(xlim = c(bounds[3], bounds[4]),  ylim = c(bounds[1], bounds[2]), ratio = 1.3, clip="on") +
          geom_point(data = plot_data, shape=spch[k], aes(x=lon, y=lat, col = plotval),size=4) +
          geom_point(data = plot_data, shape=spch2[k] ,size=4,color="black",aes(x=lon,y=lat)) + 
-#         scale_color_distiller(palette=color_palette,direction=color_direction,limits=c(plot_range_min,plot_range_max)) +
-         theme(axis.text=element_text(size=10), legend.text=element_text(size=15), legend.key.size = unit(1.3,"cm")) +
-         xlab('Longitude') + ylab('Latitude')
-         sp_anim <- ggplot(data=us2) +
-         geom_polygon(data=us, aes(x=long, y=lat, group=group), color="darkblue", fill="white", linewidth = .1 ) +
-         geom_point(data = plot_data, shape=spch[k], aes(x=lon, y=lat, col = plotval, frame=date),size=4) +
-         geom_point(data = plot_data, shape=spch2[k] ,size=4,color="black",aes(x=lon,y=lat)) +
-#         scale_color_distiller(palette=color_palette,direction=color_direction,limits=c(plot_range_min,plot_range_max)) +
-#	 scale_color_gradientn(colors=c(color_palette),limits=c(plot_range_min,plot_range_max)) +
-         theme(axis.text=element_text(size=10), legend.text=element_text(size=15), legend.key.size = unit(1.3,"cm")) +
-         xlab('Longitude') + ylab('Latitude')
+         theme(plot.title=element_text(hjust=0.5),plot.subtitle=element_text(hjust=0.5),axis.text=element_text(size=10), legend.text=element_text(size=15), legend.key.size = unit(1.3,"cm")) 
          if (i < 3) {
             sp <- sp + scale_color_gradientn(colors=color_palette,limits=c(plot_range_min,plot_range_max))
          }
@@ -387,31 +335,47 @@ for (i in 1:3) {
          }
       }
       else {
+	  sub_title <- paste(sub_title,"; ",network_names[k],": ",symbols[k],sep="")
+	  network_symbols <- c(network_symbols,spch[k])
           sp <- sp +
           geom_point(data = plot_data, shape=spch[k], aes(lon, lat, col = plotval),size=4) +
           geom_point(data = plot_data, shape=spch2[k], size=4,color="black",aes(x=lon,y=lat))
       }
-   }
-   ggsave(filename=filename_ggplot,width=16,height=9)
+      sp <- sp + xlab('Longitude') + ylab('Latitude') + labs(title=title,subtitle=sub_title,color=paste0(species," (",units,")\n",plot_names[i]))
+   } # End network loop
+   ggsave(filename=filename_pdf,width=16,height=9)	# Save PDF version
+   ggsave(filename=filename_png,width=16,height=9)	# Save PNG verison
+
+   ######################################
+   ### Create time animated html plot ###
+   ######################################
    for (k in 1:total_networks) {
-      plot_data_anim <- data.frame(lat=sinfo_anim[[k]]$lat,lon=sinfo_anim[[k]]$lon,plotval=sinfo_anim[[k]]$plotval,date=sinfo_anim[[k]]$date)
+      plot_data_anim <- data.frame(stat_id=sinfo_anim[[k]]$stat_id,lat=sinfo_anim[[k]]$lat,lon=sinfo_anim[[k]]$lon,plotval=sinfo_anim[[k]]$plotval,date=sinfo_anim[[k]]$date)
       if (k == 1) {
-         sp_anim <- ggplot(data=us2) +
-         geom_polygon(data=us, aes(x=long, y=lat, group=group), color="darkblue", fill="white", linewidth = .1 ) +
-         geom_point(data = plot_data_anim, shape=spch[k], aes(x=lon, y=lat, col = plotval, frame=(date), group=date), size=5) +
+         sp_anim <- ggplot(data=world) + theme(panel.background=element_rect(fill="dodgerblue",color="dodgerblue"),panel.grid.major=element_line(color="dodgerblue"),panel.grid.minor=element_line(color="dodgerblue")) 
+         if (inc_counties == 'y') {
+            sp_anim <- sp_anim + geom_polygon(data=us_county, aes(x=long, y=lat, group=group), fill='white', color='darkblue', linewidth = .03 ) + 
+            geom_polygon(data=us_state, aes(x=long, y=lat, group=group), color='darkblue', fill=NA, linewidth = .1 )
+         }
+         else {
+            sp_anim <- sp_anim + geom_polygon(data=us_state, aes(x=long, y=lat, group=group), color="darkblue", fill='white', linewidth = .1 )
+         }
+         sp_anim <- sp_anim + geom_polygon(data=canada, aes(x=long, y=lat, group=group), color="darkblue", fill="white", linewidth = .1 ) +
+         geom_polygon(data=mexico, aes(x=long, y=lat, group=group), color="darkblue", fill="white", linewidth = .1 ) +
+         coord_fixed(xlim = c(bounds[3], bounds[4]),  ylim = c(bounds[1], bounds[2]), ratio = 1.3) +
+	 geom_point(data = plot_data_anim, shape=spch[k], aes(x=lon, y=lat, col = plotval, frame=(date), group=date), size=5) +
          geom_point(data = plot_data_anim, shape=spch2[k] ,size=5,color="black",aes(x=lon,y=lat,frame=(date), group=date)) +
          scale_color_gradientn(colors=color_palette,limits=c(plot_range_min,plot_range_max)) +
-         theme(axis.text=element_text(size=10), legend.text=element_text(size=15), legend.key.size = unit(1.3,"cm")) +
-         xlab('Longitude') + ylab('Latitude') + labs(title=title,color=paste(species,"(",units,")"))
+         theme(plot.title=element_text(hjust=0.5),plot.subtitle=element_text(hjust=0.5),axis.text=element_text(size=10), legend.text=element_text(size=15), legend.key.size = unit(1.3,"cm")) +
+         xlab('Longitude') + ylab('Latitude') + labs(color=paste0(species,"(",units,")\n",plot_names[i]))
       }
       else {
          sp_anim <- sp_anim +
          geom_point(data = plot_data_anim, shape=spch[k], aes(x=lon, y=lat, col = plotval, frame=(date), group=date), size=5) +
          geom_point(data = plot_data_anim, shape=spch2[k] ,size=5,color="black",aes(x=lon,y=lat,frame=(date), group=date))
       }
-      fig <- ggplotly(sp_anim) %>% animation_opts(transition=0,easing="elastic",redraw=FALSE)
-      saveWidget(fig, file=filename_anim,selfcontained=T)
-   }
-}
-
+   } # End network loop
+   fig <- ggplotly(sp_anim,tooltip=c("lat","lon","date","plotval")) %>% animation_opts(transition=0,easing="elastic",redraw=FALSE) %>% layout(title=list(text=paste0(title,'<br>',sub_title),y=0.98))
+   saveWidget(fig, file=filename_anim,selfcontained=T)
+} # End ob, mod, diff plot loop
 #########################################   
