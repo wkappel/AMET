@@ -78,6 +78,8 @@ AMET also requires the following additional R packages:
 * dygraphs
 * fields
 * ggplot2
+* grid
+* gridExtra
 * htmltools
 * htmlwidgets
 * lattice

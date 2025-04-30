@@ -195,25 +195,40 @@ The instructions above create an AMET superuser of sorts, in that the ametsecure
 
 After you have installed the basic R software, AMET also requires the following additional R packages:
 
-* RMySQL
+* akima
+* data.table
 * date
+* dplyr
+* dygraphs
+* fields
+* ggplot2
+* grid
+* gridExtra
+* htmltools
+* htmlwidgets
+* lattice
+* latticeExtra
+* leaflet (optional for some analysis scripts)
+* leaflet.extras (optional for some analysis scripts)
+* leafpop
+* lubridate
 * maps
 * mapdata
-* stats
+* plotly
 * plotrix
-* fields
-* akima
-* leaflet
-* prism
-* rgdal
-* htmlwidgets
-* dygraphs
+* processx
+* reshape2
+* RColorBrewer
+* RMySQL
+* stats
+* webshot
+* xts
 
 The easiest way to install R packages, is through the R package manager.  Once R is installed, use the following commands to install these packages (note that the ">" denotes the Linux command prompt):
 
 ```
 > sudo R
-> install.packages(c("RMySQL", "date", "maps", "mapdata","plotrix", "fields","akima","leaflet","prism", "rgdal","dygraphs"))
+> install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer",RMySQ","stats","webshot","xts"))
 ```
 
 If you do not have root access or are runnning on a shared system, you can load the packages as follows:
@@ -466,7 +481,7 @@ Meteorology observational data are installed under **$AMETBASE/obs/MET**.
 #### Air quality data
 (35 GB uncompressed; 30 GB compressed)
 
-Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.6_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2011 00:00 UTC to July 31 2011 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2011 and sample AMET analysis plots.
+Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.6_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2018 00:00 UTC to July 31 2018 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2011 and sample AMET analysis plots.
 
 After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample** will contain the following files.
 
@@ -478,7 +493,7 @@ After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample
 
 ```
 Download the Air Quality Observational data from the Google Drive CMAS Data Warehouse > AMET > v1.6_example > 2000_2024_NAmerican_AQ_Obs_Data
-for 2016, download the AMET_obsdata_2016.tar.gz file and extract to the $AMETBASE/obs/AQ/All_Years directory.
+for 2018, download the AMET_obsdata_2018.tar.gz file and extract to the $AMETBASE/obs/AQ/All_Years directory.
 
 Air quality observational data for the following networks are available in **$AMETBASE/obs/AQ/All_Years :
 

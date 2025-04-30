@@ -4,11 +4,13 @@ header <- "
 ###
 ### This script is part of the AMET-AQ system.  It plots an interactive timeseries plot using
 ### the R plotly package.  The script can accept multiple sites, as they will be time averaged
-### and correlation. A self-contained html file is created using the saveWidget command from
-### the R htmlwidgets package and PANDOC. If PANDOC is not available, the selfcontained option
-### should be set to F. Output format is html.
+### and correlation. The script can also except multiple species from different works, in which
+### case each species will be plotted as a separate time series. Multiple time series will
+### appear tiled on a single plot. A self-contained html file is created using the saveWidget 
+### command from the R htmlwidgets package and PANDOC. If PANDOC is not available, the 
+### selfcontained option should be set to F. Output format is html.
 ###
-### Last updated by Wyat Appel: 03/2025
+### Last updated by Wyat Appel: Apr 2025
 ############################################################################################
 "
 
@@ -25,7 +27,6 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
-
 ### Retrieve units label from database table ###
 network <- network_names[1]
 ################################################
@@ -33,11 +34,11 @@ network <- network_names[1]
 ### Set file names ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
-filename_html   <- paste(run_name1,species,pid,"timeseries.html",sep="_")              # Set output file name
+filename_html   <- paste(run_name1,species[1],pid,"timeseries.html",sep="_")              # Set output file name
 filename_html   <- paste(figdir,filename_html,sep="/")
-filename_png    <- paste(run_name1,species,pid,"timeseries.png",sep="_")              # Set output file name
+filename_png    <- paste(run_name1,species[1],pid,"timeseries.png",sep="_")              # Set output file name
 filename_png    <- paste(figdir,filename_png,sep="/")
-filename_txt	<- paste(run_name1,species,pid,"timeseries.csv",sep="_")
+filename_txt	<- paste(run_name1,species[1],pid,"timeseries.csv",sep="_")
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 
 #######################
@@ -62,6 +63,7 @@ x_label		<- "Date"
 num_sites	<- NULL
 Num_Sites	<- NULL
 Num_Records	<- NULL
+fig		<- NULL
 #######################
 
 labels <- c(network,run_names)
@@ -69,9 +71,25 @@ num_runs <- length(run_names)
 #if (common_sites == "T") {
 #   sites <- find_common_sites(run_names,network,species)
 #}
+###############################################
+### Deal with multiple networks and species ###
+criteria_in <- "Default"
+if (length(network_names) > 1) {
+  network_query <- paste("(d.network='",network_names[1],"'",sep="")
+  for (i in 2:length(network_names)) {
+     network_query <- paste(network_query," or d.network='",network_names[i],"'",sep="")
+  }
+  network_query	 <- paste(network_query,")",sep="")
+  criteria_in	 <- paste(" WHERE",network_query,query,sep=" ")
+}
+###############################################
 
-for (j in 1:num_runs) {	# For each simulation being plotted
+for (k in 1:length(species)) {
+ for (j in 1:num_runs) {	# For each simulation being plotted
    run_name <- run_names[j]
+   if (length(network_names) > 1) {
+      units_qs <- paste("SELECT ",species[k]," from project_units as d where proj_code = '",run_name,"' and ",network_query, sep="")
+   }
    #############################################
    ### Read sitex file or query the database ###
    #############################################
@@ -79,33 +97,37 @@ for (j in 1:num_runs) {	# For each simulation being plotted
       if (Sys.getenv("AMET_DB") == 'F') {
          outdir           <- "OUTDIR" 
          if (j >1) { outdir <- paste("OUTDIR",j,sep="") }
-         sitex_info       <- read_sitex(Sys.getenv(outdir),network,run_name,species)
+         sitex_info       <- read_sitex(Sys.getenv(outdir),network,run_name,species[k])
          aqdat_query.df   <- sitex_info$sitex_data
          data_exists	  <- sitex_info$data_exists
          if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
       }
       else {
-         query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
+         query_result    <- query_dbase(run_name,network,criteria=criteria_in,species[k],orderby=c("ob_dates","ob_hour"))
          aqdat_query.df  <- query_result[[1]]
          data_exists     <- query_result[[2]]
          if (data_exists == "y") { units <- query_result[[3]] }
          model_name      <- query_result[[4]]
+	 if (is.na(units)) { units <- "NA" }
       }
    }
-   ob_col_name <- paste(species,"_ob",sep="")
-   mod_col_name <- paste(species,"_mod",sep="")
+   ob_col_name <- paste(species[k],"_ob",sep="")
+   mod_col_name <- paste(species[k],"_mod",sep="")
    #############################################
-#   print(names(aqdat_query.df))
    {
+   aqdat_query.df <- na.omit(aqdat_query.df)
    if (data_exists == "n") {
       All_Data.df <- merge(All_Data.df,paste("No Data for ",run_name,sep=""))
-      num_runs <- (num_runs-1)
-      if (num_runs == 0) { stop("Stopping because num_runs is zero. Likely no data found for query.") }
+      print("GOT HERE")
+#      num_runs <- (num_runs-1)
+#      if (num_runs == 0) { stop("Stopping because num_runs is zero. Likely no data found for query.") }
    }
    else {
+   unique_networks <- unique(aqdat_query.df$network)
+   network <- paste(unique_networks,collapse=",")
    aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Hour=aqdat_query.df$ob_hour,Start_Date=I(aqdat_query.df$ob_dates),End_Date=I(aqdat_query.df$ob_datee),Month=aqdat_query.df$month)
 
-   Date_Hour            <- paste(aqdat.df$Start_Date," ",aqdat.df$Hour,sep="") # Create unique Date/Hour field
+   Date_Hour            <- paste(aqdat.df$Start_Date," ",aqdat.df$Hour,":00:00",sep="") # Create unique Date/Hour field
    aqdat.df$Date_Hour   <- Date_Hour                                                    # Add Date_Hour field to dataframe
    if (obs_per_day_limit > 0) {
       num_obs_value <- tapply(aqdat.df$Obs_Value,aqdat.df$Date_Hour,function(x)sum(!is.na(x)))
@@ -221,8 +243,6 @@ for (j in 1:num_runs) {	# For each simulation being plotted
       Corr_Mean[[j]]       <- by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)) # Captures both spatial and temporal correlation
       RMSE_Mean[[j]]       <- (by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))/s
       Dates[[j]]           <- as.POSIXct(unique(aqdat.df$Start_Date),tz=tz,origin="1970-01-01")
-      print(tz)
-      print(Dates)
    }
    if (averaging == "h") {
       years                <- substr(aqdat.df$Start_Date,1,4)
@@ -237,8 +257,6 @@ for (j in 1:num_runs) {	# For each simulation being plotted
       Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
       Corr_Mean[[j]]       <- by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Hour,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)) # Captures both spatial and temporal correlation
       RMSE_Mean[[j]]       <- (by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Hour,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))/s
-#      Dates[[j]]           <- unique(aqdat.df$Hour)
-#      Dates[[j]]           <- as.POSIXct(paste(years[1],"-",months[1],"-",days[1]," ",unique(aqdat.df$Hour),":00:00",sep=""),origin="1970-01-01")
       Dates[[j]]           <- unique(aqdat.df$Hour)
       x_label		   <- past("Hour (",TIME_FORMAT,")")
    }
@@ -335,34 +353,49 @@ write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # W
       }
    }
    if ((state != "All") && (custom_title == "")) {
-      main.title      <- paste(run_name1,species,"for",network,"State:",state,sep=" ")
+#      main.title      <- paste(run_name1,species,"for",network,"State:",aqdat_query.df$state[1],sep=" ")
+#      state <- paste(state,collapse=" ")
+      main.title      <- paste(run_name1,species[k],"for",network,"State:",state,sep=" ")
    }
    if ((site != "All") && (custom_title == "")) {
-      main.title      <- paste(run_name1,species,"for",network,"Site:",site,"in",aqdat_query.df$county[1],",",aqdat_query.df$state[1],sep=" ")
+      main.title      <- paste(run_name1,species[k],"for",network,"Site:",site,"in",aqdat_query.df$county[1],",",aqdat_query.df$state[1],sep=" ")
    }
-   main.title <- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
+   main.title <- get_title(run_names,species[k],network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
 ##################
+#pal <- c("gray",brewer.pal(12,"Paired"))
+#colors <- brewer.pal(12,"Paired")
 colors <- c(brewer.pal(9,"Set1"),brewer.pal(8,"Dark2"),brewer.pal(9,"Set1"))
+#colors <- c("firebrick","blue","green","yellow4","orange","brown","purple")
+#colors[6] <- "#CCCC00"
 colors[colors=="#FFFF33"] <- "#8B8000"	# Replace vivid yellow with dark yellow
 
 inc_nmb <- "n"
 inc_nme <- "n"
 
-data.df <- unique(data.df)	# Eliminate duplicate rows in the obs data frame
+### Compute the average of the obs data by date. This really should do nothing expect in cases where the obs values differ,
+### which should not normally happen but can if the input obs data have changed between two simulations. ###
+data.df <- aggregate(data.df$Obs, list(data.df$Dates), mean)
+colnames(data.df) <- c("Dates","Obs")
+####################################################################################################################
 
-xaxis <- list(title= x_label, automargin = TRUE,font=list(size=10),tickfont=list(size=20))
-yaxis <- list(title=paste(species," (",units,")"),automargin=TRUE,font=list(size=10),tickfont=list(size=20))
-if (inc_corr == 'y') { yaxis <- list(title=paste(species," (",units,") / Correlation"),automargin=TRUE,font=list(size=30),tickfont=list(size=20)) }
+xaxis <- list(title= x_label, automargin = TRUE,font=list(size=10),tickfont=list(size=20),gridcolor='white')
+yaxis <- list(title=paste(species[k]," (",units,")"),automargin=TRUE,font=list(size=10),tickfont=list(size=20),gridcolor='white')
+if (length(species) == 1) {
+   xaxis <- list(title= x_label, automargin = TRUE,font=list(size=10),tickfont=list(size=20),rangeselector = list(buttons=list(list(count=1,label="1 mo",step="month",stepmode="backward"),list(count=3,label="3 mo",step="month",stepmode="backward"),list(count=6,label="6 mo",step="month",stepmode = "backward"),list(count = 1,label="1 yr",step="year",stepmode="backward"),list(step="all"))),rangeslider = list(type="date"),gridcolor='white')
+yaxis <- list(title=paste(species[k]," (",units,")"),automargin=TRUE,font=list(size=10),tickfont=list(size=20),gridcolor='white')
+}
+if (inc_corr == 'y') { yaxis <- list(title=paste(species[k]," (",units,") / Correlation"),automargin=TRUE,font=list(size=30),tickfont=list(size=20)) }
 
-p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color='black'), marker=list(symbol='circle',color='black',size=10), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
+p <- plot_ly(data.df, x=~as.POSIXct(Dates,tz="EST"), y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color='black'), marker=list(symbol='circle',color='black',size=10), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
+#p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', color=I('black'), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
      layout(title=main.title,font=list(size=15),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5)),margin=list(t=50,b=110)) %>%
-     layout(annotations=list(x=Dates[[j]],y=~Obs,text=network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE))
+     layout(annotations=list(x=Dates[[j]],y=~Obs,text=network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE),plot_bgcolor='#e5ecf6')
 
 for (j in 1:num_runs) {
-   p <- add_trace(p, x=Dates[[j]], y=Mod_Mean[[j]], type="scatter", name=paste(run_names[j]," (# Sites: ",num_sites[j],")",sep=""),mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='circle',color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Model value: ",round(Mod_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+   p <- add_trace(p, x=as.POSIXct(Dates[[j]],tz="EST"), y=Mod_Mean[[j]], type="scatter", name=paste(run_names[j]," (# Sites: ",num_sites[j],")",sep=""),mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='circle',color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Model value: ",round(Mod_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
         layout(annotations = list(x=Dates[[j]],y=Mod_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
    if (inc_bias == 'y') {
-      p <- add_trace(p, x=Dates[[j]], y=Bias_Mean[[j]], type="scatter", name=paste(run_names[j]," (Bias)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='square-open', color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Bias: ",round(Bias_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+      p <- add_trace(p, x=as.POSIXct(Dates[[j]],tz="EST"), y=Bias_Mean[[j]], type="scatter", name=paste(run_names[j]," (Bias)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='square-open', color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Bias: ",round(Bias_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
            layout(annotations = list(x=Dates[[j]],y=Bias_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
    }
    if (inc_rmse == 'y') {
@@ -382,6 +415,9 @@ for (j in 1:num_runs) {
            layout(annotations = list(x=Dates[[j]],y=NME_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
    }
 }
-
-saveWidget(p, file=filename_html,selfcontained=T)
+fig[[k]] <- p
+}
+num_rows <- c(1,2,2,2,3,3,4,4,5,5)
+fig_out <- subplot(fig,nrows=num_rows[k],titleY=T,titleX=T)
+saveWidget(fig_out, file=filename_html,selfcontained=T)
 

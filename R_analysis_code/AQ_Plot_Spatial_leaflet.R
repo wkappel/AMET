@@ -38,7 +38,6 @@ if(!exists("popup_ts")) { popup_ts <- "n" }
 
 ### Retrieve units label from database table ###
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-#units_qs	<- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="") # Create MYSQL query from units table
 ################################################
 
 filename     <- NULL
