@@ -281,12 +281,12 @@ write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # W
 
 data.df <- data.frame(Dates=Dates[[1]],Obs=Obs_Mean[[1]])
 
-xaxis <- list(title= x_label, automargin = TRUE,titlefont=list(size=30))
-yaxis <- list(title=paste("(",units,")"),automargin=TRUE,titlefont=list(size=30))
+xaxis <- list(title= x_label, automargin = TRUE,titlefont=list(size=30),rangeselector = list(buttons=list(list(count=3,label="3 mo",step="month",stepmode="backward"),list(count=6,label="6 mo",step="month",stepmode="backward"),list(count=1,label="1 yr",step="year",stepmode = "backward"),list(count = 1,label="YTD",step="year",stepmode="todate"),list(step="all"))),rangeslider = list(type="date"),gridcolor='white')
+yaxis <- list(title=paste("(",units,")"),automargin=TRUE,titlefont=list(size=30),gridcolor='white')
 
 #p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", mode='lines', name=network[1], text=~paste("Name: ",network[1],"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
 p <- plot_ly(type="scatter", mode='lines+markers', height=img_height, width=img_width) %>%
-  layout(title=main.title,titlefont=list(size=25),xaxis=xaxis,yaxis=yaxis,margin=list(t=50,b=110))
+  layout(title=main.title,titlefont=list(size=25),xaxis=xaxis,yaxis=yaxis,margin=list(t=50,b=110),plot_bgcolor='#e5ecf6')
 #     p <- add_trace(p, x=~Dates, y=Mod_Mean[[j]], type="scatter", name=run_names[1],mode='lines', text=paste("Name: ",run_names[1],"<br>Date: ",Dates[[j]],"<br>Model value: ",round(Mod_Mean[[j]],3)))   
 
 colors <- brewer.pal(12,"Set1")
@@ -311,14 +311,5 @@ for (j in 1:length(species_in)) {
       layout(annotations = list(x=Dates[[j]],y=Corr_Mean[[j]],text=paste("Correlation (",species_in[j],")"),xanchor='left',yanchor='middle',showarrow=FALSE,clicktoshow='onoff',visible=FALSE))
    }
 }
-
-#On Newton:
-#saveWidget(plot.ts, file="/home/kfoley/LINKS/tools/Rcode/dygraphs/sitecompare_time_series_example_on_newton.html",selfcontained=F)
 saveWidget(p, file=filename_html,selfcontained=T)
 
-#On windows:
-#saveWidget(plot.ts, file="B:/LINKS/tools/Rcode/dygraphs/sitecompare_time_series_example_selfcontained.html",selfcontained=T)
-
-#delete_command <- paste("sed -i '1,3d;12,13d' ",filename_html,sep="")
-
-#system(delete_command)

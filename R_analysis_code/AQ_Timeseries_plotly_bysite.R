@@ -364,35 +364,35 @@ for (site_n in 1:length(sites)) {
    #data_temp.df <- data.frame(Dates=Dates,Obs=Obs_Mean)
    data.df <- unique(data.df)	# Eliminate duplicate rows in the obs data frame
 
-   xaxis <- list(title= x_label, automargin = TRUE,titlefont=list(size=30),tickfont=list(size=20))
-   yaxis <- list(title=paste(species," (",units,")"),automargin=TRUE,titlefont=list(size=30),tickfont=list(size=20))
+   xaxis <- list(title= x_label, automargin = TRUE,titlefont=list(size=30),tickfont=list(size=20),rangeselector = list(buttons=list(list(count=3,label="3 mo",step="month",stepmode="backward"),list(count=6,label="6 mo",step="month",stepmode="backward"),list(count=1,label="1 yr",step="year",stepmode = "backward"),list(count = 1,label="YTD",step="year",stepmode="todate"),list(step="all"))),rangeslider = list(type="date"),gridcolor='white')
+   yaxis <- list(title=paste(species," (",units,")"),automargin=TRUE,titlefont=list(size=30),tickfont=list(size=20),gridcolor='white')
    if (inc_corr == 'y') { yaxis <- list(title=paste(species," (",units,") / Correlation"),automargin=TRUE,titlefont=list(size=30),tickfont=list(size=20)) }
 
-   p <- plot_ly(data.df, x=~Dates, y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color='black'), marker=list(symbol='circle',color='black',size=10), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
+   p <- plot_ly(data.df, x=~as.POSIXct(Dates), y=~Obs, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color='black'), marker=list(symbol='circle',color='black',size=10), name=network, text=~paste("Name: ",network,"<br>Date: ",Dates,"<br>Obs value: ",round(Obs,3))) %>%
      layout(title=main.title,titlefont=list(size=25),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5)),margin=list(t=50,b=110)) %>%
-     layout(annotations=list(x=Dates[[j]],y=~Obs,text=network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE))
+     layout(annotations=list(x=Dates[[j]],y=~Obs,text=network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE),plot_bgcolor='#e5ecf6')
 
    for (j in 1:num_runs) {
-      p <- add_trace(p, x=Dates[[j]], y=Mod_Mean[[j]], type="scatter", name=paste(run_names[j]," (# Sites: ",num_sites[j],")",sep=""),mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='circle',color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Model value: ",round(Mod_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+      p <- add_trace(p, x=as.POSIXct(Dates[[j]]), y=Mod_Mean[[j]], type="scatter", name=paste(run_names[j]," (# Sites: ",num_sites[j],")",sep=""),mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='circle',color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Model value: ",round(Mod_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
         layout(annotations = list(x=Dates[[j]],y=Mod_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
       if (inc_bias == 'y') {
-         p <- add_trace(p, x=Dates[[j]], y=Bias_Mean[[j]], type="scatter", name=paste(run_names[j]," (Bias)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='square-open', color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Bias: ",round(Bias_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+         p <- add_trace(p, x=as.POSIXct(Dates[[j]]), y=Bias_Mean[[j]], type="scatter", name=paste(run_names[j]," (Bias)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='square-open', color=colors[j]), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Bias: ",round(Bias_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
            layout(annotations = list(x=Dates[[j]],y=Bias_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
       }
       if (inc_rmse == 'y') {
-         p <- add_trace(p, x=Dates[[j]], y=RMSE_Mean[[j]], type="scatter", name=paste(run_names[j]," (RMSE)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='diamond-open',color=colors[j],size=11), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>RMSE value: ",round(RMSE_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+         p <- add_trace(p, x=as.POSIXct(Dates[[j]]), y=RMSE_Mean[[j]], type="scatter", name=paste(run_names[j]," (RMSE)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='diamond-open',color=colors[j],size=11), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>RMSE value: ",round(RMSE_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
            layout(annotations = list(x=Dates[[j]],y=RMSE_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
       }
       if (inc_corr == 'y') {
-         p <- add_trace(p, x=Dates[[j]], y=Corr_Mean[[j]], type="scatter", name=paste(run_names[j]," (r)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='hexagram-open',color=colors[j],size=10), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Correlation value: ",round(Corr_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+         p <- add_trace(p, x=as.POSIXct(Dates[[j]]), y=Corr_Mean[[j]], type="scatter", name=paste(run_names[j]," (r)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='hexagram-open',color=colors[j],size=10), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>Correlation value: ",round(Corr_Mean[[j]],3), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
            layout(annotations = list(x=Dates[[j]],y=Corr_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
       }
       if (inc_nmb == 'y') {
-         p <- add_trace(p, x=Dates[[j]], y=NMB_Mean[[j]], type="scatter", name=paste(run_names[j]," (NMB %)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='hexagon-open',color=colors[j],size=10), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>NMB value (%): ",round(NMB_Mean[[j]],1), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+         p <- add_trace(p, x=as.POSIXct(Dates[[j]]), y=NMB_Mean[[j]], type="scatter", name=paste(run_names[j]," (NMB %)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='hexagon-open',color=colors[j],size=10), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>NMB value (%): ",round(NMB_Mean[[j]],1), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
            layout(annotations = list(x=Dates[[j]],y=NMB_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
       }
       if (inc_nme == 'y') {
-         p <- add_trace(p, x=Dates[[j]], y=NME_Mean[[j]], type="scatter", name=paste(run_names[j]," (NME %)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='x-open',color=colors[j],size=10), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>NME value (%): ",round(NME_Mean[[j]],1), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
+         p <- add_trace(p, x=as.POSIXct(Dates[[j]]), y=NME_Mean[[j]], type="scatter", name=paste(run_names[j]," (NME %)"), mode='lines+markers', line = list(color=colors[j]), marker=list(symbol='x-open',color=colors[j],size=10), text=paste("Name: ",run_names[j],"<br>Date: ",Dates[[j]],"<br>NME value (%): ",round(NME_Mean[[j]],1), "<br># of Sites: ",Num_Sites[[j]], "<br># of Records: ",Num_Records[[j]])) %>%
            layout(annotations = list(x=Dates[[j]],y=NME_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
       }
    }
