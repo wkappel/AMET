@@ -195,19 +195,34 @@ The instructions above create an AMET superuser of sorts, in that the ametsecure
 
 After you have installed the basic R software, AMET also requires the following additional R packages:
 
-* RMySQL
+* akima
+* data.table
 * date
+* dplyr
+* dygraphs
+* fields
+* ggplot2
+* grid
+* gridExtra
+* htmltools
+* htmlwidgets
+* lattice
+* latticeExtra
+* leaflet (optional for some analysis scripts)
+* leaflet.extras (optional for some analysis scripts)
+* leafpop
+* lubridate
 * maps
 * mapdata
-* stats
+* plotly
 * plotrix
-* fields
-* akima
-* leaflet
-* prism
-* rgdal
-* htmlwidgets
-* dygraphs
+* processx
+* reshape2
+* RColorBrewer
+* RMySQL
+* stats
+* webshot
+* xts
 
 The easiest way to install R packages, is through the R package manager.  Once R is installed, use the following commands to install these packages (note that the ">" denotes the Linux command prompt):
 
