@@ -135,7 +135,7 @@ Tier 2 software includes scientific software utilities for accessing and storing
 
 -	**Download the most recent MariaDB binary distribution from this URL to any directory as non-root user
     - https://mariadb.org/download/
-        ** Select latest stable version, example MariaDB Server 11.4.5
+    - ** Select latest stable version, example MariaDB Server 11.4.5
 -	**[Follow these instructions to install as non-root user to any directory](https://mariadb.com/kb/en/installing-mariadb-binary-tarballs/#installing-mariadb-as-not-root-in-any-directory)
     -  ** edit the ~/.my.cnf file to specify the basedir and  to your install directory
 
