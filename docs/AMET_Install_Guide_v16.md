@@ -67,7 +67,7 @@ To download a zip archive of the software, click the "Clone or Download" button 
 
 To clone the AMET installation directory to a Linux server, use the following command:
 
-``git clone -b master https://github.com/USEPA/AMET.git AMET_v15``
+``git clone -b 1.6 https://github.com/USEPA/AMET.git AMET_v16``
 
 Note that this command assumes that git is installed on the Linux system.
 
@@ -127,14 +127,15 @@ Tier 2 software includes scientific software utilities for accessing and storing
 
 *Notes*:
 * Install both the MySQL/MariaDB server and client. At a minimum, the MySQL/MariaDB client must be on the same machine that will host the AMET scripts. The MySQL/MariaDB server can either be installed on the AMET host or an a remote host.
-* MySQL/MariaDB development files (include files and libraries), such as **mysql.h** and **libmysqlclient.so.15**, are needed on the system that will run AMET.
+* MySQL/MariaDB development files (include files and libraries), such as **mysql.h** and **libmysqlclient.so**, are needed on the system that will run AMET.
 * If MySQL/MariaDB server is installed on a remote host, the server permissions will need to be granted to support accessing the database from the AMET local host.
 * There are different ways to configure MySQL for use with AMET. In the example below, a single database user, **ametsecure**, is created with root access to the database. This user is given full privileges to read-write to the database. This user would then be able to load data into the database and create plots. As write access to the database is only needed to load data into the system and not to create plots, additional users with only read access could be created, if needed.
 
 ### Installation of MariaDB from tarball
 
 -	**Download the most recent MariaDB binary distribution from this URL to any directory as non-root user
-    - https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.6.7&os=Linux&cpu=x86_64&pkg=tar_gz&i=systemd&m=gigenet
+    - https://mariadb.org/download/
+        ** Select latest stable version, example MariaDB Server 11.4.5
 -	**[Follow these instructions to install as non-root user to any directory](https://mariadb.com/kb/en/installing-mariadb-binary-tarballs/#installing-mariadb-as-not-root-in-any-directory)
     -  ** edit the ~/.my.cnf file to specify the basedir and  to your install directory
 
