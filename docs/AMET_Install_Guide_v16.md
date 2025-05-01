@@ -168,11 +168,11 @@ Request an interactive queue for 2 hours, and then do the following steps:
     
 -	**Start MariaDB**
 
-    `/path-to/mysql/bin/mysqld_safe --defaults-file=~/.my.cnf &`
+    `/path-to/mysql/bin/mariadbd-safe --defaults-file=~/.my.cnf &`
 
--	**Use the mysql command to connect to the server**
+-	**Use the mariadbd command to connect to the server**
 
-    ` /path-to/mysql/bin/mysql --defaults-file=~/.my.cnf `
+    ` /path-to/mysql/bin/mariadbd --defaults-file=~/.my.cnf `
 
 -	**Create an AMET user and grant that user access to**
 
@@ -188,7 +188,7 @@ Query OK, 0 rows affected (0.002 sec)
 
 -	**Once done, you can shutdown the running database safely by running**
 
-    `/path-to/mysql/bin/mysqladmin shutdown`
+    `/path-to/mysql/bin/mariadb-admin shutdown`
 
 The instructions above create an AMET superuser of sorts, in that the ametsecure user has been granted all priviledges. AMET only requires database users to have SELECT, INSERT, UPDATE, DELETE, ALTER, and DROP ON priviledges to function fully. So, additional AMET users could be created with just those select priviledges. More information on how to create and configure MySQL/MariaDB users can be found on the MySQL/MariaDB websites.
 
