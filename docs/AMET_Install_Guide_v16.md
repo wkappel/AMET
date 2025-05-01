@@ -163,18 +163,29 @@ Request an interactive queue for 2 hours, and then do the following steps:
 
     **Run the mysql_install_db script to instantiate a directory to hold the MariaDB database files**
 
-    `/path-to/mysql/scripts/mysql_install_db ~/.my.cnf`
+    `./scripts/mariadb-install-db --defaults-file=~/.my.cnf`
 
     
 -	**Start MariaDB**
 
-    `/path-to/mysql/bin/mariadbd-safe --defaults-file=~/.my.cnf &`
+    `/proj/ie/proj/CMAS/AMET/MariaDB/mysql/bin/mariadbd-safe --defaults-file=~/.my.cnf --datadir='/proj/ie/proj/CMAS/AMET/MariaDB/mysql/data'` 
 
 -	**Use the mariadbd command to connect to the server**
 
     ` /path-to/mysql/bin/mariadbd --defaults-file=~/.my.cnf `
 
--	**Create an AMET user and grant that user access to**
+
+-        ** Use mysql command to login to the database **
+  
+
+      mysql -u $USER 
+
+
+-     ** Create AMET user     **
+       CREATE USER 'ametsecure'@localhost IDENTIFIED BY 'some password';
+
+    
+-	**Grant that user access **
 
     `grant all privileges on *.* to 'ametsecure'@'localhost' with grant option;`
 
