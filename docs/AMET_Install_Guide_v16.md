@@ -386,17 +386,17 @@ edit the sitecmp_dailyo3 Makefile
 > make |& tee make.log
 ```
 
-Note, the combine script directory contains a script called linkem that needs to be edited to point to your CMAQv5.3.3 REPO directory to obtain the species definition files.
+Note, the combine script directory contains a script called linkem that needs to be edited to point to your CMAQv5.5+ REPO directory to obtain the species definition files.
 
 ```
 cd $AMETBASE/tools_src/combine/scripts/spec_def_files
 vi linkem.csh
 ```
 
-Modify the set src = line to point to the CMAQv5.3.3 Repository.
+Modify the set src = line to point to the CMAQv5.5+ Repository.
 
 ```
-set src = /proj/ie/proj/CMAS/CMAQ/CMAQv5.3.3/build/CMAQ_REPO_v533/CCTM/src/MECHS
+set src = /path_to/CMAQ/CMAQv5.5+/build/CMAQ_REPO_v5.5+/CCTM/src/MECHS
 
 modify to the path for your CMAQ installation directory
 
@@ -500,8 +500,8 @@ After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample
 `ls -lht`
 
 ```
- 34G Nov 20  2018 COMBINE_ACONC_CMAQv521_AMET_201607.nc
- 6.5G Nov 20  2018 COMBINE_DEP_CMAQv521_AMET_201607.nc
+ 51G Apr  8  2025 COMBINE_ACONC_CMAQv521_AMET_201807.nc
+ 40G Apr  8  2025 COMBINE_DEP_CMAQv521_AMET_201807.nc
 
 ```
 Download the Air Quality Observational data from the Google Drive CMAS Data Warehouse > AMET > v1.6_example > 2000_2024_NAmerican_AQ_Obs_Data
