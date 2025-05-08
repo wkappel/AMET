@@ -430,7 +430,7 @@ AMET uses a centralized R script to set up the AMET environment for loading data
 
 Following from the example above, if you created a user called *ametsecure* with the password *some_pass*, set **amet_login** and **amet_pass** in amet-config.R to use these settings. Otherwise, set these variable to login and password that you selected when setting up MySQL/MariaDB.
 
-Additional AMET configuration is handled in the database loading and plot creation scripts. See the AMET 1.3 User’s Guide on configuring AMET for additional details.
+Additional AMET configuration is handled in the database loading and plot creation scripts. See the AMET 1.6 User’s Guide on configuring AMET for additional details.
 
 <a id=Install5></a>
 ## 5. Install Test Case Data
