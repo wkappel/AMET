@@ -493,7 +493,7 @@ Meteorology observational data are installed under **$AMETBASE/obs/MET**.
 #### Air quality data
 (35 GB uncompressed; 30 GB compressed)
 
-Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.6_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2018 00:00 UTC to July 31 2018 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2011 and sample AMET analysis plots.
+Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.6_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2018 00:00 UTC to July 31 2018 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2018 and sample AMET analysis plots.
 
 After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample** will contain the following files.
 
