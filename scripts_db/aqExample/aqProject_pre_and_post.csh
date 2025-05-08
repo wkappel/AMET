@@ -72,8 +72,8 @@
 # ==================================================================================
 
 #> Configure the system environment
-  setenv compiler     intel                      #> Compiler used to compile combine, sitecmp, sitecmp_dailyo3
-  setenv compilerVrsn 18.0.1                     #> Compiler version
+  setenv compiler     gcc                      #> Compiler used to compile combine, sitecmp, sitecmp_dailyo3
+  setenv compilerVrsn ""                     #> Compiler version
   setenv compilerString ${compiler}_${compilerVrsn}
  # source /work/MOD3DEV/cmaq_common/cmaq_env.csh  #> Set up compilation and runtime environments on EPA system
  # source /work/MOD3DEV/cmaq_common/R_env.csh     #> Set up R environment on EPA system
@@ -85,10 +85,10 @@
 #> for combine.  If you are not using a CMAQ5.3 reposiotry you can
 #> modify the location of the executables and spec_def files later
 #> in the script.
- set CMAQ_HOME = /path/CMAQv53_repo
+ set CMAQ_HOME = /proj/ie/proj/CMAS/CMAQ/CMAQ5.5+/gcc-9.1.0_openmpi
 
 #> Base directory where AMET code resides
- setenv AMETBASE	/home/AMETv15
+ setenv AMETBASE	/proj/ie/proj/CMAS/AMET/AMET_v16
 
 #> Source CMAQ config files to setup environment
  if (${Source_Configs} == 'T') then
@@ -112,13 +112,13 @@
 # ==================================================================
 
 #> Start and end dates of simulation to be evaluated.
- setenv START_DATE_H  "2016-07-01"              #> Start day. Should be in format "YYYY-MM-DD".
- setenv END_DATE_H    "2016-07-31"              #> End day. Should be in format "YYYY-MM-DD".
+ setenv START_DATE_H  "2018-07-01"              #> Start day. Should be in format "YYYY-MM-DD".
+ setenv END_DATE_H    "2018-07-31"              #> End day. Should be in format "YYYY-MM-DD".
 
 #> Set General Parameters for Configuring the Simulation
- set VRSN      = v533               #> Code Version
+ set VRSN      = v5.5               #> Code Version
  set PROC      = mpi               #> serial or mpi
- set MECH      = cb6r3_ae7_aq      #> Mechanism ID
+ set MECH      = cb6r5_ae7_aq      #> Mechanism ID
  set APPL      = aqExample         #> Application Name (e.g. Gridname)
                                                       
 #> Define RUNID as any combination of parameters above or others. By default,
@@ -130,7 +130,7 @@ setenv RUNID ${APPL}
 #> Name and location of daily MET output. Required files = METCRO2D, METCRO3D
 #> This script assumes MET files are dated with the following naming convention:
 #> ${METCRO2D_NAME}_${YY}${MM}${DD}.nc, ${METCRO3D_NAME}_${YY}${MM}${DD}.nc
- setenv METDIR  /path/SE53BENCH/multi_day/cctm_input/met/mcip  #> Location of MET ouput.
+ setenv METDIR  /work/users/l/i/lizadams/AMET/v1.5_example/MET/metExample_mcip/WRFv4.3.3_LTNG_MCIP5.3.3_compressed/  #> Location of MET ouput.
  set METCRO2D_NAME = METCRO2D                   #> METCRO2D file name (without date and file extension).
  set METCRO3D_NAME = METCRO3D                   #> METCRO3D file name (without date and file extension).
 
@@ -307,16 +307,16 @@ setenv RUNID ${APPL}
  setenv AMET_DATABASE   amet 
  setenv AMET_PROJECT    ${RUNID}               
  setenv MODEL_TYPE      "CMAQ"
- setenv RUN_DESCRIPTION "CMAQv5.3 AMET aqExample test case. July 2016."
+ setenv RUN_DESCRIPTION "CMAQv5.5 AMET aqExample test case. July 2018."
  setenv USER_NAME       `whoami`
- setenv EMAIL_ADDR      "my.email@user.com"
+ setenv EMAIL_ADDR      "lizadams@email.unc.com"
 
 # =====================================================================
 #> 8. Evaluation Plotting Configuration Options
 # =====================================================================
 
 #> Set the location of the configuration file for the batch plotting.
- setenv AMETRINPUT      $AMETBASE/script_analysis/aqExample/input_files/AMET_batch.input
+ setenv AMETRINPUT      $AMETBASE/scripts_analysis/aqExample/input_files/AMET_batch.input
 
 #> Plot Type, options are "pdf","png","both"
  setenv AMET_PTYPE 	both
@@ -376,9 +376,9 @@ if (${RUN_COMBINE} == 'T') then
   #> File [3]: CMAQ APMDIAG file
   #> File [4]: MCIP METCRO2D file
    setenv INFILE1 ${CCTMOUTDIR}/${CCTM_ACONC_NAME}_${YYYY}${MM}${DD}.nc
-   setenv INFILE2 ${METDIR}/${METCRO3D_NAME}_${YY}${MM}${DD}.nc
+   setenv INFILE2 ${METDIR}/${METCRO3D_NAME}_${YYYY}${MM}${DD}.nc
    setenv INFILE3 ${CCTMOUTDIR}/${CCTM_APMDIAG_NAME}_${YYYY}${MM}${DD}.nc
-   setenv INFILE4 ${METDIR}/${METCRO2D_NAME}_${YY}${MM}${DD}.nc
+   setenv INFILE4 ${METDIR}/${METCRO2D_NAME}_${YYYY}${MM}${DD}.nc
 
   #> Executable call:
    ${EXEC_combine}
