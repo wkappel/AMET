@@ -791,6 +791,12 @@ stations metadata table and limit the results to the first 20 rows:
 mysql> select lat,lon,common_name from stations limit 20;
 ```
 
+To select all distinct networks from the aqExample table;
+
+```
+select DISTINCT  network from aqExample;
+```
+
 To select all station metadata where the monitor is from the CASTNET
 network:
 
