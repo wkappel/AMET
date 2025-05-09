@@ -128,10 +128,10 @@ as “AMETBASE”. This environment variable is actually set in many of the
 scripts discussed below. For example, if you were to run the AMET (example for version 1.6) installation Git command in user's home directory /home/user:
 
 ```
-git clone -b 1.6 https://github.com/USEPA/AMET.git AMET_v15
+git clone -b 1.6 https://github.com/USEPA/AMET.git AMET_v16
 
 ```
-The setting of AMETBASE would be /home/user/AMET_v15
+The setting of AMETBASE would be /home/user/AMET_v16
 
 
 Table 2-1 shows the directories contained in the $AMETBASE directory.
@@ -761,13 +761,13 @@ that command will yield a table like this:
 
 | aqExample |
 
-| aq\_project\_log |
+| aq_project_log |
 
-| project\_log |
+| project_log |
 
-| project\_units |
+| project_units |
 
-| site\_metadata |
+| site_metadata |
 
 | stations |
 
@@ -778,30 +778,30 @@ that command will yield a table like this:
 +---------------------+
 ```
 
-To select every column and row in your project\_log table:
+To select every column and row in your aq_project_log table:
 
 ```
-mysql> select \* from project\_log;
+mysql> select * from aq_project_log;
 ```
 
 To select the latitude, longitude, and common name columns from the
 stations metadata table and limit the results to the first 20 rows:
 
 ```
-mysql> select lat,lon,common\_name from stations limit 20;
+mysql> select lat,lon,common_name from stations limit 20;
 ```
 
 To select all station metadata where the monitor is from the CASTNET
 network:
 
 ```
-mysql> select \* from site\_metadata where network=‘castnet’;
+mysql> SELECT * FROM site_metadata WHERE network='CASTNET';
 ```
 
-To determine which networks are included in the aqExample project:
+To determine which networks are included in the site_metadata:
 
 ```
-mysql> select distinct network from aqExample;
+MariaDB [amet]> SELECT DISTINCT network FROM site_metadata;;
 ```
 
 Note: It is wise for users to understand simple queries like this or to download an interactive MySQL database tool as a means to look at the database, table structure and even sample data therein in the case of problems.
