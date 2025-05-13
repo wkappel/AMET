@@ -116,7 +116,7 @@
  setenv END_DATE_H    "2018-07-31"              #> End day. Should be in format "YYYY-MM-DD".
 
 #> Set General Parameters for Configuring the Simulation
- set VRSN      = v5.5               #> Code Version
+ set VRSN      = v55               #> Code Version
  set PROC      = mpi               #> serial or mpi
  set MECH      = cb6r5_ae7_aq      #> Mechanism ID
  set APPL      = aqExample         #> Application Name (e.g. Gridname)
