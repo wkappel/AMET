@@ -22,8 +22,9 @@
 #	binval								#
 #	get_title							#
 #	GetURL								#
+#	vline								#
 #									#
-#	Last UpDate:	May 2022					#
+#	Last UpDate:	April 2025					#
 #	Contributors:	Wyat Appel, Robert Gilliam, Kristen Foley,	#
 #                       James Kelly (USEPA/ORD)				#
 #						 			#
@@ -985,7 +986,7 @@ hour_stats.df <- data.frame(Network=I(network),Date_Hour=I(date_hour),Num_Obs=nu
 ###############################################################
 #- - - - - - - - -   START OF FUNCTION  -  - - - - - - - - - ##
 ###############################################################
-Average<-function(datain.df) {
+Average<-function(datain.df,avg_func="mean") {
    Obs_Mean		<- NULL
    Mod_Mean		<- NULL
    Obs_Count		<- NULL
@@ -1129,8 +1130,8 @@ Average<-function(datain.df) {
             avg_text	<- paste(avg_text_1, " Accumulated",sep="")          # set averaging text to accumulated
          }
          else if (units == "mg/l") { # If dealing with wet concentration, calculate a volume weighted average
-            Obs_Mean       <- c(Obs_Mean,tapply(data_split.df$VWA_ob,data_split.df$Stat_ID,mean,na.rm=T))
-            Mod_Mean       <- c(Mod_Mean,tapply(data_split.df$VWA_mod,data_split.df$Stat_ID,mean,na.rm=T))
+            Obs_Mean       <- c(Obs_Mean,tapply(data_split.df$VWA_ob,data_split.df$Stat_ID,avg_func,na.rm=T))
+            Mod_Mean       <- c(Mod_Mean,tapply(data_split.df$VWA_mod,data_split.df$Stat_ID,avg_func,na.rm=T))
             Obs_Count      <- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
             Obs_Good       <- c(Obs_Good,tapply(data_split.df$good_ob,data_split.df$Stat_ID,sum))
             Sites          <- c(Sites,tapply(data_split.df$Stat_ID,data_split.df$Stat_ID,unique))
@@ -1168,8 +1169,8 @@ Average<-function(datain.df) {
 #               Lon         <- unique(data_split.df$lon)
 #               obs_sum     <- c(obs_sum,tapply(data_split.df$Obs_Value,data_split.df$YearMonth,sum))
 #            }
-            Obs_Mean	<- c(Obs_Mean,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,mean,na.rm=T))
-            Mod_Mean	<- c(Mod_Mean,tapply(data_split.df$Mod_Value,data_split.df$Stat_ID,mean,na.rm=T))
+            Obs_Mean	<- c(Obs_Mean,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,avg_func,na.rm=T))
+            Mod_Mean	<- c(Mod_Mean,tapply(data_split.df$Mod_Value,data_split.df$Stat_ID,avg_func,na.rm=T))
             Obs_Count	<- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
             Obs_Good	<- c(Obs_Good,tapply(data_split.df$good_ob,data_split.df$Stat_ID,sum))
             Sites	<- c(Sites,tapply(data_split.df$Stat_ID,data_split.df$Stat_ID,unique))
@@ -1177,7 +1178,7 @@ Average<-function(datain.df) {
             Lats	<- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
             Lons	<- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique))
             Years       <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
-            avg_text    <- paste(avg_text_1, " Average",sep="")
+            avg_text    <- paste(avg_text_1, avg_func,sep="")
          }
       }
    }
@@ -1547,18 +1548,107 @@ find_common_sites <- function(run_names_in,network,species,criteria="Default",or
    }
    return(sites_out)
 }
+#######################################################
 
+###################################################
+### Function to find common sites among queries ###
+###################################################
+
+find_common_sites_species <- function(run_names_in,network,species,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"),merge_sitePOC="y")
+{
+   print("GOT HERE")
+   for (j in 1:length(species)) {
+      run_name_temp <- gsub("[.]","_",run_names_in[1])
+      run_name      <- gsub("[-]","_",run_name_temp)
+      if (!exists("aggregate_data")) { aggregate_data <- "n" }
+      criteria <- paste(" WHERE d.network='",network,"'",query,sep="")
+      if (length(network_names) > 1) {
+         network_query <- paste("(d.network='",network_names[1],"'",sep="")
+         for (i in 2:length(network_names)) {
+            network_query <- paste(network_query," or d.network='",network_names[i],"'",sep="")
+         }
+         network_query  <- paste(network_query,")",sep="")
+         criteria       <- paste(" WHERE",network_query,query,sep=" ")
+      }
+#      if (criteria == "Default") {
+#         criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+#         criteria <- paste(" WHERE d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+#      }
+#      if ((exists("custom_species")) && (custom_species != "")) {
+#         criteria <- paste(" WHERE d.network='",network,"'",query,sep="")
+#      }
+      if (zeroprecip == "y") { criteria <- paste(criteria, " and d.precip_ob > 0",sep="") }
+      if ((all_valid == "y") && (network == "NADP")) { # valid flags for NADP obs
+         criteria <- paste(criteria, " and (d.valid_code = 't' or d.valid_code = 'd' or d.valid_code = 'w' or d.valid_code = 'wi' or d.valid_code = 'wd' or d.valid_code = 'wa')",sep="")
+      }
+      if ((all_valid == "y") && (network == "AMON")) { # valid flags for AMON obs
+         criteria <- paste(criteria, " and (d.valid_code = ' ' or d.valid_code = 'A' or d.valid_code = 'B' or d.valid_code IS NULL)",sep="")
+      }
+      ##########################################################
+      ### Remove T replicates, which identifies field blanks ###
+      check_replicate      <- paste("select * from information_schema.COLUMNS where TABLE_NAME = '",run_name,"' and COLUMN_NAME = 'replicate';",sep="")
+      query_table_info.df <-db_Query(check_replicate,mysql)
+      if (length(query_table_info.df$COLUMN_NAME) != 0) {  # Check if replicate column exisits or not
+         if ((all_valid == "y") && (network == 'AMON')) { criteria <- paste(criteria, " and (d.replicate != 'T' or d.replicate IS NULL)",sep="") }
+      }
+      ###########################################################
+      check_POCode        <- paste("select * from information_schema.COLUMNS where TABLE_NAME = '",run_name,"' and COLUMN_NAME = 'POCode';",sep="")
+#      check_POCode     <- paste("show columns from ",run_name," like 'POCode';",sep="")
+      query_table_info.df <-db_Query(check_POCode,mysql)
+      {
+         if (length(query_table_info.df$COLUMN_NAME) == 0) {        # Check to see if POCode column exists or not
+#          if (length(query_table_info.df$Field) == 0) {
+            qs <- paste("SELECT d.stat_id, d.",species[j],"_ob, d.",species[j],"_mod from ",run_name," as d, site_metadata as s",criteria,sep="")      # Set the rest of the MYSQL query
+            aqdat_query.df<-db_Query(qs,mysql)
+            aqdat_query.df$POCode <- 1
+#            aqdat_query.df$stat_id <- paste(aqdat_query.df[1],aqdat_query.df$POCode,sep='')
+         }
+         else if (merge_sitePOC == "y") {
+            qs <- paste("SELECT CONCAT(d.stat_id, d.POCode) as stat_id, d.",species[j],"_ob, d.",species[j],"_mod from ",run_name," as d, site_metadata as s",criteria,sep="")      # Set the rest of the MYSQL query
+            aqdat_query.df<-db_Query(qs,mysql)
+#            print(aqdat_query.df)
+         }
+         else {
+            qs <- paste("SELECT d.stat_id, d.",species[j],"_ob, d.",species[j],"_mod from ",run_name," as d, site_metadata as s",criteria,sep="")      # Set the rest of the MYSQL query
+            aqdat_query.df<-db_Query(qs,mysql)
+         }
+      }
+#      if ((remove_negatives == 'y') || (remove_negatives == 'Y') || (remove_negatives == 't') || (remove_negatives == 'T')) {
+      indic.nonzero       <- aqdat_query.df[,2] >= 0
+      aqdat_query.df      <- aqdat_query.df[indic.nonzero,]
+      indic.nonzero       <- aqdat_query.df[,3] >= 0
+      aqdat_query.df      <- aqdat_query.df[indic.nonzero,]
+ #    }
+      sites <- unique(aqdat_query.df$stat_id)
+      {
+         if (j == 1) {
+            sites_out <- sites
+         }
+         else {
+            sites_out <- sites_out[sites_out %in% sites]
+#            sites_out <- aqdat_query.df[as.character(aqdat_query.df[1]) %in% sites_out[[1]], ]
+         }
+      }
+   }
+   return(sites_out)
+}
+#######################################################
 
 #####################################
 ### Function to AQ query database ###
 #####################################
 
-query_dbase <- function(project_id,network,species,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"))
+query_dbase <- function(project_id,network,species.in,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"))
 {
+   print(species.in)
    if (!exists("common_sites")) { common_sites <- "n" }
+   if (!exists("common_sites_species")) { common_sites_species <- "n" }
    if ((common_sites == "y") && (project_id == run_names[1])) { # Only find the common sites once; assign com_sites as a global variable
-#   if (common_sites == "y") {
       com_sites <<- find_common_sites(run_names,network,species,merge_sitePOC=merge_statid_POC)
+   }
+   if (common_sites_species == "y") {
+      species.in <- species
+#      com_sites <<- find_common_sites_species(run_names,network,species_in,merge_sitePOC=merge_statid_POC)
    }
    run_name     <- gsub("[.]","_",project_id)
    run_name     <- gsub("[-]","_",run_name)
@@ -1570,17 +1660,17 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
       data_order <- paste(data_order,orderby[i],sep=",")
       i <- i+1
    }
-   species_query_string <- paste(", d.",species[1],"_ob, d.",species[1],"_mod",sep="")
+   species_query_string <- paste(", d.",species.in[1],"_ob, d.",species.in[1],"_mod",sep="")
    i <- 2
-   while (i <= length(species)) {
-      species_query_string <- paste(species_query_string,", d.",species[i],"_ob, d.",species[i],"_mod",sep="")
+   while (i <= length(species.in)) {
+      species_query_string <- paste(species_query_string,", d.",species.in[i],"_ob, d.",species.in[i],"_mod",sep="")
       i <- i+1
    }
    if (!exists("rm_negs_query")) { rm_negs_query <- "n" } 
    if (criteria == "Default") {
-       criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+       criteria <- paste(" WHERE d.",species.in[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
        if ((rm_negs_query == "y") || (rm_negs_query == "Y") || (rm_negs_query == "t") || (rm_negs_query == "T")) {
-          criteria <- paste(" WHERE d.",species[1],"_ob is not NULL and d.",species[1],"_ob != -999 and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+          criteria <- paste(" WHERE d.",species.in[1],"_ob is not NULL and d.",species.in[1],"_ob != -999 and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
        }
    }
    if ((exists("custom_species")) && (custom_species != "")) {
@@ -1627,7 +1717,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 #   ob_col_name <- paste(species,"_ob",sep="")
 #   mod_col_name <- paste(species,"_mod",sep="")
    data_exists_flag <- "n"
-   num_specs <- length(species)-1
+   num_specs <- length(species.in)-1
    for (k in 0:num_specs) {
       ob_col  <- 11+2*k
       mod_col <- 12+2*k
@@ -1684,8 +1774,11 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
    {
       if ((exists("custom_units")) && (custom_units != "")) { units <- custom_units }
       else {
-         units_qs        <- paste("SELECT ",species[1]," from project_units where proj_code = '",run_name,"' and network = '",network,"'", sep="")
-         units           <- db_Query(units_qs,mysql)
+    	 if (!exists("units_qs")) {
+            units_qs        <- paste("SELECT ",species.in[1]," from project_units where proj_code = '",run_name,"' and network = '",network,"'", sep="")
+         }
+         units <- db_Query(units_qs,mysql)
+	 units <- na.omit(units)
       }
    }
    if (length(units) == 0) {
@@ -1930,3 +2023,18 @@ base_Groups = c("Street Map","Topo Map","ESRI World Imagery","ESRI Street Map","
 
 ########################################
 
+###########################################################
+### Function to create a vertical line on a plotly plot ###
+###########################################################
+vline <- function(x = 0, color = "black") {
+  list(
+    type = "line",
+    y0 = 0,
+    y1 = 0.95,
+    yref = "paper",
+    x0 = x,
+    x1 = x,
+    line = list(color = color)
+  )
+}
+############################################################

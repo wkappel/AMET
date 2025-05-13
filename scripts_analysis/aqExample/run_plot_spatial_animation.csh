@@ -130,18 +130,26 @@
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
-		echo
-		echo "Statistics information"
-		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.pdf"
+  echo
+                echo "Statistics information"
+                echo "-----------------------------------------------------------------------------------------"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.pdf"
                 echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.pdf"
                 echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.pdf"
-		echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.html"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_avg.pdf"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_abs_avg.pdf"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_tile.pdf"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.png"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.png"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.png"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_avg.png"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_abs_avg.png"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_tile.png"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.html"
                 echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.html"
                 echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.html"
-                
-		echo "-----------------------------------------------------------------------------------------"
-		exit 0
+                echo "-----------------------------------------------------------------------------------------"
+                exit 0
   else
      echo "The AMET R script did not produce any output, please check the LOGFILE $AMET_LOG for more details on the error."
      echo "Often, this indicates no data matched the specified criteria (e.g., wrong dates for project). Please check and re-run!"
