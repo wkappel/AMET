@@ -43,7 +43,7 @@ if (!exists("con")) {
    if (delete_db == "yes") {
       print(paste("Deleting database:",dbase))
       q <- paste("drop DATABASE",dbase)
-      drop_database_log <- try(dbSendQuery(con,q),silent=T) 
+      drop_database_log <- try(dbExecute(con,q),silent=T) 
       if (class(drop_database_log)=="try-error") {
          print(paste("Failed to delete database with the following error: ",create_database_log,". Perhaps the database doesn't exists.",sep=""))
          stop()
@@ -61,13 +61,13 @@ if (!exists("con")) {
    if (delete_user == "yes") {
       print(paste("Deleting user:", root_login))
       q <- paste("delete from mysql.user where user='",root_login,"'",sep="")
-      drop_user_log <- try(dbSendQuery(con,q),silent=T)
+      drop_user_log <- try(dbExecute(con,q),silent=T)
       if (class(drop_database_log)=="try-error") {
          print(paste("Failed to delete user with the following error: ",create_database_log,". Perhaps the user doesn't exists.",sep=""))
          stop()
       }
       q <- "FLUSH PRIVILEGES"
-      flush_log <- try(dbSendQuery(con,q),silent=T)
+      flush_log <- try(dbExecute(con,q),silent=T)
       if (class(flush_log)=="try-error") {
          print(paste("Failed to flush privileges with the error: ",flush_log,". This probably isn't a big deal really.",sep=""))
       }

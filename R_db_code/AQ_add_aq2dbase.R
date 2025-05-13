@@ -158,8 +158,8 @@ if (length(query_table_info.df$COLUMN_NAME) == 0) {
    create_POCode_Column <- paste("alter table ",project_id," add column POCode integer",sep="")
    make_POCode_unique   <- paste("alter table ",project_id," add UNIQUE(network,stat_id,POCode,ob_dates,ob_datee,ob_hour)",sep="")
    cat("\nPOCode column missing (must be an old table). Adding POCode column to project table...")
-   mysql_result <- dbSendQuery(con,create_POCode_Column)
-   mysql_result <- dbSendQuery(con,make_POCode_unique)
+   mysql_result <- dbExecute(con,create_POCode_Column)
+   mysql_result <- dbExecute(con,make_POCode_unique)
    cat("done. \n")
 }
 check_stat_id_POCode 		<- paste("select * from information_schema.COLUMNS where TABLE_SCHEMA = '",dbase,"' and TABLE_NAME = '",project_id,"' and COLUMN_NAME = 'stat_id_POCode';",sep="")
@@ -167,7 +167,7 @@ query_table_info.df <- suppressMessages(db_Query(check_stat_id_POCode,mysql))
 if (length(query_table_info.df$COLUMN_NAME) == 0) {
    create_stat_id_POCode_Column <- paste("alter table ",project_id," add column stat_id_POCode character(100)",sep="")
    cat("stat_id_POCode column missing (must be an old table). Adding stat_id_POCode column to project table...")
-   mysql_result <- dbSendQuery(con,create_stat_id_POCode_Column)
+   mysql_result <- dbExecute(con,create_stat_id_POCode_Column)
    cat("...done. \n")
 }
 #####################################################
@@ -209,7 +209,7 @@ if (length(units_to_add) > 0) {
    for (i in 1:length(units_to_add)) {
       cat(paste(units_to_add[i],"\n"))
       create_units_column <- paste("alter table project_units add column ",units_to_add[i]," varchar(10);",sep="")
-      mysql_result <- dbSendQuery(con,create_units_column)
+      mysql_result <- dbExecute(con,create_units_column)
    }
    cat("Done adding missing units species. \n\n")
 }
@@ -230,7 +230,7 @@ for (i in 1:length(unit_query_vals)) {
 }
 q3_units <- paste(q3_units,")")
 qs_units <- paste(q1_units,q2_units,q3_units,sep = " ")
-mysql_result <- suppressMessages(dbSendQuery(con,qs_units))
+mysql_result <- suppressMessages(dbExecute(con,qs_units))
 cat("done. \n")
 ###########################################
 
@@ -265,7 +265,7 @@ missing_sites           <- unique(sitex_in$SiteId[!(sitex_in$SiteId %in% existin
                latitude       <- sitex_in$Latitude[sitex_in$SiteId==missing_sites[i]]
                longitude      <- sitex_in$Longitude[sitex_in$SiteId==missing_sites[i]]
                add_site_query <- paste("REPLACE INTO ",dbase,".site_metadata (stat_id, num_stat_id, network, lat, lon) values ('",missing_sites[i],"','",num_stat_id,"','",sitex_in$dtype[i],"',",latitude,",",longitude,");",sep="")
-               mysql_result   <- dbSendQuery(con,add_site_query)
+               mysql_result   <- dbExecute(con,add_site_query)
             }
             cat("Done adding missing sites. Consider updating the network site list to include these missing sites with additional metadata.\n\n")
          }
@@ -300,7 +300,7 @@ cat("done. \n")
       }
       create_species_column <- paste(create_species_column,";",sep="")
       cat(paste("\nCreating table columns for all missing species...",sep=""))
-      dbSendQuery(con,create_species_column)
+      dbExecute(con,create_species_column)
       cat("done. \n")
    }
    else {
@@ -378,7 +378,7 @@ if (max_date < max_date_old) {
    max_date <- max_date_old
 }
 query_dates <- paste("REPLACE INTO aq_project_log (proj_code,model,user_id,passwd,email,description,proj_date,proj_time,min_date,max_date) values ('",project_id,"','",model,"','",user_id,"','",password,"','",email,"','",description,"','",proj_date,"','",proj_time,"','",min_date,"','",max_date,"')",sep="")                    # put first and last dates into project log
-mysql_result <- dbSendQuery(con,query_dates)
+mysql_result <- dbExecute(con,query_dates)
 cat("done.\n\n")
 #######################################################################################################################################
 mysql_result <- dbDisconnect(con)

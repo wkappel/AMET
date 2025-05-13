@@ -41,8 +41,8 @@ if (!exists("con")) {
 cat(paste("\nCreating or modifying user ",amet_login,"...",sep=""))
 q1 <- paste("CREATE USER '",amet_login,"' IDENTIFIED BY '",amet_pass,"'",sep="")
 q2 <- paste("GRANT ALL PRIVILEGES ON * . * TO '",amet_login,"'",sep="")
-create_user_log <- try(dbSendQuery(con,q1),silent=T)
-modify_user_log <- try(dbSendQuery(con,q2),silent=T)
+create_user_log <- try(dbExecute(con,q1),silent=T)
+modify_user_log <- try(dbExecute(con,q2),silent=T)
 if (class(create_user_log)=="try-error") {
    cat(paste("\nFailed to create new user with the error: ",create_user_log,".",sep=""))
    stop()
@@ -52,7 +52,7 @@ if (class(modify_user_log)=="try-error") {
    stop()
 }
 q <- "FLUSH PRIVILEGES"
-flush_log <- try(dbSendQuery(con,q),silent=T)
+flush_log <- try(dbExecute(con,q),silent=T)
 if (class(flush_log)=="try-error") {
    cat(paste("\nFailed to flush privileges with the error: ",flush_log,". This probably isn't a big deal really.",sep=""))
 }

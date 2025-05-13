@@ -44,7 +44,7 @@ if (!exists("con")) {
 ## Create a new database
 cat(paste("\nChecking to see if the database",dbase,"already exists, creating it if it does not..."))
 q <- paste("create DATABASE IF NOT EXISTS",dbase)
-create_database_log <- try(dbSendQuery(con,q),silent=T)
+create_database_log <- try(dbExecute(con,q),silent=T)
 if (class(create_database_log)=="try-error") {
    print(paste("**Failed to create new database with the error: ",create_database_log," \n",sep=""))
    stop()
@@ -65,8 +65,8 @@ aq_new_3  <- "create table site_metadata (stat_id varchar(25) UNIQUE KEY, num_st
 {
    if(!(dbExistsTable(con,"project_units"))) {   	
       cat("Table project_units does not exist, creating...")
-      create_units_table_log <- try(dbSendQuery(con,aq_new_1),silent=T)
-      alter_units_table_log <- try(dbSendQuery(con,aq_new_1b),silent=T)
+      create_units_table_log <- try(dbExecute(con,aq_new_1),silent=T)
+      alter_units_table_log <- try(dbExecute(con,aq_new_1b),silent=T)
       if (class(create_units_table_log)=="try-error") {
          print(paste("\n Did not create units table because: ",create_units_table_log,".",sep=""))
       }
@@ -80,7 +80,7 @@ aq_new_3  <- "create table site_metadata (stat_id varchar(25) UNIQUE KEY, num_st
 {
    if(!(dbExistsTable(con,"aq_project_log"))) {
       cat("Table aq_project_log does not exist, creating...")
-      create_project_table_log <- try(dbSendQuery(con,aq_new_2),silent=T)
+      create_project_table_log <- try(dbExecute(con,aq_new_2),silent=T)
       if (class(create_project_table_log)=="try-error") {
          print(paste("\n Did not create project log table because: ",create_project_table_log,".",sep=""))
       }
@@ -97,7 +97,7 @@ reload_meta <- Sys.getenv('RELOAD_METADATA')
 {
    if(!(dbExistsTable(con,"site_metadata"))) {
       cat("Table site_metadata does not exist, creating...")
-      create_site_metadata_table_log <- try(dbSendQuery(con,aq_new_3),silent=T)
+      create_site_metadata_table_log <- try(dbExecute(con,aq_new_3),silent=T)
       if (class(create_site_metadata_table_log)=="try-error") {
          print(paste("Did not create site metadata table because: ",create_site_metadata_table_log,".",sep=""))
       }
