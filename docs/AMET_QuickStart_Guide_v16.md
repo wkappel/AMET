@@ -166,6 +166,10 @@ Change the setting of AMETBASE in create_amet_user.csh and run the script:
 
 ## 7. Create AQ and MET projects
 
+Prior to loading data into the database, to avoid getting disconnected from the terminal, use the **tmux** application.
+https://github.com/tmux/tmux/wiki
+
+
 ```
 cd $AMETBASE/scripts_db/metExample_wrf
 ```
