@@ -21,7 +21,7 @@
 #                                                                       #
 #  Version 1.3, May 15, 2017, Robert Gilliam                            # 
 #  Updates: - Removed hard coded amet-config.R config option that       #
-#             defined MySQL server, database and password (unsecure).   #
+#             defined database server, database and password (unsecure).#
 #             Now users define that file location in csh wrapper scripts#
 #             via setenv MYSQL_CONFIG variable.                         #
 #           - Removed some deprecated variables and cleaned/formatted   #
@@ -49,8 +49,8 @@
   options(warn=-1)
 #########################################################################
 #	Load required modules
-  if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")}
-  if(!require(date))  {stop("Required Package date was not loaded")  }
+  if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded")}
+  if(!require(date))     {stop("Required Package date was not loaded")  }
 ########################################################
 #    Initialize AMET Diractory Structure Via Env. Vars
 #    AND Load required function and conf. files
@@ -162,7 +162,7 @@ for (sn in 1:length(statid)){
   writeLines(paste(query1))
   writeLines(paste(query2))
   
-  # Hour of Day fix for MySQL database ob_time format changes. 
+  # Hour of Day fix for database ob_time format changes. 
   # Looks at HOUR(ob_date) and HOUR(ob_time) and choose the one
   # that is not all zeros.
   if( sum(data1[,2],na.rm=T) == 0){
@@ -195,7 +195,7 @@ for (sn in 1:length(statid)){
                         "project id from the run_timeseries.csh script and just plot AMET_PROJECT1"))
        next                 
      }
-     # Hour of Day fix for MySQL database ob_time format changes. 
+     # Hour of Day fix for database ob_time format changes. 
      # Looks at HOUR(ob_date) and HOUR(ob_time) and choose the one
      # that is not all zeros.
      if( sum(data2[,2],na.rm=T) == 0){

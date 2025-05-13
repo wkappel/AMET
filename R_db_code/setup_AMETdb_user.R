@@ -6,7 +6,7 @@
 #                user for both MET and AQ               #
 #                                                       #
 #       AUTHOR:  K. Wyat Appel, USEPA                   # 
-#       LAST UPDATE: 01/2022 by K. Wyat Appel		#
+#       LAST UPDATE: 05/2025 by K. Wyat Appel		#
 #--------------------------------------------------------
 
 ## Before anything else, get the AMETBASE variable and source
@@ -24,7 +24,7 @@ if (!exists("amet_base")) {
 }
 
 # LOAD Required R Modules
-suppressMessages(if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")})
+suppressMessages(if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")})
 
 args			<- commandArgs(4)
 mysql_root_login	<- args[1]
@@ -32,10 +32,10 @@ mysql_root_pass		<- args[2]
 amet_login		<- args[3]
 amet_pass		<- args[4]
 
-# Connect to MySQL database and Set AMET Passwords ametsecure (for read and write ability to database)
-con             <- dbConnect(MySQL(),user=mysql_root_login,password=mysql_root_pass,dbname="mysql",host=mysql_server)
+# Connect to database and Set AMET Passwords ametsecure (for read and write ability to database)
+con             <- dbConnect(MariaDB(),user=mysql_root_login,password=mysql_root_pass,dbname="mysql",host=mysql_server)
 if (!exists("con")) {
-   stop("Your MySQL server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
+   stop("Your database server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
 }
 ## Add the ametsecure user w/ full privileges, assumes MYSQL v4.0 or greater
 cat(paste("\nCreating or modifying user ",amet_login,"...",sep=""))

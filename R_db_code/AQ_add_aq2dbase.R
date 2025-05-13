@@ -16,7 +16,7 @@
 
 ## Load Required Libraries
 require(data.table)
-if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")}
+if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
 
 run_dir		 <- Sys.getenv('AMET_RUN',unset=NA)
 dbase            <- Sys.getenv('AMET_DATABASE')
@@ -45,21 +45,21 @@ project_id        <- gsub("[-]","_",project_id)
 cat(paste("\nProject_ID: ",log_id,"\n",sep=""))
 cat(paste("Network: ",dtype,"\n",sep=""))
 cat(paste("Sitex File: ",sitex_file,"\n",sep=""))
-cat(paste("MySQL Server: ",mysql_server,"\n",sep=""))
+cat(paste("Database Server: ",mysql_server,"\n",sep=""))
 
 ###############################################################
 #- - - - - - - - -   START OF FUNCTION  -  - - - - - - - - - ##
 ###############################################################
 db_Query<-function(query,mysql,get=1,verbose=FALSE)
  {
-  db<-dbDriver("MySQL")                         # MySQL Database type
+  db<-dbDriver("MariaDB")                         # Database type
   con <-dbConnect(db,user=mysql$login,pass=mysql$passwd,host=mysql$server,dbname=mysql$dbase)           # Database connect
 
   for (q in 1:length(query)){
     rs<-dbSendQuery(con,query[q])       # Send query and place results in data frame
     if(verbose){ print(query[q]) }
   }
-  if(get == 1){df<-fetch(rs,n=mysql$maxrec)}
+  if(get == 1){df<-dbFetch(rs,n=mysql$maxrec)}
   dbClearResult(rs)
   dbDisconnect(con)             # Database disconnect
 
@@ -73,12 +73,12 @@ db_Query<-function(query,mysql,get=1,verbose=FALSE)
 ###############################################################
 reformat <- function(a) paste(a,collapse=",")
 ###############################################################
-### Use MySQL login/password from config file if requested ###
+### Use login/password from config file if requested ###
 if (mysql_login == 'config_file') { mysql_login <- amet_login }
 if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
 mysql	<- list(login=mysql_login, passwd=mysql_pass, server=mysql_server, dbase=dbase, maxrec=maxrec)	# Set MYSQL login and query options
-con	<- dbConnect(MySQL(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
+con	<- dbConnect(MariaDB(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
 
 sitex_in    	<- fread(sitex_file,skip=5,na.strings="-999",sep=",",stringsAsFactors=F,colClasses = c('SiteId'='character'),check.names=T) # Read sitex file
 sitex_in2   	<- fread(sitex_file,skip=3,header=F,sep=",",colClasses="character",nrows=3,check.names=T)  # Read sitex file header only
@@ -115,7 +115,7 @@ if (dtype == 'AMON') {
    # Create a new blank corrected mod value column which is just the NH3 model value
    obs.corrected.df$NH3_Corrected_mod <- obs.corrected.df$NH3_mod
    sitex_in <- obs.corrected.df
-   # Replace the NA values with -999 values. This is just to simplify the MySQL loading
+   # Replace the NA values with -999 values. This is just to simplify the loading
    sitex_in[is.na(sitex_in)] <- -999
    # Update the names, units, and modob values with the new columns
    sitex_names <- c(sitex_names,"NH3_Blank_ob","NH3_Blank_mod","NH3_Corrected_ob","NH3_Corrected_mod")
@@ -126,7 +126,7 @@ if (dtype == 'AMON') {
       col_offset <- which(sitex_names=="QR_ob")
    }
 }
-# Replace the NA values with -999 values. This is just to simplify the MySQL loading
+# Replace the NA values with -999 values. This is just to simplify the loading
 sitex_in[is.na(sitex_in)] <- -999
 cat(paste("Successfully read ",sitex_file,"\n",sep=""))
 num_cols    <- ncol(sitex_in)
@@ -331,16 +331,16 @@ rm(sitex_in)	# remove sitex_in to free up memory as it's no longer needed
 q3_main2 <- apply(q3_main,1,reformat)
 query <- paste("REPLACE INTO ",project_id,q2_main,") VALUES (",q3_main2,"); ",sep="")
 mysql_query_file <- paste(run_dir,"/MySQL_query_",project_id,"_",dtype,".txt",sep="")
-cat("Writing temporary MySQL query file...")
+cat("Writing temporary database query file...")
 cat(paste("use ",dbase,";",sep=""),file=mysql_query_file,append=F,sep="\n")
 cat(query,file=mysql_query_file,append=T,sep="\n")
 cat("done. \n")
-cat("Loading data into MySQL database using temporary file (may take some time)...")
+cat("Loading data into database using temporary file (may take some time)...")
 mysql_command <- paste("mysql --host=",mysql$server," --user=",mysql$login," --password='",mysql$passwd,"' --database=",mysql$dbase," < ",mysql_query_file,sep="")
 system(mysql_command)
 cat("\ndone. \n")
 if((delete_tmp_mysql_file == "T") || (delete_tmp_mysql_file == "t") || (delete_tmp_mysql_file == "Y") || (delete_tmp_mysql_file == "y")) {
-   cat("\nFlag to delete temporary MySQL file set to true...deleteing temporary file. To retain the MySQL input file, set the environment variable DLT_TMP_MYSQL_FILE to false.\n")
+   cat("\nFlag to delete temporary file set to true...deleteing temporary file. To retain the input file, set the environment variable DLT_TMP_MYSQL_FILE to false.\n")
    delete_command <- paste("rm ",mysql_query_file,sep="")
    system(delete_command)
 }

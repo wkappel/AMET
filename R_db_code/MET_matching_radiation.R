@@ -11,9 +11,9 @@
 #                                                  
 #       This "R" script provides an interface to match BSRN, SOLRAD or SURFRAD 
 #       Radiation observations with either WRF, MPAS, MCIP or UFS model output and
-#       insert into AMET configured MySQL database. This is the control
+#       insert into AMET configured database. This is the control
 #       script that calls R functions that read model output, observations,
-#       interpolate and construct the database queries that are sent to MySQL. 
+#       interpolate and construct the database queries that are sent to the database. 
 #                                                            
 #       Developed by the US EPA           
 #                                                                 ################################
@@ -25,7 +25,7 @@
 #         - Added controls for MCIP compatibility. Main updates made in MET_model_read.R.
 #         - MPAS limited area mesh are compatible. Interp weights are NA for sites not in the domain
 #         - Added forecast cycle and forecast hour in the case of forecast model eval.
-#         - Temp text query files pushed to MySQL file naming was changed by adding a random large
+#         - Temp text query files pushed to database file naming was changed by adding a random large
 #           number in the name (num between 1-100000). This allows multiple threads at the same time
 #           in the same project directory.
 #         - Added option to use SURFRAD data directly if specified. Script and functions called are
@@ -41,11 +41,11 @@
 #######################################################################################################
 #######################################################################################################
   options(warn=-1)
-  if(!require(RMySQL)) {stop("Required Package RMySQL was not loaded") }
+  if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded") }
   if(!require(date))   {stop("Required Package date was not loaded")   }
   if(!require(ncdf4))  {stop("Required Package ncdf4 was not loaded")  }
 
-  config_file     <- Sys.getenv("MYSQL_CONFIG")   # MySQL configuration file
+  config_file     <- Sys.getenv("MYSQL_CONFIG")   # database configuration file
   if (!exists("config_file")) {
      stop("Must set MYSQL_CONFIG environment variable")
   }
@@ -69,8 +69,8 @@
   # Get Login and Password from R command arguments
   args              <- commandArgs(1)
   mysqlpass         <- args[1]
-  #mysqlpass <- "config_file" # for dev and debugging (uses R config file with MySQL credentials
-  ### Use MySQL login/password from config file if requested ###
+  #mysqlpass <- "config_file" # for dev and debugging (uses R config file with database credentials
+  ### Use login/password from config file if requested ###
   if (mysqlpass == 'config_file')  { mysqlpass  <- amet_pass  }
   ##############################################################
 
@@ -102,7 +102,7 @@
   userid         <-system("echo $USER",intern = TRUE)
   projectdate    <-as.POSIXlt(Sys.time(), "GMT")
 
-  # MySQL connection information and command to send temporary query file to database.
+  # database connection information and command to send temporary query file to database.
   # This method is dramatically quicker than sending single queries for each of the
   # thousands of sites in the site loop. 
   # mysql server details below has two options with the first commented out. 1) Plain text
@@ -354,7 +354,7 @@ writeLines(paste("use",mysql$dbase,";"),con=sfile)
                        "Model time:",datetime$modeltime," init/forecast hr:",init_utc,"/",fcast_hr))
     }
 
-    # Set missing or bad obs values to MySQL NULL
+    # Set missing or bad obs values to database NULL
     swr_obs_avgn <- as.numeric(swr_obs_avg[sind])
     if(is.na(swr_obs_avgn) || is.nan(swr_obs_avgn))  { swr_obs_avgn  <-"NULL" }
 

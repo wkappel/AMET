@@ -22,14 +22,14 @@ if (!exists("dbase")) {
    stop("Must set AMET_DATABASE environment variable")
 }
 
-config_file     <- Sys.getenv("MYSQL_CONFIG")   # MySQL configuration file
+config_file     <- Sys.getenv("MYSQL_CONFIG")   # database configuration file
 if (!exists("config_file")) {
    stop("Must set MYSQL_CONFIG environment variable")
 }
 source(config_file)
 
 # LOAD Required R Modules
-suppressMessages(if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")})
+if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
 require(stringr)
 
 ## Get a couple of environment variables
@@ -42,14 +42,14 @@ args              <- commandArgs(2)
 mysql_login       <- args[1]
 mysql_pass        <- args[2]
 
-### Use MySQL login/password from config file if requested ###
+### Use database login/password from config file if requested ###
 if (mysql_login == 'config_file') { mysql_login <- amet_login }
 if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
 
-con   <- dbConnect(MySQL(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
+con   <- dbConnect(MariaDB(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
 if (!exists("con")) {
-   stop("Your MySQL server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
+   stop("Your database server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
 }
 
 for (j in 1:length(site_file)) {											# For each network
@@ -110,7 +110,7 @@ for (j in 1:length(site_file)) {											# For each network
       for (i in 1:length(site_data$stat_id)) {
          ###################################################
          ### Set completely missing Latitude/Longitude value
-         ### to 0 to prevent MySQL command from failing
+         ### to 0 to prevent database command from failing
          ###################################################
          if(site_data$lat[i] == "") {
             site_data$lat[i] <- 0

@@ -50,11 +50,11 @@
 #########################################################################
   options(warn=-1)
 #	Load required modules
-  if(!require(RMySQL)) {stop("Required Package RMySQL was not loaded")}
-  if(!require(date))   {stop("Required Package date was not loaded")  }
-  if(!require(fields)) {stop("Required Package fields was not loaded")}
-  if(!require(maps))   {stop("Required Package maps was not loaded")}
-  if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
+  if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded")}
+  if(!require(date))     {stop("Required Package date was not loaded")  }
+  if(!require(fields))   {stop("Required Package fields was not loaded")}
+  if(!require(maps))     {stop("Required Package maps was not loaded")}
+  if(!require(mapdata))  {stop("Required Package mapdata was not loaded")}
 
 #########################################################################
 #    Initialize AMET Diractory Structure Via Env. Vars
@@ -97,7 +97,7 @@
 #					Main Program     	   
 #########################################################################
 
- # Set up date specs and query of SRAD data from MySQL
+ # Set up date specs and query of SRAD data from database 
  d1     <-paste(ys,dform(ms),dform(ds),sep="")
  d2     <-paste(ye,dform(me),dform(de),sep="")
 

@@ -5,7 +5,7 @@
 #                user for both MET and AQ               #
 #                                                       #
 #       AUTHOR:  Alexis Zubrow, IE UNC                  # 
-#	LAST UPDATE: 01/2022 by K. Wyat Appel		#
+#	LAST UPDATE: 05/2025 by K. Wyat Appel		#
 #--------------------------------------------------------
 
 
@@ -22,7 +22,7 @@ source(source.command)
 dbase <-Sys.getenv('AMET_DATABASE')
 
 # LOAD Required R Modules
-require(RMySQL)                                              # Use MYSQL R package
+if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
 
 args                    <- commandArgs(TRUE)
 mysql_root_login        <- args[1]
@@ -30,10 +30,10 @@ mysql_root_pass         <- args[2]
 delete_db               <- args[3]
 delete_user             <- args[4]
 
-# Connect to MySQL database and Set AMET Passwords ametsecure (for read and write ability to database)
-con             <- dbConnect(MySQL(),user=mysql_root_login,password=mysql_root_pass,dbname="mysql",host=mysql_server)
+# Connect to database and Set AMET Passwords ametsecure (for read and write ability to database)
+con             <- dbConnect(MariaDB(),user=mysql_root_login,password=mysql_root_pass,dbname="mysql",host=mysql_server)
 if (!exists("con")) {
-   stop("Your MySQL server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
+   stop("Your database server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
 }
 
 ## Check if they want to delete the database

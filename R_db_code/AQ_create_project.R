@@ -1,15 +1,15 @@
 ##------------------------------------------------------
 #       AMET AQ Database Table Creation                 #
 #                                                       #
-#       PURPOSE: To create a MYSQL table usable for     #
+#       PURPOSE: To create a database table usable for  #
 #               the AMET-AQ system                      #
 #							#
-#       Last Update: 02/2025 by Wyat Appel              #
+#       Last Update: 05/2025 by Wyat Appel              #
 #--------------------------------------------------------
 
 ######################################################################################
 
-suppressMessages(require(RMySQL))	# Use RMYSQL package
+if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
 
 amet_base <- Sys.getenv('AMETBASE')
 if (!exists("amet_base")) {
@@ -21,7 +21,7 @@ if (!exists("dbase")) {
    stop("Must set AMET_DATABASE environment variable")
 }
 
-config_file     <- Sys.getenv("MYSQL_CONFIG")   # MySQL configuration file
+config_file     <- Sys.getenv("MYSQL_CONFIG")   # database configuration file
 if (!exists("config_file")) {
    stop("Must set MYSQL_CONFIG environment variable")
 }
@@ -54,12 +54,12 @@ args              <- commandArgs(2)
 mysql_login       <- args[1]
 mysql_pass        <- args[2]
 
-### Use MySQL login/password from config file if requested ###
+### Use database login/password from config file if requested ###
 if (mysql_login == 'config_file') { mysql_login <- amet_login }
 if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
 
-con             <- dbConnect(MySQL(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
+con             <- dbConnect(MariaDB(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
 MYSQL_tables    <- dbListTables(con)
 
 ##################################################
@@ -78,7 +78,7 @@ create_table<-function()
 ##################################################
 
 exists <- "n"
-cat(paste("\nActive MySQL database = ",dbase,"\n",sep=""))
+cat(paste("\nActive database = ",dbase,"\n",sep=""))
 cat(paste("Project ID = ",project_id,"\n\n",sep=""))
 if (length(MYSQL_tables) != 0) {
    cat("List of existing projects in dbase\n")
@@ -91,7 +91,7 @@ if (length(MYSQL_tables) != 0) {
          mysql_result <- dbSendQuery(con,drop)
          drop2 <- paste("delete from aq_project_log where proj_code = '",project_id,"'",sep="")
          mysql_result <- dbSendQuery(con,drop2)
-         cat("The following MySQL database tables have been successfully removed from the database. \n")
+         cat("The following database tables have been successfully removed from the database. \n")
       }
       else {
          cat(paste("\nWould you like to update the description of the existing project ",project_id," (y/n)? \n",sep=""))

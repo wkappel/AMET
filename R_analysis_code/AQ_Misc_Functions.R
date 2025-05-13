@@ -48,7 +48,7 @@ ametbase        <- Sys.getenv("AMETBASE")                       # base directory
 dbase           <- Sys.getenv("AMET_DATABASE")                  # AMET database
 ametRinput      <- Sys.getenv("AMETRINPUT")                     # input file for this script
 ametptype       <- Sys.getenv("AMET_PTYPE")                     # Prefered output type
-config_file     <- Sys.getenv("MYSQL_CONFIG")                   # MySQL configuration file 
+config_file     <- Sys.getenv("MYSQL_CONFIG")                   # Database configuration file 
 
 if (!exists("TIME_FORMAT")){ TIME_FORMAT <- "LST" }
 
@@ -68,7 +68,7 @@ if (!exists("AMET_DB")) {
 }
 if ((AMET_DB == "T") || (AMET_DB == "t") || (AMET_DB == "Y") || (AMET_DB == "y")) {
    ## Load Required Libraries
-   if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")}
+   if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
    mysql <- list(login=amet_login, passwd=amet_pass, server=mysql_server, dbase=dbase, maxrec=maxrec)           # Set MYSQL login and query options
 }
 ##############################
@@ -170,9 +170,9 @@ if (length(cols) != (length(bounds)-1)) {
 ###############################################################
 #- - - - - - - - -   START OF FUNCTION  -  - - - - - - - - - ##
 ###############################################################
-###  Query CIRAQ MySQL database
+###  Query CIRAQ database
 #
-# Input: Standard MySQL query string (query) (e.g. query<-"SELECT stat_id from stations where state='NC' " )
+# Input: Standard database query string (query) (e.g. query<-"SELECT stat_id from stations where state='NC' " )
 #   also, the maximum number of records (maxrec). Setting maxrec to a lower number will increase the speed
 #   of the connection and retrieval of the data. Database (dbase), password (passwd)
 #   
@@ -192,7 +192,7 @@ if (length(cols) != (length(bounds)-1)) {
 ###
  	db_Query<-function(query,mysql,get=1,verbose=FALSE)
  {
-  db<-dbDriver("MySQL")				# MySQL Database type
+  db<-dbDriver("MariaDB")			# Database type
   con <-dbConnect(db,user=mysql$login,pass=mysql$passwd,host=mysql$server,dbname=mysql$dbase)		# Database connect
 
   for (q in 1:length(query)){
@@ -217,7 +217,7 @@ if (length(cols) != (length(bounds)-1)) {
 ###############################################################
 #- - - - - - - - -   START OF FUNCTION  -  - - - - - - - - - ##
 ###############################################################
-###  Query CIRAQ MySQL database
+###  Query CIRAQ database
 #
 # Input: MCIP variable lookup file and variable of interest
 #   
