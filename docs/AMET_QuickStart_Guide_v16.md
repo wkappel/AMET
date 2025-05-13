@@ -166,7 +166,8 @@ Change the setting of AMETBASE in create_amet_user.csh and run the script:
 
 ## 7. Create AQ and MET projects
 
-Prior to loading data into the database, to avoid getting disconnected from the terminal, use the **tmux** application.
+To avoid getting disconnected from the terminal (highly recommend):
+Use the **tmux** application to start a window that will not automatically timeout due to lack of input.
 https://github.com/tmux/tmux/wiki
 
 
