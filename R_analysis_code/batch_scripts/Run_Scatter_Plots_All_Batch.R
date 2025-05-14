@@ -72,7 +72,7 @@ run_script_command5 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_percenti
 run_script_command6 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_skill.R",sep="")
 run_script_command7 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_mtom.R",sep="")
 run_script_command8 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_soil.R",sep="")
-run_script_command9 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_Multisim_plotly.R",sep="")
+run_script_command9 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_multisim_plotly.R",sep="")
 run_script_command10 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_bins_plotly.R",sep="")
 run_script_command11 <- paste(amet_base,"/R_analysis_code/AQ_Scatterplot_density_ggplot.R",sep="")
 
