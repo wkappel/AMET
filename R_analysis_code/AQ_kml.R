@@ -16,8 +16,8 @@
   options(warn=-1)
 #############################################################################################################
 #	Load required modules
-  if(!require(date))   {stop("Required Package date was not loaded")}
-  if(!require(RMySQL)) {stop("Required Package RMySQL was not loaded")}
+  if(!require(date))     {stop("Required Package date was not loaded")}
+  if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded")}
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #    Initialize AMET Directory Structure Via Env. Vars
 #    AND Load required function and conf. files

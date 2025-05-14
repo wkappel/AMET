@@ -400,8 +400,13 @@ density_zlim	<- NULL
 num_dens_bins	<- NULL
 
 ### Skill plot criteria line ###
-O3_max_limit	<- 70
-PM_max_limit	<- 25
+### Skill plot criteria line ###
+O3_max_limit    <- 70
+PM_max_limit    <- 25
+gas_max_limit   <- 10
+dep_max_limit   <- 5
+AE6_max_limit   <- 10
+AOD_max_limit   <- 10
 
 ##################################
 ### Stacked Bar Charts Options ###

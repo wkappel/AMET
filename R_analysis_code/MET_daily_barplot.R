@@ -23,7 +23,7 @@
 #                                                                       #            
 # Version 1.3, May 15, 2017, Robert Gilliam                             #
 #           - Removed hard coded amet-config.R config option that       #
-#             defined MySQL server, database and password (unsecure).   #
+#             defined database server, database and password (unsecure).#
 #             Now users define that file location in csh wrapper scripts#
 #             via setenv MYSQL_CONFIG variable.                         #
 #           - Changed directory names to reflect new directory structure#
@@ -32,7 +32,7 @@
 #                                                                       #            
 # Version 1.4, Sep 30, 2018, Robert Gilliam                             #
 #           - two digit hour taken from ob_date, not ob_time to be      #
-#             consistant with new MySQL time structure. No impact       #
+#             consistant with new database time structure. No impact    #
 #             since hour of day is not used in daily barplots.          #
 #                                                                       #            
 #  Version 1.5, Apr 19, 2021, Robert Gilliam                            # 
@@ -45,7 +45,7 @@
   options(warn=-1)
 #:::::::::::::::::::::::::::::::::::::::::::::
 #	Load required modules
- if(!require(RMySQL)) {stop("Required Package RMySQL was not loaded")}
+ if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded")}
 
 ########################################################
 #    Initialize AMET Directory Structure Via Env. Vars

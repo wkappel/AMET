@@ -31,13 +31,13 @@
 #
 #  Version 1.3, May 15, 2017, Robert Gilliam
 #  Updates: - Removed hard coded amet-config.R config option that       
-#             defined MySQL server, database and password (unsecure).   
+#             defined database server, database and password (unsecure).   
 #             Now users define that file location in csh wrapper scripts
 #             via setenv MYSQL_CONFIG variable.
 #           - Removed some deprecated variables and cleaned/formatted
 #             script for better readability. Also changed dir names
 #             to reflect new version (i.e., R_analysis_code instead of R)
-#           - Changed the date start and date end to include new MySQL
+#           - Changed the date start and date end to include new database
 #             timestamp. The new one condisders the end date to be 00 UTC
 #             for that day, while the old considered data for all hours.
 #             Now a user can specify the start "day hour" and end "day hour"
@@ -49,7 +49,7 @@
 #
 # Version 1.4, Sep 30, 2018, Robert Gilliam         
 #           - Headers updated. More old tab usage was changed to white spaces.
-#           - Date part of query was modified to accommodate newer MySQL date considerations.
+#           - Date part of query was modified to accommodate newer database date considerations.
 #             End date with no hour is considered 00 UTC on that day, so a day is added to user
 #             end date and query was changed to less than end date.
 #                  
@@ -63,12 +63,12 @@
   options(warn=-1)
 #############################################################################################################
 #	Load required modules
-  if(!require(maps))   {stop("Required Package maps was not loaded")}
-  if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
-  if(!require(date))   {stop("Required Package date was not loaded")}
-  if(!require(RMySQL)) {stop("Required Package RMySQL was not loaded")}
-  if(!require(akima))  {stop("Required Package akima was not loaded")}
-  if(!require(fields)) {stop("Required Package fields was not loaded")}
+  if(!require(maps))     {stop("Required Package maps was not loaded")}
+  if(!require(mapdata))  {stop("Required Package mapdata was not loaded")}
+  if(!require(date))     {stop("Required Package date was not loaded")}
+  if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded")}
+  if(!require(akima))    {stop("Required Package akima was not loaded")}
+  if(!require(fields))   {stop("Required Package fields was not loaded")}
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #    Initialize AMET Diractory Structure Via Env. Vars
 #    AND Load required function and conf. files

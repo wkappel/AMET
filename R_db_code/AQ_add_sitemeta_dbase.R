@@ -22,14 +22,14 @@ if (!exists("dbase")) {
    stop("Must set AMET_DATABASE environment variable")
 }
 
-config_file     <- Sys.getenv("MYSQL_CONFIG")   # MySQL configuration file
+config_file     <- Sys.getenv("MYSQL_CONFIG")   # database configuration file
 if (!exists("config_file")) {
    stop("Must set MYSQL_CONFIG environment variable")
 }
 source(config_file)
 
 # LOAD Required R Modules
-suppressMessages(if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")})
+if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
 require(stringr)
 
 ## Get a couple of environment variables
@@ -42,14 +42,14 @@ args              <- commandArgs(2)
 mysql_login       <- args[1]
 mysql_pass        <- args[2]
 
-### Use MySQL login/password from config file if requested ###
+### Use database login/password from config file if requested ###
 if (mysql_login == 'config_file') { mysql_login <- amet_login }
 if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
 
-con   <- dbConnect(MySQL(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
+con   <- dbConnect(MariaDB(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
 if (!exists("con")) {
-   stop("Your MySQL server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
+   stop("Your database server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
 }
 
 for (j in 1:length(site_file)) {											# For each network
@@ -110,7 +110,7 @@ for (j in 1:length(site_file)) {											# For each network
       for (i in 1:length(site_data$stat_id)) {
          ###################################################
          ### Set completely missing Latitude/Longitude value
-         ### to 0 to prevent MySQL command from failing
+         ### to 0 to prevent database command from failing
          ###################################################
          if(site_data$lat[i] == "") {
             site_data$lat[i] <- 0
@@ -124,7 +124,7 @@ for (j in 1:length(site_file)) {											# For each network
          q2 <- "         (stat_id, num_stat_id, stat_name, network, monitor_type, co_network, state, city, county, country, landuse, loc_setting, start_date, end_date, lat, lon, elevation, GMT_Offset,near_road,NLCD2011_Imperv_Surf_Frac,NLCD2011_Imperv_Surf_Loc_Setting,NLCD2006_Imperv_Surf_Frac,NLCD2006_Imperv_Surf_Loc_Setting,NLCD2001_Imperv_Surf_Frac,NLCD2001_Imperv_Surf_Loc_Setting,daily_o3_jandec,daily_o3_maysep,daily_pm_mass_and_specs_jandec,daily_pm_mass_only_jandec,daily_pm_specs_only_jandec,daily_voc_benz_jandec,daily_voc_etha_jandec,daily_voc_ethy_jandec,daily_voc_isop_jandec,hourly_co_jandec,hourly_etha_jandec,hourly_ethy_jandec,hourly_isop_jandec,hourly_no_jandec,hourly_no2_jandec,hourly_nox_jandec,hourly_noy_jandec,hourly_o3_jandec,hourly_pm10_jandec,hourly_pm25_jandec,hourly_so2_jandec,hourly_tolu_jandec)"	# Set part of the MYSQL query
 	 q3 <- paste(" VALUES  ('",site_data$stat_id[i],"', '",i,"', '",site_data$stat_name[i],"', '",site_data$network[i],"', '",site_data$monitor_type[i],"', '",site_data$co_network[i],"', '",site_data$state[i],"', '",site_data$city[i],"', '",site_data$county[i],"', '",site_data$country[i],"', '",site_data$landuse[i],"', '",site_data$loc_setting[i],"', '",site_data$start_date[i],"', '",site_data$end_date[i],"', ",site_data$lat[i],", ",site_data$lon[i],", ",site_data$elevation[i],", ",site_data$GMT_offset[i],", '",site_data$near_road[i],"',",site_data$NLCD2011.ImperviousSurface[i],",'",site_data$NLCD2011.ImperviousSurface.Location.Setting[i],"',",site_data$NLCD2006.ImperviousSurface[i],",'",site_data$NLCD2006.ImperviousSurface.Location.Setting[i],"',",site_data$NLCD2001.ImperviousSurface[i],",'",site_data$NLCD2001.ImperviousSurface.Location.Setting[i],"','",site_data$daily_o3_jandec[i],"','",site_data$daily_o3_maysep[i],"','",site_data$daily_pm_mass_and_specs_jandec[i],"','",site_data$daily_pm_mass_only_jandec[i],"','",site_data$daily_pm_specs_only_jandec[i],"','",site_data$daily_voc_benz_jandec[i],"','",site_data$daily_voc_etha_jandec[i],"','",site_data$daily_voc_ethy_jandec[i],"','",site_data$daily_voc_isop_jandec[i],"','",site_data$hourly_co_jandec[i],"','",site_data$hourly_etha_jandec[i],"','",site_data$hourly_ethy_jandec[i],"','",site_data$hourly_isop_jandec[i],"','",site_data$hourly_no_jandec[i],"','",site_data$hourly_no2_jandec[i],"','",site_data$hourly_nox_jandec[i],"','",site_data$hourly_noy_jandec[i],"','",site_data$hourly_o3_jandec[i],"','",site_data$hourly_pm10_jandec[i],"','",site_data$hourly_pm25_jandec[i],"','",site_data$hourly_so2_jandec[i],"','",site_data$hourly_tolu_jandec[i],"')",sep="")
          query <- paste(q1,q2,q3,sep="")											# Set the MYSQL query
-         add_site_list_log <- try(dbSendQuery(con,query))									# Add the site list to the database
+         add_site_list_log <- try(dbExecute(con,query))									# Add the site list to the database
          if (class(add_site_list_log)=="try-error") {
             print(paste("Failed to add sites to database with the error: ",add_site_list_log,".",sep=""))
          }

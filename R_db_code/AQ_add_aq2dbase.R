@@ -16,7 +16,7 @@
 
 ## Load Required Libraries
 require(data.table)
-if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")}
+if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
 
 run_dir		 <- Sys.getenv('AMET_RUN',unset=NA)
 dbase            <- Sys.getenv('AMET_DATABASE')
@@ -45,21 +45,21 @@ project_id        <- gsub("[-]","_",project_id)
 cat(paste("\nProject_ID: ",log_id,"\n",sep=""))
 cat(paste("Network: ",dtype,"\n",sep=""))
 cat(paste("Sitex File: ",sitex_file,"\n",sep=""))
-cat(paste("MySQL Server: ",mysql_server,"\n",sep=""))
+cat(paste("Database Server: ",mysql_server,"\n",sep=""))
 
 ###############################################################
 #- - - - - - - - -   START OF FUNCTION  -  - - - - - - - - - ##
 ###############################################################
 db_Query<-function(query,mysql,get=1,verbose=FALSE)
  {
-  db<-dbDriver("MySQL")                         # MySQL Database type
+  db<-dbDriver("MariaDB")                         # Database type
   con <-dbConnect(db,user=mysql$login,pass=mysql$passwd,host=mysql$server,dbname=mysql$dbase)           # Database connect
 
   for (q in 1:length(query)){
     rs<-dbSendQuery(con,query[q])       # Send query and place results in data frame
     if(verbose){ print(query[q]) }
   }
-  if(get == 1){df<-fetch(rs,n=mysql$maxrec)}
+  if(get == 1){df<-dbFetch(rs,n=mysql$maxrec)}
   dbClearResult(rs)
   dbDisconnect(con)             # Database disconnect
 
@@ -73,12 +73,12 @@ db_Query<-function(query,mysql,get=1,verbose=FALSE)
 ###############################################################
 reformat <- function(a) paste(a,collapse=",")
 ###############################################################
-### Use MySQL login/password from config file if requested ###
+### Use login/password from config file if requested ###
 if (mysql_login == 'config_file') { mysql_login <- amet_login }
 if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
 mysql	<- list(login=mysql_login, passwd=mysql_pass, server=mysql_server, dbase=dbase, maxrec=maxrec)	# Set MYSQL login and query options
-con	<- dbConnect(MySQL(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
+con	<- dbConnect(MariaDB(),user=mysql_login,password=mysql_pass,dbname=dbase,host=mysql_server)
 
 sitex_in    	<- fread(sitex_file,skip=5,na.strings="-999",sep=",",stringsAsFactors=F,colClasses = c('SiteId'='character'),check.names=T) # Read sitex file
 sitex_in2   	<- fread(sitex_file,skip=3,header=F,sep=",",colClasses="character",nrows=3,check.names=T)  # Read sitex file header only
@@ -115,7 +115,7 @@ if (dtype == 'AMON') {
    # Create a new blank corrected mod value column which is just the NH3 model value
    obs.corrected.df$NH3_Corrected_mod <- obs.corrected.df$NH3_mod
    sitex_in <- obs.corrected.df
-   # Replace the NA values with -999 values. This is just to simplify the MySQL loading
+   # Replace the NA values with -999 values. This is just to simplify the loading
    sitex_in[is.na(sitex_in)] <- -999
    # Update the names, units, and modob values with the new columns
    sitex_names <- c(sitex_names,"NH3_Blank_ob","NH3_Blank_mod","NH3_Corrected_ob","NH3_Corrected_mod")
@@ -126,7 +126,7 @@ if (dtype == 'AMON') {
       col_offset <- which(sitex_names=="QR_ob")
    }
 }
-# Replace the NA values with -999 values. This is just to simplify the MySQL loading
+# Replace the NA values with -999 values. This is just to simplify the loading
 sitex_in[is.na(sitex_in)] <- -999
 cat(paste("Successfully read ",sitex_file,"\n",sep=""))
 num_cols    <- ncol(sitex_in)
@@ -158,8 +158,8 @@ if (length(query_table_info.df$COLUMN_NAME) == 0) {
    create_POCode_Column <- paste("alter table ",project_id," add column POCode integer",sep="")
    make_POCode_unique   <- paste("alter table ",project_id," add UNIQUE(network,stat_id,POCode,ob_dates,ob_datee,ob_hour)",sep="")
    cat("\nPOCode column missing (must be an old table). Adding POCode column to project table...")
-   mysql_result <- dbSendQuery(con,create_POCode_Column)
-   mysql_result <- dbSendQuery(con,make_POCode_unique)
+   mysql_result <- dbExecute(con,create_POCode_Column)
+   mysql_result <- dbExecute(con,make_POCode_unique)
    cat("done. \n")
 }
 check_stat_id_POCode 		<- paste("select * from information_schema.COLUMNS where TABLE_SCHEMA = '",dbase,"' and TABLE_NAME = '",project_id,"' and COLUMN_NAME = 'stat_id_POCode';",sep="")
@@ -167,7 +167,7 @@ query_table_info.df <- suppressMessages(db_Query(check_stat_id_POCode,mysql))
 if (length(query_table_info.df$COLUMN_NAME) == 0) {
    create_stat_id_POCode_Column <- paste("alter table ",project_id," add column stat_id_POCode character(100)",sep="")
    cat("stat_id_POCode column missing (must be an old table). Adding stat_id_POCode column to project table...")
-   mysql_result <- dbSendQuery(con,create_stat_id_POCode_Column)
+   mysql_result <- dbExecute(con,create_stat_id_POCode_Column)
    cat("...done. \n")
 }
 #####################################################
@@ -209,7 +209,7 @@ if (length(units_to_add) > 0) {
    for (i in 1:length(units_to_add)) {
       cat(paste(units_to_add[i],"\n"))
       create_units_column <- paste("alter table project_units add column ",units_to_add[i]," varchar(10);",sep="")
-      mysql_result <- dbSendQuery(con,create_units_column)
+      mysql_result <- dbExecute(con,create_units_column)
    }
    cat("Done adding missing units species. \n\n")
 }
@@ -230,7 +230,7 @@ for (i in 1:length(unit_query_vals)) {
 }
 q3_units <- paste(q3_units,")")
 qs_units <- paste(q1_units,q2_units,q3_units,sep = " ")
-mysql_result <- suppressMessages(dbSendQuery(con,qs_units))
+mysql_result <- suppressMessages(dbExecute(con,qs_units))
 cat("done. \n")
 ###########################################
 
@@ -265,7 +265,7 @@ missing_sites           <- unique(sitex_in$SiteId[!(sitex_in$SiteId %in% existin
                latitude       <- sitex_in$Latitude[sitex_in$SiteId==missing_sites[i]]
                longitude      <- sitex_in$Longitude[sitex_in$SiteId==missing_sites[i]]
                add_site_query <- paste("REPLACE INTO ",dbase,".site_metadata (stat_id, num_stat_id, network, lat, lon) values ('",missing_sites[i],"','",num_stat_id,"','",sitex_in$dtype[i],"',",latitude,",",longitude,");",sep="")
-               mysql_result   <- dbSendQuery(con,add_site_query)
+               mysql_result   <- dbExecute(con,add_site_query)
             }
             cat("Done adding missing sites. Consider updating the network site list to include these missing sites with additional metadata.\n\n")
          }
@@ -300,7 +300,7 @@ cat("done. \n")
       }
       create_species_column <- paste(create_species_column,";",sep="")
       cat(paste("\nCreating table columns for all missing species...",sep=""))
-      dbSendQuery(con,create_species_column)
+      dbExecute(con,create_species_column)
       cat("done. \n")
    }
    else {
@@ -331,16 +331,16 @@ rm(sitex_in)	# remove sitex_in to free up memory as it's no longer needed
 q3_main2 <- apply(q3_main,1,reformat)
 query <- paste("REPLACE INTO ",project_id,q2_main,") VALUES (",q3_main2,"); ",sep="")
 mysql_query_file <- paste(run_dir,"/MySQL_query_",project_id,"_",dtype,".txt",sep="")
-cat("Writing temporary MySQL query file...")
+cat("Writing temporary database query file...")
 cat(paste("use ",dbase,";",sep=""),file=mysql_query_file,append=F,sep="\n")
 cat(query,file=mysql_query_file,append=T,sep="\n")
 cat("done. \n")
-cat("Loading data into MySQL database using temporary file (may take some time)...")
+cat("Loading data into database using temporary file (may take some time)...")
 mysql_command <- paste("mysql --host=",mysql$server," --user=",mysql$login," --password='",mysql$passwd,"' --database=",mysql$dbase," < ",mysql_query_file,sep="")
 system(mysql_command)
 cat("\ndone. \n")
 if((delete_tmp_mysql_file == "T") || (delete_tmp_mysql_file == "t") || (delete_tmp_mysql_file == "Y") || (delete_tmp_mysql_file == "y")) {
-   cat("\nFlag to delete temporary MySQL file set to true...deleteing temporary file. To retain the MySQL input file, set the environment variable DLT_TMP_MYSQL_FILE to false.\n")
+   cat("\nFlag to delete temporary file set to true...deleteing temporary file. To retain the input file, set the environment variable DLT_TMP_MYSQL_FILE to false.\n")
    delete_command <- paste("rm ",mysql_query_file,sep="")
    system(delete_command)
 }
@@ -378,7 +378,7 @@ if (max_date < max_date_old) {
    max_date <- max_date_old
 }
 query_dates <- paste("REPLACE INTO aq_project_log (proj_code,model,user_id,passwd,email,description,proj_date,proj_time,min_date,max_date) values ('",project_id,"','",model,"','",user_id,"','",password,"','",email,"','",description,"','",proj_date,"','",proj_time,"','",min_date,"','",max_date,"')",sep="")                    # put first and last dates into project log
-mysql_result <- dbSendQuery(con,query_dates)
+mysql_result <- dbExecute(con,query_dates)
 cat("done.\n\n")
 #######################################################################################################################################
 mysql_result <- dbDisconnect(con)

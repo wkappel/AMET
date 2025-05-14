@@ -19,7 +19,7 @@
   options(warn=-1)
 #:::::::::::::::::::::::::::::::::::::::::::::
 #	Load required modules
-  require(RMySQL)
+  require(RMariaDB)
   require(maps)
   require(mapdata)
 #:::::::::::::::::::::::::::::::::::::::::::::
