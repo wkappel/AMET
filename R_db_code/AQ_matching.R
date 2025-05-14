@@ -24,7 +24,7 @@ if (!exists("amet_base")) {
    stop("Must set AMETBASE environment variable")
 }
 
-config_file     <- Sys.getenv("MYSQL_CONFIG")   # MySQL configuration file
+config_file     <- Sys.getenv("MYSQL_CONFIG")   # database configuration file
 if (!exists("config_file")) {
    stop("Must set MYSQL_CONFIG environment variable")
 }
@@ -67,9 +67,9 @@ if (site_file_format == "csv") {
    site_file_directory <- "/site_metadata_files"
 }
 
-### Use MySQL login/password from config file if requested ###
+### Use login/password from config file if requested ###
 #if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
-##############################################################
+########################################################
 
 obs_data_dir           <- Sys.getenv('AMET_OBS')
 use_AE6                <- Sys.getenv('INC_AERO6_SPECIES')

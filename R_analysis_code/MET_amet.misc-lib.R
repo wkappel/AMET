@@ -59,7 +59,7 @@
 #
 #       datecalc        --> Calculate Dates given an inital date and dour or day to add
 #
-#       ametQuery       --> MySQL Query  Function 	
+#       ametQuery       --> Database Query Function 	
 #
 #       massageTseries  --> Takes surface related variables, filters bad data, converts wind componentes speed and direction.
 #
@@ -311,9 +311,9 @@
 ###############################################################
 #- - - - - - - - -   START OF FUNCTION  -  - - - - - - - - - ##
 ###############################################################
-###  MySQL Query  Function 
+### Database  Query  Function 
 #
-# Input: Standard MySQL query string (query) (e.g. query<-"SELECT stat_id from stations where state='NC' " )
+# Input: Standard database query string (query) (e.g. query<-"SELECT stat_id from stations where state='NC' " )
 #   also, the maximum number of records (maxrec). Setting maxrec to a lower number will increase the speed
 #   of the connection and retrieval of the data. Database (dbase), password (passwd)
 #   
@@ -333,7 +333,7 @@
 ###
   ametQuery<-function(query,mysql,get=1,verbose=F) {
 
-  db<-dbDriver("MySQL")
+  db<-dbDriver("RMariaDB")
   con <-dbConnect(db,user=mysql$login,pass=mysql$passwd,host=mysql$server,dbname=mysql$dbase)
 
   for (q in 1:length(query)){
@@ -341,7 +341,7 @@
       if(verbose) { writeLines(query[q]) }     
   }
 
-  if(get == 1){df<-fetch(rs,n=mysql$maxrec)}
+  if(get == 1){df<-dbFetch(rs,n=mysql$maxrec)}
   
   dbClearResult(rs)
   dbDisconnect(con)
@@ -474,7 +474,7 @@
 #	then calculates individual model performance statistics for each station and
 #	for all surface variables 
 #
-# Input: MySQL query (query) defining the station dataset, database (dbase) name where data 
+# Input: Database query (query) defining the station dataset, database (dbase) name where data 
 #		is stored, database password (pass)   
 #   
 #   
@@ -696,7 +696,7 @@
 #    into intra-day, diurnal and synoptic components. The observed and modeled timeseries
 #    are compared in terms of variablity and correlation
 #
-# Input: MySQL query (query) defining the station dataset, database (dbase) name where data 
+# Input: Database query (query) defining the station dataset, database (dbase) name where data 
 #		is stored, database password (pass)   
 #   
 # Output: List with correlation and variability of model and obs filtered timeseries.

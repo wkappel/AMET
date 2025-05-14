@@ -46,9 +46,9 @@
 #######################################################################################################
 #######################################################################################################
   options(warn=-1)
-  if(!require(RMySQL)) {stop("Required Package RMySQL was not loaded") }
-  if(!require(date))   {stop("Required Package date was not loaded")   }
-  if(!require(ncdf4))  {stop("Required Package ncdf4 was not loaded")  }
+  if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded") }
+  if(!require(date))   	 {stop("Required Package date was not loaded")   }
+  if(!require(ncdf4))    {stop("Required Package ncdf4 was not loaded")  }
 
   config_file     <- Sys.getenv("MYSQL_CONFIG")  
   if (!exists("config_file")) {

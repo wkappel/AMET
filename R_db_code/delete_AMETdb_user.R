@@ -5,7 +5,7 @@
 #                user for both MET and AQ               #
 #                                                       #
 #       AUTHOR:  Alexis Zubrow, IE UNC                  # 
-#	LAST UPDATE: 01/2022 by K. Wyat Appel		#
+#	LAST UPDATE: 05/2025 by K. Wyat Appel		#
 #--------------------------------------------------------
 
 
@@ -22,7 +22,7 @@ source(source.command)
 dbase <-Sys.getenv('AMET_DATABASE')
 
 # LOAD Required R Modules
-require(RMySQL)                                              # Use MYSQL R package
+if(!require(RMariaDB)){stop("Required Package RMariaDB was not loaded")}
 
 args                    <- commandArgs(TRUE)
 mysql_root_login        <- args[1]
@@ -30,10 +30,10 @@ mysql_root_pass         <- args[2]
 delete_db               <- args[3]
 delete_user             <- args[4]
 
-# Connect to MySQL database and Set AMET Passwords ametsecure (for read and write ability to database)
-con             <- dbConnect(MySQL(),user=mysql_root_login,password=mysql_root_pass,dbname="mysql",host=mysql_server)
+# Connect to database and Set AMET Passwords ametsecure (for read and write ability to database)
+con             <- dbConnect(MariaDB(),user=mysql_root_login,password=mysql_root_pass,dbname="mysql",host=mysql_server)
 if (!exists("con")) {
-   stop("Your MySQL server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
+   stop("Your database server was not found or login or passwords incorrect, please check to see if server is running or passwords are correct.")
 }
 
 ## Check if they want to delete the database
@@ -43,7 +43,7 @@ if (!exists("con")) {
    if (delete_db == "yes") {
       print(paste("Deleting database:",dbase))
       q <- paste("drop DATABASE",dbase)
-      drop_database_log <- try(dbSendQuery(con,q),silent=T) 
+      drop_database_log <- try(dbExecute(con,q),silent=T) 
       if (class(drop_database_log)=="try-error") {
          print(paste("Failed to delete database with the following error: ",create_database_log,". Perhaps the database doesn't exists.",sep=""))
          stop()
@@ -61,13 +61,13 @@ if (!exists("con")) {
    if (delete_user == "yes") {
       print(paste("Deleting user:", root_login))
       q <- paste("delete from mysql.user where user='",root_login,"'",sep="")
-      drop_user_log <- try(dbSendQuery(con,q),silent=T)
+      drop_user_log <- try(dbExecute(con,q),silent=T)
       if (class(drop_database_log)=="try-error") {
          print(paste("Failed to delete user with the following error: ",create_database_log,". Perhaps the user doesn't exists.",sep=""))
          stop()
       }
       q <- "FLUSH PRIVILEGES"
-      flush_log <- try(dbSendQuery(con,q),silent=T)
+      flush_log <- try(dbExecute(con,q),silent=T)
       if (class(flush_log)=="try-error") {
          print(paste("Failed to flush privileges with the error: ",flush_log,". This probably isn't a big deal really.",sep=""))
       }

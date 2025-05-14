@@ -24,7 +24,7 @@
 #######################################################################################################
 #     This script contains the following functions
 #
-#     ametQuery          -->  Simple wrapper function for MySQL queries to allow for cleaner code
+#     ametQuery          -->  Simple wrapper function for database queries to allow for cleaner code
 #
 #   new_dbase_tables     -->  AMET database 
 #                             existing. Also updates main project_log with new project information
@@ -56,10 +56,10 @@
 ###############################################################
 #- - - - - - - - -   START OF AMETQUERY FUNCTION  -  - - - - ##
 ###############################################################
-###  MySQL ametQuery  Function 
+###  database ametQuery  Function 
 #
 # Input: query   - either a single or multiple queries, although single queries are most common (Required)
-#        mysql   - list that details MySQL details for connection: server, dbase, login and passwrd (Required)
+#        mysql   - list that details database details for connection: server, dbase, login and passwrd (Required)
 #        get     - whether data is being retrieved from query or not. (Optional)
 #        verbose - write query to screen or log file for diagnostics. (Optional)
 #   
@@ -68,8 +68,8 @@
 ###
  ametQuery <-function(query,mysql,get=1,verbose=F) {
 
-  # MySQL Database
-  db<-dbDriver("MySQL")
+  # Database
+  db<-dbDriver("MariaDB")
 
   # Database connect
   con <-dbConnect(db,user=mysql$login,pass=mysql$passwd,host=mysql$server,dbname=mysql$dbase)
@@ -80,7 +80,7 @@
   }
 
   if(get == 1) {
-    df<-fetch(rs,n=mysql$maxrec)
+    df<-dbFetch(rs,n=mysql$maxrec)
   }
   
   dbClearResult(rs)
@@ -102,7 +102,7 @@
 # Function to create new surface meteorology table and update project log to reflect new runs
 #
 # Input:
-#       mysql        -- MySQL list that includes all connection requirements like server, login, etc.
+#       mysql        -- list that includes all database connection requirements like server, login, etc.
 #
 # Output: None
 
@@ -110,7 +110,7 @@
 
    dbaseq<-paste("CREATE DATABASE IF NOT EXISTS ",mysql$dbase,";")
    writeLines(paste("Creating new database if it does not exist:",dbaseq))
-   db   <-dbDriver("MySQL")
+   db   <-dbDriver("MariaDB")
    con  <-dbConnect(db,user=mysql$login,pass=mysql$passwd,host=mysql$server)
    rs   <-dbSendQuery(con,dbaseq)
    dbClearResult(rs)
@@ -159,7 +159,7 @@
 # Function to create new surface meteorology table and update project log to reflect new runs
 #
 # Input:
-#       mysql        -- MySQL list that includes all connection requirements like server, login, etc.
+#       mysql        -- list that includes all database connection requirements like server, login, etc.
 #       ametproject  -- AMET project id
 #       metmodel     -- Meteorological model (mpas or wrf)
 #       userid       -- Users computer id to keep track of who created various projects
@@ -213,7 +213,7 @@
 # Function to create new rawindsonde meteorology table and update project log to reflect new runs
 #
 # Input:
-#       mysql        -- MySQL list that includes all connection requirements like server, login, etc.
+#       mysql        -- list that includes all database connection requirements like server, login, etc.
 #       ametproject  -- AMET project id
 #       metmodel     -- Meteorological model (mpas or wrf)
 #       userid       -- Users computer id to keep track of who created various projects
@@ -267,7 +267,7 @@
 # Function to create new wind profiler meteorology table and update project log to reflect new runs
 #
 # Input:
-#       mysql        -- MySQL list that includes all connection requirements like server, login, etc.
+#       mysql        -- list that includes all database connection requirements like server, login, etc.
 #       ametproject  -- AMET project id
 #       metmodel     -- Meteorological model (mpas or wrf)
 #       userid       -- Users computer id to keep track of who created various projects
@@ -326,8 +326,8 @@
 #       stat_id      -- obs site identification string
 #       ob_date      -- ob date
 #       ob_time      -- ob_time
-#       varid_str    -- Column name in MySQL table for the variable (i.e.; v1_id, v2_id)
-#       var_str      -- Column name in MySQL table for data (i.e.; v1_val, v2_val)
+#       varid_str    -- Column name in database table for the variable (i.e.; v1_id, v2_id)
+#       var_str      -- Column name in database table for data (i.e.; v1_val, v2_val)
 #       varid_vals   -- Values for the variable string (T_OBS_N, RH_OBS_N, U_OBS_N, etc)
 #       profiles     -- Profiles (data.frame) of the variables defined by varid_vals. 
 #       levels       -- Level values for the profiles.
@@ -375,8 +375,8 @@
 #       stat_id      -- obs site identification string
 #       ob_date      -- ob date
 #       ob_time      -- ob_time
-#       varid_str    -- Column name in MySQL table for the variable (i.e.; v1_id, v2_id)
-#       var_str      -- Column name in MySQL table for data (i.e.; v1_val, v2_val)
+#       varid_str    -- Column name in database table for the variable (i.e.; v1_id, v2_id)
+#       var_str      -- Column name in database table for data (i.e.; v1_val, v2_val)
 #       varid_vals   -- Values for the variable string (T_OBS_N, RH_OBS_N, U_OBS_N, etc)
 #       obs          -- Profile of obs as data.frame. First column is vert. coord, second is the data.
 #       mod          -- Profile of mod as data.frame. First column is vert. coord, second is the data.

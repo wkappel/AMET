@@ -169,7 +169,7 @@ y_crit     <- 140*exp(-x/0.5)+60				# y value for the criteria
 y_crit_neg <- -(140*exp(-x/0.5)+60)				# y value for the criteria (negative bias)
 #########################################################
 
-plot(x, y_goal, type="l", pch=2, col="dark green", ylim=c(-192.7,192.7), xlim=c((max_conc*0.046), (max_conc*1.20)), xlab=paste("Average Concentration (",units,")",sep=""), ylab=ylabel1, cex.axis=1.5, cex.lab=1.5,lwd=2)	# Create plot using goal line
+plot(x, y_goal, type="l", pch=2, col="dark green", ylim=c(-192.7,192.7), xlim=c((max_conc*0.046), (max_conc*1.20)), xlab=paste("Mod/Obs Average Concentration (",units,")",sep=""), ylab=ylabel1, cex.axis=1.5, cex.lab=1.5,lwd=2)	# Create plot using goal line
 lines(x,y_crit,col="red",lwd=2)					# Add criteria line to the plot
 lines(x,y_goal_neg,col="dark green",lwd=2)			# Add negative goal line to the plot
 lines(x,y_crit_neg,col="red",lwd=2)				# Add negative criteria line to the plot
