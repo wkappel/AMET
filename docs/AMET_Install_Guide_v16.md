@@ -82,7 +82,7 @@ Note that this command assumes that git is installed on the Linux system.
  * a link to the AMET 1.6 User’s Guide
  * a link to the AMET 1.6 Quick Start Guide
  * Download the CMAQ model test data and air quality observation from the Google Drive. Note, the example CMAQ output files contain all of the species needed by AMET-AQ, but are a subset of the full CMAQ output files. The files contain hourly data for the entire month of July 2017. They contain only the species that AMET needs, and only layer one.
- * Download the WRF and MPAS model test data and meteorology observations from the Google drive. There are 31 files for each set of data, one for each day in July 2016. The example meteorology output files from WRF and MPAS contain all of the species needed by AMET-MET, but are a subset of the full WRF or MPAS output files.
+ * Download the WRF and MPAS model test data and meteorology observations from the Google drive. There are 31 files for each set of data, one for each day in July 2018. The example meteorology output files from WRF and MPAS contain all of the species needed by AMET-MET, but are a subset of the full WRF or MPAS output files.
 
 
 <a id=Install3></a>
@@ -483,15 +483,15 @@ Meteorology observational data are installed under **$AMETBASE/obs/MET**.
 #### Air quality data
 (35 GB uncompressed; 30 GB compressed)
 
-Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.6_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2018 00:00 UTC to July 31 2018 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2011 and sample AMET analysis plots.
+Download the Air Quality Data from the Google Drive > CMAS Data Warehouse > AMET > v1.6_example. For CMAQ, we have provided an **ACONC** and a **WETDEP** output file from a CMAQ simulation to demonstrate analysis capabilities involving the AERO6 suite of species. The model output files are netCDF outputs from the **combine** postprocessing step. The  temporal range is from July 1 2018 00:00 UTC to July 31 2018 00:00 UTC  with a spatial domain covering the continental U.S at 12-km resolution. This archive also contains surface air quality observations for 2018 and sample AMET analysis plots.
 
 After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample** will contain the following files.
 
 `ls -lht`
 
 ```
- 34G Nov 20  2018 COMBINE_ACONC_CMAQv521_AMET_201607.nc
- 6.5G Nov 20  2018 COMBINE_DEP_CMAQv521_AMET_201607.nc
+ 34G Nov 20  2018 COMBINE_ACONC_aqExample_201807.nc
+ 6.5G Nov 20  2018 COMBINE_DEP_aqExample_201807.nc
 
 ```
 Download the Air Quality Observational data from the Google Drive CMAS Data Warehouse > AMET > v1.6_example > 2000_2024_NAmerican_AQ_Obs_Data
