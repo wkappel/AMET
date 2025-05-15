@@ -778,10 +778,12 @@ that command will yield a table like this:
 +---------------------+
 ```
 
-To select every column and row in your project\_log table:
+To select every column and row in your aq_project_log table:
 
 ```
+
 mysql> select \* from project_log;
+
 ```
 
 To select the latitude, longitude, and common name columns from the
@@ -789,19 +791,28 @@ stations metadata table and limit the results to the first 20 rows:
 
 ```
 mysql> select lat,lon,common_name from stations limit 20;
+
+```
+
+To select all distinct networks from the aqExample table;
+
+```
+select DISTINCT  network from aqExample;
+
 ```
 
 To select all station metadata where the monitor is from the CASTNET
 network:
 
 ```
+
 mysql> select \* from site_metadata where network=‘CASTNET’;
-```
-
-To determine which networks are included in the aqExample project:
 
 ```
-mysql> select distinct network from aqExample;
+
+To determine which networks are included in the site_metadata:
+
+```
 MariaDB [amet]> SELECT DISTINCT network FROM site_metadata;;
 ```
 

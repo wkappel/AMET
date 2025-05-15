@@ -166,13 +166,20 @@ Change the setting of AMETBASE in create_amet_user.csh and run the script:
 
 ## 7. Create AQ and MET projects
 
+To avoid getting disconnected from the terminal (highly recommend):
+Use the **tmux** application to start a window that will not automatically timeout due to lack of input.
+https://github.com/tmux/tmux/wiki
+
+
 ```
 cd $AMETBASE/scripts_db/metExample_wrf
 ```
 Change the setting of AMETBASE in matching_surface.csh and run the script:
 
 ```
-./matching_surface.csh |& tee log.populate
+
+./matching_surface.csh |& tee  log.populate
+
 ```
 ```
 cd $AMETBASE/scripts_db/aqExample

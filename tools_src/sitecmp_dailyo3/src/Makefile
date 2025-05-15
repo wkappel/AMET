@@ -8,16 +8,15 @@
 #
 #------------------------------------------------- 
 
- EXEC = sitecmp_dailyo3_v53.exe
+ EXEC = sitecmp_dailyo3_v55.exe
 
  FC = mpifort
  CC = cc
- LIB = /proj/ie/proj/CMAS/CMAQ/CMAQv5.3.3/build
+ LIB =  /work/users/l/i/lizadams/CMAQ/LIBRARIES_gcc
 
  include_path = -I $(LIB)/ioapi-3.2/Linux2_x86_64gfort\
                 -I $(LIB)/ioapi-3.2/ioapi/fixed_src \
-                -I $(LIB)/netcdf/include \
-                -I $(LIB)/netcdff/include
+                -I $(LIB)/include 
 
  WARN =
   ## Intel compiler flags

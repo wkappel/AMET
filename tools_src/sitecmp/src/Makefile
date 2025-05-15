@@ -8,16 +8,16 @@
 #
 #------------------------------------------------- 
 
- EXEC = sitecmp_v53.exe
+ EXEC = sitecmp_v55.exe
 
  FC = mpifort
  CC = cc
- LIB = /proj/ie/proj/CMAS/CMAQ/CMAQv5.3.3/build
+ LIB = /work/users/l/i/lizadams/CMAQ/LIBRARIES_gcc/
 
  include_path = -I $(LIB)/ioapi-3.2/Linux2_x86_64gfort\
                 -I $(LIB)/ioapi-3.2/ioapi/fixed_src \
-                -I $(LIB)/netcdf/include \
-                -I $(LIB)/netcdff/include
+                -I $(LIB)/include \
+                -I $(LIB)/include
 
  WARN =
   ## Intel compiler flags
@@ -63,7 +63,7 @@
  endif
 
  IOAPI  = -L$(LIB)/ioapi-3.2/Linux2_x86_64gfort -lioapi
- NETCDF = -L$(LIB)/netcdff/lib -lnetcdff -L$(LIB)/netcdf/lib -lnetcdf
+ NETCDF = -L$(LIB)/lib -lnetcdff -L$(LIB)/lib -lnetcdf
  LIBRARIES = $(IOAPI) $(NETCDF)
 
 

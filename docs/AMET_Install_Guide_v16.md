@@ -67,7 +67,7 @@ To download a zip archive of the software, click the "Clone or Download" button 
 
 To clone the AMET installation directory to a Linux server, use the following command:
 
-``git clone -b master https://github.com/USEPA/AMET.git AMET_v16``
+``git clone -b 1.6 https://github.com/USEPA/AMET.git AMET_v16``
 
 Note that this command assumes that git is installed on the Linux system.
 
@@ -127,15 +127,16 @@ Tier 2 software includes scientific software utilities for accessing and storing
 
 *Notes*:
 * Install both the MySQL/MariaDB server and client. At a minimum, the MySQL/MariaDB client must be on the same machine that will host the AMET scripts. The MySQL/MariaDB server can either be installed on the AMET host or an a remote host.
-* MySQL/MariaDB development files (include files and libraries), such as **mysql.h** and **libmysqlclient.so.15**, are needed on the system that will run AMET.
+* MySQL/MariaDB development files (include files and libraries), such as **mysql.h** and **libmysqlclient.so**, are needed on the system that will run AMET.
 * If MySQL/MariaDB server is installed on a remote host, the server permissions will need to be granted to support accessing the database from the AMET local host.
 * There are different ways to configure MySQL for use with AMET. In the example below, a single database user, **ametsecure**, is created with root access to the database. This user is given full privileges to read-write to the database. This user would then be able to load data into the database and create plots. As write access to the database is only needed to load data into the system and not to create plots, additional users with only read access could be created, if needed.
 
 ### Installation of MariaDB from tarball
 
 -	**Download the most recent MariaDB binary distribution from this URL to any directory as non-root user
-     - https://mariadb.org/download/
-        ** Select latest stable version, example MariaDB Server 11.4.5
+
+    - https://mariadb.org/download/
+
     - ** Select latest stable version, example MariaDB Server 11.4.5
 -	**[Follow these instructions to install as non-root user to any directory](https://mariadb.com/kb/en/installing-mariadb-binary-tarballs/#installing-mariadb-as-not-root-in-any-directory)
     -  ** edit the ~/.my.cnf file to specify the basedir and  to your install directory
@@ -169,13 +170,24 @@ Request an interactive queue for 2 hours, and then do the following steps:
     
 -	**Start MariaDB**
 
-    `/proj/ie/proj/CMAS/AMET/MariaDB/mysql/bin/mariadbd-safe --defaults-file=~/.my.cnf --datadir='/proj/ie/proj/CMAS/AMET/MariaDB/mysql/data'`
+    `/proj/ie/proj/CMAS/AMET/MariaDB/mysql/bin/mariadbd-safe --defaults-file=~/.my.cnf --datadir='/proj/ie/proj/CMAS/AMET/MariaDB/mysql/data'` 
 
--	**Use the mysql command to connect to the server**
+-	**Use the mariadbd command to connect to the server**
 
     ` /path-to/mysql/bin/mariadbd --defaults-file=~/.my.cnf `
 
--	**Create an AMET user and grant that user access to**
+
+-        ** Use mysql command to login to the database **
+  
+
+      mysql -u $USER 
+
+
+-     ** Create AMET user     **
+       CREATE USER 'ametsecure'@localhost IDENTIFIED BY 'some password';
+
+    
+-	**Grant that user access **
 
 -        ** Use mysql command to login to the database **
 
@@ -195,13 +207,14 @@ Output:
 
 Query OK, 0 rows affected (0.002 sec)
 
+
 Verify that the user has been created
 
       `SELECT user FROM mysql.user;`
 
 -	**Once done, you can shutdown the running database safely by running**
 
-    `/path-to/mysql/bin/mysqladmin shutdown`
+    `/path-to/mysql/bin/mariadb-admin shutdown`
 
 The instructions above create an AMET superuser of sorts, in that the ametsecure user has been granted all priviledges. AMET only requires database users to have SELECT, INSERT, UPDATE, DELETE, ALTER, and DROP ON priviledges to function fully. So, additional AMET users could be created with just those select priviledges. More information on how to create and configure MySQL/MariaDB users can be found on the MySQL/MariaDB websites.
 
@@ -234,6 +247,7 @@ After you have installed the basic R software, AMET also requires the following 
 * reshape2
 * RColorBrewer
 * RMySQL
+
 * RMariaDB (preferred over RMySQL, which is being phased out in R)
 * stats
 * webshot
@@ -244,7 +258,9 @@ The easiest way to install R packages, is through the R package manager.  Once R
 
 ```
 > sudo R
-> install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer",RMySQ","RMariaDB","stats","webshot","xts","pandoc",repos="http://cran.r-project.org"))
+
+> install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer","RMySQL","RMariaDB","stats","webshot","xts","pandoc"),repos="http://cran.r-project.org")
+
 ```
 
 If you do not have root access or are runnning on a shared system, you can load the packages as follows:
@@ -390,17 +406,17 @@ edit the sitecmp_dailyo3 Makefile
 > make |& tee make.log
 ```
 
-Note, the combine script directory contains a script called linkem that needs to be edited to point to your CMAQv5.3.3 REPO directory to obtain the species definition files.
+Note, the combine script directory contains a script called linkem that needs to be edited to point to your CMAQv5.5+ REPO directory to obtain the species definition files.
 
 ```
 cd $AMETBASE/tools_src/combine/scripts/spec_def_files
 vi linkem.csh
 ```
 
-Modify the set src = line to point to the CMAQv5.3.3 Repository.
+Modify the set src = line to point to the CMAQv5.5+ Repository.
 
 ```
-set src = /proj/ie/proj/CMAS/CMAQ/CMAQv5.3.3/build/CMAQ_REPO_v533/CCTM/src/MECHS
+set src = /path_to/CMAQ/CMAQv5.5+/build/CMAQ_REPO_v5.5+/CCTM/src/MECHS
 
 modify to the path for your CMAQ installation directory
 
@@ -504,8 +520,8 @@ After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample
 `ls -lht`
 
 ```
- 34G Nov 20  2018 COMBINE_ACONC_aqExample_201807.nc
- 6.5G Nov 20  2018 COMBINE_DEP_aqExample_201807.nc
+ 51G Nov 20  2018 COMBINE_ACONC_aqExample_201807.nc
+ 40G Nov 20  2018 COMBINE_DEP_aqExample_201807.nc
 
 ```
 Download the Air Quality Observational data from the Google Drive CMAS Data Warehouse > AMET > v1.6_example > 2000_2024_NAmerican_AQ_Obs_Data
