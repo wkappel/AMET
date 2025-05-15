@@ -195,6 +195,9 @@ Output:
 
 Query OK, 0 rows affected (0.002 sec)
 
+Verify that the user has been created
+
+      `SELECT user FROM mysql.user;`
 
 -	**Once done, you can shutdown the running database safely by running**
 
