@@ -185,7 +185,7 @@ cd $AMETBASE/scripts_db/aqExample
 Change the setting of AMETBASE and AMET\_DATABASE in aqProject_pre_and_post.csh and run the script. Update other fields as desired.
 
 ```
-./aqProject_pre_and_post.csh |& tee log.populate
+./aqProject_pre_and_post.csh |& tee aqProject_pre_and_post.log
 ```
 
 ## Run Example AQ and MET analyses
