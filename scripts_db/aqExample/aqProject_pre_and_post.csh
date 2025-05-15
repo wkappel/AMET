@@ -85,10 +85,12 @@
 #> for combine.  If you are not using a CMAQ5.3 reposiotry you can
 #> modify the location of the executables and spec_def files later
 #> in the script.
- set CMAQ_HOME = /proj/ie/proj/CMAS/CMAQ/CMAQ5.5+/gcc-9.1.0_openmpi
+
+ set CMAQ_HOME = /path/CMAQv55_repo
 
 #> Base directory where AMET code resides
- setenv AMETBASE	/proj/ie/proj/CMAS/AMET/AMET_v16
+ setenv AMETBASE	/home/AMETv16
+
 
 #> Source CMAQ config files to setup environment
  if (${Source_Configs} == 'T') then
@@ -269,8 +271,6 @@ setenv RUNID ${APPL}
  setenv CSN               T
  setenv IMPROVE           T
  setenv NADP              T
- setenv SEARCH_HOURLY     T
- setenv SEARCH_DAILY      T
  setenv NAPS_HOURLY       T
  setenv NAPS_DAILY_O3     T
 
@@ -287,6 +287,8 @@ setenv RUNID ${APPL}
  setenv NOAA_ESRL_O3	  F
  setenv PURPLEAIR_HOURLY  F
  setenv PURPLEAIR_DAILY   F
+ setenv SEARCH_HOURLY     F
+ setenv SEARCH_DAILY      F
  setenv TOAR		  F
  setenv TOAR2_HOURLY	  F
  setenv TOAR2_DAILY	  F
