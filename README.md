@@ -11,6 +11,9 @@ The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to 
 
 ## AMETv1.6
 
+- General Updates for v1.6
+    - Moved from using RMySQL to RMariaDB, as R is moving away from RMySQL
+
 - AQ Updates v1.6
     - Support added for AirNow ozone and PM2.5 data 
     - Support added for AMTIC HAPS data
