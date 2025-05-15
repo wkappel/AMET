@@ -223,6 +223,7 @@ After you have installed the basic R software, AMET also requires the following 
 * stats
 * webshot
 * xts
+* pandoc
 
 The easiest way to install R packages, is through the R package manager.  Once R is installed, use the following commands to install these packages (note that the ">" denotes the Linux command prompt):
 
