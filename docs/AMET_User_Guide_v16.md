@@ -117,7 +117,7 @@ community to increase AMET functionality.*
     be set by the user for a given evaluation.
 
 Before using AMET and this user’s guide, you must first install the AMET package on your
-system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Install_Guide_v15.md).
+system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Install_Guide_v16.md).
 
 <a id="directory_structure"></a>
 2. Directory Structure
@@ -128,10 +128,10 @@ as “AMETBASE”. This environment variable is actually set in many of the
 scripts discussed below. For example, if you were to run the AMET (example for version 1.6) installation Git command in user's home directory /home/user:
 
 ```
-git clone -b 1.6 https://github.com/USEPA/AMET.git AMET_v15
+git clone -b 1.6 https://github.com/USEPA/AMET.git AMET_v16
 
 ```
-The setting of AMETBASE would be /home/user/AMET_v15
+The setting of AMETBASE would be /home/user/AMET_v16
 
 
 Table 2-1 shows the directories contained in the $AMETBASE directory.
@@ -1026,7 +1026,7 @@ also a more comprehensive script that performs both the pre analysis functions (
 and the post analysis functions (e.g. running site compare and AMET). That script is named 
 aqExample_pre_and_post.csh and can also found in the $AMETBASE/scripts_db/aqExample directory. 
 Instructions for using that script can be found in a separate guide here:
-[aqProject Pre and Post Analysis Script Guide](https://github.com/USEPA/AMET/tree/1.6/docs/AMET_aqProject_Pre_and_Post_Analysis_Script_Guide_v15.md). 
+[aqProject Pre and Post Analysis Script Guide](https://github.com/USEPA/AMET/tree/1.6/docs/AMET_aqProject_Pre_and_Post_Analysis_Script_Guide_v16.md). 
 
 *TIP: Name the directory of each new project the same name as the AMET_PROJECT
 variable in the database and analysis scripts.*
