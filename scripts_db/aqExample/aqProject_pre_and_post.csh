@@ -85,10 +85,10 @@
 #> for combine.  If you are not using a CMAQ5.3 reposiotry you can
 #> modify the location of the executables and spec_def files later
 #> in the script.
- set CMAQ_HOME = /path/CMAQv53_repo
+ set CMAQ_HOME = /path/CMAQv55_repo
 
 #> Base directory where AMET code resides
- setenv AMETBASE	/home/AMETv15
+ setenv AMETBASE	/home/AMETv16
 
 #> Source CMAQ config files to setup environment
  if (${Source_Configs} == 'T') then
@@ -112,11 +112,11 @@
 # ==================================================================
 
 #> Start and end dates of simulation to be evaluated.
- setenv START_DATE_H  "2016-07-01"              #> Start day. Should be in format "YYYY-MM-DD".
- setenv END_DATE_H    "2016-07-31"              #> End day. Should be in format "YYYY-MM-DD".
+ setenv START_DATE_H  "2018-07-01"              #> Start day. Should be in format "YYYY-MM-DD".
+ setenv END_DATE_H    "2018-07-31"              #> End day. Should be in format "YYYY-MM-DD".
 
 #> Set General Parameters for Configuring the Simulation
- set VRSN      = v533               #> Code Version
+ set VRSN      = v55               #> Code Version
  set PROC      = mpi               #> serial or mpi
  set MECH      = cb6r3_ae7_aq      #> Mechanism ID
  set APPL      = aqExample         #> Application Name (e.g. Gridname)
@@ -269,8 +269,6 @@ setenv RUNID ${APPL}
  setenv CSN               T
  setenv IMPROVE           T
  setenv NADP              T
- setenv SEARCH_HOURLY     T
- setenv SEARCH_DAILY      T
  setenv NAPS_HOURLY       T
  setenv NAPS_DAILY_O3     T
 
@@ -287,6 +285,8 @@ setenv RUNID ${APPL}
  setenv NOAA_ESRL_O3	  F
  setenv PURPLEAIR_HOURLY  F
  setenv PURPLEAIR_DAILY   F
+ setenv SEARCH_HOURLY     F
+ setenv SEARCH_DAILY      F
  setenv TOAR		  F
  setenv TOAR2_HOURLY	  F
  setenv TOAR2_DAILY	  F

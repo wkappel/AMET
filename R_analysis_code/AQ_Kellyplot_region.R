@@ -1,6 +1,6 @@
 header <- "
-############################## KELLY MULTISIMULATION PLOT ################################
-### AMET CODE: AQ_Kellyplot_region.R 
+############################ KELLY PLOT - REGIONS (PLOTLY) ################################
+### AMET CODE: AQ_Kellyplot_region_plotly.R 
 ###
 ### This script is part of the AMET-AQ system. It essentially creates a grid plot of model
 ### NMB, NME, RMSE, MB, ME and correlation for a single network/species and multiple 
@@ -14,7 +14,7 @@ header <- "
 ###
 ### Original concept and some code developed by Jim Kelly of EPA.  
 ###
-### Last updated by Wyat Appel: March 2022
+### Last updated by Wyat Appel: May 2025
 ###########################################################################################
 "
 

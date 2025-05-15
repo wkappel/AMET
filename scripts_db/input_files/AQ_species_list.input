@@ -612,8 +612,8 @@ species_AQS_Daily_VOC <-"
     setenv AERO_4 \"[Trimethylpentane_2_2_4]+[Dimethylbutane_2_3]+[Dimethylpentane_2_3]+[Dimethylpentane_2_4]+[Methylhexane_2]+[Methylpentane_2]+[Methylhexane_3]+[Methylpentane_3]+[Cyclopentane]+[Isopentane]+[Tert_amyl_methyl_ether]+[n_Hexane]+[n_Pentane],ppb,HCPENTANES,ppb,HCPENTANES\" #HCPentanes
     setenv AERO_5 \"[Dimethylbutane_2_2]+[Ethyl_acetate]+[Isobutane]+[Methyl_tert_butyl_ether]+[Propane]+[n_Butane],ppb,HCPROPANES,ppb,HCPROPANES\"     #HCPropanes
     setenv AERO_6 \"[alpha_Pinene]+[beta_Pinene],ppb,ABPINENES,ppb,ABPINENES\"  #ABPinenes
-    setenv AERO_7 \"Sum_PAMS_Target_Compounds,ppbC,VROC,ppbC,VROC\"     #VROC
-    setenv AERO_8 \"Total_NMOC,ppbC,VROC,ppbC,VROC\"    #VROC
+    setenv AERO_7 \"Sum_PAMS_Target_Compounds,ppbC,VROC,ppbC,VROC_SUMOFSPC\"     #VROC
+    setenv AERO_8 \"Total_NMOC,ppbC,VROC,ppbC,VROC_TOTAL\"    #VROC
     setenv AERO_9 \"Methyl_ethyl_ketone,ppb,MEKETONE,ppb,MEKETONE\"     #Methyl Ethyl Keytone
     setenv AERO_10 \"Ethylbenzene,ppb,ETHB,ppb,Ethylbenzene\"   #Ethylbenzene
     setenv AERO_11 \"Styrene,ppb,STYRENE,ppb,Styrene\"  #Styrene

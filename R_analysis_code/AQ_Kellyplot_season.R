@@ -1,6 +1,6 @@
 header <- "
-############################## KELLY MULTISIMULATION PLOT ################################
-### AMET CODE: AQ_Kellyplot_season.R 
+############################# KELLY PLOT - SEASONS (PLOTLY) ###############################
+### AMET CODE: AQ_Kellyplot_season_plotly.R 
 ###
 ### This script is part of the AMET-AQ system. It essentially creates a grid plot of model
 ### NMB, NME, RMSE, MB, ME and correlation for a single network/species and multiple 

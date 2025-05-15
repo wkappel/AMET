@@ -20,6 +20,11 @@ if(start_month == end_month) { month_label <- start_month }
 
 date_query <- paste("d.ob_dates between ",start_date," and ",end_date," and d.ob_datee between ",start_date," and ",end_date,sep="")
 
+###################################################
+# Cleanup workspace from previously loaded data ###
+###################################################
+if(exists("NAA_regions")) { rm(NAA_regions) }
+
 ##############################################################
 ### Basic query for entire date range w/ no other criteria ###
 ##############################################################
@@ -424,5 +429,3 @@ stat_file	<- ""
 #####################################
 #ametNetworkInput <- Sys.getenv("AMET_NET_INPUT")
 #source(ametNetworkInput) # Network related input
-
-if (by_site != 'y') { site <- site_id }
