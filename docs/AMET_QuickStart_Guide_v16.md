@@ -183,7 +183,7 @@ Change the setting of AMETBASE and AMET\_DATABASE in aqProject_post_only.csh and
 ./aqProject.csh >& log.populate
 ```
 
-## Run Example AQ and MET analyses
+## 8. Run Example AQ and MET analyses
 Use the following command to navigate to the met analysis example project directory:
 
 ```
