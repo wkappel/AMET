@@ -755,19 +755,19 @@ that command will yield a table like this:
 ```
 +---------------------+
 
-| Tables\_in\_amet |
+| Tables_in_amet |
 
 +---------------------+
 
 | aqExample |
 
-| aq\_project\_log |
+| aq_project_log |
 
-| project\_log |
+| project_log |
 
-| project\_units |
+| project_units |
 
-| site\_metadata |
+| site_metadata |
 
 | stations |
 
@@ -781,27 +781,28 @@ that command will yield a table like this:
 To select every column and row in your project\_log table:
 
 ```
-mysql> select \* from project\_log;
+mysql> select \* from project_log;
 ```
 
 To select the latitude, longitude, and common name columns from the
 stations metadata table and limit the results to the first 20 rows:
 
 ```
-mysql> select lat,lon,common\_name from stations limit 20;
+mysql> select lat,lon,common_name from stations limit 20;
 ```
 
 To select all station metadata where the monitor is from the CASTNET
 network:
 
 ```
-mysql> select \* from site\_metadata where network=‘castnet’;
+mysql> select \* from site_metadata where network=‘CASTNET’;
 ```
 
 To determine which networks are included in the aqExample project:
 
 ```
 mysql> select distinct network from aqExample;
+MariaDB [amet]> SELECT DISTINCT network FROM site_metadata;;
 ```
 
 Note: It is wise for users to understand simple queries like this or to download an interactive MySQL database tool as a means to look at the database, table structure and even sample data therein in the case of problems.
