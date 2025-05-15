@@ -230,7 +230,7 @@ The easiest way to install R packages, is through the R package manager.  Once R
 
 ```
 > sudo R
-> install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer",RMySQ","RMariaDB","stats","webshot","xts","pandoc"))
+> install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer",RMySQ","RMariaDB","stats","webshot","xts","pandoc",repos="http://cran.r-project.org"))
 ```
 
 If you do not have root access or are runnning on a shared system, you can load the packages as follows:
