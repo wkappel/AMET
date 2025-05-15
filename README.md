@@ -28,6 +28,7 @@ The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to 
    - Updated AMET-AQ observation files (see notes in AMET_Release_Observation_Files_Readme.txt)
    - Numerous minor bug fixes
    - Updated processing for AMON data to properly adjust for travel blank (when available) or use a fixed value for the blank correction (value depends on year). Also updated the AMON input data file to include a POCode based on the replicate value to avoid records being overwritten when loaded into the database
+   - Added ability to the batch processing to use user-defined regions based on an input file with site ID and region name
 - New AQ Features v1.6
   - New analysis scripts:
     - AQ_Histogram_plotly.R
