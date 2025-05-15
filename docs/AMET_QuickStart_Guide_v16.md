@@ -177,7 +177,7 @@ cd $AMETBASE/scripts_db/metExample_wrf
 Change the setting of AMETBASE in matching_surface.csh and run the script:
 
 ```
-./matching_surface.csh >& log.populate
+./matching_surface.csh |& tee  log.populate
 ```
 ```
 cd $AMETBASE/scripts_db/aqExample
@@ -185,7 +185,7 @@ cd $AMETBASE/scripts_db/aqExample
 Change the setting of AMETBASE and AMET\_DATABASE in aqProject_pre_and_post.csh and run the script. Update other fields as desired.
 
 ```
-./aqProject_pre_and_post.csh >& log.populate
+./aqProject_pre_and_post.csh |& tee log.populate
 ```
 
 ## Run Example AQ and MET analyses
