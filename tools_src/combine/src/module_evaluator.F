@@ -29,6 +29,8 @@ C***********************************************************************
       
       Public ::  evaluate
       
+      Logical, Public :: Allow_BadValues = .False.
+      
       Private
 
       Real, Private, Allocatable :: parseBuffer(:,:)
@@ -39,7 +41,11 @@ C***********************************************************************
       Integer, Private :: ilayer
       Integer, Private :: isize
       
-       Logical, Private :: eflag
+      Logical, Allocatable, Private :: eflag( : )
+
+      Character( 256 ),     Private :: emsg
+      Character*(EXP_LEN),  Private :: formula
+      Character( 16 ),      Private :: out_species
 
       Interface            
          Subroutine getFld( record, delimiter, nth, del, field, exception )
@@ -80,11 +86,12 @@ C***********************************************************************
 
 C  subroutine to evaluate species expression at date
 C  returns buffer array values
-      Subroutine evaluate(expression,jdate,jtime,jlayer,jsize,buffer)
+      Subroutine evaluate(species,expression,jdate,jtime,jlayer,jsize,buffer)
 
       IMPLICIT NONE
 
       ! arguments
+      Character*(*) species
       Character*(*) expression
       Integer jdate, jtime
       Integer jlayer
@@ -99,16 +106,20 @@ C  returns buffer array values
       Integer i, n, pos1, pos2
       Character*(5) nstring
       Logical KSWIT
+      Logical SHUT3
 
       ! set module variables
-      idate = jdate
-      itime = jtime
-      ilayer = jlayer
-      isize = jsize
-      eflag = .False.
+      idate    = jdate
+      itime    = jtime
+      ilayer   = jlayer
+      isize    = jsize
     
+      ! copy output species name
+      out_species = Trim( Adjustl(species) )
       ! make copy of expression to modify
+      formula   = expression
       expresscp = expression
+      express   = expression
       Call Remove_WhiteSpaces(expresscp)
 !      print*,Trim(expresscp),' ',Trim(expression)
 !      expresscp = expression
@@ -287,6 +298,9 @@ C  subroutine to find location of parentheses depth
 
 C  subroutine to return buffer array value
       Subroutine getBuffer(field, buffer)
+ 
+      USE M3UTILIO, ONLY: BADVAL3
+
       IMPLICIT NONE
 
       Character*(*), Intent( InOut ) :: field
@@ -335,49 +349,45 @@ C  subroutine to return buffer array value
       if( pos1.gt.1 ) then       
         func = field(1:pos1-1)
         If( func.eq.'LOG' ) Then
-          If( MinVal(buffer) .Le. 0.0 )Then
-            write(*,'(/''**ERROR** evaluating LOG of '',es12.4)' )
-     &      MinVal(buffer)
-            KSWIT = SHUT3()
-            stop
+          Where( buffer .Gt. 0.0  .And. buffer .Lt. 1.0E36 )
+             buffer = LOG(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where   
+          If( Any( eflag ) )Then
+            write(emsg,99950)"LOG",MinVal(buffer),MaxVal(buffer)
           End If
-          If( MaxVal(buffer) .Gt. 1.0E36 )Then
-            write(*,'(/''**WARNING** evaluating LOG of '',es12.4)' )
-     &      MaxVal(buffer)
-          End If
-          buffer = LOG(buffer)
           return
         End If
         If( func.eq.'LOG10' ) Then
-          If( MinVal(buffer) .Le. 0.0 )Then
-            write(*,'(/''**ERROR** evaluating LOG10 of '',es12.4)' )
-     &      MinVal(buffer)
-            KSWIT = SHUT3()
-            stop
+          Where( buffer .Gt. 0.0  .And. buffer .Lt. 1.0E36 )
+             buffer = LOG10(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where   
+          If( Any( eflag ) )Then
+            write(emsg,99950)"LOG10",MinVal(parsebuffer(1:isize,nbuf) ),MaxVal(parsebuffer(1:isize,nbuf) )
           End If
-          If( MaxVal(buffer) .Gt. 1.0E36 )Then
-            write(*,'(/''**WARNING** evaluating LOG10 of '',es12.4)' )
-     &      MaxVal(buffer)
-          End If
-          buffer = LOG10(buffer)
           return
         End If
         If( func.eq.'EXP' ) Then
-          If( MaxVal(buffer) .Ge. Max_Exponential )Then
-            write(*,'(/''**ERROR** evaluating EXP of '',es12.4)' )
-     &      MaxVal(buffer)
-            KSWIT = SHUT3()
-            stop
-          End If
-          If( MinVal(buffer) .Le. -Max_Exponential )Then
-            write(*,'(/''**WARNING** evaluating EXP of '',es12.4)' )
-     &      MinVal(buffer)
-          End If
-          Where( buffer .Le. -Max_Exponential )
-             buffer = 0.0
-          Else Where
+          Where( buffer .gt. -Max_Exponential .And. buffer .lt. Max_Exponential )
              buffer = EXP(buffer)
+             eflag = .False.
+          Else Where( buffer .Le. -Max_Exponential )
+             buffer = 0.0
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
           End Where
+          If( Any( eflag ) )Then
+            write(emsg,99951)"EXP",MaxVal(parsebuffer(1:isize,nbuf) )
+          End If
           return
         End If
         If( func.eq.'SIN' ) Then
@@ -393,39 +403,29 @@ C  subroutine to return buffer array value
           return
         End If
         If( func.eq.'ASIN' ) Then
-          If( MinVal(buffer) .Lt. -1.0 )Then
-            write(*,'(/''**ERROR** evaluating ASIN of '',es12.4)' )
-     &      MinVal(buffer)
-            eflag = .True.
+          Where( buffer .Ge. -1.0  .And. buffer .Le. 1.0 )
+             buffer = ASIN(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where   
+          If( Any( eflag ) )Then
+            write(emsg,99950)"ASIN",MinVal(parsebuffer(1:isize,nbuf) ),MaxVal(parsebuffer(1:isize,nbuf) )
           End If
-          If( MaxVal(buffer) .Gt. 1.0 )Then
-            write(*,'(/''**ERROR** evaluating ASIN of '',es12.4)' )
-     &      MaxVal(buffer)
-            eflag = .True.
-          End If
-          If( eflag )Then
-            KSWIT = SHUT3()
-            stop
-          End If
-          buffer = ASIN(buffer)
           return
         End If
         If( func.eq.'ACOS' ) Then
-          If( MinVal(buffer) .Lt. -1.0 )Then
-            write(*,'(/''**ERROR** evaluating ACOS of '',es12.4)' )
-     &      MinVal(buffer)
-            eflag = .True.
+          Where( buffer .Ge. -1.0  .And. buffer .Le. 1.0 )
+             buffer = ACOS(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where   
+          If( Any( eflag ) )Then
+            write(emsg,99950)"ACOS",MinVal(parsebuffer(1:isize,nbuf) ),MaxVal(parsebuffer(1:isize,nbuf) )
           End If
-          If( MaxVal(buffer) .Gt. 1.0 )Then
-            write(*,'(/''**ERROR** evaluating ACOS of '',es12.4)' )
-     &      MaxVal(buffer)
-            eflag = .True.
-          End If
-          If( eflag )Then
-            KSWIT = SHUT3()
-            stop
-          End If
-          buffer = ACOS(buffer)
           return
         End If
         If( func.eq.'ATAN' ) Then
@@ -433,68 +433,55 @@ C  subroutine to return buffer array value
           return
         End If
         If( func.eq.'SINH' ) Then
-          If( MaxVal(buffer) .Ge. Max_Exponential )Then
-            write(*,'(/''**ERROR** evaluating SINH of '',es12.4)' )
-     &      MaxVal(buffer)
-            eflag = .True.
+          Where( buffer .gt. -Max_Exponential .And. buffer .lt. Max_Exponential )
+             buffer = SINH(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where
+          If( Any( eflag ) )Then
+            write(emsg,99950)"SINH",MinVal(parsebuffer(1:isize,nbuf) ),MaxVal(parsebuffer(1:isize,nbuf) )
           End If
-          If( MinVal(buffer) .Le. -Max_Exponential )Then
-            write(*,'(/''**ERROR** evaluating SINH of '',es12.4)' )
-     &      MinVal(buffer)
-            eflag = .True.
-          End If
-          If( eflag )Then
-            KSWIT = SHUT3()
-            stop
-          End If
-          buffer = SINH(buffer)
           return
         End If
         If( func.eq.'COSH' ) Then
-          If( MaxVal(buffer) .Ge. Max_Exponential )Then
-            write(*,'(/''**ERROR** evaluating COSH of '',es12.4)' )
-     &      MaxVal(buffer)
-            eflag = .True.
+          Where( buffer .gt. -Max_Exponential .And. buffer .lt. Max_Exponential )
+             buffer = COSH(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where
+          If( Any( eflag ) )Then
+            write(emsg,99950)"SINH",MinVal(parsebuffer(1:isize,nbuf) ),MaxVal(parsebuffer(1:isize,nbuf) )
           End If
-          If( MinVal(buffer) .Le. -Max_Exponential )Then
-            write(*,'(/''**ERROR** evaluating COSH of '',es12.4)' )
-     &      MinVal(buffer)
-            eflag = .True.
-          End If
-          If( eflag )Then
-            KSWIT = SHUT3()
-            stop
-          End If
-          buffer = COSH(buffer)
           return
         End If
         If( func.eq.'TANH' ) Then
-          If( MaxVal(buffer) .Ge. Max_Exponential )Then
-            write(*,'(/''**ERROR** evaluating TANH of '',es12.4)' )
-     &      MaxVal(buffer)
-            KSWIT = SHUT3()
-            stop
+          Where( buffer .gt. -Max_Exponential .And. buffer .lt. Max_Exponential )
+             buffer = TANH(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where
+          If( Any( eflag ) )Then
+            write(emsg,99950)"TANH",MinVal(parsebuffer(1:isize,nbuf) ),MaxVal(parsebuffer(1:isize,nbuf) )
           End If
-          If( MinVal(buffer) .Le. -Max_Exponential )Then
-            write(*,'(/''**ERROR** evaluating TANH of '',es12.4)' )
-     &      MinVal(buffer)
-            eflag = .True.
-          End If
-          If( eflag )Then
-            KSWIT = SHUT3()
-            stop
-          End If
-          buffer = TANH(buffer)
           return
         End If
         If( func.eq.'SQRT' ) Then
-          If( MinVal(buffer) .Lt. 0.0 )Then
-            write(*,'(/''**ERROR** evaluating SQRT of '',es12.4)' )
-     &      MinVal(buffer)
-            KSWIT = SHUT3()
-            stop
+          Where( buffer .Ge. 0.0 )
+             buffer = SQRT(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where
+          If( Any( eflag ) )Then
+            write(emsg,99951)"SQRT",MinVal(parsebuffer(1:isize,nbuf) )
           End If
-          buffer = SQRT(buffer)
           return
         End If
         If( func.eq.'AINT' .Or. func.eq.'INT') Then
@@ -506,12 +493,34 @@ C  subroutine to return buffer array value
           return
         End If
 
+        If( func.eq.'SIGN' ) Then
+          buffer = SIGN(1.0,buffer)
+          return
+        End If
+        If( func.eq.'ERF' ) Then
+          Where( buffer .gt. -Max_Exponential .And. buffer .lt. Max_Exponential )
+             buffer = ERF(buffer)
+             eflag = .False.
+          Else Where
+             buffer = BADVAL3
+             eflag = .True.
+          End Where
+          If( Any( eflag ) )Then
+            write(emsg,99950)"ERF",MinVal(parsebuffer(1:isize,nbuf) ),MaxVal(parsebuffer(1:isize,nbuf) )
+          End If
+          return
+        End If
+
         write(*,'(/''**ERROR** Invalid function name: '',a)') trim(func)
         KSWIT = SHUT3()
         stop
         endif
 
       return
+
+99950 Format("**ERROR** evaluating ",a," equal to ",es16.7," or ",es16.7)
+99951 Format("**ERROR** evaluating ",a," equal to ",es16.7)
+
       end Subroutine getBuffer
 
 
@@ -519,6 +528,8 @@ C  subroutine to evaluate species expression (parses conditional statment if nee
 C   X = (y[1]>10) ? 10 : y[1]
 C
       Subroutine eval1(expression, buffer)
+
+      USE M3UTILIO
 
       IMPLICIT NONE
 
@@ -533,65 +544,125 @@ C
       Logical, Allocatable :: flags(:)
       Real, Allocatable :: value1(:)
       Real, Allocatable :: value2(:)
-      Character*(EXP_LEN) field
+      Character*(EXP_LEN) field, field1, field2
+      Character*(EXP_LEN) emsg1, emsg2
       Character operator
       Integer nmajor
       Integer i
       Logical badopr
+      Logical KSWIT
+      Logical, Allocatable :: eflag1( : ), eflag2( : )
+      
+      Logical, Save :: FirstTime = .True.
+      
+      
+      If( FirstTime )Then
+      
+         Allocate( eflag( isize ) )
+         eflag(:)  = .False.
+         FirstTime = .False.
+         
+      EndIf
 
 
       ! parse major fields (?:)
       nmajor = getFldCount(expression, '?:')
 
+      emsg  = ' '
+      eflag = .False.
+      
       ! if conditional 
       if( nmajor.eq.3 ) then 
         Allocate( flags(isize), value1(isize), value2(isize) )
+        Allocate( eflag1( isize ) )
+        Allocate( eflag2( isize ) )
         badopr = .false.
 
         call getFld( expression, '?:', 1, operator, field ) 
         if(operator.ne.'?') badopr = .true.
         call eval1b( field, flags)
 
-        call getFld( expression, '?:', 2, operator, field ) 
+        eflag = .False.
+        emsg = ''
+        call getFld( expression, '?:', 2, operator, field1 ) 
         if(operator.ne.'?') badopr = .true.
-        call eval2( field, value1)
+        call eval2( field1, value1)
+        eflag1 = eflag
+        emsg1  = emsg
 
-        call getFld( expression, '?:', 3, operator, field ) 
+        eflag = .False.
+        emsg = ''
+        call getFld( expression, '?:', 3, operator, field2 ) 
         if(operator.ne.':') badopr = .true.
-        call eval2( field, value2)
+        call eval2( field2, value2)
+        eflag2 = eflag
+        emsg2  = emsg
+        eflag = .False.
 
         if( badopr ) then
-          Write(*,'(/''**Error** Syntax error encountered in conditional expression: '',a)') trim(expression)
+          Write(*,'(/''**Error** Syntax error encountered in conditional expression in: '',a)') trim(formula)
           stop
-          endif
+        End if
 
         ! set buffer values 
         do i=1,isize
-          if( flags(i) ) then
+          If( flags(i) ) Then
             buffer(i) = value1(i)
-          else
+            eflag(i)  = eflag1(i)
+            field     = field1
+          Else
             buffer(i) = value2(i)
-            endif 
-          enddo 
+            eflag(i)   = eflag2(i)
+            field   = field2
+          End If 
+        End Do 
+       
+
+        If( Any( eflag ) ) then
+          Write(*,'(//a)')"Problem evaluating: "
+     &    // Trim( formula )
+          If( Any( eflag .And. eflag1 ) )Then
+             Write(*,'(a//)')Trim(emsg1)
+          endif
+          If( Any( eflag .And. eflag2 ) )Then
+             Write(*,'(a//)')Trim(emsg2)
+          endif
+          If( .Not. Allow_BadValues )Then
+            KSWIT = SHUT3()
+            STOP
+          End IF
+        End IF
 
         Deallocate (flags, value1, value2)
+        Deallocate (eflag1,eflag2)
         return
-        endif
+      End if ! conditional
 
       ! if no conditional
       if( nmajor.eq.1 ) then
         call eval2( trim(expression), buffer )
+        If( Any( eflag )  ) then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,'(a//)')Trim(emsg)
+          If( .Not. Allow_BadValues )Then
+            KSWIT = SHUT3()
+            STOP
+          End IF  
+        endif
         return
         endif
 
       ! syntax error
-      Write(*,'(/''**Error** Syntax error encountered at: '',a)') trim(expression)
+      Write(*,'(/''**Error** Syntax error encountered at: '',a)') trim(formula)
       stop   
       end Subroutine eval1
 
 
 C  subroutine to evaluate condition expression (called from eval1) 
       Subroutine eval1b(expression, flags)
+
+      USE M3FILES
 
       IMPLICIT NONE
 
@@ -609,6 +680,8 @@ C  subroutine to evaluate condition expression (called from eval1)
       Character operator
       Integer nflds
       Integer i
+      Logical KSWIT
+      Logical SHUT3
 
 
       ! verify that expression contains a parse major fields (<=>)
@@ -625,8 +698,22 @@ C  subroutine to evaluate condition expression (called from eval1)
       if( index(expression,'<=').gt.0 ) then
         call getFld( expression, '<=', 1, operator, field ) 
         call eval2( field, value1)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         call getFld( expression, '<=', 3, operator, field ) 
         call eval2( field, value2)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         flags = ( value1 .le. value2 )
         Deallocate (value1, value2)
         return
@@ -636,8 +723,22 @@ C  subroutine to evaluate condition expression (called from eval1)
       if( index(expression,'>=').gt.0 ) then
         call getFld( expression, '>=', 1, operator, field ) 
         call eval2( field, value1)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         call getFld( expression, '>=', 3, operator, field ) 
         call eval2( field, value2)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         flags = ( value1 .ge. value2 )
         Deallocate (value1, value2)
         return
@@ -647,8 +748,22 @@ C  subroutine to evaluate condition expression (called from eval1)
       if( index(expression,'>').gt.0 ) then
         call getFld( expression, '>', 1, operator, field ) 
         call eval2( field, value1)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         call getFld( expression, '>', 2, operator, field ) 
         call eval2( field, value2)
+        If( Any( eflag ) ) then
+          Write(*,'(//a)')"Problem evaluating:" 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         flags = ( value1 .gt. value2 )
         Deallocate (value1, value2)
         return
@@ -658,8 +773,22 @@ C  subroutine to evaluate condition expression (called from eval1)
       if( index(expression,'<').gt.0 ) then
         call getFld( expression, '<', 1, operator, field ) 
         call eval2( field, value1)
+        If( Any( eflag ) )Then
+          Write(*,'(/''**Error** Syntax error encountered: '',a)') trim(expression)
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          KSWIT = SHUT3()
+          STOP
+        endif
         call getFld( expression, '<', 2, operator, field ) 
         call eval2( field, value2)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         flags = ( value1 .lt. value2 )
         Deallocate (value1, value2)
         return
@@ -669,15 +798,30 @@ C  subroutine to evaluate condition expression (called from eval1)
       if( index(expression,'=').gt.0 ) then
         call getFld( expression, '=', 1, operator, field ) 
         call eval2( field, value1)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating: " 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         call getFld( expression, '=', 2, operator, field ) 
         call eval2( field, value2)
+        If( Any( eflag ) )Then
+          Write(*,'(//a)')"Problem evaluating:" 
+     &    // Trim( formula  )
+          Write(*,*)Trim(emsg)
+          KSWIT = SHUT3()
+          STOP
+        endif
         flags = ( value1 .eq. value2 )
         Deallocate (value1, value2)
         return
         endif 
 
       ! syntax error
-      Write(*,'(/''**Error** Syntax error encountered: '',a)') trim(expression)
+      Write(*,'(/''**Error** conditional contains unknown operator in formula'',a)')
+     &  trim(formula)
       stop
     
       end Subroutine eval1b
@@ -712,14 +856,24 @@ C  subroutine to evaluate species expression (parses major fields (+-))
     
         If( field.eq.' ' ) Then
           value = 0.0D0
+          If ( n .gt. 1 ) Then
+             Write(6,'(2a)')'eval2 Error: Empty Field in expression,',Trim(expression),
+     &       'of the formula, ',Trim(Formula)
+             Stop
+          End IF
         else
           call eval3b( field, value)
         End If
 
         If( operator.eq.'+' ) Then
           buffer = buffer + value
-        else
+        else If( operator.eq.'-' ) Then
           buffer = buffer - value
+        else
+          Write(6,'(2a)')'eval2 Error: Unknown Operator, ' // Trim(operator) 
+     &    // ' in expression,',Trim(Formula) // ' for output species ' // Trim( out_species )
+     &    // '. Allowed operators are +, -, *, /, and ^.'
+          Stop
         End If
 
         End Do
@@ -810,6 +964,8 @@ C  routine to compute a field of the expression (parses minor fields (*/^))
 C  routine to compute a field of the expression (parses minor fields (*/^))
       Subroutine eval3b(expression, value)
       
+      USE M3UTILIO, ONLY: BADVAL3
+
       IMPLICIT NONE
 
       ! arguments
@@ -826,21 +982,36 @@ C  routine to compute a field of the expression (parses minor fields (*/^))
       Integer n, nflds
 
       Allocate ( specValue(isize) )
-!      nflds = getFldCount(trim(expression), '*/^')
       nflds = getFldCount(trim(expression), '*/')
+!     print*,Trim(expression)
       value = 1.0
          
+
       SpecValue = 0.0D0
       Do n=1,nflds
-!        call getFld( trim(expression), '*/^', n, operator, field ) 
         call getFld( trim(expression), '*/', n, operator, field ) 
         call eval4(field, specValue)
-!        call GetValue(field, specValue)
-!        print*,operator,value,specValue
 
-        If( operator.eq.'*' ) value = value * specValue
-        If( operator.eq.'/' ) value = value / specValue
-!        If( operator.eq.'^' ) value = value ** specValue
+        If( operator.eq.'*' )Then
+           value = value * specValue
+        Else If( operator.eq.'/' )Then
+          Where( specValue .Ne. 0.0 )
+             value = value / specValue
+             eflag = .false.
+          Else Where
+             value = BADVAL3
+             eflag = .true.
+          End Where
+          If( Any( eflag ) )Then
+            write(emsg,*) "Denominator, "
+     &      // Trim( field ) // ", equals zero."
+          End If
+        Else
+          Write(6,'(2a)')'eval3b Error: Unknown Operator, ' // Trim(operator) 
+     &    // ' in expression,',Trim(Formula) // ' for output species ' // Trim( out_species )
+     &    // '. Allowed operators are +, -, *, /, and ^.'
+          Stop
+        End If
 
       End Do
 
@@ -892,6 +1063,7 @@ C  routine to compute a field of the expression (parses minor fields (*/^))
       call GetValue(field, specPower)
       Do 
          call getFld( trim(expression), '^', n, operator, field )
+
          n = n - 1
           If( field(1:1) .Eq. '-' )Then
             field  = field(2:)
@@ -945,6 +1117,13 @@ C  routine to compute a field of the expression (parses minor fields (*/^))
             Factor = 1.0D0
         End If 
 
+        If( Len_Trim(field) .Le. 0 )Then 
+            Write(6,'(3a)')
+     &      'GetValue Error: Empty Field or Missing Input Species Name in expression,',Trim(Formula),
+     &      ' for output species ' // Trim( out_species ) // '.'
+            Stop
+        End If
+
 !...check for buffer array
         If( index(field,'buffer[') .gt.0 ) Then
           Call getBuffer(field, Value)
@@ -963,7 +1142,14 @@ C  routine to compute a field of the expression (parses minor fields (*/^))
           pos1 = index(field, '[')
           pos2 = index(field, ']',.true.)
           specName = field(pos1+1:pos2-1)
+          if( pos2 .lt. Len_Trim(Field) )Then
+             Write(6,'(5(a,1x))')'GetValue Error: Unknown operator or input species ',Trim(Field(pos2+1:)),
+     &         ' in formula,',Trim(Formula) // ' for output species ' // Trim( out_species )
+     &      // '. Allowed operators are +, -, *, /, and ^.'
+             Stop
+          end if
   
+!         Write(6,'(2a)')'specName = ',Trim(specName)
           read(specName,'(i16)',iostat=status) fnum
 
           If( status.eq.0 ) Then    !! number found
@@ -982,6 +1168,7 @@ C  routine to compute a field of the expression (parses minor fields (*/^))
                 Value = Factor * Value
                 Return 
              End If
+!            Write(6,*)'**GetValue Error** Unknown Function: ',Trim(funcName)
           End If    !! contains '['
         End If
 !...try to read field as number
@@ -991,10 +1178,14 @@ C  routine to compute a field of the expression (parses minor fields (*/^))
           value = Factor * constant
           Return
         Else
-             Write(*,'(''**Error** Invalid field encountered:'',a)') field
+             Write(*,1099)
+     &       Trim( field ),Trim( Formula ) // ' for output species ' 
+     &    // Trim( out_species ) // '. An operator may be missing.'
              stop 
         End If
 
+1099    Format('**GetValue Error** Invalid field encountered:',a,
+     &         " in formula ",a)
       return
       end Subroutine GetValue
 
@@ -1081,7 +1272,6 @@ C  Routine to read species value array for given date and time
 
       !! call routine to read species values from file fnum
       status = 0
-      !! write(*,'(''reading values for '',a,'' at '',2i8)') TRIM(specName), kdate,ktime
       Call ReadValues( fnum, specName, ilayer, kdate, ktime, isize,    
      &                   specValue, status)
 

@@ -8,11 +8,11 @@
 #
 #------------------------------------------------- 
 
- EXEC = bldoverlay_v53.exe
+ EXEC = bldoverlay_v55.exe
 
  FC = mpifort
  CC = cc
- LIB = /proj/ie/proj/CMAS/CMAQ/CMAQv5.3.3/build
+ LIB = /work/users/l/i/lizadams/CMAQ/LIBRARIES_gcc/
 
  include_path = -I $(LIB)/ioapi-3.2/Linux2_x86_64gfort\
                 -I $(LIB)/ioapi-3.2/ioapi/fixed_src \

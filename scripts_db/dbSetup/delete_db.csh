@@ -11,10 +11,10 @@
 
 ## setup:
 ## Top AMET directory tree
-setenv AMETBASE /project/amet_aq/AMET_Code/Release_Code_v13/AMET_v13
+setenv AMETBASE /proj/ie/proj/CMAS/AMET/AMET_v16 
 
 ## Set AMET Database
-setenv AMET_DATABASE Test_AMETv13
+setenv AMET_DATABASE amet
 
 
 ##################################################################
