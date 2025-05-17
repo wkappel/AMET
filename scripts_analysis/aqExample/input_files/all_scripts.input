@@ -33,6 +33,14 @@ query <- paste(" and s.stat_id=d.stat_id and d.ob_dates BETWEEN",start_date,"and
 ### This can be set to anything, and is used as part of the name of output file(s) ###
 pid<-Sys.getenv("AMET_PID")
 
+## Modify by_site to y For limited SEARCH network 
+
+if(!exists("inc_search")) { 
+print("inc_search flag not set. Defaulting to n. Set inc_search flag in config file to include the limited SEARCH network data.")
+by_site <- "n" 
+site_id <- "All" 
+} 
+
 
 #########################
 ### Project ID Name 1 ###

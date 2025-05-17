@@ -2,7 +2,7 @@
 #############################################################
 # Main run config setttings: date start/end, WRF exe, RunID,
 #                            relevant dirs
-setenv AMETBASE   /home/user/AMET
+#setenv AMETBASE   /home/user/AMET
 
 set begday       = 20160701
 set endday       = 20160731
