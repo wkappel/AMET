@@ -797,6 +797,31 @@ To select all distinct networks from the aqExample table;
 select DISTINCT  network from aqExample;
 ```
 
+output:
+
+```
+MariaDB [amet]> select DISTINCT  network from aqExample;
++----------------+
+| network        |
++----------------+
+| AMON           |
+| AQS_Daily      |
+| AQS_Daily_O3   |
+| AQS_Hourly     |
+| CASTNET        |
+| CASTNET_Daily  |
+| CASTNET_Drydep |
+| CASTNET_Hourly |
+| CSN            |
+| IMPROVE        |
+| NADP           |
+| NAPS           |
+| NAPS_Daily_O3  |
++----------------+
+13 rows in set (0.459 sec)
+
+```
+
 To select all station metadata where the monitor is from the CASTNET
 network:
 
