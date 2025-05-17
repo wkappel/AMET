@@ -1514,7 +1514,7 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Creates a kellyplot of model performance color coded by simulation and NOAA climate region
    - single network; single species; multiple simulations allowed
 
-**run\_kellyplot_\region\_plotly.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_region_NMB.html))
+**run\_kellyplot_region\_plotly.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_region_NMB.html))
    - Creates an interactive HTML Kelly plot of model performance color coded by simulation and NOAA climate region
    - single network; single species; multiple simulations allowed
 
@@ -1664,10 +1664,6 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
 **run\_stacked\_barplot\_panel\_AE6\_multi.csh**
    - Data are averaged (mean or median) for SO<sub>4</sub>, NO<sub>3</sub>, NH<sub>4</sub>, EC, OC, soil, NCOM and PM<sub>2.5</sub> other for the model and observed values. Averages are then plotted on a stacked bar plot. Specifically designed to plot data for an entire year (separated by season) for four different geographic regions for multiple simulations.
    - CSN, IMPROVE or SEARCH; species predefined; multiple simulations; full year data required
-
-**run\_stacked\_barplot\_panel\_AE6.csh**
-   - Data are averaged (mean or median) for SO<sub>4</sub>, NO<sub>3</sub>, NH<sub>4</sub>, EC, OC and PM<sub>2.5</sub> other for the model and observed values. Averages are then plotted on a stacked bar plot, along with the percent of the total PM<sub>2.5</sub> that each species constitutes. Specifically designed to plot data for an entire year (separated by season) for four different geographic regions. 
-   - CSN, IMPROVE or SEARCH; species predefined; single simulation; full year data required
 
 **run\_stacked\_barplot\_soil.csh** ([Example Plot](./images/aqExample_1_stacked_barplot_soil.png))
    - Data are averaged (mean or median) for the soil species (e.g. Si, Fe, Ti, Mg, etc.) for the model and observed values. Averages are then plotted on a stacked bar plot, along with the percent of the total soil concentration that each species constitutes
