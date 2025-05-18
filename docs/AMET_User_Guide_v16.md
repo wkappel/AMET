@@ -1502,6 +1502,10 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Creates a histogram of model-obs quartiles
    - single network; single species; multi simulation
 
+**run\_histogram\_plotly.csh** ([Example Plot](./images/aqExample_SO4_1_histogram.html))
+   - Creates an interactive HTML histogram of model-obs quartiles
+   - single network; single species; multi simulation
+
 **run\_kellyplot.csh** ([Example Plot](./images/aqExample_PM_TOT_1_Kellyplot_NMB.png))
    - Creates a kellyplot of model performance color coded by season and NOAA climate region
    - single network; single species; single simulation; full year data required
@@ -1546,6 +1550,10 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes. This is the original version of this plot that creates separate plots for each metric (obs, mod, diff). This plot is retained because the new version of this plot requires R functions that are currently not included in the leaflet.extras package.
    - multiple networks; single species; single simulation
 
+**run\_plot\_spatial\_mtom\_leaflet.csh** ([Example Leaflet HTML](./aqExample_SO4_1_spatialplot_mtom_diff_max.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_spatialplot_mtom_diff_max.html.png))
+   - Plots the model1 value, model2 value, and difference between the model1 and model2 for each site. 
+   - multiple networks; single species; single simulation
+
 **run\_plot\_spatial\_diff.csh** ([Example Plot](./images/aqExample_SO4_1_spatialplot_bias_diff.png))
    - Plots the difference in bias and error between two model simulations each site. Multiple values for a site are averaged to a single value for plotting purposes
    - multiple networks; single species; multi simulations required
@@ -1575,6 +1583,10 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - multiple networks; single species; multiple simulations
 
 **run\_scatterplot\_ggplot.csh** ([Example Plot](./images/aqExample_SO4_1_scatterplot_ggplot.png))
+   - Creates a single model vs. obs scatterplot. This script will plot a single species from up to three networks on a single plot. Summary statistics are also included on the plot. Uses the ggplot2 R package
+   - multiple networks; single species; multiple simulations
+
+**run\_scatterplot\_mtom\_density\_ggplot.csh** ([Example Plot](./images/aqExample_SO4_1_scatterplot_mtom_density.png))
    - Creates a single model vs. obs scatterplot. This script will plot a single species from up to three networks on a single plot. Summary statistics are also included on the plot. Uses the ggplot2 R package
    - multiple networks; single species; multiple simulations
    
@@ -1714,6 +1726,10 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - single network; multiple species; multiple simulations
 
 **run\_timeseries\_multi_networks.csh** ([Example Plot](./images/aqExample_SO4_1_timeseries_multi_networks.png))
+   - Creates a time series plot for up to two networks. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
+   - multiple networks; single species; multiple simulations
+
+**run\_timeseries\_multi_networks_plotly.csh** ([Example Plot](./images/aqExample_SO4_1_timeseries_multi_networks.html.png))
    - Creates a time series plot for up to two networks. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias between the obs and model
    - multiple networks; single species; multiple simulations
 

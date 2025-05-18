@@ -37,7 +37,7 @@ pid<-Sys.getenv("AMET_PID")
 
 if(!exists("inc_search")) { 
 print("inc_search flag not set. Defaulting to n. Set inc_search flag in config file to include the limited SEARCH network data.")
-by_site <- "n" 
+by_site <- "y" 
 site_id <- "All" 
 } 
 
