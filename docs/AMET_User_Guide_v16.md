@@ -1372,9 +1372,7 @@ below in table 7-2.<a id="Table_7-2"></a>
 | **AMET\_DATABASE**               | MySQL database containing your project. |
 | **AMET\_PROJECT**                | Name of the AMET project to analyze. |
 | **AMET\_OUT**                    | Location to which to write output files (e.g. plots). By default this is set to `$AMETBASE/output/$AMET_PROJECT/$analysis_script_type`. |
-| **AMET\_DB**                     | Flag to indicate whether or not to get data from the MySQL database. If T, data
-will be retrieved from the database. If F, the site compare files will be read directly. If AMET_DB=F, the environment
-variable OUTDIR must be set indicating where the site compare files are located. |
+| **AMET\_DB**                     | Flag to indicate whether or not to get data from the MySQL database. If T, data will be retrieved from the database. If F, the site compare files will be read directly. If AMET_DB=F, the environment variable OUTDIR must be set indicating where the site compare files are located. |
 | **OUTDIR**                       | Location of the site compare output files. |
 | **AMET\_PROJECT2**               | Name of AMET project to compare AMET_PROJECT against. Comment out if not doing model to model comparisons. |
 | **OUTDIR2**                      | Location of site compare output files for AMET_PROJECT2 if AMET_DB=F. |
