@@ -115,7 +115,7 @@ par(mai=c(1,1,0.5,0.5))					# Set margins
 x <- seq(0,max_conc*1.20, by=0.01)			# Create a sequence from 1 to 1.2*max_conc, increasing by 0.01
 y_goal <- 150*exp(-x/0.75)+50				# y value for the goal
 y_crit <- 125*exp(-x/0.75)+75				# y value for the criteria
-plot(x, y_goal, type="l", pch=2, col="dark green", ylim=c(7.4,192.7), xlim=c((max_conc*0.046), (max_conc*1.20)), xlab=paste("Mod/Obs Average Concentration (",units,")",sep=""), ylab=ylabel2, cex.axis=1.5, cex.lab=1.2,lwd=2)						# plot goal line
+plot(x, y_goal, type="l", pch=2, col="dark green", ylim=c(7.4,192.7), xlim=c((max_conc*0.046), (max_conc*1.20)), xlab=paste("Mean Concentration (",units,")",sep=""), ylab=ylabel2, cex.axis=1.5, cex.lab=1.2,lwd=2)						# plot goal line
 lines(x,y_crit,col="red",lwd=2)				# plot criteria line
 abline(h=50)						# plot 50% horizontal line
 abline(h=100)						# plot 100% horizontal line
@@ -169,7 +169,7 @@ y_crit     <- 140*exp(-x/0.5)+60				# y value for the criteria
 y_crit_neg <- -(140*exp(-x/0.5)+60)				# y value for the criteria (negative bias)
 #########################################################
 
-plot(x, y_goal, type="l", pch=2, col="dark green", ylim=c(-192.7,192.7), xlim=c((max_conc*0.046), (max_conc*1.20)), xlab=paste("Mod/Obs Average Concentration (",units,")",sep=""), ylab=ylabel1, cex.axis=1.5, cex.lab=1.5,lwd=2)	# Create plot using goal line
+plot(x, y_goal, type="l", pch=2, col="dark green", ylim=c(-192.7,192.7), xlim=c((max_conc*0.046), (max_conc*1.20)), xlab=paste("Mean Concentration (",units,")",sep=""), ylab=ylabel1, cex.axis=1.5, cex.lab=1.5,lwd=2)	# Create plot using goal line
 lines(x,y_crit,col="red",lwd=2)					# Add criteria line to the plot
 lines(x,y_goal_neg,col="dark green",lwd=2)			# Add negative goal line to the plot
 lines(x,y_crit_neg,col="red",lwd=2)				# Add negative criteria line to the plot

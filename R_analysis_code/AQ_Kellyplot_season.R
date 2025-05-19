@@ -200,6 +200,11 @@ for (i in 1:6) {
       if (length(nme_max) != 0) { nme.max <- nme_max }
       if (length(nme_int) != 0) { int <- nme_int }
       if (length(nme_min) != 0) { nme.min <- nme_min }
+      if (nme.range == 0) {
+         nme.min <- nme.min - 4
+         nme.max <- nme.max + 4
+         int <- 1
+      }
       data.tmp <- binval(dt=data.tmp,mn=nme.min,mx=nme.max,sp=int)
       nlab     <- data.tmp[,length(levels(fac))]
       col.rng  <- (brewer.pal(nlab,'YlOrBr'))

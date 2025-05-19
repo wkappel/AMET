@@ -1,5 +1,5 @@
 header <- "
-########################### MODEL TO OBS SCATTERPLOT ############################# 
+########################### HISTOGRAM PLOT (PLOTLY) ############################# 
 ### AMET CODE: R_Histogram_plotly.R 
 ###
 ### This script is part of the AMET-AQ system.  This script uses the plotly R package
