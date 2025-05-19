@@ -1368,7 +1368,7 @@ below in table 7-2.<a id="Table_7-2"></a>
 
 | **Variable**   | **Description** |
 |----------------|-----------------|
-| **AMETBASE**                     | Base directory where AMET is installed. Specification of this environment variable is commented out by default to allow users to set AMETBASE manually in their enviroment (e.g., "setenv AMETBASE /home/AMETv16"). This avoids the need to edit the run scripts if the user specifies the same database and project names as the example provided. Users can conversely opt to use the script to set the AMETBASE environment variable.|
+| **AMETBASE**                     | Base directory where AMET is installed. Specification of this environment variable is commented out by default to allow users to set AMETBASE manually in their enviroment (e.g., "setenv AMETBASE /your_local_path/AMET_v16"). This avoids the need to edit the run scripts if the user specifies the same database and project names as the example provided. Users can conversely opt to use the script to set the AMETBASE environment variable.|
 | **AMET\_DATABASE**               | MySQL database containing your project. |
 | **AMET\_PROJECT**                | Name of the AMET project to analyze. |
 | **AMET\_OUT**                    | Location to which to write output files (e.g. plots). By default this is set to `$AMETBASE/output/$AMET_PROJECT/$analysis_script_type`. |
