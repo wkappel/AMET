@@ -1668,7 +1668,12 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    
 **run\_stats\_plots\_leaflet.csh** ([Example Leaflet HTML](aqExample_SO4_1_stats_plot_NMB.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_stats_plot_NMB.html.png))
    - Generates a series of interactive spatial plots of **NMB, NME, FB, FE**, and **Correlation**. CSV files with additional domain- and site-specific statistics are also included. uses the R leaflet package to create interactive html files with zoom capability
-   - multiple networks; single species; single simulation
+   - In the case where multiple simulations are specified, the spatial plot becames a difference plot between the two model values from each simulation and the density scatter plot becomes a density scatter plot between of the two model values
+   - single networks; single species; one or two simulations
+
+**run\_summary\_panel\_plot.csh** ([Example HTML](aqExample_O3_8hrmax_1_summary_panel_plot.html))([Example Plot - Screenshot](./images/aqExample_O3_8hrmax_1_summary_panel_plot.html.png))
+   - Generates a single interactive panel plot that contains a spatial plot of model/ob difference, a density scatter plot of model and ob values, a time series plot of model, ob, and difference values, and a histogram plot of model, ob, and difference values 
+   -  networks; single species; single simulation
 
 **run\_timeseries.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
    - Creates a time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias and error between the obs and model
