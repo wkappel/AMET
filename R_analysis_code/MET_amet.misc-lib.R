@@ -333,7 +333,7 @@
 ###
   ametQuery<-function(query,mysql,get=1,verbose=F) {
 
-  db<-dbDriver("RMariaDB")
+  db<-dbDriver("MariaDB")
   con <-dbConnect(db,user=mysql$login,pass=mysql$passwd,host=mysql$server,dbname=mysql$dbase)
 
   for (q in 1:length(query)){
