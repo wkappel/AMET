@@ -1393,13 +1393,11 @@ below in table 7-2.<a id="Table_7-2"></a>
 
 | **Variable**   | **Description** |
 |----------------|-----------------|
-| **AMETBASE**                     | Base directory where AMET is installed. |
+| **AMETBASE**                     | Base directory where AMET is installed. Specification of this environment variable is commented out by default to allow users to set AMETBASE manually in their enviroment (e.g., "setenv AMETBASE /your_local_path/AMET_v16"). This avoids the need to edit the run scripts if the user specifies the same database and project names as the example provided. Users can conversely opt to use the script to set the AMETBASE environment variable.|
 | **AMET\_DATABASE**               | MySQL database containing your project. |
 | **AMET\_PROJECT**                | Name of the AMET project to analyze. |
 | **AMET\_OUT**                    | Location to which to write output files (e.g. plots). By default this is set to `$AMETBASE/output/$AMET_PROJECT/$analysis_script_type`. |
-| **AMET\_DB**                     | Flag to indicate whether or not to get data from the MySQL database. If T, data
-will be retrieved from the database. If F, the site compare files will be read directly. If AMET_DB=F, the environment
-variable OUTDIR must be set indicating where the site compare files are located. |
+| **AMET\_DB**                     | Flag to indicate whether or not to get data from the MySQL database. If T, data will be retrieved from the database. If F, the site compare files will be read directly. If AMET_DB=F, the environment variable OUTDIR must be set indicating where the site compare files are located. |
 | **OUTDIR**                       | Location of the site compare output files. |
 | **AMET\_PROJECT2**               | Name of AMET project to compare AMET_PROJECT against. Comment out if not doing model to model comparisons. |
 | **OUTDIR2**                      | Location of site compare output files for AMET_PROJECT2 if AMET_DB=F. |
@@ -1701,7 +1699,12 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    
 **run\_stats\_plots\_leaflet.csh** ([Example Leaflet HTML](aqExample_SO4_1_stats_plot_NMB.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_stats_plot_NMB.html.png))
    - Generates a series of interactive spatial plots of **NMB, NME, FB, FE**, and **Correlation**. CSV files with additional domain- and site-specific statistics are also included. uses the R leaflet package to create interactive html files with zoom capability
-   - multiple networks; single species; single simulation
+   - In the case where multiple simulations are specified, the spatial plot becames a difference plot between the two model values from each simulation and the density scatter plot becomes a density scatter plot between of the two model values
+   - single networks; single species; one or two simulations
+
+**run\_summary\_panel\_plot.csh** ([Example HTML](aqExample_O3_8hrmax_1_summary_panel_plot.html))([Example Plot - Screenshot](./images/aqExample_O3_8hrmax_1_summary_panel_plot.html.png))
+   - Generates a single interactive panel plot that contains a spatial plot of model/ob difference, a density scatter plot of model and ob values, a time series plot of model, ob, and difference values, and a histogram plot of model, ob, and difference values 
+   -  networks; single species; single simulation
 
 **run\_timeseries.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_timeseries.png))
    - Creates a time series plot. With multiple sites; the sites are time averaged to create a single plot. Also plots the bias and error between the obs and model
