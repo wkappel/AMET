@@ -1,5 +1,5 @@
 header <- "
-############################## KELLY MULTISIMULATION PLOT ################################
+################################# KELLY PLOT - SEASONS ####################################
 ### AMET CODE: AQ_Kellyplot_season.R 
 ###
 ### This script is part of the AMET-AQ system. It essentially creates a grid plot of model

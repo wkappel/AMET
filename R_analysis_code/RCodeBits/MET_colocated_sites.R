@@ -1,7 +1,7 @@
 #########################################################################
 #	Load required modules
-  if(!require(RMySQL)){stop("Required Package RMySQL was not loaded")}
-  if(!require(date))  {stop("Required Package date was not loaded")  }
+  if(!require(RMariaDB)) {stop("Required Package RMariaDB was not loaded")}
+  if(!require(date))     {stop("Required Package date was not loaded")  }
 ########################################################
 #    Initialize AMET Diractory Structure Via Env. Vars
 #    AND Load required function and conf. files

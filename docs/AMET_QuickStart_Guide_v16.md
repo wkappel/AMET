@@ -177,7 +177,9 @@ cd $AMETBASE/scripts_db/metExample_wrf
 Change the setting of AMETBASE in matching_surface.csh and run the script:
 
 ```
+
 ./matching_surface.csh |& tee  log.populate
+
 ```
 ```
 cd $AMETBASE/scripts_db/aqExample

@@ -117,7 +117,7 @@ community to increase AMET functionality.*
     be set by the user for a given evaluation.
 
 Before using AMET and this user’s guide, you must first install the AMET package on your
-system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Install_Guide_v15.md).
+system. For information on the installation process, please see the [Atmospheric Model Evaluation Tool (AMET) Installation Guide](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Install_Guide_v16.md).
 
 <a id="directory_structure"></a>
 2. Directory Structure
@@ -755,7 +755,7 @@ that command will yield a table like this:
 ```
 +---------------------+
 
-| Tables\_in\_amet |
+| Tables_in_amet |
 
 +---------------------+
 
@@ -781,7 +781,9 @@ that command will yield a table like this:
 To select every column and row in your aq_project_log table:
 
 ```
-mysql> select * from aq_project_log;
+
+mysql> select \* from project_log;
+
 ```
 
 To select the latitude, longitude, and common name columns from the
@@ -789,12 +791,14 @@ stations metadata table and limit the results to the first 20 rows:
 
 ```
 mysql> select lat,lon,common_name from stations limit 20;
+
 ```
 
 To select all distinct networks from the aqExample table;
 
 ```
 select DISTINCT  network from aqExample;
+
 ```
 
 output:
@@ -826,7 +830,9 @@ To select all station metadata where the monitor is from the CASTNET
 network:
 
 ```
-mysql> SELECT * FROM site_metadata WHERE network='CASTNET';
+
+mysql> select \* from site_metadata where network=‘CASTNET’;
+
 ```
 
 To determine which networks are included in the site_metadata:
@@ -1057,7 +1063,7 @@ also a more comprehensive script that performs both the pre analysis functions (
 and the post analysis functions (e.g. running site compare and AMET). That script is named 
 aqExample_pre_and_post.csh and can also found in the $AMETBASE/scripts_db/aqExample directory. 
 Instructions for using that script can be found in a separate guide here:
-[aqProject Pre and Post Analysis Script Guide](https://github.com/USEPA/AMET/tree/1.6/docs/AMET_aqProject_Pre_and_Post_Analysis_Script_Guide_v15.md). 
+[aqProject Pre and Post Analysis Script Guide](https://github.com/USEPA/AMET/tree/1.6/docs/AMET_aqProject_Pre_and_Post_Analysis_Script_Guide_v16.md). 
 
 *TIP: Name the directory of each new project the same name as the AMET_PROJECT
 variable in the database and analysis scripts.*

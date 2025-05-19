@@ -82,7 +82,7 @@ Note that this command assumes that git is installed on the Linux system.
  * a link to the AMET 1.6 User’s Guide
  * a link to the AMET 1.6 Quick Start Guide
  * Download the CMAQ model test data and air quality observation from the Google Drive. Note, the example CMAQ output files contain all of the species needed by AMET-AQ, but are a subset of the full CMAQ output files. The files contain hourly data for the entire month of July 2017. They contain only the species that AMET needs, and only layer one.
- * Download the WRF and MPAS model test data and meteorology observations from the Google drive. There are 31 files for each set of data, one for each day in July 2016. The example meteorology output files from WRF and MPAS contain all of the species needed by AMET-MET, but are a subset of the full WRF or MPAS output files.
+ * Download the WRF and MPAS model test data and meteorology observations from the Google drive. There are 31 files for each set of data, one for each day in July 2018. The example meteorology output files from WRF and MPAS contain all of the species needed by AMET-MET, but are a subset of the full WRF or MPAS output files.
 
 
 <a id=Install3></a>
@@ -134,7 +134,9 @@ Tier 2 software includes scientific software utilities for accessing and storing
 ### Installation of MariaDB from tarball
 
 -	**Download the most recent MariaDB binary distribution from this URL to any directory as non-root user
+
     - https://mariadb.org/download/
+
     - ** Select latest stable version, example MariaDB Server 11.4.5
 -	**[Follow these instructions to install as non-root user to any directory](https://mariadb.com/kb/en/installing-mariadb-binary-tarballs/#installing-mariadb-as-not-root-in-any-directory)
     -  ** edit the ~/.my.cnf file to specify the basedir and  to your install directory
@@ -187,19 +189,28 @@ Request an interactive queue for 2 hours, and then do the following steps:
     
 -	**Grant that user access **
 
-    `grant all privileges on *.* to 'ametsecure'@'localhost' with grant option;`
+-        ** Use mysql command to login to the database **
 
--       **Grant your linux username access to MariaDB**
-     `grant all privileges on *.* to 'your_username'@'localhost' with grant option;`
+
+      mysql -u $USER 
+
+
+-     ** Create AMET user     **
+       CREATE USER 'ametsecure'@localhost IDENTIFIED BY 'some password';
+
+
+-	**Grant that user access **
+
+    `grant all privileges on *.* to 'ametsecure'@'localhost' with grant option;`
 
 Output:
 
 Query OK, 0 rows affected (0.002 sec)
 
-       Verify that the user has been created
+
+Verify that the user has been created
 
       `SELECT user FROM mysql.user;`
-
 
 -	**Once done, you can shutdown the running database safely by running**
 
@@ -236,7 +247,8 @@ After you have installed the basic R software, AMET also requires the following 
 * reshape2
 * RColorBrewer
 * RMySQL
-* RMariaDB
+
+* RMariaDB (preferred over RMySQL, which is being phased out in R)
 * stats
 * webshot
 * xts
@@ -246,7 +258,9 @@ The easiest way to install R packages, is through the R package manager.  Once R
 
 ```
 > sudo R
+
 > install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer","RMySQL","RMariaDB","stats","webshot","xts","pandoc"),repos="http://cran.r-project.org")
+
 ```
 
 If you do not have root access or are runnning on a shared system, you can load the packages as follows:
@@ -506,8 +520,8 @@ After you download the files, the directory **$AMETBASE/model\_data/AQ/aqExample
 `ls -lht`
 
 ```
- 51G Apr  8  2025 COMBINE_ACONC_CMAQv521_AMET_201807.nc
- 40G Apr  8  2025 COMBINE_DEP_CMAQv521_AMET_201807.nc
+ 51G Nov 20  2018 COMBINE_ACONC_aqExample_201807.nc
+ 40G Nov 20  2018 COMBINE_DEP_aqExample_201807.nc
 
 ```
 Download the Air Quality Observational data from the Google Drive CMAS Data Warehouse > AMET > v1.6_example > 2000_2024_NAmerican_AQ_Obs_Data
