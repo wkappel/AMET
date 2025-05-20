@@ -8,7 +8,7 @@ header <- "
 ### PMother and total PM2.5. These averages are then plotted as a stacked bar plot time series.
 ### This script allows for a single network but multiple simulations.
 ###
-### Last updated by Wyat Appel: Apr 2020
+### Last updated by Wyat Appel: May 2025 
 #########################################################################################
 "
 
@@ -127,8 +127,6 @@ for (j in 1:length(run_names)) {
    ### Calculate NH4 from NO3 and SO4 if unavailable ###
    aqdat_all.df$NH4_ob[aqdat_all.df$NH4 == -999] <- 0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob
    aqdat_all.df$NCOM_ob <- 0.8*aqdat_all.df$OC_ob
-#   aqdat_all.df$OTHR_ob <- aqdat_all.df$PM_TOT_ob-aqdat_all.df$SO4_ob-aqdat_all.df$NO3_ob-(0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob)-aqdat_all.df$OC_ob-aqdat_all.df$EC_ob-aqdat_all.df$Na_ob-aqdat_all.df$Cl_ob-aqdat_all.df$Al_ob-aqdat_all.df$Ca_ob-aqdat_all.df$Fe_ob-aqdat_all.df$K_ob-aqdat_all.df$Si_ob-aqdat_all.df$Ti_ob-aqdat_all.df$NCOM_ob
-#   aqdat_all.df$OTHR_mod <- aqdat_all.df$PM_TOT_mod-aqdat_all.df$SO4_mod-aqdat_all.df$NO3_mod-aqdat_all.df$NH4_mod-aqdat_all.df$OC_mod-aqdat_all.df$EC_mod-aqdat_all.df$Na_mod-aqdat_all.df$Cl_mod-aqdat_all.df$Al_mod-aqdat_all.df$Ca_mod-aqdat_all.df$Fe_mod-aqdat_all.df$K_mod-aqdat_all.df$Si_mod-aqdat_all.df$Ti_mod-aqdat_all.df$NCOM_mod
 
    blank_mod  <- 0.4
    blank_mod2 <- 0.4
@@ -141,8 +139,10 @@ for (j in 1:length(run_names)) {
   if (method == "Mean") { avg_fun <- "mean" } 
   if (method == "Median") { avg_fun <- "median" }
 
-#   aqdat_all.df[aqdat_all.df < 0] <- NA
-   aqdat_all.df <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,43,44,45,46,47)]
+   {
+      if (Sys.getenv("AMET_DB") == 'F') { aqdat_all.df <- aqdat_all.df[ -c(1,3,4,6,7,8,44)] }
+      else { aqdat_all.df     <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,43,44,45,46,47)] }
+   }
    aqdat_agg.df <- aggregate(aqdat_all.df, by=list(aqdat_all.df$stat_id,aqdat_all.df$ob_dates), FUN=avg_fun, na.rm=TRUE)
    complete_records <- complete.cases(aqdat_agg.df[,5:36])
    aqdat_sub.df <- aqdat_agg.df[complete_records,]
@@ -150,10 +150,8 @@ for (j in 1:length(run_names)) {
    aqdat_sub.df$OTHR_mod <- aqdat_sub.df$PM_TOT_mod-aqdat_sub.df$SO4_mod-aqdat_sub.df$NO3_mod-(0.2903*aqdat_sub.df$NO3_mod+0.375*aqdat_sub.df$SO4_mod)-aqdat_sub.df$OC_mod-aqdat_sub.df$EC_mod-aqdat_sub.df$Na_mod-aqdat_sub.df$Cl_mod-aqdat_sub.df$Al_mod-aqdat_sub.df$Ca_mod-aqdat_sub.df$Fe_mod-aqdat_sub.df$K_mod-aqdat_sub.df$Si_mod-aqdat_sub.df$Ti_mod-aqdat_sub.df$NCOM_mod
     aqdat_sub.df$OTHR_ob[aqdat_sub.df$OTHR_ob < 0] <- 0
     aqdat_sub.df$OTHR_mod[aqdat_sub.df$OTHR_mod < 0] <- 0
-#   data_ts.df   <- aqdat_sub.df[-c(3,4)]
    data_ts.df   <- aggregate(aqdat_sub.df,by=list(aqdat_sub.df$Group.2), FUN=avg_fun,na.rm=TRUE)
    data_ts.df   <- data_ts.df[-c(2,3,4,5,38)]
-#   names(data_ts.df)[1] <- "stat_id"
    names(data_ts.df)[1] <- "ob_dates"
    num_dates <- length(unique(data_ts.df$ob_dates))
    data_ts_obs.df <- data_ts.df[-c(3,5,7,8,9,11,13,15,17,19,21,23,25,27,29,31,33,34,36)]
@@ -167,11 +165,9 @@ for (j in 1:length(run_names)) {
    data_ts_melted_mod.df <- melt(data_ts_mod.df,id=c("ob_dates"))
    names(data_ts_melted_mod.df)[2] <- "species"
    data_ts_melted_mod.df$cat <- paste("Sim",j,sep="") 
-#   if (num_dates > 25) { data_ts_melted_mod.df$cat <- run_names[j] }
 
    num_sites	<- length(unique(aqdat_sub.df$Group.1))
    num_pairs	<- length(aqdat_sub.df$Group.1)   
-#   axis.max     <- max(axis.max,medians.df$PM_TOT_ob,medians.df$PM_TOT_mod)
 
    {
       if (j == 1) {
@@ -192,59 +188,34 @@ for (j in 1:length(run_names)) {
    x_factor <- c(x_factor,paste("Sim",j,sep=""))
 }
 
-#if (num_dates <= 25) { title <- paste(title,sim_legend,sep="\n\n\n") }
 title <- paste(title,sim_legend,sep="\n\n")
-#if (num_dates > 25) { x_factor <- c(network,run_names) }
 
 data_merged.df$species <- factor(data_merged.df$species, levels=c("SO4","NO3","NH4","EC","OC","Al","Ca","Fe","K","Mg","Si","Ti","Na","Cl","NCOM","OTHR"))
 data_merged.df$cat     <- factor(data_merged.df$cat, levels=x_factor)
 bar_colors <- c("red","yellow","orange","grey20","black","lightblue","blue","firebrick","yellow4","green4","gray50","orange","purple","lightseagreen","pink","gray70")
 
-#pdf(file=filename_pdf,width=9,height=9)
 dates_uniq <- unique(data_merged.df$ob_dates)
 year  <- substr(dates_uniq,3,4)
 month <- substr(dates_uniq,6,7)
 day   <- substr(dates_uniq,9,10)
 dates_new <- paste(month,day,year,sep="/")
-#dates_new <- gsub(dates_new,"-","/")
 dates_names <- c(dates_uniq = dates_new)
 names(dates_names) <- dates_uniq
 
 options(bitmapType='cairo')
 
-#bp <- plot_ly(data_merged.df, aes(x=cat,y=value)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE)) + facet_grid(~ob_dates,labeller=as_labeller(dates_names)) 
 bp_temp <- ggplot(data_merged.df, aes(x=cat,y=value)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE)) + facet_grid(~ob_dates,labeller=as_labeller(dates_names))
 pdata <- ggplot_build(bp_temp)$data
 axis.max <-  max(pdata[[1]]$ymax)
-#axis.max <- axis.max+(0.05*j)*axis.max
 
 bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE),width=0.75) + facet_grid(~ob_dates, labeller=as_labeller(dates_names)) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x = element_text(angle=270), panel.grid.major.x = element_blank(), panel.spacing.x=unit(0.1,"line"), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=1, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
 
 ggsave(filename_pdf,width=15,height=9)
 
 axis.max <- axis.max+(0.2*j)*axis.max
-#if (num_dates > 25) {
-   bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE), width=0.75) + facet_grid(~ob_dates) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x=element_blank(), panel.spacing.x = unit(0.1,"lines"), panel.grid.major.x = element_blank(), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=0, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
-#}
-#bp
-#dev.off()
-#ggsave(filename_pdf,width=15,height=9)
+bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE), width=0.75) + facet_grid(~ob_dates) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x=element_blank(), panel.spacing.x = unit(0.1,"lines"), panel.grid.major.x = element_blank(), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=0, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
 
 bp <- ggplotly(bp,tooltip=c("species","value","cat","date")) %>%
  layout(yaxis=list(autorange=TRUE))
    
-  
 saveWidget(bp, file=filename_html,selfcontained=T)
-#ggsave(filename_pdf,width=9,height=9)
-#dev.off()
-
-if ((ametptype == "png") || (ametptype == "both")) {
-   convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf," png:",filename_png,sep="")
-   system(convert_command)
-
-   if (ametptype == "png") {
-      remove_command <- paste("rm ",filename_pdf,sep="")
-      system(remove_command)
-   }
-}
-

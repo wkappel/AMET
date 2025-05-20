@@ -32,9 +32,6 @@
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
   #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output/201807
 
-  ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
-  #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
-
   ###  Directory where figures and text output will be directed
   setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/timeseries_multi_species_plotly
 

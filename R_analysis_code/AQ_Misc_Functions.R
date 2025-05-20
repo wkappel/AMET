@@ -1477,7 +1477,7 @@ read_sitex <- function(directory,network,run_name,species)
    }
    if (data_exists_flag == "n") { 
       if (!exists("sleep_time")) { sleep_time <- 0 }  
-      sys.sleep(sleep_time)
+#      sys.sleep(sleep_time)
       return(list(sitex_data=NULL,units=NULL,data_exists=data_exists_flag)) }
 }
 ############################################

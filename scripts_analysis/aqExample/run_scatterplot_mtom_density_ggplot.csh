@@ -38,10 +38,10 @@
   setenv AMET_PROJECT2  aqExample
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
-  #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
+  #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output/201807
 
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_mtom_density
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_mtom_density_ggplot
   
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
   setenv AMET_SDATE "2018-07-01"
@@ -116,7 +116,7 @@
   setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG scatterplot_mtom_density.log
+  setenv AMET_LOG scatterplot_mtom_density_ggplot.log
 
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here

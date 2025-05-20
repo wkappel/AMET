@@ -138,6 +138,8 @@ for (j in 1:total_networks) {
             aqdat_query.df   <- sitex_info$sitex_data
             units            <- as.character(sitex_info$units[[1]])
          }
+	 aqdat_query.df$stat_id_noPOC <- aqdat_query.df$stat_id
+         aqdat_query.df$stat_id       <- paste(aqdat_query.df$stat_id,aqdat_query.df$POCode,sep="")
       }
       else {
          query_result   <- query_dbase(run_name1,network,species)

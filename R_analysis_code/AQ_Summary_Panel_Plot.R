@@ -42,6 +42,11 @@ if (run_name2 != "") { multi_run <- 1 }
    if (Sys.getenv("AMET_DB") == 'F') {
       sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_names[1],species)
       aqdat_query.df   <- sitex_info$sitex_data
+      data_exists               <- sitex_info$data_exists
+      aqdat_query.df$county     <- NA
+      if (data_exists == "y") {
+         units            <- as.character(sitex_info$units[[1]])
+      }
    }
    else {
       query_result     <- query_dbase(run_name1,network,species)

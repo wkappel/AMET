@@ -133,14 +133,20 @@ if (network == 'CSN') {
    blank_ob2  <- 0
 }
 
-aqdat_all.df     <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,33,34,35,36,37,38)]
+{
+   if (Sys.getenv("AMET_DB") == 'F') { aqdat_all.df <- aqdat_all.df[ -c(1,3,4,6,7,8,9,34)] }
+   else { aqdat_all.df     <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,33,34,35,36,37,38)] }
+}
 aqdat_agg.df     <- aggregate(aqdat_all.df, by=list(aqdat_all.df$stat_id,aqdat_all.df$ob_dates), FUN=mean, na.rm=TRUE)
 complete_records <- complete.cases(aqdat_agg.df[,5:24])
 aqdat_sub.df     <- aqdat_agg.df[complete_records,]
 data.df 	 <- aqdat_sub.df
 
 if (num_runs > 1) {
-   aqdat_all2.df    <- aqdat_all2.df[ -c(1,3,4,5,6,8,9,10,33,34,35,36,37,38)]
+   {
+      if (Sys.getenv("AMET_DB") == 'F') { aqdat_all2.df <- aqdat_all2.df[ -c(1,3,4,6,7,8,9,34)] }
+      else { aqdat_all2.df     <- aqdat_all2.df[ -c(1,3,4,5,6,8,9,10,33,34,35,36,37,38)] }
+   }
    aqdat_agg2.df    <- aggregate(aqdat_all2.df, by=list(aqdat_all2.df$stat_id,aqdat_all2.df$ob_dates), FUN=mean, na.rm=TRUE)
    complete_records <- complete.cases(aqdat_agg2.df[,5:24])
    aqdat_sub2.df    <- aqdat_agg2.df[complete_records,]
