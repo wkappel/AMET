@@ -286,7 +286,8 @@ if (length(Dates[[1]]) == 0) { stop("Stopping because length of dates was zero. 
 ########################################
 
 ### Write data to be plotted to file ###
-filename_csv         <- paste(run_name1,species,sites[s],pid,"timeseries.csv",sep="_")              # Set output file name
+filename_csv	<- paste(run_name1,species,sites[s],pid,"timeseries.csv",sep="_")              # Set output file name
+filename_csv	<- paste(figdir,filename_csv,sep="/")
 write.table(All_Data.df,file=filename_csv,append=T,row.names=F,sep=",")      # Write raw data to csv file
 ########################################
 
