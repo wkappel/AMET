@@ -31,11 +31,14 @@ The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to 
    - Added ability to the batch processing to use user-defined regions based on an input file with site ID and region name
 - New AQ Features v1.6
   - New analysis scripts:
+    - AQ_Summary_Panel_Plot.R
+    - AQ_Plot_Spatial_animation.R
     - AQ_Histogram_plotly.R
     - AQ_Kellyplot_region_plotly.R
     - AQ_Kellyplot_season_plotly.R
     - AQ_Kellyplot_plotly.R
     - AQ_Scatterplot_density_ggplot.R (enhanced)
+    - AQ_Scatterplot_density_plotly.R
     - AQ_Timeseries_bysite.R
     - AQ_Timeseries_bysite_plotly.R
   - New analysis script options
