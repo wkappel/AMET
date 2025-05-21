@@ -103,7 +103,7 @@ for (j in 1:length(network_names)) {	# For each simulation being plotted
    {
       if (Sys.getenv("AMET_DB") == 'F') {
          outdir           <- "OUTDIR" 
-         if (j >1) { outdir <- paste("OUTDIR",j,sep="") }
+         #if (j >1) { outdir <- paste("OUTDIR",j,sep="") }
          sitex_info       <- read_sitex(Sys.getenv(outdir),network,run_name,species)
          aqdat_query.df   <- sitex_info$sitex_data
          data_exists	  <- sitex_info$data_exists

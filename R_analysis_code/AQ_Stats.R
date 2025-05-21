@@ -7,7 +7,7 @@ header <- "
 ### containing numberous summary statistics for the requested species. Species that
 ### are not available are ignored.
 ###
-### Last modified by Wyat Appel, June 2019
+### Last modified by Wyat Appel: May 2025
 ##############################################################################
 "
 
@@ -17,10 +17,6 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
-
-## Load Required Libraries 
-#if(!require(maps)){stop("Required Package maps was not loaded")}
-#if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
 
 ################################################
 ## Set output names and remove existing files ##
@@ -94,6 +90,8 @@ for (k in 1:total_networks) {
                aqdat_query.df   <- sitex_info$sitex_data
                units            <- as.character(sitex_info$units[[1]])
             }
+	    aqdat_query.df$stat_id_noPOC <- aqdat_query.df$stat_id
+            aqdat_query.df$stat_id       <- paste(aqdat_query.df$stat_id,aqdat_query.df$POCode,sep="")
          }
          else {
             query_result   <- query_dbase(run_name1,network,species)

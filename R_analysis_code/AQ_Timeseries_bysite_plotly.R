@@ -1,6 +1,6 @@
 header <- "
-############################ INDIVIDUAL SITE TIME SERIES PLOT #############################
-### AMET CODE: AQ_Timeseries_plotly.R
+####################### INDIVIDUAL SITE TIME SERIES PLOT (PLOTLY) #########################
+### AMET CODE: AQ_Timeseries_bysite_plotly.R
 ###
 ### This script is part of the AMET-AQ system.  It plots an interactive timeseries plot using
 ### the R plotly package.  The script can accept multiple sites, and individual time series 
@@ -10,7 +10,7 @@ header <- "
 ### but the script outputs a zipped file of all the individual HTML files for the sites 
 ### requested.
 ###
-### Last updated by Wyat Appel: 03/2025
+### Last updated by Wyat Appel: May 2025
 ############################################################################################
 "
 
@@ -42,16 +42,17 @@ run_name<-run_names[1]
       aqdat_query.df   <- sitex_info$sitex_data
       data_exists      <- sitex_info$data_exists
       if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
+      sites <- unique(aqdat_query.df$stat_id)
    }
    else {
      query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
      aqdat_query.df  <- query_result[[1]]
      data_exists     <- query_result[[2]]
      if (data_exists == "y") { units <- query_result[[3]] }
-      model_name      <- query_result[[4]]
+     model_name      <- query_result[[4]]
+     sites <- unique(aqdat_query.df$stat_id_noPOC)
    }
 }
-sites <- unique(aqdat_query.df$stat_id_noPOC)
 query_base <- query
 
 ### Set file names ###

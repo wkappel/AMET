@@ -22,7 +22,7 @@
   # These are the main controlling variables for the R script
   
   ###  Top of AMET directory
-  #  setenv AMETBASE       /home/AMETv16
+  #setenv AMETBASE       /home/AMETv16
   setenv AMET_DATABASE  amet
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
@@ -31,7 +31,7 @@
   setenv AMET_DB  T
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
-  #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output
+  #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output/201807
 
   ###  Directory where figures and text output will be directed
   setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/stats_plots_leaflet

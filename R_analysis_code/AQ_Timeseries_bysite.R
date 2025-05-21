@@ -1,13 +1,13 @@
 header <- "
-############################# TIME SERIES PLOT ####################################
+######################### TIME SERIES PLOT BY SITE ################################
 ### AMET CODE: AQ_Timeseries.R
 ###
 ### This script is part of the AMET-AQ system.  It plots single timeseries for a 
-### single species, single network for multiple simulations. Data are averaged across
-### time and space to create single time series. The script also plots the bias, RMSE
-### and correlation.
+### single site, species, and network for multiple simulations. Data are averaged across
+### time and space to create single time series for each individual site. The script 
+### also plots the bias, RMSE, and correlation.
 ###
-### Last updated by Wyat Appel: Mar 2021 
+### Last updated by Wyat Appel: May 2025 
 ###################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -59,16 +59,17 @@ run_name<-run_names[1]
       aqdat_query.df   <- sitex_info$sitex_data
       data_exists      <- sitex_info$data_exists
       if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
+      sites <- unique(aqdat_query.df$stat_id)
    }
    else {
      query_result    <- query_dbase(run_name,network,species,orderby=c("ob_dates","ob_hour"))
      aqdat_query.df  <- query_result[[1]]
      data_exists     <- query_result[[2]]
      if (data_exists == "y") { units <- query_result[[3]] }
-      model_name      <- query_result[[4]]
+     model_name      <- query_result[[4]]
+     sites <- unique(aqdat_query.df$stat_id_noPOC)
    }
 }
-sites <- unique(aqdat_query.df$stat_id_noPOC)
 query_base <- query
 
 for (s in 1:length(sites)) {

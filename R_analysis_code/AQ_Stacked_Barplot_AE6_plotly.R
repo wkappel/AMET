@@ -1,6 +1,6 @@
 header <- "
-############################## AE6 STACKED BAR PLOT ##################################
-### AMET CODE: AQ_Stacked_Barplot_AE6_ggplot.R
+########################## AE6 STACKED BAR PLOT (PLOTLY) ##############################
+### AMET CODE: AQ_Stacked_Barplot_AE6_plotly.R
 ###
 ### This code creates an interactive stacked bar plot of PM species from the IMPROVE, CSN,
 ### SEARCH or AQS Daily networks using the plotly R package. Data are then averaged for SO4,
@@ -8,7 +8,7 @@ header <- "
 ### plotted on a stacked bar plot, along with the percent of the total PM2.5 that each species
 ### comprises.
 ###
-### Last updated by Wyat Appel: Jan 2021
+### Last updated by Wyat Appel: May 2025 
 #######################################################################################
 "
 
@@ -117,7 +117,6 @@ for (j in 1:length(run_names)) {
 
    ### Calculate NH4 from NO3 and SO4 if unavailable ###
    aqdat_all.df$NH4_ob[aqdat_all.df$NH4 == -999] <- 0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob
-#   aqdat_all.df$OTHER_ob[aqdat_all.df$OTHER_ob == -999] <- aqdat_all.df$PM_TOT_ob-aqdat_all.df$SO4_ob-aqdat_all.df$NO3_ob-(0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob)-aqdat_all.df$OC_ob-aqdat_all.df$EC_ob-aqdat_all.df$Na_ob-aqdat_all.df$Cl_ob-aqdat_all.df$Al_ob-aqdat_all.df$Ca_ob-aqdat_all.df$Fe_ob-aqdat_all.df$K_ob-aqdat_all.df$Si_ob-aqdat_all.df$Ti_ob
    aqdat_all.df$NCOM_ob <- 0.8*aqdat_all.df$OC_ob
 
    blank_mod  <- 0.4
@@ -129,8 +128,10 @@ for (j in 1:length(run_names)) {
       blank_ob   <- 0   
    }
    
-#   aqdat_all.df[aqdat_all.df < 0] <- NA
-   aqdat_all.df <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,45,46,47)]
+   {
+      if (Sys.getenv("AMET_DB") == 'F') { aqdat_all.df <- aqdat_all.df[ -c(1,3,4,6,7,8,9,44)] }
+      else { aqdat_all.df     <- aqdat_all.df[ -c(1,3,4,5,6,8,9,10,45,46,47)] }
+   }
    aqdat_agg.df <- aggregate(aqdat_all.df, by=list(aqdat_all.df$stat_id,aqdat_all.df$ob_dates), FUN=mean, na.rm=TRUE)
    complete_records <- complete.cases(aqdat_agg.df[,5:36])
    aqdat_sub.df <- aqdat_agg.df[complete_records,]
@@ -138,16 +139,6 @@ for (j in 1:length(run_names)) {
    ##########################################################
    ### Average all data for a species into a single value ###
    ##########################################################
-#   l <- 5							# offset for first species ob value
-
-#   aqdat_sub.df <- aqdat_agg.df
-#   len <- length(aqdat_sub.df)
-#   while (l < len) { 					# loop through each column
-#      indic.nan <- is.nan(aqdat_sub.df[,l]) != "NaN"		# determine missing data from ob column
-#      aqdat_sub.df <- aqdat_sub.df[indic.nan,]		# remove missing model/ob pairs from dataframe
-#      l <- l+1
-#   }  
-
    num_sites	<- length(unique(aqdat_sub.df$Group.1))
    num_pairs	<- length(aqdat_sub.df$Group.1)   
  
@@ -166,8 +157,6 @@ for (j in 1:length(run_names)) {
    ########################################################################################
    ### Calculate percent of total PM2.5 (without other category) each species comprises ###
    ########################################################################################
-#   NCOM_ob              <- 0.8*medians.df$OC_ob
-#   other_mod	        <- medians.df$OTHRIJ_mod
    other_ob	        <- medians.df$PM_TOT_ob-(medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+medians.df$Al_ob+medians.df$Ca_ob+medians.df$Fe_ob+medians.df$K_ob+medians.df$Mg_ob+medians.df$Si_ob+medians.df$Ti_ob+medians.df$Na_ob+medians.df$Cl_ob+medians.df$NCOM_ob)
    if (other_ob < 0) {
       other_ob <- 0
@@ -175,11 +164,6 @@ for (j in 1:length(run_names)) {
    other_mod            <- medians.df$PM_TOT_mod-(medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$Al_mod+medians.df$Ca_mod+medians.df$Fe_mod+medians.df$K_mod+medians.df$Mg_mod+medians.df$Si_mod+medians.df$Ti_mod+medians.df$Na_mod+medians.df$Cl_mod+medians.df$NCOM_mod) 
    medians_tot_ob       <- medians.df$SO4_ob+medians.df$NO3_ob+medians.df$NH4_ob+medians.df$EC_ob+medians.df$OC_ob+medians.df$Al_ob+medians.df$Ca_ob+medians.df$Fe_ob+medians.df$K_ob+medians.df$Si_ob+medians.df$Ti_ob+medians.df$Na_ob+medians.df$Cl_ob+medians.df$NCOM_ob+other_ob
    medians_tot_mod      <- medians.df$SO4_mod+medians.df$NO3_mod+medians.df$NH4_mod+medians.df$EC_mod+medians.df$OC_mod+medians.df$Al_mod+medians.df$Ca_mod+medians.df$Fe_mod+medians.df$Si_mod+medians.df$Ti_mod+medians.df$Na_mod+medians.df$Cl_mod+medians.df$NCOM_mod+other_mod
-#   total_ob            <- data.df$SO4_ob+data.df$NO3_ob+data.df$NH4_ob+data.df$EC_ob+data.df$OC_ob+data.df$soil_ob+data.df$NaCl_ob+data.df$OTHER_ob+water_ob+NCOM_ob
-#   total_mod           <- data.df$SO4_mod+data.df$NO3_mod+data.df$NH4_mod+data.df$EC_mod+data.df$OC_mod+data.df$soil_mod+data.df$NaCl_mod+data.df$NCOM_mod+data.df$OTHER_REM_mod
-
-#   medians.df$tot_ob   <- medians_tot_ob
-#   medians.df$tot_mod <- medians_tot_mod
    {
       if (j == 1) {
          SO4  <- c(medians.df$SO4_ob,medians.df$SO4_mod)

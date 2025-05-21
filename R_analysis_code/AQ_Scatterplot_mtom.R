@@ -8,7 +8,7 @@ header <- "
 ### is in the database).  Two model runs must be provided.  The script attempts
 ### to match all points in one run with all points in the other run.  
 ###
-### Last Updated by Wyat Appel: June, 2019
+### Last Updated by Wyat Appel: May 2025
 ##########################################################################
 "
 
@@ -55,13 +55,11 @@ for (j in 1:length(network_names)) {						# Loop through for each network
          data_exists      <- sitex_info$data_exists
          if (data_exists == "y") {
             aqdat_query.df  <- sitex_info$sitex_data
-            aqdat_query.df  <- aqdat_query.df[,-ob_col_name]
          }
          sitex_info      <- read_sitex(Sys.getenv("OUTDIR2"),network,run_name2,species)
          data_exists2    <- sitex_info$data_exists
          if (data_exists == "y") {
             aqdat_query2.df <- sitex_info$sitex_data
-            aqdat_query2.df <- aqdat_query2.df[,-ob_col_name]
             units           <- as.character(sitex_info$units[[1]])
          }
       }
