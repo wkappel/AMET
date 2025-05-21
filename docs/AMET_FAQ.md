@@ -38,17 +38,20 @@ AMETv1.6 is an incremental update from version 1.5. It includes important enhanc
 
 #### New AQ Features v1.6
 
--	New analysis scripts
-       - AQ_Histogram_plotly.R
-       - AQ_Kellyplot_region_plotly.R
-       - AQ_Kellyplot_season_plotly.R
-       - AQ_Kellyplot_plotly.R
-       - AQ_Scatterplot_density_ggplot.R (enhanced)
-       - AQ_Timeseries_bysite.R
-       - AQ_Timeseries_bysite_plotly.R
--	New analysis script options
-       - Added popup time series option to AQ_Plot_Spatial_leaflet.R script. Combined the multiple plots into a single plot with selectable metrics
-       - Added option to aggregate sites by parameter occruence code (POC) and common grid cell
+-	New analysis scripts:
+       -	AQ_Summary_Panel_Plot.R
+       -	AQ_Plot_Spatial_animation.R
+       -	AQ_Histogram_plotly.R
+       -	AQ_Kellyplot_region_plotly.R
+       -	AQ_Kellyplot_season_plotly.R
+       -	AQ_Kellyplot_plotly.R
+       -	AQ_Scatterplot_density_ggplot.R (enhanced)
+       -	AQ_Scatterplot_density_plotly.R
+       -	AQ_Timeseries_bysite.R
+       -	AQ_Timeseries_bysite_plotly.R
+-	New analysis script options:
+       -	Added popup time series option to AQ_Plot_Spatial_leaflet.R script. Combined the multiple plots into a single plot with selectable metrics
+       -	Added option to aggregate sites by parameter occruence code (POC) and common grid cell
 
 #### MET Updates v1.6
 
