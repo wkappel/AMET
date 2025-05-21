@@ -8,7 +8,7 @@
 
 <a id=why_update_v15_v16></a>
 ## What changed and should I update to AMET v1.6?
-AMETv1.6 is an incremental update from version 1.5. It includes important enhancements and new analysis scripts. **Users are encouraged to update to the latest version of the AMET-AQ observation files. Updating both the AMET version and AMET-AQ observation files together will insure all the AQ species matching between CMAQ and the observations is done correctly.**
+**AMETv1.6 is an incremental update from version 1.5. It includes important enhancements and new analysis scripts.** Users are encouraged to update to the latest version of the AMET-AQ observation files. Updating both the AMET version and AMET-AQ observation files together will insure all the AQ species matching between CMAQ and the observations is done correctly.**
 
 **AMET-MET and AMET-AQ are backward compatible. No changes have been made to the underlying database structure.** However, it is recommended that users that upgrade to AMETv16 use the scripts provided with version 1.6 to interface with the AMETv16 code. New scripts_db and scripts_analysis may not work with the old R_db_scripts and R_analysis_scripts. AMETv16 code should work with projects created using AMETv15, but that scenario has not been thoroughly tested, so it's possilbe that issues could occur. A users should look through the following MET and AQ updates/bug fixes and new features below to see if they are relevant, but an **update should be seamless and not interfere with prior AMET work or operation.**
 
