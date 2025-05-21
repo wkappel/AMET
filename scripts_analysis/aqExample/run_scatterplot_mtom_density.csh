@@ -11,7 +11,8 @@
 # does not use all the model grid points (only what is in the
 # database).  Two model runs must be provided and one or more
 # networks.  The script attempts to match all points in one run to all
-# points in the other run.
+# points in the other run. This script creates both html and png/pdf 
+# MtoM density scatter plots.
 #
 # Initial version:  Wyat Appel - Apr, 2018
 #
@@ -41,7 +42,7 @@
   #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output/201807
 
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_mtom_density_ggplot
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_mtom_density
   
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
   setenv AMET_SDATE "2018-07-01"
@@ -57,8 +58,8 @@
   setenv AMET_TITLE "Model to Model Density Scatterplot: $AMET_PROJECT vs $AMET_PROJECT2 $AMET_SDATE - $AMET_EDATE"
 
 
-  ###  Plot Type, options are "pdf", "png", or "both"
-  setenv AMET_PTYPE both 
+  ###  Plot Type, option is "html" and "png","pdf",or "both"
+  setenv AMET_PTYPE both
 
 
   ### Species to Plot ###
@@ -116,7 +117,7 @@
   setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG scatterplot_mtom_density_ggplot.log
+  setenv AMET_LOG scatterplot_mtom_density_plotly.log
 
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
@@ -132,7 +133,7 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Scatterplot_mtom_density_ggplot.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Scatterplot_mtom_density_plotly.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then

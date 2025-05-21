@@ -83,17 +83,16 @@ for (k in 1:total_networks) {
       }
    }
    {
-      if (k == 1) { 
-         aqdat_query.df <- aqdat_query_tmp.df }
+      if (k == 1) { aqdat_query.df <- aqdat_query_tmp.df }
       else { aqdat_query.df <- rbind(aqdat_query.df,aqdat_query_tmp.df) }
    }
 }   
 if (data_exists == "n") { stop("Stopping because data_exists flag is false. Likely no data found for query.") }
 
-years   <- substr(aqdat_query.df$ob_dates,1,4)
-months  <- substr(aqdat_query.df$ob_dates,6,7)
-yearmonth <- paste(years,months,sep="_")
-aqdat_query.df$Year <- years
+years   		 <- substr(aqdat_query.df$ob_dates,1,4)
+months  		 <- substr(aqdat_query.df$ob_dates,6,7)
+yearmonth 		 <- paste(years,months,sep="_")
+aqdat_query.df$Year 	 <- years
 aqdat_query.df$YearMonth <- yearmonth
 
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
@@ -111,16 +110,15 @@ if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
          }
       }
       {
-      if (k == 1) {
-         aqdat_query2.df <- aqdat_query2_tmp.df }
-      else { aqdat_query2.df <- rbind(aqdat_query2.df,aqdat_query2_tmp.df) }
+         if (k == 1) { aqdat_query2.df <- aqdat_query2_tmp.df }
+         else { aqdat_query2.df <- rbind(aqdat_query2.df,aqdat_query2_tmp.df) }
       }
    }
-   years2   <- substr(aqdat_query2.df$ob_dates,1,4)
-   months2  <- substr(aqdat_query2.df$ob_dates,6,7)
-   yearmonth2 <- paste(years2,months2,sep="_")
-   aqdat_query2.df$Year <- years2
-   aqdat_query2.df$YearMonth <- yearmonth2
+   years2   			<- substr(aqdat_query2.df$ob_dates,1,4)
+   months2  			<- substr(aqdat_query2.df$ob_dates,6,7)
+   yearmonth2 			<- paste(years2,months2,sep="_")
+   aqdat_query2.df$Year 	<- years2
+   aqdat_query2.df$YearMonth 	<- yearmonth2
 }
 
 if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
@@ -138,22 +136,21 @@ if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
          }
       }
       {
-      if (k == 1) {
-         aqdat_query3.df <- aqdat_query3_tmp.df }
-      else { aqdat_query3.df <- rbind(aqdat_query3.df,aqdat_query3_tmp.df) }
+         if (k == 1) { adat_query3.df <- aqdat_query3_tmp.df }
+         else { aqdat_query3.df <- rbind(aqdat_query3.df,aqdat_query3_tmp.df) }
       }
    }
-   years3   <- substr(aqdat_query3.df$ob_dates,1,4)
-   months3  <- substr(aqdat_query3.df$ob_dates,6,7)
-   yearmonth3 <- paste(years3,months3,sep="_")
-   aqdat_query3.df$Year <- years3
-   aqdat_query3.df$YearMonth <- yearmonth3
+   years3   			<- substr(aqdat_query3.df$ob_dates,1,4)
+   months3  			<- substr(aqdat_query3.df$ob_dates,6,7)
+   yearmonth3 			<- paste(years3,months3,sep="_")
+   aqdat_query3.df$Year 	<- years3
+   aqdat_query3.df$YearMonth 	<- yearmonth3
 }
 
-total_days <- as.numeric(max(as.Date(aqdat_query.df$ob_datee))-min(as.Date(aqdat_query.df$ob_dates)))	# Calculate the total length, in days, of the period being plotted
-x.axis.min <- min(aqdat_query.df$month)	# Find the first month available from the query
-ob_col_name <- paste(species,"_ob",sep="")
-mod_col_name <- paste(species,"_mod",sep="")
+total_days 	<- as.numeric(max(as.Date(aqdat_query.df$ob_datee))-min(as.Date(aqdat_query.df$ob_dates)))	# Calculate the total length, in days, of the period being plotted
+x.axis.min 	<- min(aqdat_query.df$month)	# Find the first month available from the query
+ob_col_name 	<- paste(species,"_ob",sep="")
+mod_col_name 	<- paste(species,"_mod",sep="")
 {
 if ((total_days <= 31) && (averaging == "n")) {	# If only plotting one month, plot all times instead of averaging to a single month
    aqdat.df <- data.frame(network=aqdat_query.df$network,stat_id=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,ob_dates=aqdat_query.df$ob_dates,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Month=aqdat_query.df$month,Split_On=aqdat_query.df$ob_dates)
