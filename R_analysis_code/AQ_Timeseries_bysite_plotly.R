@@ -327,6 +327,7 @@ for (site_n in 1:length(sites)) {
 
    ### Write data to be plotted to file ###
    filename_csv	<- paste(run_name1,species,sites[site_n],pid,"timeseries.csv",sep="_")              # Set output file name
+   filename_csv <- paste(figdir,filename_csv,sep="/")
    write.table(All_Data.df,file=filename_csv,append=F,row.names=F,sep=",")      # Write raw data to csv file
    ########################################
    filename_html   <- paste(run_name1,species,sites[site_n],pid,"timeseries.html",sep="_")              # Set output file name
