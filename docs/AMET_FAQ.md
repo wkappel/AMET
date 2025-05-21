@@ -24,10 +24,14 @@ AMETv1.6 is an incremental update from version 1.5. It includes important enhanc
 -	Support added for numerous additional AQS VOC species
 -	Updated batch scripts to incorporate new analysis scripts
 -	Updated AQ_species_list.input file:
-       - to include AirNow 
-       - to include AMTIC
-       - to include PurpleAir
-       - to include AQS VOC species
+       -	to include AirNow
+       -	to include AMTIC
+       -	to include PurpleAir
+       -	to include AQS VOC species
+-	Updated AMET-AQ observation files (see notes in AMET_Release_Observation_Files_Readme.txt)
+-	Numerous minor bug fixes
+-	Updated processing for AMON data to properly adjust for travel blank (when available) or use a fixed value for the blank correction (value depends on year). Also updated the AMON input data file to include a POCode based on the replicate value to avoid records being overwritten when loaded into the database
+-	Added ability to the batch processing to use user-defined regions based on an input file with site ID and region name
 -	Updated AMET-AQ observation files (see notes in [AMET_Release_Observation_Files_Readme.txt](https://github.com/USEPA/AMET/files/8655699/AMET_Release_Observation_Files_Readme.txt))
 -	Numerous minor bug fixes
 -	Updated processing for AMON data to properly adjust for travel blank (when available) or use a fixed value for the blank correction (value depends on year). Also updated the AMON input data file to include a POCode based on the replicate value to avoid records being overwritten when loaded into the database
