@@ -70,9 +70,9 @@ for (k in 1:total_networks) {
          sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network_names[k],run_name1,species)
          data_exists      <- sitex_info$data_exists
          if (data_exists == "y") {
-            aqdat_query.df   <- (sitex_info$sitex_data)
-            aqdat_query.df   <- aqdat_query.df[with(aqdat_query.df,order(stat_id,ob_dates,ob_hour)),]
-            units            <- as.character(sitex_info$units[[1]])
+            aqdat_query.df   	<- (sitex_info$sitex_data)
+            aqdat_query_tmp.df	<- aqdat_query.df[with(aqdat_query.df,order(stat_id,ob_dates,ob_hour)),]
+            units            	<- as.character(sitex_info$units[[1]])
          }
       }
       else {

@@ -1,16 +1,16 @@
 #!/bin/csh -f
 # -----------------------------------------------------------------------
-# Scatterplot - Multi-network
+# Timeseries
 # -----------------------------------------------------------------------
 # Purpose:
-#
 # This is an example c-shell script to run the R-script that generates
-# scatter plots for multiple networks. Multiple network, single species,
-# multiple simulations (up to two). 
+# a timeseries plot.  The script can accept multiple sites, as they
+# will be time averaged to create the timeseries plot.  The script
+# also plots the bias, RMSE and correlation between the obs and model.
 #
 # Initial version:  Alexis Zubrow IE UNC - Nov, 2007
 #
-# Revised version:  Wyat Appel - 04/2025
+# Revised version:  Wyat Appel - 04/2025 
 # -----------------------------------------------------------------------
 
   
@@ -34,14 +34,11 @@
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
   #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
- 
-  ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot
-  
+
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
   setenv AMET_SDATE "2018-07-01"
-  setenv AMET_EDATE "2018-07-31"
-  
+  setenv AMET_EDATE "2018-07-11"
+
   ### Process ID. This can be set to anything. It will be added to the file output name. Default is 1.
   ### The PID is particularly important if using the AMET web interface and is determined there through
   ### a random number generator.
@@ -49,11 +46,27 @@
 
   ###  Custom title (if not set will autogenerate title based on variables 
   ###  and plot type)
-  #  setenv AMET_TITLE "Scatterplot $AMET_PROJECT $AMET_SDATE - $AMET_EDATE"
+  setenv AMET_TITLE ""
+  #  setenv AMET_TITLE "Time Series Plot $AMET_PROJECT $AMET_SDATE - $AMET_EDATE"
 
+  ###  Plot Type, options is html
+  setenv AMET_PTYPE html 
 
-  ###  Plot Type, options are "pdf", "png", or "both"
-  setenv AMET_PTYPE both
+  # Additional query to subset the data.
+  # Averages over all monitors that meet this additional criteria
+  # Note: This is added to the sql query. If commented out, it will
+  # automatically get all monitors for the above network.
+  # Select by Monitor ID: 
+  # Note: the monitor must correspond to the network and species
+#  setenv AMET_ADD_QUERY "and s.stat_id='170310064'"
+
+  # Select by state(s)
+#  setenv AMET_ADD_QUERY "and (s.state='NY' or s.state='MA')"
+
+  # label for plot - indicates state 
+  # if "All", will not label plot w/ state
+  setenv AMET_STATELABEL "All"
+#  setenv AMET_STATELABEL "NY & MA"
 
 
   ### Species to Plot ###
@@ -62,7 +75,11 @@
   ### AE6 (CMAQv5.0) Species
   ### Na,Cl,Al,Si,Ti,Ca,Mg,K,Mn,Soil,Other,Ca_dep,Ca_conc,Mg_dep,Mg_conc,K_dep,K_conc
 
-  setenv AMET_AQSPECIES SO4
+  setenv AMET_AQSPECIES O3_8hrmax 
+#  setenv AMET_AQSPECIES SO4
+
+  ###  Directory where figures and text output will be directed
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/timeseries_bysite_plotly
 
   ### Observation Network to plot
   ### Set to 'T' to process that nework
@@ -74,7 +91,7 @@
   setenv AMET_AMON              F
   setenv AMET_AQS_HOURLY        F
   setenv AMET_AQS_HOURLY_VOC    F
-  setenv AMET_AQS_DAILY_O3      F
+  setenv AMET_AQS_DAILY_O3      T
   setenv AMET_AQS_DAILY         F
   setenv AMET_AQS_DAILY_VOC     F
   setenv AMET_CASTNET_WEEKLY    F
@@ -83,7 +100,7 @@
   setenv AMET_CASTNET_DRYDEP    F
   setenv AMET_CASTNET_DRYDEP_O3 F
   setenv AMET_CSN               F
-  setenv AMET_IMPROVE           T
+  setenv AMET_IMPROVE           F
   setenv AMET_NADP              F
   setenv AMET_NAPS_HOURLY       F
   setenv AMET_NAPS_DAILY_O3     F
@@ -111,14 +128,15 @@
   setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG scatterplot.log
-
+  setenv AMET_LOG timeseries_bysite_plotly.log
+  
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
 ##--------------------------------------------------------------------------##
 
   ## Set the input file for this R script
-  setenv AMETRINPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/all_scripts.input  
+#  setenv AMETRINPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/timeseries.input  
+setenv AMETRINPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/all_scripts.input
   setenv AMET_NET_INPUT $AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/Network.input
   
   # Check for plot and text output directory, create if not present
@@ -127,15 +145,19 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Scatterplot.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Timeseries_bysite_plotly.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots -----------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot.$AMET_PTYPE"
-		echo "Data File -------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot.csv"
+                echo "If zip file flag set to true:"
+		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_timeseries.zip
+                echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_timeseries_data.zip
+                echo "If zip file flag set to false:"
+		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_timeseries.html
+                echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_timeseries_data.csv
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else
@@ -143,4 +165,3 @@
      echo "Often, this indicates no data matched the specified criteria (e.g., wrong dates for project). Please check and re-run!"
   		exit 1  
   endif
-

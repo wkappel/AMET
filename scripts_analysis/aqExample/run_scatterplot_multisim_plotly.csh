@@ -22,7 +22,7 @@
   # These are the main controlling variables for the R script
   
   ###  Top of AMET directory
-  setenv AMETBASE       /home/AMETv16
+  #setenv AMETBASE       /home/AMETv16
   setenv AMET_DATABASE  amet
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
@@ -31,7 +31,7 @@
   setenv AMET_DB  T
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
-  #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output
+  #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output/201807
 
   ### Set the project name to be used for model-to-model comparisons ###
   setenv AMET_PROJECT2  aqExample
@@ -137,8 +137,8 @@
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_multi.$AMET_PTYPE
-                echo "Data File ------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_multi_data.csv
+		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot.$AMET_PTYPE
+                echo "Data File ------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_data.csv
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else

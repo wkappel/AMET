@@ -23,7 +23,7 @@
   # These are the main controlling variables for the R script
   
   ###  Top of AMET directory
-  setenv AMETBASE       /home/AMETv16
+  #setenv AMETBASE       /home/AMETv16
   setenv AMET_DATABASE  amet
   setenv AMET_PROJECT   aqExample
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
@@ -32,7 +32,7 @@
   setenv AMET_DB  T
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
-  #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output
+  #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output/201807
 
   ### Set the project name to be used for model-to-model comparisons ###
   setenv AMET_PROJECT2  aqExample
@@ -41,7 +41,7 @@
   #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
 
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_multi
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/scatterplot_multisim
   
   ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
   setenv AMET_SDATE "2018-07-01"
@@ -115,7 +115,7 @@
   setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG scatterplot_multi.log
+  setenv AMET_LOG scatterplot_multisim.log
 
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
@@ -131,15 +131,15 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Scatterplot_multi.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Scatterplot_multisim.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_multi.$AMET_PTYPE
-                echo "Data File ------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot_multi.csv
+		echo "Plots ----------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot.$AMET_PTYPE
+                echo "Data File ------------------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_scatterplot.csv
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else

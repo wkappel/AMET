@@ -10,7 +10,7 @@ header <- "
 ### self-contained using PANDOC. If PANDOC is unavailable, the selfcontained options at
 ### the end of this code should be set to false.
 ###
-### Last modified by Wyat Appel: 03/2025
+### Last modified by Wyat Appel: May 2025
 ##################################################################################
 "
 
@@ -108,6 +108,8 @@ for (j in 1:total_networks) {
             aqdat_query.df   <- sitex_info$sitex_data
             units            <- as.character(sitex_info$units[[1]])
          }
+	 aqdat_query.df$stat_id_noPOC <- aqdat_query.df$stat_id
+         aqdat_query.df$stat_id       <- paste(aqdat_query.df$stat_id,aqdat_query.df$POCode,sep="")
       }
       else {
          query_result   <- query_dbase(run_name1,network,species)
@@ -247,7 +249,6 @@ for (i in 1:8) {
         if ((length(perc_range_min) != 0) || (length(perc_range_max) != 0)) {
            data.seq <- pretty(seq(perc_range_min,perc_range_max,na.rm=T),n=num_ints)
         }
-#        my.colors <- colorRampPalette(c("darkorchid4","purple", "#002FFF", "deepskyblue", "lightblue", "palegoldenrod", "yellow", "orange", "red", "brown"))
         min.data <- min(data.seq)
         max.data <- max(data.seq)
         n.bins <- length(data.seq)
@@ -319,14 +320,6 @@ for (i in 1:8) {
         binpal2 <- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
      }
   }
-#  min.data <- min(data.seq)
-#  max.data <- max(data.seq)
-
-#  n.bins <- length(data.seq)
-#  binpal2 <- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
-
-#  my.leaf <- my.leaf.base
-#  for (j in 1:length(available_networks)) {
     if(i == 1) {
         plot_val <- sinfo_data$NMB
         name <- "NMB"
