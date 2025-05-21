@@ -12,6 +12,10 @@ AMETv1.6 is an incremental update from version 1.5. It includes important enhanc
 
 **AMET-MET and AMET-AQ are backward compatible. No changes have been made to the underlying database structure.** However, it is recommended that users that upgrade to AMETv16 use the scripts provided with version 1.6 to interface with the AMETv16 code. New scripts_db and scripts_analysis may not work with the old R_db_scripts and R_analysis_scripts. AMETv16 code should work with projects created using AMETv15, but that scenario has not been thoroughly tested, so it's possilbe that issues could occur. A users should look through the following MET and AQ updates/bug fixes and new features below to see if they are relevant, but an **update should be seamless and not interfere with prior AMET work or operation.**
 
+#### General Updates v1.6
+
+-	Moved from using RMySQL to RMariaDB, as R is moving away from RMySQL
+
 #### AQ Updates v1.6
 
 -	Support added for AirNow ozone and PM2.5 data
