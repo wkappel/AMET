@@ -5,7 +5,7 @@ Atmospheric Model Evaluation Tool
 
 Atmospheric Model Evaluation Tool (AMET) website: (https://www.epa.gov/cmaq/atmospheric-model-evaluation-tool)
 
-The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to facilitate the analysis and evaluation of predictions from meteorological and air quality models. AMET matches the model output for particular locations to the corresponding observed values from one or more networks of monitors. These pairings of values (model and observation) are then used to statistically and graphically analyze the model’s performance.
+The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to facilitate the analysis and evaluation of predictions from meteorological (e.g., WRF) and air quality (e.g., CMAQ) models. AMET matches the model output for particular locations to the corresponding observed values from one or more networks of monitors. These pairings of values (model and observation) are used to statistically and graphically analyze the model’s performance using analysis scripts provided as part of the AMET code. AMET leverages open source applications and software packages, specifically Cshell, R, and MariaDB, and to a lesser extent Fortran. 
 
 [Frequently asked questions for upgrading to the latest AMET version](docs/AMET_FAQ.md) - Updated for v1.6 release.
 
@@ -31,11 +31,14 @@ The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to 
    - Added ability to the batch processing to use user-defined regions based on an input file with site ID and region name
 - New AQ Features v1.6
   - New analysis scripts:
+    - AQ_Summary_Panel_Plot.R
+    - AQ_Plot_Spatial_animation.R
     - AQ_Histogram_plotly.R
     - AQ_Kellyplot_region_plotly.R
     - AQ_Kellyplot_season_plotly.R
     - AQ_Kellyplot_plotly.R
     - AQ_Scatterplot_density_ggplot.R (enhanced)
+    - AQ_Scatterplot_density_plotly.R
     - AQ_Timeseries_bysite.R
     - AQ_Timeseries_bysite_plotly.R
   - New analysis script options
@@ -61,6 +64,7 @@ Earlier release versions of AMET that are currently available on Git Hub include
 * [v1.3 (July 2017)](https://github.com/USEPA/AMET/tree/1.3)
 * [v1.4 (August 2018)](https://github.com/USEPA/AMET/tree/1.4)
 * [v1.5 (August 2022)](https://github.com/USEPA/AMET/tree/1.5)
+* [v1.6 (June 2025)](https://github.com/USEPA/AMET/tree/1.6)
 
 ## EPA Disclaimer
 The United States Environmental Protection Agency (EPA) GitHub project code is provided on an "as is" basis and the user assumes responsibility for its use. EPA has relinquished control of the information and no longer has responsibility to protect the integrity , confidentiality, or availability of the information. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA. The EPA seal and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or the United States Government.    [<img src="https://licensebuttons.net/p/mark/1.0/88x31.png" width="50" height="15">](https://creativecommons.org/publicdomain/zero/1.0/)

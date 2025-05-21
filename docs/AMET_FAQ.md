@@ -8,9 +8,15 @@
 
 <a id=why_update_v15_v16></a>
 ## What changed and should I update to AMET v1.6?
-AMETv1.6 is an incremental update from version 1.5. It includes important enhancements and new analysis scripts. **Users are encouraged to update to the latest version of the AMET-AQ observation files. Updating both the AMET version and AMET-AQ observation files together will insure all the AQ species matching between CMAQ and the observations is done correctly.**
+**AMETv1.6 is an incremental update from version 1.5. It includes important enhancements and new analysis scripts.** Users are encouraged to update to the latest version of the AMET-AQ observation files. Updating both the AMET version and AMET-AQ observation files together will insure all the AQ species matching between CMAQ and the observations is done correctly.
 
-**AMET-MET and AMET-AQ are backward compatible. No changes have been made to the underlying database structure.** New R_db_scripts and R_analysis_scripts will operate using old cshell wrappers (scripts_db and scripts_analysis). New scripts_db and scripts_analysis may not work with the old R_db_scripts and R_analysis_scripts, but that scenario is not likely or sensible. A users should look through the following MET and AQ updates/bug fixes and new features below to see if they are relevant, but an **update should be seamless and not interfere with prior AMET work or operation.**
+**AMET-MET and AMET-AQ are backward compatible. No changes have been made to the underlying database structure.** However, it is recommended that users that upgrade to AMETv16 use the scripts provided with version 1.6 to interface with the AMETv16 code. New scripts_db and scripts_analysis may not work with the old R_db_scripts and R_analysis_scripts. AMETv16 code should work with projects created using AMETv15, but that scenario has not been thoroughly tested, so it's possilbe that issues could occur. Users should look through the following MET and AQ updates/bug fixes and new features below to see if they are relevant, but an **update should be seamless and not interfere with prior AMET work or operation.**
+
+**Potential issues with newer versions (11.\*.\*) of MariaDB.** The newest versions of MariaDB (11.\*.\*) have enhanced security related to SSL and TSL. Issues related to SSL and TSL can manifest as errors with certain Database Interface (DBI) functions not working properly. Ideally, the fix is to make sure the SSL/TSL settings are correct for the system and versions of R and MariaDB. Note that reverting to older versions of MariaDB (10.\*.\*) seem to avoid these issues with SSL/TSL. So, that may be a compromise solution for some users.
+
+#### General Updates v1.6
+
+-	Moved from using RMySQL to RMariaDB, as R is moving away from RMySQL
 
 #### AQ Updates v1.6
 
@@ -20,27 +26,34 @@ AMETv1.6 is an incremental update from version 1.5. It includes important enhanc
 -	Support added for numerous additional AQS VOC species
 -	Updated batch scripts to incorporate new analysis scripts
 -	Updated AQ_species_list.input file:
-       - to include AirNow 
-       - to include AMTIC
-       - to include PurpleAir
-       - to include AQS VOC species
+       -	to include AirNow
+       -	to include AMTIC
+       -	to include PurpleAir
+       -	to include AQS VOC species
+-	Updated AMET-AQ observation files (see notes in AMET_Release_Observation_Files_Readme.txt)
+-	Numerous minor bug fixes
+-	Updated processing for AMON data to properly adjust for travel blank (when available) or use a fixed value for the blank correction (value depends on year). Also updated the AMON input data file to include a POCode based on the replicate value to avoid records being overwritten when loaded into the database
+-	Added ability to the batch processing to use user-defined regions based on an input file with site ID and region name
 -	Updated AMET-AQ observation files (see notes in [AMET_Release_Observation_Files_Readme.txt](https://github.com/USEPA/AMET/files/8655699/AMET_Release_Observation_Files_Readme.txt))
 -	Numerous minor bug fixes
 -	Updated processing for AMON data to properly adjust for travel blank (when available) or use a fixed value for the blank correction (value depends on year). Also updated the AMON input data file to include a POCode based on the replicate value to avoid records being overwritten when loaded into the database
 
 #### New AQ Features v1.6
 
--	New analysis scripts
-       - AQ_Histogram_plotly.R
-       - AQ_Kellyplot_region_plotly.R
-       - AQ_Kellyplot_season_plotly.R
-       - AQ_Kellyplot_plotly.R
-       - AQ_Scatterplot_density_ggplot.R (enhanced)
-       - AQ_Timeseries_bysite.R
-       - AQ_Timeseries_bysite_plotly.R
--	New analysis script options
-       - Added popup time series option to AQ_Plot_Spatial_leaflet.R script. Combined the multiple plots into a single plot with selectable metrics
-       - Added option to aggregate sites by parameter occruence code (POC) and common grid cell
+-	New analysis scripts:
+       -	AQ_Summary_Panel_Plot.R
+       -	AQ_Plot_Spatial_animation.R
+       -	AQ_Histogram_plotly.R
+       -	AQ_Kellyplot_region_plotly.R
+       -	AQ_Kellyplot_season_plotly.R
+       -	AQ_Kellyplot_plotly.R
+       -	AQ_Scatterplot_density_ggplot.R (enhanced)
+       -	AQ_Scatterplot_density_plotly.R
+       -	AQ_Timeseries_bysite.R
+       -	AQ_Timeseries_bysite_plotly.R
+-	New analysis script options:
+       -	Added popup time series option to AQ_Plot_Spatial_leaflet.R script. Combined the multiple plots into a single plot with selectable metrics
+       -	Added option to aggregate sites by parameter occruence code (POC) and common grid cell
 
 #### MET Updates v1.6
 

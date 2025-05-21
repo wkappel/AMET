@@ -1,9 +1,9 @@
 header <- "
-########################### HISTOGRAM PLOT (PLOTLY) ############################# 
-### AMET CODE: R_Histogram_plotly.R 
+########################### HISTOGRAM PLOT (PLOTLY) #############################
+### AMET CODE: R_Histogram_plotly.R
 ###
 ### This script is part of the AMET-AQ system.  This script uses the plotly R package
-### to create an interactive histogram plot. This script will plot a single 
+### to create an interactive histogram plot. This script will plot a single
 ### species from a single network and multiple simulations on a single plot.
 ###
 ### Last Updated by Wyat Appel: 03/2025
@@ -25,7 +25,6 @@ filename_txt  		<- paste(run_name1,species,pid,"histogram.csv",sep="_")       # 
 ## Create a full path to file
 filename_html 		<- paste(figdir,filename_html,sep="/")      # Set PDF filename
 filename_txt  		<- paste(figdir,filename_txt,sep="/")      # Set output file name
-
 #################################
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
@@ -121,13 +120,13 @@ for (j in 1:num_runs) {
       if (j == 1) {
          aqdat_out.df <- aqdat.df
          p <- plot_ly(data = aqdat.df, x=~Obs_Value,type='histogram',alpha=0.6,name=network)
-         p <- p %>% add_histogram(data=aqdat.df,x=~Mod_Value,name=run_name)
-         p <- p %>% add_histogram(data=aqdat.df,x=~(Mod_Value-Obs_Value),name=paste(run_name,"Bias"))
+	 p <- p %>% add_histogram(data=aqdat.df,x=~Mod_Value,name=run_name)
+	 p <- p %>% add_histogram(data=aqdat.df,x=~(Mod_Value-Obs_Value),name=paste(run_name,"Bias"))
       }
       else {
          aqdat_out.df <- rbind(aqdat_out.df, aqdat.df)
          p <- p %>% add_histogram(data=aqdat.df,x=~Mod_Value,name=run_name)
-         p <- p %>% add_histogram(data=aqdat.df,x=~(Mod_Value-Obs_Value),name=paste(run_name,"Bias"))
+	 p <- p %>% add_histogram(data=aqdat.df,x=~(Mod_Value-Obs_Value),name=paste(run_name,"Bias"))
       }
    }
 }    # End for loop for simulations 
@@ -139,6 +138,7 @@ if (length(aqdat_out.df$Stat_ID) == 0) {
 ###############################
 
   p <- p %>% layout(title=list(text=main.title,font=list(size=25),y=0.97),barmode="overlay",xaxis=list(title=paste(species," (",units,")",sep=""),titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Frequency",titlefont=list(size=25),tickfont=list(size=15)),legend=list(font=list(size=20)))
+#saveWidget(p, file=filename_html,selfcontained=T)
 
 vline <- function(x = 0, color = "black") {
   list(
@@ -152,6 +152,6 @@ vline <- function(x = 0, color = "black") {
   )
 }
 
-  p <- p %>% layout(shapes=list(vline(0)),title=list(text=main.title,font=list(size=25),y=0.97),barmode="overlay",xaxis=list(title=paste(species," Bias (",units,")",sep=""),titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Frequency",titlefont=list(size=25),tickfont=list(size=15)),legend=list(font=list(size=20)))
+  p <- p %>% layout(shapes=list(vline(0)),title=list(text=main.title,font=list(size=25),y=0.97),barmode="overlay",xaxis=list(title=paste(species," (",units,")",sep=""),titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Frequency",titlefont=list(size=25),tickfont=list(size=15)),legend=list(font=list(size=20)))
 saveWidget(p, file=filename_html,selfcontained=T)
 

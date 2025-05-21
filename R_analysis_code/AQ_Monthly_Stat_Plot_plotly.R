@@ -32,15 +32,10 @@ filename_stats	<- paste(run_name1,species,pid,"stats.csv",sep="_")
 filename_html	<- paste(run_name1,species,pid,"stats_plot.html",sep="_")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { main.title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { main.title <- custom_title }
-}
-
+main.title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 ## Create a full path to file
 filename_stats	<- paste(figdir,filename_stats,sep="/")
 filename_html   <- paste(figdir,filename_html,sep="/")
-
 ################################################
 
 query_in		<- query
@@ -76,8 +71,6 @@ network_name<-network_label[[1]]
 #######################################
 ### Compute total number of  months ###
 #######################################
-#start_month     <- month_start
-#end_month       <- month_end
 if(!exists("year_start")) { year_start <- substr(start_date,1,4) }
 if(!exists("year_end")) { year_end <- substr(end_date,1,4) }
 start_month     <- as.integer(substr(start_date,5,6))
@@ -196,9 +189,9 @@ if (max(abs(c(monthly_MB,monthly_ME))) < 1) {
    MB_scale_ratio <- 100
 }
 
-stats_in.df <- data.frame(month=months,Num_Obs=monthly_OBS,NMB=monthly_NMB,NME=monthly_NME,CORR=monthly_CORR,MdnB=monthly_MdnB,MdnE=monthly_MdnE,RMSE=monthly_RMSE,MB=monthly_MB,ME=monthly_ME)
+stats_in.df <- data.frame(month=months,Num_Obs=monthly_OBS,Mean_Obs=monthly_Mean_OBS,Mean_Mod=monthly_Mean_MOD,NMB=monthly_NMB,NME=monthly_NME,CORR=monthly_CORR,MdnB=monthly_MdnB,MdnE=monthly_MdnE,RMSE=monthly_RMSE,MB=monthly_MB,ME=monthly_ME)
 
-p <- plot_ly(data = stats_in.df, x=~month,y=~NMB,mode='lines+markers',type='scatter',name="NMB",marker=list(color="Blue",size=10),text=~paste("Month:",month,"<br>Num Obs:",Num_Obs,"<br>NMB:",NMB,"<br>NME:",NME,"<br>MB:",MB,"<br>ME:",ME, '<br>Correlation:',CORR),hoverinfo='text')
+p <- plot_ly(data = stats_in.df, x=~month,y=~NMB,mode='lines+markers',type='scatter',name="NMB",marker=list(color="Blue",size=10),text=~paste("Month:",month,"<br>Num Obs:",Num_Obs,"<br>Obs Mean:",signif(Mean_Obs,3),"<br>Model Mean:",signif(Mean_Mod,3),"<br>NMB:",NMB,"<br>NME:",NME,"<br>MB:",signif(MB,3),"<br>ME:",signif(ME,3), '<br>Correlation:',CORR),hoverinfo='text')
 p <- p %>% add_trace(data=stats_in.df, x=~month, y=~NME, marker=list(color="Red"),name="NME")
 p <- p %>% add_trace(data=stats_in.df, x=~month, y=~CORR, yaxis="y3", marker=list(color="Green"),name="Correlation")
 p <- p %>% add_trace(data=stats_in.df, x=~month, y=~MB, yaxis="y2", marker=list(color="Brown"),name="Mean Bias")
