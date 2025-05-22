@@ -12,7 +12,7 @@
 
 **AMET-MET and AMET-AQ are backward compatible. No changes have been made to the underlying database structure.** However, it is recommended that users that upgrade to AMETv16 use the scripts provided with version 1.6 to interface with the AMETv16 code. New scripts_db and scripts_analysis may not work with the old R_db_scripts and R_analysis_scripts. AMETv16 code should work with projects created using AMETv15, but that scenario has not been thoroughly tested, so it's possilbe that issues could occur. Users should look through the following MET and AQ updates/bug fixes and new features below to see if they are relevant, but an **update should be seamless and not interfere with prior AMET work or operation.**
 
-**Potential issues with newer versions (11.\*.\*) of MariaDB.** The newest versions of MariaDB (11.\*.\*) have enhanced security related to SSL and TSL. Issues related to SSL and TSL can manifest as errors with certain Database Interface (DBI) functions not working properly. Ideally, the fix is to make sure the SSL/TSL settings are correct for the system and versions of R and MariaDB. Note that reverting to older versions of MariaDB (10.\*.\*) seem to avoid these issues with SSL/TSL. So, that may be a compromise solution for some users.
+**Potential issues with newer versions (11.\*.\*) of MariaDB.** The newest versions of MariaDB (11.\*.\*) have enhanced security related to SSL and TSL. Issues related to SSL and TSL can manifest as errors with certain R Database Interface (DBI) functions not working properly. Ideally, the fix is to make sure the SSL/TSL settings are correct for the system and versions of R and MariaDB. Note that reverting to older versions of MariaDB (10.\*.\*) seem to avoid these issues with SSL/TSL. So, that may be a compromise solution for some users.
 
 #### General Updates v1.6
 
@@ -42,7 +42,8 @@
 
 -	New analysis scripts:
        -	AQ_Summary_Panel_Plot.R
-       -	AQ_Plot_Spatial_animation.R
+       -	AQ_Plot_Spatial_animation_ggplot.R
+       -	AQ_Plot_Spatial_animation_plotly.R
        -	AQ_Histogram_plotly.R
        -	AQ_Kellyplot_region_plotly.R
        -	AQ_Kellyplot_season_plotly.R

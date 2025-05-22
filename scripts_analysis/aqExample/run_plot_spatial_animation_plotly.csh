@@ -31,7 +31,7 @@
   setenv AMET_PROJECT2  aqExample
  
   ###  Directory where figures and text output will be directed
-  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/plot_spatial_animation
+  setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/plot_spatial_animation_plotly
 
   ### T/F; Set to T if the model/obs pairs are loaded in the AMET database (i.e. by setting LOAD_SITEX = T)
   setenv AMET_DB  T
@@ -110,7 +110,7 @@
   setenv AMET_TOAR2_DAILY_O3    F
 
   # Log File for R script
-  setenv AMET_LOG plot_spatial.log
+  setenv AMET_LOG plot_spatial_animation_plotly.log
 
 ##--------------------------------------------------------------------------##
 ##                Most users will not need to change below here
@@ -126,28 +126,21 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Plot_Spatial_animation.R $AMET_LOG
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Plot_Spatial_animation_plotly.R $AMET_LOG
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then
   echo
                 echo "Statistics information"
                 echo "-----------------------------------------------------------------------------------------"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.pdf"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.pdf"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.pdf"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_avg.pdf"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_abs_avg.pdf"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_tile.pdf"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.png"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.png"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.png"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_avg.png"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_abs_avg.png"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_tile.png"
                 echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_obs.html"
                 echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_mod.html"
                 echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff.html"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_avg.html"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_diff_abs_avg.html"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_anim_obs.html"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_anim_mod.html"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_spatialplot_anim_diff.html"
                 echo "-----------------------------------------------------------------------------------------"
                 exit 0
   else
