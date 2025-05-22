@@ -1546,11 +1546,11 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes
    - multiple networks; single species; single simulation
 
-**run\_plot\_spatial\_animation\_ggplot.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_spatialplot_anim_ggplot_diff.png))
+**run\_plot\_spatial\_animation\_ggplot.csh** ([Example Plot - Screenshot](./images/aqExample_O3_8hrmax_1_spatialplot_anim_ggplot_diff.png))
    - Plots the averaged and non-aveaged values of the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for the averaged plot, while the plot of the individual times provides a time slider to scroll each time step 
    - multiple networks; single species; single simulation
-   - 
-**run\_plot\_spatial\_animation\_plotly.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_spatialplot_anim_plotly_diff.png))
+     
+**run\_plot\_spatial\_animation\_plotly.csh** ([Example Plot - Screenshot](./images/aqExample_O3_8hrmax_1_spatialplot_anim_plotly_diff.png))
    - Plots the averaged and non-aveaged values of the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for the averaged plot, while the plot of the individual times provides a time slider to scroll each time step 
    - multiple networks; single species; single simulation
 
