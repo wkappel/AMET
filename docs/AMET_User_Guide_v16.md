@@ -1546,6 +1546,14 @@ A brief summary of each of the C-shell scripts, with example plots from each scr
    - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes
    - multiple networks; single species; single simulation
 
+**run\_plot\_spatial\_animation\_ggplot.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_spatialplot_anim_ggplot_diff.png))
+   - Plots the averaged and non-aveaged values of the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for the averaged plot, while the plot of the individual times provides a time slider to scroll each time step 
+   - multiple networks; single species; single simulation
+   - 
+**run\_plot\_spatial\_animation\_plotly.csh** ([Example Plot](./images/aqExample_O3_8hrmax_1_spatialplot_anim_plotly_diff.png))
+   - Plots the averaged and non-aveaged values of the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for the averaged plot, while the plot of the individual times provides a time slider to scroll each time step 
+   - multiple networks; single species; single simulation
+
 **run\_plot\_spatial\_leaflet.csh** ([Example Leaflet HTML](./aqExample_SO4_1_spatialplot.html))([Example Leaflet Plot - Screenshot](./images/aqExample_SO4_1_spatialplot.html.png))
    - Plots the observed value, model value, and difference between the model and obs for each site. Multiple values for a site are averaged to a single value for plotting purposes. Uses R leaflet and leaflet.extras packages to allow map zooming and selection of both metric and network. Also uses the lattice package to create popup time series plots for each site. Due to computational restraints, only queries with less 100 sites currently allow popup time series plots.
    - multiple networks; single species; single simulation
