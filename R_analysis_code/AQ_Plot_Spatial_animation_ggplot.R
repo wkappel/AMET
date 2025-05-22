@@ -26,7 +26,6 @@ if(!require(maps)){stop("Required Package maps was not loaded")}
 if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
 library(ggplot2)
 library(plotly)
-library(gganimate)
 library(grid)
 library(gridExtra)
 
