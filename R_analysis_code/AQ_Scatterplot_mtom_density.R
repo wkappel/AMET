@@ -24,9 +24,10 @@ network <- network_names[1] 														# Use first network to set units
 #units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")	# Query to be used 
 ################################################
 
-require(ggplot2)
-require(plotly)
-require(htmlwidgets)
+## Load Required R Libraries
+if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") }
+if(!require(plotly))              { stop("Required Package plotly was not loaded") }
+if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 networks_title <- network_label[1]
 n <- 2 

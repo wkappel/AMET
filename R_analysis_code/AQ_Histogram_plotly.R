@@ -11,8 +11,6 @@ header <- "
 "
 
 # get some environmental variables and setup some directories
-library(plotly)
-library(htmlwidgets)
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 
@@ -26,6 +24,10 @@ filename_txt  		<- paste(run_name1,species,pid,"histogram.csv",sep="_")       # 
 filename_html 		<- paste(figdir,filename_html,sep="/")      # Set PDF filename
 filename_txt  		<- paste(figdir,filename_txt,sep="/")      # Set output file name
 #################################
+
+## Load Required R Libraries
+if(!require(plotly))            { stop("Required Package plotly was not loaded") }
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") } 
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)

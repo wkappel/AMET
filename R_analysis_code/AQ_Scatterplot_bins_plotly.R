@@ -15,8 +15,9 @@ header <- "
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
-library(plotly)
-library(htmlwidgets)
+## Load Required R Libraries
+if(!require(plotly))		{ stop("Required Package plotly was not loaded") }
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") }
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file

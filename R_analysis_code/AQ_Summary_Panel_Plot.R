@@ -18,10 +18,12 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
-require(ggplot2)
-library(plotly)
-library(htmlwidgets)
-library(gridExtra)
+
+## Load Required R Libraries
+if(!require(ggplot2))		{ stop("Required Package ggplot2 was not loaded") }
+if(!require(plotly))      	{ stop("Required Package plotly was not loaded") }
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") }
+if(!require(gridExtra))    	{ stop("Required Package gridExtra was not loaded") }
 
 filename_html <- paste(run_name1,species,pid,"summary_panel_plot.html",sep="_")     # Set output file name
 filename_html <- paste(figdir,filename_html,sep="/")     # Set output file name

@@ -162,7 +162,8 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
 		$start_hour=			$_POST['start_hour'];
 		$end_hour=			$_POST['end_hour'];
 		$ind_month=			$_POST['ind_month'];
-                $POCode=			$_POST['POCode'];
+		$POCode=			$_POST['POCode'];
+		$DoW=				$_POST['DoW'];
                 $Filter=			$_POST['Filter'];
 		$Non_Filter=			$_POST['Non_Filter'];
 		$Method_Code=                   $_POST['Method_Code'];
@@ -839,6 +840,21 @@ if ($_POST['submit'] == "Run Program (opens in new tab)"){
 //////////////////////////////////////////////////////////////////////////////
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//::    Day of Week Criterion
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        if ($DoW) {
+            if ($DoW[0] != "All") {
+                $DoW_length = count($DoW);
+                $str=$str." and (DAYOFWEEK(ob_dates) = ";
+                for ($i=0; $i<($DoW_length-1); $i++) {
+                   $str=$str.$DoW[$i]." or DAYOFWEEK(ob_dates) = ";
+                }
+                $str=$str.$DoW[$i].")";
+            }
+        }
+//////////////////////////////////////////////////////////////////////////////
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //::    Method Code Criterion
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         if ($Filter == "y") {
@@ -1340,10 +1356,10 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
    if ($_POST['run_program'] == "AQ_Scatterplot_multisim_plotly.R") {
       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_multi.html"))    {
              echo " <p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_multi.html\">Mod/Ob Scatterplot (HTML)</a> ";
+             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.html\">Mod/Ob Scatterplot (HTML)</a> ";
              echo "&nbsp;";
              echo "<p align=\"center\">";
-             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_multi.csv\">Scatterplot Data (CSV)</a> ";
+             echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.csv\">Scatterplot Data (CSV)</a> ";
           }
       else {
          echo "An error was encountered plotting Scatter Plot. See log file below.";
@@ -1406,7 +1422,7 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
       }
       else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Model-Model Scatter Plot";   }
    }
-   if ($_POST['run_program'] == "AQ_Scatterplot_mtom_density_ggplot.R") {
+   if ($_POST['run_program'] == "AQ_Scatterplot_mtom_density.R") {
       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_mtom_density.pdf"))       {
              echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom_density.pdf\">Density Scatterplot (PDF)</a> ";
              echo "         </td>";
@@ -1463,7 +1479,7 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
       }
       else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting binned scatter plots."; }
    }
-   if ($_POST['run_program'] == "AQ_Scatterplot_multi.R") {
+   if ($_POST['run_program'] == "AQ_Scatterplot_multisim.R") {
       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.pdf"))    {
          echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.pdf\">Scatterplot (PDF)</a> ";
          echo "&nbsp;&nbsp;";
@@ -1546,7 +1562,7 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
       else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plotly plot"; }
    }
    echo "</center>";
-   if ($_POST['run_program'] == "AQ_Timeseries_plotly_bysite.R") {
+   if ($_POST['run_program'] == "AQ_Timeseries_bysite_bysite.R") {
       echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
       echo "<center>";
       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.zip"))     {
@@ -1881,13 +1897,18 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
       }
       else { echo "<p> PNG from HTML not requested. Check flag to create static png files from html files."; }
    }
-   if ($_POST['run_program'] == "AQ_Plot_Spatial_animation.R") {
+   if ($_POST['run_program'] == "AQ_Plot_Spatial_animation_ggplot.R") {
       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.html"))        {
              echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.html\">Obs (html)</a> ";
              echo "&nbsp;&nbsp;";
              echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.html\">Mod (html)</a> ";
              echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.html\">Diff (html)</a> ";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.html\">Diff (html)</a> ";
+	     echo "     <p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_anim_obs.html\">Obs w/ Slider (html)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_anim_mod.html\">Mod w/ Slider (html)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_anim_diff.html\">Diff w/ Slider (html)</a> ";
       }
       else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered making model/ob animation spatial plot."; }
    if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.pdf"))        {
@@ -1895,14 +1916,47 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
              echo "&nbsp;&nbsp;";
              echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.pdf\">Mod (pdf)</a> ";
              echo "&nbsp;&nbsp;";
-             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.pdf\">Diff (pdf)</a> ";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.pdf\">Avg Diff (pdf)</a> ";
+	     echo "&nbsp;&nbsp;";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff_max.pdf\">Max Diff (pdf)</a> ";
+	     echo "&nbsp;&nbsp;";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff_abs_max.pdf\">Abs Max Diff (pdf)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_tile.pdf\">4-Panel (pdf)</a> ";
              echo "<p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.png\">Obs (png)</a> ";
              echo "&nbsp;&nbsp;";
              echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.png\">Mod (png)</a> ";
              echo "&nbsp;&nbsp;";
-	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.png\">Diff (png)</a> ";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.png\">Avg Diff (png)</a> ";
+	     echo "&nbsp;&nbsp;";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff_max.png\">Max Diff (png)</a> ";
+	     echo "&nbsp;&nbsp;";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff_abs_max.png\">Abs Max Diff (png)</a> ";
+	     echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_tile.png\">4-Panel (png)</a> ";
       }
-      else { echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+      else { echo "<p><a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting model/ob spatial plot."; }
+   }
+   if ($_POST['run_program'] == "AQ_Plot_Spatial_animation_plotly.R") {
+      if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.html"))        {
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_obs.html\">Obs (html)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_mod.html\">Mod (html)</a> ";
+             echo "&nbsp;&nbsp;";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff.html\">Diff (html)</a> ";
+             echo "&nbsp;&nbsp;";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff_max.html\">Max Diff (html)</a> ";
+	     echo "&nbsp;&nbsp;";
+	     echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_diff_abs_max.html\">Abs Max Diff (html)</a> ";
+	     echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_tile.html\">All Metrics (html)</a> ";
+             echo "     <p><a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_anim_obs.html\">Obs w/ Slider (html)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_anim_mod.html\">Mod w/ Slider (html)</a> ";
+             echo "&nbsp;&nbsp;";
+             echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_spatialplot_anim_diff.html\">Diff w/ Slider (html)</a> ";
+      }
+      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered making model/ob animation spatial plot."; }
    }
    if ($_POST['run_program'] == "AQ_Plot_Spatial_Species_Diff_leaflet.R") {
       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_spatialplot_obs.html"))        {
@@ -3941,7 +3995,7 @@ TEST;
 
  <tr align="center" valign="top" bgcolor="#CCCCCC"> 
  <span class="style5 style7"><strong><font face="Arial, Helvetica, sans-serif">    </font></strong></span></td>
-  <td><div align="left">
+  <td width="281"><div align="left">
   <label for="Filter"><strong>Filter Based PM Obs Only </strong><input name="Filter" type="checkbox" id="Filter" value="y" unchecked><br>
   <label for="Non_Filter"><strong>Non-Filter Based PM Obs Only </strong><input name="Non_Filter" type="checkbox" id="Non_Filter" value="y" unchecked><br><br>
   <label for="Method_Code"><strong>Select Individual PM Method Code(s)</strong> </label><br><br><select name="Method_Code[]" id="Method_Code" multiple="multiple">
@@ -3966,6 +4020,22 @@ TEST;
   <br><br>
   <font face="Arial, Helvetica, sans-serif">Use this option to isolate the data by a specific PM method code. Use CTRL to select multiple method codes.</font></p>
   <p></p><a href=./Method_codes_names_classification.xlsx>PM Method_Code_Descriptions</a><br><p></p>
+  </div>    </td>
+
+ <span class="style5 style7"><strong><font face="Arial, Helvetica, sans-serif">    </font></strong></span></td>
+  <td><div align="left">
+  <label for="POCode"><strong>Select Day of Week</strong> </label><br><br><select name="DoW[]" id="DoW" multiple="multiple">
+            <option value="All" selected>All</option>
+            <option value="1">Sunday</option>
+            <option value="2">Monday</option>
+            <option value="3">Tuesday</option>
+            <option value="4">Wednesday</option>
+            <option value="5">Thursday</option>
+            <option value="6">Friday</option>
+            <option value="7">Saturday</option>
+  </select>
+  <br><br>
+  <font face="Arial, Helvetica, sans-serif">Use this option to isolate the data by a specific day of the week. Use CTRL to select multiple days.</font></p>
   </div>    </td>
 </tr>
 
@@ -4103,7 +4173,6 @@ Isolate AQS evaluation data by whether the site location setting is described as
 <br>
 <p><label for="common_sites"><strong>Use Only Common Sites </strong></label><input name="common_sites" type="checkbox" id="common_sites" value="y" unchecked>
 <br><class="style5"><font face="Arial, Helvetica, sans-serif">Check this box to only use common sites among different simulations. Only sites from smallest common domain will be used. Can increase script run time slightly, particularly for large queries.</font></p>
-<br>
 <p><label for="common_sites_species"><strong>Use Only Common Sites for Species</strong></label><input name="common_sites_species" type="checkbox" id="common_sites_species" value="y" unchecked>
 <br><class="style5"><font face="Arial, Helvetica, sans-serif">Check this box to only use common sites among different species. Only sites from the species with the fewest sites will be used. Can increase script run time slightly, particularly for large queries.</font></p>
 </div></td>
@@ -4862,7 +4931,7 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     <option value="AQ_Scatterplot_skill.R"><font face="Arial, Helvetica, sans-serif">Ozone Skill Scatterplot (single network, mult runs)</font></option>
     <option value="AQ_Scatterplot_bins.R"><font face="Arial, Helvetica, sans-serif">Binned MB & RMSE Scatterplots (single net., mult. run)</font></option>
     <option value="AQ_Scatterplot_bins_plotly.R"><font face="Arial, Helvetica, sans-serif">Interactive Binned Plot (single net., mult. run)</font></option>
-    <option value="AQ_Scatterplot_multi.R"><font face="Arial, Helvetica, sans-serif">Multi Simulation Scatter plot (single network, mult runs)</font></option>
+    <option value="AQ_Scatterplot_multisim.R"><font face="Arial, Helvetica, sans-serif">Multi Simulation Scatter plot (single network, mult runs)</font></option>
     <option value="AQ_Scatterplot_soil.R"><font face="Arial, Helvetica, sans-serif">Soil Scatter plot (single network, mult runs)</font></option>
     </optgroup>
     <optgroup label="Time Series Plots">
@@ -4886,7 +4955,8 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     <option value="AQ_Plot_Spatial.R"><font face="Arial, Helvetica, sans-serif">Spatial Plot (multi networks)</font></option>
     <option value="AQ_Plot_Spatial_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot (single plot)</font></option>
     <option value="AQ_Plot_Spatial_leaflet_network.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot (multiple plots)</font></option>
-    <option value="AQ_Plot_Spatial_animation.R"><font face="Arial, Helvetica, sans-serif">Spatial Plots w/ Animations (multiple plots)</font></option>
+    <option value="AQ_Plot_Spatial_animation_ggplot.R"><font face="Arial, Helvetica, sans-serif">Spatial Plots w/ Animations (ggplot version)</font></option>
+    <option value="AQ_Plot_Spatial_animation_plotly.R"><font face="Arial, Helvetica, sans-serif">Spatial Plots w/ Animations (plotly version)</font></option>
     <option value="AQ_Plot_Spatial_Species_Diff_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Species Diff Spatial Plot (multi networks,multi species)</font></option>
     <option value="AQ_Plot_Spatial_MtoM.R"><font face="Arial, Helvetica, sans-serif">Model/Model Diff Spatial Plot (multi network, multi run)</font></option>
     <option value="AQ_Plot_Spatial_MtoM_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Model/Model Diff Spatial Plot (multi network, multi run)</font></option>
