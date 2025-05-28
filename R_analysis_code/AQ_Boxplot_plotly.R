@@ -18,9 +18,10 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-library(plotly)
-library(htmlwidgets)
-library(RColorBrewer)
+## Load Required R Libraries
+if(!require(plotly))            { stop("Required Package plotly was not loaded") }
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") 
+if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded") }
 
 ### Set file names and titles ###
 network<-network_names[[1]]

@@ -340,7 +340,7 @@ if (length(cols) != (length(bounds)-1)) {
 # NOTE:  Future version will allow user to specify a color scheme and levels
 #
 ###
-   require(fields)
+   if(!require(fields))           { stop("Required Package fields was not loaded") }
 
    plotops<-list(plotfmt="pdf")
         plotSpatial<-function(sinfo,varlab,figure="spatial",nlevs=0,bounds=c(24,50,-120,-60),plotopts=plotopts,histplot=F,shadeplot=F,sres=0.25,plot_units,hist_corr="n")
@@ -1964,11 +1964,11 @@ get_title <- function(run_names,species,network_label,dates,custom_title="",site
 
 ### Miscellaneous leaflet functions ###
 
-if(!require(htmltools)){stop("Required Package htmltools was not loaded")}
-library(pandoc)
-library(leaflet)
-library(maps)
-library(htmlwidgets)
+if(!require(htmltools))		{ stop("Required Package htmltools was not loaded")}
+if(!require(pandoc))            { stop("Required Package pandoc was not loaded") }
+if(!require(leaflet))           { stop("Required Package leaflet was not loaded") }
+if(!require(maps))         	{ stop("Required Package maps was not loaded") }
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") }
 
 tag.map.title.html <- tags$style(HTML("
   .leaflet-control.map-title {

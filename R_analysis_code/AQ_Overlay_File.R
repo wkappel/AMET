@@ -22,9 +22,6 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-## Load Required Libraries 
-#if(!require(date)){stop("Required Package date was not loaded")}
-
 ################################################
 ## Set output names and remove existing files ##
 ################################################

@@ -12,13 +12,15 @@ header <- "
 "
 
 # get some environmental variables and setup some directories
-library(plotly)
-library(htmlwidgets)
 ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
+
+## Load Required R Libraries
+if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") }
+if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_ggplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_ggplot.png",sep="_")
