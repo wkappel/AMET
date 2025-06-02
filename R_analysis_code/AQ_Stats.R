@@ -34,6 +34,8 @@ species_in <- species
 #model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
 ################################################
 
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+
 sinfo_data <-NULL
 sinfo_nmb  <-NULL
 sinfo_nme  <-NULL

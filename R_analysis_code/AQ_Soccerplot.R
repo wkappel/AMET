@@ -40,7 +40,7 @@ filename_txt <- paste(run_name1,pid,"soccerplot_ggplot.csv",sep="_")       # Set
 ## Create a full path to file
 filename_html_norm <- paste(figdir,filename_html_norm,sep="/")
 filename_html_frac <- paste(figdir,filename_html_frac,sep="/")
-filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
+#filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
 

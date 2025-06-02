@@ -67,6 +67,8 @@ all_min		<- NULL
 bounds          <- NULL						# Set map bounds to NULL
 sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
+legend_names	<- NULL
+legend_chars	<- NULL
 plot.symbols<-as.integer(plot_symbols)
 pick.symbol.name.fun<-function(x){
    master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
@@ -87,7 +89,8 @@ ob_col_name1     <- paste(species[1],"_ob",sep="")
 mod_col_name1    <- paste(species[1],"_mod",sep="")
 ob_col_name2     <- paste(species[2],"_ob",sep="")
 mod_col_name2    <- paste(species[2],"_mod",sep="")
-for (j in 1:total_networks) {                                            # Loop through for each network
+k <- 1									# Separate counter for network in case network is missing
+for (j in 1:total_networks) {                                           # Loop through for each network
    sites	<- NULL
    lats		<- NULL
    lons		<- NULL
@@ -128,6 +131,8 @@ for (j in 1:total_networks) {                                            # Loop 
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
       else {
+         legend_names <<- c(legend_names,network_label[j])
+         legend_chars <<- c(legend_chars,spch[k])
          ### Match the points between each of the runs.  This is necessary if the data from each query do not match exactly ###
          aqdat1.df$statdate<-paste(aqdat1.df$stat_id,aqdat1.df$ob_dates,aqdat1.df$ob_hour,sep="")     # Create unique column that combines the site name with the ob start date for run 1
          aqdat2.df$statdate<-paste(aqdat2.df$stat_id,aqdat2.df$ob_dates,aqdat2.df$ob_hour,sep="")     # Create unique column that combines the site name with the ob start date for run 2
@@ -177,6 +182,7 @@ for (j in 1:total_networks) {                                            # Loop 
          all_min  <- c(all_min,min_diff)
          all_perc <- c(all_perc,perc_diff)
          sub_title    <- paste(sub_title,symbols[j],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched w/ the appropriate symbol
+	 k <- k+1
       }
    }
 }

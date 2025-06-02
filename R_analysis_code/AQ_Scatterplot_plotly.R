@@ -28,8 +28,9 @@ filename_txt  <- paste(run_name1,species,pid,"scatterplot.csv",sep="_")       # 
 ## Create a full path to file
 filename_html <- paste(figdir,filename_html,sep="/")      # Set PDF filename
 filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
 #################################
+
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
 sinfo 		<- NULL
 axis.max 	<- NULL
