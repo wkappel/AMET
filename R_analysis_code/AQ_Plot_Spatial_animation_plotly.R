@@ -22,10 +22,11 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required Libraries 
-if(!require(maps))	{ stop("Required Package maps was not loaded") }
-if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
-if(!require(ggplot2))   { stop("Required Package ggplot2 was not loaded") }
-if(!require(plotly))    { stop("Required Package plotly was not loaded") }
+if(!require(maps)){stop("Required Package maps was not loaded")}
+if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
+library(ggplot2)
+library(plotly)
+library(sf)
 
 ### Retrieve units label from database table ###
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
@@ -44,17 +45,20 @@ filename_diff_abs_max_html      <- paste(run_name1,species,pid,"spatialplot_diff
 filename_obs_anim    		<- paste(run_name1,species,pid,"spatialplot_anim_obs.html",sep="_")           # Filename for obs spatial plot
 filename_mod_anim    		<- paste(run_name1,species,pid,"spatialplot_anim_mod.html",sep="_")           # Filename for model spatial plot
 filename_diff_anim   		<- paste(run_name1,species,pid,"spatialplot_anim_diff.html",sep="_")          # Filename for diff spatial plot
-
+filename_html_tile		<- paste(run_name1,species,pid,"spatialplot_tile.html",sep="_")
+filename_html_tile_anim         <- paste(run_name1,species,pid,"spatialplot_tile_anim.html",sep="_")
 ## Create a full path to file
 filename_obs_html      		<- paste(figdir,filename_obs_html,sep="/")           # Filename for obs spatial plot
 filename_mod_html 	     	<- paste(figdir,filename_mod_html,sep="/")           # Filename for model spatial plot
 filename_diff_html	     	<- paste(figdir,filename_diff_html,sep="/")          # Filename for diff spatial plot
 filename_diff_max_html          <- paste(figdir,filename_diff_max_html,sep="/")          # Filename for diff spatial plot
 filename_diff_abs_max_html      <- paste(figdir,filename_diff_abs_max_html,sep="/")          # Filename for diff spatial plot
+filename_html_tile		<- paste(figdir,filename_html_tile,sep="/")
 
-filename_obs_anim      <- paste(figdir,filename_obs_anim,sep="/")           # Filename for obs spatial plot
-filename_mod_anim      <- paste(figdir,filename_mod_anim,sep="/")           # Filename for model spatial plot
-filename_diff_anim     <- paste(figdir,filename_diff_anim,sep="/")          # Filename for diff spatial plot
+filename_obs_anim      	<- paste(figdir,filename_obs_anim,sep="/")           # Filename for obs spatial plot
+filename_mod_anim      	<- paste(figdir,filename_mod_anim,sep="/")           # Filename for model spatial plot
+filename_diff_anim     	<- paste(figdir,filename_diff_anim,sep="/")          # Filename for diff spatial plot
+filename_html_tile_anim	<- paste(figdir,filename_html_tile_anim,sep="/")
 
 ########################################
 ### Set NULL values and plot symbols ###
@@ -85,12 +89,8 @@ all_diff_max		<- NULL
 all_diff_abs_max	<- NULL
 all_rat	   		<- NULL
 bounds          	<- NULL						# Set map bounds to NULL
-lev_lab         	<- NULL
-legend_names    	<- NULL
-legend_chars    	<- NULL
-tile_out		<- NULL
-grid_out		<- NULL
-grob_out		<- NULL
+sp_tile			<- NULL
+sp_anim_tile		<- NULL
 plot.symbols<-as.integer(plot_symbols)
 pick.symbol.name.fun<-function(x){
    master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
@@ -137,18 +137,23 @@ for (j in 1:total_networks) {							# Loop through for each network
 
    }
    #######################
+
+#   count <- sum(is.na(aqdat_query.df[,9]))
+#   len   <- length(aqdat_query.df[,9])
+
+#   if (count != len) {	# Continue if query returned non-missing data
+
    { 
       if (data_exists == "n") {
          total_networks <- (total_networks-1)
          network_names <- network_names[-j]
+#         sub_title<-paste(sub_title,network_label[j],"=No Data; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
       else {
          ####################################
          ## Compute Averages for Each Site ##
          ####################################
-         legend_names <<- c(legend_names,network_label[j])
-         legend_chars <<- c(legend_chars,spch[k])
          if (averaging == "n") { averaging <- "e" }
          ob_col_name <- paste(species,"_ob",sep="")
          mod_col_name <- paste(species,"_mod",sep="")
@@ -179,9 +184,27 @@ for (j in 1:total_networks) {							# Loop through for each network
 	 aqdat.df$Mod_Obs_Diff_Max 	<- Mod_Obs_Diff_Max
 	 aqdat.df$Mod_Obs_Diff_Abs_Max	<- Mod_Obs_Diff_Abs_Max
          ####################################
+
+         ##################################################
+         ## Store values for each network in array lists ##
+         ##################################################
+         sinfo_obs[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Obs_Value,date=aqdat.df$Start_Date,network=network)
+         sinfo_mod[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Value,date=aqdat.df$Start_Date,network=network)
+         sinfo_diff[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff,date=aqdat.df$Start_Date,network=network)
+         sinfo_diff_max[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff_Max,date=aqdat.df$Start_Date,network=network)
+	 sinfo_diff_abs_max[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff_Abs_Max,date=aqdat.df$Start_Date,network=network)
+	 sinfo_rat[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Rat,date=aqdat.df$Start_Date,network=network)
+
 	 Mod_Obs_Diff <- aqdat_anim.df$Mod_Value-aqdat_anim.df$Obs_Value
          aqdat_anim.df$Mod_Obs_Diff <- Mod_Obs_Diff
          ####################################
+
+         ##################################################
+         ## Store values for each network in array lists ##
+         ##################################################
+         sinfo_obs_anim[[k]]	<-list(stat_id=aqdat_anim.df$Stat_ID,lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Obs_Value,date=paste(aqdat_anim.df$Start_Date,aqdat_anim.df$Hour),network=network)
+         sinfo_mod_anim[[k]]	<-list(stat_id=aqdat_anim.df$Stat_ID,lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Value,date=paste(aqdat_anim.df$Start_Date,aqdat_anim.df$Hour),network=network)
+         sinfo_diff_anim[[k]]	<-list(stat_id=aqdat_anim.df$Stat_ID,lat=aqdat_anim.df$lat,lon=aqdat_anim.df$lon,plotval=aqdat_anim.df$Mod_Obs_Diff,date=paste(aqdat_anim.df$Start_Date,aqdat_anim.df$Hour),network=network)
          all_lats 		<- c(all_lats,aqdat.df$lat)
          all_lons 		<- c(all_lons,aqdat.df$lon)
          all_obs  		<- c(all_obs,aqdat.df$Obs_Value)
@@ -191,15 +214,6 @@ for (j in 1:total_networks) {							# Loop through for each network
          all_diff_abs_max	<- c(all_diff_abs_max,aqdat.df$Mod_Obs_Diff_Abs_Max)
  	 all_rat  		<- c(all_rat,aqdat.df$Mod_Obs_Rat)
          ##################################################
-         aqdat_anim.df$date		<- paste(aqdat_anim.df$Start_Date,aqdat_anim.df$Hour)
-	 if (k==1) { 
-	    aqdat_all.df <- aqdat.df
-	    aqdat_anim_all.df <- aqdat_anim.df 
-	 }
-	 if (k>1) { 
-	    aqdat_all.df <- rbind(aqdat_all.df,aqdat.df)
-	    aqdat_anim_all.df <- rbind(aqdat_anim_all.df,aqdat_anim.df) 
-	 }
 	 k <- k+1
       }
    }
@@ -213,6 +227,8 @@ x1 <- bounds[3]-0.85*xrange
 x2 <- bounds[3]-0.82*xrange
 x3 <- bounds[3]-0.85*xrange
 x4 <- bounds[3]-0.78*xrange
+lat_mid <- mean(range(all_lats))
+lon_mid <- mean(range(all_lons))
 plotsize<-1.50									# Set plot size
 symb<-15										# Set symbol character
 symbsiz<-1.1										# Set symbol size
@@ -235,7 +251,7 @@ intervals <- num_ints
 {
    if ((length(abs_range_min) == 0) || (length(abs_range_max) == 0)) {
       all_data <- c(all_obs,all_mod)
-      levs <- pretty(c(0,quantile(all_data,quantile_max)),intervals,min.n=5)
+      levs <- pretty(c(quantile(all_data,quantile_min),quantile(all_data,quantile_max)),intervals,min.n=5)
    }
    else {
       levs <- pretty(c(abs_range_min,abs_range_max),intervals,min.n=5)
@@ -263,90 +279,161 @@ intervals <- num_ints
    }
 }
 #####################################################################
+
 ##############################################
 ## Create PNG and PDF plots for NMB and NME ##
 ##############################################
-plot_names <- c("Obs","Model","Avg Diff","Max Diff","Abs Max Diff")
+plot_names 	<- c("Obs","Model","Diff","Max Diff","Abs(Max Diff)")
+plot_names_anim	<- c("Obs","Model","Mod-Obs")
+subplot_names	<- c("mapbox","mapbox2","mapbox3","mapbox4","mapbox5")
 for (i in 1:5) {
    if (i == 1) { 
-      sinfo 		<- data.frame(stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Obs_Value,network=aqdat_all.df$Network)
-      sinfo_anim	<- data.frame(stat_id=aqdat_anim_all.df$Stat_ID,lat=aqdat_anim_all.df$lat,lon=aqdat_anim_all.df$lon,plotval=aqdat_anim_all.df$Obs_Value,date=paste(aqdat_anim_all.df$Start_Date,aqdat_anim_all.df$Hour),network=aqdat_anim_all.df$Network)
+      sinfo		<- sinfo_obs
+      sinfo_anim        <- sinfo_obs_anim
       plot_range_min 	<- min(levs)
       plot_range_max 	<- max(levs)
       filename_html	<- filename_obs_html
       filename_anim	<- filename_obs_anim
       color_palette     <- list(c(0, "#8B008B"), list(0.15, "violet"),c(0.15, "violet"), list(0.35, "blue"),c(0.35, "blue"), list(0.5, "green"),c(0.5, "green"), list(0.65, "yellow"),c(0.65, "yellow"), list(0.75, "orange"),c(0.75, "orange"), list(0.85, "red"),c(0.85, "red"), list(1, "#8B0000"))
-      color_direction 	<- 1
-      plot_data 	<- data.frame(Network=aqdat_all.df$Network,stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Obs_Value)
-      plot_data_anim 	<- data.frame(Network=aqdat_anim_all.df$Network,stat_id=aqdat_anim_all.df$Stat_ID,lat=aqdat_anim_all.df$lat,lon=aqdat_anim_all.df$lon,plotval=aqdat_anim_all.df$Obs_Value,date=aqdat_anim_all.df$date)
    }
    if (i == 2) { 
-      sinfo             <- data.frame(stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Value,network=aqdat_all.df$Network)
-      sinfo_anim        <- data.frame(stat_id=aqdat_anim_all.df$Stat_ID,lat=aqdat_anim_all.df$lat,lon=aqdat_anim_all.df$lon,plotval=aqdat_anim_all.df$Mod_Value,date=paste(aqdat_anim_all.df$Start_Date,aqdat_anim_all.df$Hour),network=aqdat_anim_all.df$Network)
+      sinfo		<- sinfo_mod
+      sinfo_anim	<- sinfo_mod_anim
       plot_range_min 	<- min(levs)
       plot_range_max 	<- max(levs)
       filename_html     <- filename_mod_html
       filename_anim	<- filename_mod_anim
       color_palette	<- "Jet"
       color_palette     <- list(c(0, "#8B008B"), list(0.15, "violet"),c(0.15, "violet"), list(0.35, "blue"),c(0.35, "blue"), list(0.5, "green"),c(0.5, "green"), list(0.65, "yellow"),c(0.65, "yellow"), list(0.75, "orange"),c(0.75, "orange"), list(0.85, "red"),c(0.85, "red"), list(1, "#8B0000"))
-      color_direction 	<- 1
-      plot_data 	<- data.frame(Network=aqdat_all.df$Network,stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Value)
-      plot_data_anim 	<- data.frame(Network=aqdat_anim_all.df$Network,stat_id=aqdat_anim_all.df$Stat_ID,lat=aqdat_anim_all.df$lat,lon=aqdat_anim_all.df$lon,plotval=aqdat_anim_all.df$Mod_Value,date=aqdat_anim_all.df$date)
    }
    if (i == 3) {
-      sinfo             <- data.frame(stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Obs_Diff,network=aqdat_all.df$Network)
-      sinfo_anim        <- data.frame(stat_id=aqdat_anim_all.df$Stat_ID,lat=aqdat_anim_all.df$lat,lon=aqdat_anim_all.df$lon,plotval=aqdat_anim_all.df$Mod_Obs_Diff,date=paste(aqdat_anim_all.df$Start_Date,aqdat_anim_all.df$Hour),network=aqdat_anim_all.df$Network)
+      sinfo             <- sinfo_diff
+      sinfo_anim        <- sinfo_diff_anim
       plot_range_min    <- diff_min
       plot_range_max    <- diff_max
       filename_html	<- filename_diff_html
       filename_anim     <- filename_diff_anim
       color_palette     <- list(c(0, "violet"), list(0.15, "blue"),c(0.15, "blue"), list(0.35, "green"),c(0.35, "green"), list(0.5, "white"),c(0.5, "white"), list(0.65, "yellow"),c(0.65, "yellow"), list(0.75, "orange"),c(0.75, "orange"), list(0.85, "red"),c(0.85, "red"), list(1, "#8B0000"))
-      color_direction   <- 1
-      plot_data		<- data.frame(Network=aqdat_all.df$Network,stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Obs_Diff)
-      plot_data_anim 	<- data.frame(Network=aqdat_anim_all.df$Network,stat_id=aqdat_anim_all.df$Stat_ID,lat=aqdat_anim_all.df$lat,lon=aqdat_anim_all.df$lon,plotval=aqdat_anim_all.df$Mod_Obs_Diff,date=aqdat_anim_all.df$date)
    }
    if (i == 4) {
-      sinfo             <- data.frame(stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Obs_Diff_Max,network=aqdat_all.df$Network)
+      sinfo             <- sinfo_diff_max
       plot_range_min    <- diff_max_min
       plot_range_max    <- diff_max_max
       filename_html     <- filename_diff_max_html
       filename_anim     <- filename_diff_anim
       color_palette     <- list(c(0, "violet"), list(0.15, "blue"),c(0.15, "blue"), list(0.35, "green"),c(0.35, "green"), list(0.5, "white"),c(0.5, "white"), list(0.65, "yellow"),c(0.65, "yellow"), list(0.75, "orange"),c(0.75, "orange"), list(0.85, "red"),c(0.85, "red"), list(1, "#8B0000"))
-      plot_data		<- data.frame(Network=aqdat_all.df$Network,stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Obs_Diff_Max)
-      color_direction   <- 1
    }
    if (i == 5) {
-      sinfo             <- data.frame(stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Obs_Diff_Abs_Max,network=aqdat_all.df$Network)
+      sinfo		<- sinfo_diff_abs_max
       plot_range_min    <- diff_abs_max_min
       plot_range_max    <- diff_abs_max_max
       filename_html	<- filename_diff_abs_max_html
       filename_anim     <- filename_diff_anim
       color_palette     <- list(c(0, "#8B008B"), list(0.15, "violet"),c(0.15, "violet"), list(0.35, "blue"),c(0.35, "blue"), list(0.5, "green"),c(0.5, "green"), list(0.65, "yellow"),c(0.65, "yellow"), list(0.75, "orange"),c(0.75, "orange"), list(0.85, "red"),c(0.85, "red"), list(1, "#8B0000"))
-      plot_data		<- data.frame(Network=aqdat_all.df$Network,stat_id=aqdat_all.df$Stat_ID,lat=aqdat_all.df$lat,lon=aqdat_all.df$lon,plotval=aqdat_all.df$Mod_Obs_Diff_Abs_Max)
-      color_direction   <- 1
    }
    for (k in 1:total_networks) {
-      library(sf)
       us_state 	<- map_data("state")
       us_county <- map_data("county") 
       canada 	<- map_data("worldHires", "Canada")
       mexico 	<- map_data("worldHires", "Mexico")
       world_map	<- map_data("world")
       world	<- st_as_sf(world_map,coords=c("long","lat"))
+      data_in    <- data.frame(stat_id=sinfo[[k]]$stat_id,lat=sinfo[[k]]$lat,lon=sinfo[[k]]$lon,plotval=sinfo[[k]]$plotval)
+      data_in$Network <- network_names[k]
       if (k == 1) {
-         sp <- plot_ly(data=plot_data,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox')
-	 sp <- sp %>% add_trace(data=plot_data,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text')
-         sp <- sp %>% layout(mapbox = list(style='open-street-map', zoom=4, center=list(lon=mean(all_lons),lat=mean(all_lats))),showlegend=TRUE)
-	 sp <- sp %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+       	 sp 	<- plot_ly(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG (',plot_names[i],")"))
+         spTile <- plot_ly(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG (',plot_names[i],")"),subplot=subplot_names[i])
+         if (i == 1) {
+    	    sp <- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+	    spTile <- spTile %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",units),len=0.5,lenmode="fraction",x=0.48,y=0.76),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+	 }
+	 if (i == 2) {
+            sp <- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+            spTile <- spTile %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",units),len=0.5,lenmode="fraction",x=1,y=0.76),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+         }
+	 if (i == 3 ) {
+            sp <- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+	    spTile <- spTile %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",units),len=0.5,lenmode="fraction",x=0.48,y=0.24),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+         }
+	 if (i == 4) {
+            sp <- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+            spTile <- spTile %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",units),len=0.5,lenmode="fraction",x=1,y=0.24),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+         }
+	 if (i ==  5) {
+            sp <- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+	 }
+         sp 	<- sp %>% layout(mapbox = list(style='open-street-map', zoom=4, subplot=subplot_names[i],domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99))
+	 sp 	<- sp %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+	 spTile <- spTile %>% layout(mapbox = list(style='open-street-map', zoom=4, subplot=subplot_names[i],domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99))
+         spTile <- spTile %>% layout(title=list(text=title,y=1,font=list(size=20)))
+      }
+      else {
+         sp 	<- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG (',plot_names[i],")"))
+         sp 	<- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=FALSE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+	 spTile <- spTile %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG (',plot_names[i],")"))
+         spTile <- spTile %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=FALSE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
+      }
+      if (i < 4) {
+         anim_data_in    <- data.frame(stat_id=sinfo_anim[[k]]$stat_id,lat=sinfo_anim[[k]]$lat,lon=sinfo_anim[[k]]$lon,plotval=sinfo_anim[[k]]$plotval,date=sinfo_anim[[k]]$date)
+         anim_data_in$Network <- network_names[k]
+         anim_data_in	<- anim_data_in[order(anim_data_in$date),] # Data need to be in order of ascending data for the frame to work properly
+         {
+         if (k == 1) {
+            sp_anim <- plot_ly(data=anim_data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),frame=~date,mode='markers',type='scattermapbox',name=paste0('BG (',plot_names_anim[i],")"))
+	    if (i < 3) {
+     	       sp_anim <- sp_anim %>% add_trace(data=anim_data_in,lat = ~lat, lon=~lon,marker = list(color = ~plotval,colorbar=list(title=paste0("Abs<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),frame=~date,mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k]," (",plot_names_anim[i],")"))
+	    }
+	    if (i > 2) {
+	       sp_anim <- sp_anim %>% add_trace(data=anim_data_in,lat = ~lat, lon=~lon,marker = list(color = ~plotval,colorbar=list(title=paste0("Diff<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),frame=~date,mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k]," (",plot_names_anim[i],")"))
+	    }
+            sp_anim <- sp_anim %>% layout(mapbox = list(style='open-street-map', subplot=subplot_names[i],domain=list(x=c(0,1),y=c(0,1)),zoom=4,center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.02,y=0.98)) 
+            sp_anim <- sp_anim %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+         }
+         else {
+            sp_anim <- sp_anim %>% add_trace(data=anim_data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),frame=~date,mode='markers',type='scattermapbox',name=paste0('BG (',plot_names_anim[i],")"))
+            sp_anim <- sp_anim %>% add_trace(data=anim_data_in,lat = ~lat, lon=~lon,marker = list(color = ~plotval,colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=FALSE,size=20),frame=~date,mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k]," (",plot_names_anim[i],")"))
+         }
+         }
+	 sp_anim_tile[i] <- sp_anim
       }
    }
-   if (i < 4) {
-            plot_data_anim <- plot_data_anim[order(plot_data_anim$date),] # Data need to be in order of ascending data for the frame to work properly
-            sp_anim <- plot_ly(data=plot_data_anim,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),frame=~date,mode='markers',type='scattermapbox')
-            sp_anim <- sp_anim %>% add_trace(data=plot_data_anim,lat = ~lat, lon=~lon,marker = list(color = ~plotval,colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),frame=~date,mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text')
-            sp_anim <- sp_anim %>% layout(mapbox = list(style='open-street-map', zoom=4, center=list(lon=mean(all_lons),lat=mean(all_lats))),showlegend=TRUE)
-	    sp_anim <- sp_anim %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+   if (i == 1) { 
+      spTile 		<- spTile %>% layout(mapbox = list(style='carto-positron', zoom=3.1, subplot="mapbox",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99,font=list(size=10)))
+      spTile_anim 	<- sp_anim %>% layout(mapbox = list(style='carto-positron', zoom=3.1, subplot="mapbox",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99,font=list(size=10))) 
    }
+   if (i == 2) { 
+      spTile 		<- spTile %>% layout(mapbox2 = list(style='carto-positron', zoom=3.1, subplot="mapbox2",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+      spTile_anim 	<- sp_anim %>% layout(mapbox2 = list(style='carto-positron', zoom=3.1, subplot="mapbox2",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+   }
+   if (i == 3) { 
+      spTile 		<- spTile %>% layout(mapbox3 = list(style='carto-positron', zoom=3.1, subplot="mapbox3",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
+      spTile_anim 	<- sp_anim %>% layout(mapbox3 = list(style='carto-positron', zoom=3.1, subplot="mapbox3",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+   }
+   if (i == 4) { 
+      spTile 		<- spTile %>% layout(mapbox4 = list(style='carto-positron', zoom=3.1, subplot="mapbox4",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+      spTile_anim 	<- sp_anim %>% layout(mapbox4 = list(style='carto-positron', zoom=3.1, subplot="mapbox4",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
+   }
+
+   spTile <- spTile %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+   spTile_anim <- spTile_anim %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+   sp_tile[i] <- spTile
+   sp_anim_tile[i] <- sp_anim
    saveWidget(sp, file=filename_html,selfcontained=T)
    saveWidget(sp_anim, file=filename_anim,selfcontained=T)
 }
+#######################################
+### Create and save multipanel plot ###
+#######################################
+fig <- subplot(sp_tile[[1]],sp_tile[[2]],sp_tile[[3]],sp_tile[[4]],nrows=2,shareX=F,shareY=F,titleY=F,titleX=F)
+fig <- layout(fig,title=list(text=title,y=0.995,font=list(size=20)),annotations=list(list(x=0.445,y=0.532,text="Obs",showarrow=F,xref="paper",yref="paper",font=list(size=25)),list(x=0.98,y=0.532,text="Model",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.41,y=0.00,text="Mean(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.98,y=0.0,text="Max(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25))))
+saveWidget(fig, file=filename_html_tile,selfcontained=T)
+#######################################
+
+#########################################################
+### Create and save multipanel plot (not working yet) ###
+#########################################################
+#fig_anim <- subplot(sp_anim_tile[[1]],sp_anim_tile[[2]],sp_anim_tile[[3]],sp_anim_tile[[4]],nrows=2,shareX=F,shareY=F,titleY=T,titleX=T)
+#fig_anim <- layout(fig_anim,annotations=list(list(x=0.43,y=0.6,text="Obs",showarrow=F,xref="paper",yref="paper",font=list(size=25)),list(x=0.95,y=0.6,text="Model",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.4,y=0.06,text="Mean(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.98,y=0.06,text="Max(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25))))
+#saveWidget(fig_anim, file=filename_html_tile_anim,selfcontained=T)
+#######################################
+
