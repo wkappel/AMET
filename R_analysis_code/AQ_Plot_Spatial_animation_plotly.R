@@ -339,7 +339,7 @@ for (i in 1:5) {
       world_map	<- map_data("world")
       world	<- st_as_sf(world_map,coords=c("long","lat"))
       data_in    <- data.frame(stat_id=sinfo[[k]]$stat_id,lat=sinfo[[k]]$lat,lon=sinfo[[k]]$lon,plotval=sinfo[[k]]$plotval)
-      data_in$Network <- network_names[k]
+      data_in$Network <- network_label[k]
       if (k == 1) {
        	 sp 	<- plot_ly(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG (',plot_names[i],")"))
          spTile <- plot_ly(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG (',plot_names[i],")"),subplot=subplot_names[i])
@@ -375,7 +375,7 @@ for (i in 1:5) {
       }
       if (i < 4) {
          anim_data_in    <- data.frame(stat_id=sinfo_anim[[k]]$stat_id,lat=sinfo_anim[[k]]$lat,lon=sinfo_anim[[k]]$lon,plotval=sinfo_anim[[k]]$plotval,date=sinfo_anim[[k]]$date)
-         anim_data_in$Network <- network_names[k]
+         anim_data_in$Network <- network_label[k]
          anim_data_in	<- anim_data_in[order(anim_data_in$date),] # Data need to be in order of ascending data for the frame to work properly
          {
          if (k == 1) {
