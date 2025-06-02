@@ -398,20 +398,20 @@ for (i in 1:5) {
       }
    }
    if (i == 1) { 
-      spTile 		<- spTile %>% layout(mapbox = list(style='carto-positron', zoom=3.1, subplot="mapbox",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99,font=list(size=10)))
-      spTile_anim 	<- sp_anim %>% layout(mapbox = list(style='carto-positron', zoom=3.1, subplot="mapbox",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99,font=list(size=10))) 
+      spTile 		<- spTile %>% layout(mapbox = list(style='open-street-map', zoom=3.1, subplot="mapbox",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99,font=list(size=10)))
+      spTile_anim 	<- sp_anim %>% layout(mapbox = list(style='open-street-map', zoom=3.1, subplot="mapbox",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99,font=list(size=10))) 
    }
    if (i == 2) { 
-      spTile 		<- spTile %>% layout(mapbox2 = list(style='carto-positron', zoom=3.1, subplot="mapbox2",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
-      spTile_anim 	<- sp_anim %>% layout(mapbox2 = list(style='carto-positron', zoom=3.1, subplot="mapbox2",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+      spTile 		<- spTile %>% layout(mapbox2 = list(style='open-street-map', zoom=3.1, subplot="mapbox2",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+      spTile_anim 	<- sp_anim %>% layout(mapbox2 = list(style='open-street-map', zoom=3.1, subplot="mapbox2",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
    }
    if (i == 3) { 
-      spTile 		<- spTile %>% layout(mapbox3 = list(style='carto-positron', zoom=3.1, subplot="mapbox3",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
-      spTile_anim 	<- sp_anim %>% layout(mapbox3 = list(style='carto-positron', zoom=3.1, subplot="mapbox3",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+      spTile 		<- spTile %>% layout(mapbox3 = list(style='open-street-map', zoom=3.1, subplot="mapbox3",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
+      spTile_anim 	<- sp_anim %>% layout(mapbox3 = list(style='open-street-map', zoom=3.1, subplot="mapbox3",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
    }
    if (i == 4) { 
-      spTile 		<- spTile %>% layout(mapbox4 = list(style='carto-positron', zoom=3.1, subplot="mapbox4",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
-      spTile_anim 	<- sp_anim %>% layout(mapbox4 = list(style='carto-positron', zoom=3.1, subplot="mapbox4",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
+      spTile 		<- spTile %>% layout(mapbox4 = list(style='open-street-map', zoom=3.1, subplot="mapbox4",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE) 
+      spTile_anim 	<- sp_anim %>% layout(mapbox4 = list(style='open-street-map', zoom=3.1, subplot="mapbox4",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
    }
 
    spTile <- spTile %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
