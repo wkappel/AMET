@@ -31,6 +31,7 @@ filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PDF filename
 filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 if(!exists("trend_line")) { trend_line <- "n" }
 
 #################################
