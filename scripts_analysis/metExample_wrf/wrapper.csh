@@ -30,7 +30,7 @@
   # These are the only required for meteorological analysis. AQ requires more.
   # mysqllogin   <- yourlogin
   # mysqlpasswrd <- yourpassword
-  setenv AMETBASE /home/user/AMET
+  # setenv AMETBASE /home/user/AMET
   # MySQL Server and AMET database configuration file.
   # For security make file only readable by you. With the following variables
   # These are the only required for meteorological analysis. AQ requires more.
@@ -52,7 +52,7 @@
   # Summary stats and RAOB Spatial/TimesSeries/Profile stats
   setenv AMET_BOUNDS_LAT "23 55"
   setenv AMET_BOUNDS_LON "-125 -65"
-  setenv AMET_YEAR  2017
+  setenv AMET_YEAR  2016
   
   # PRISM VARS
   setenv AMET_GUI   FALSE

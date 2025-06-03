@@ -991,51 +991,51 @@ To create a new project, follow these basic steps:
 variable in the database and analysis scripts.*
 
 
-For example, to create a new WRF project called “wrfNC2007”,
+For example, to create a new WRF project called “wrfNC2020”,
 use the following commands:
 
 ```
 cd $AMETBASE/scripts_db
 
-cp -r metExample_wrf wrfNC2007
+cp -r metExample_wrf wrfNC2020
 
-cd wrfNC2007
+cd wrfNC2020
 ```
 
 ```
 cd $AMETBASE/scripts_db
-cp -r metExample_wrf wrfNC2007
+cp -r metExample_wrf wrfNC2020
 ```
 Create a new model data directory and move or link model data into
 it, as follows:
 
 ```
 cd $AMETBASE/model_data/MET
-mkdir wrfNC2007
-cd wrfNC2007
-ln -s /model/data/directory/wrfout* $AMETBASE/model_data/MET/wrfNC2007/.
+mkdir wrfNC2020
+cd wrfNC2020
+ln -s /model/data/directory/wrfout* $AMETBASE/model_data/MET/wrfNC2020/.
 ```
 
 Here, you would replace "/model/data/directory/" with the path to your model
 data file(s). The matching_surface.csh, matching_radiation.csh and matching_raob.csh 
 will perform the model-obs matching of all model outputs in this new project directory. Users can use wildcards like the example above to link all or just specific WRF/MPAS/MCIP outputs into the MET output directory.
 
-Next, edit the `$AMETBASE/script_db/wrfNC2007/matching_surface.csh` variables
-AMET_PROJECT ("wrfNC2007") and RUN_DESCRIPTION (your description of
+Next, edit the `$AMETBASE/script_db/wrfNC2020/matching_surface.csh` variables
+AMET_PROJECT ("wrfNC2020") and RUN_DESCRIPTION (your description of
 the project).
 
 Finally, run the surface model-obs matching script (or others):
 
 ```
-cd $AMETBASE/scripts\_db/wrfNC2007
-./matching_surface.csh |& tee matching.wrfNC2007.log
+cd $AMETBASE/scripts\_db/wrfNC2020
+./matching_surface.csh |& tee matching.wrfNC2020.log
 ```
 
 The matching_surface.csh script will create a new MET project in the AMET database if
 it does not exist (a new database will also be created if it does not already exist). Specifically,
-it will create a new row in the AMET project_log table and wrfNC2007_surface.
-The matching_radiation.csh script will put radiation data into the same wrfNC2007_surface table.
-The matching_raob.csh script will put upper-air meteorology data in a wrfNC2007_raob table.
+it will create a new row in the AMET project_log table and wrfNC2020_surface.
+The matching_radiation.csh script will put radiation data into the same wrfNC2020_surface table.
+The matching_raob.csh script will put upper-air meteorology data in a wrfNC2020_raob table.
 Once this script completes, the AMET database will be ready to produce meteorology model 
 performance analysis plots and statistics.
 
@@ -1058,11 +1058,8 @@ by using the Fortran program `Combine`.
 
 The directions below assume you are running combine separately to create the combine files 
 for AMET to use, and therefore will only need to run the AMET script designed for post analysis 
-only using the aqProject_post_only.csh script found in $AMETBASE/scripts_db/aqExample. There is 
-also a more comprehensive script that performs both the pre analysis functions (e.g. running combine) 
-and the post analysis functions (e.g. running site compare and AMET). That script is named 
-aqExample_pre_and_post.csh and can also found in the $AMETBASE/scripts_db/aqExample directory. 
-Instructions for using that script can be found in a separate guide here:
+only using the aqProject_pre_and_post.csh script found in $AMETBASE/scripts_db/aqExample. 
+Instructions for modifying the script setting can be found in a separate guide here:
 [aqProject Pre and Post Analysis Script Guide](https://github.com/USEPA/AMET/tree/1.6/docs/AMET_aqProject_Pre_and_Post_Analysis_Script_Guide_v16.md). 
 
 *TIP: Name the directory of each new project the same name as the AMET_PROJECT
@@ -1077,15 +1074,15 @@ To create a new AQ project, follow these basic steps:
 3.  Create a new project directory under $AMETBASE/model_data/AQ for
     the input model data and copy or link post-processed model data to this directory.
 
-4.  Configure the C-shell script aqProject_post_only.csh for the new project.
+4.  Configure the C-shell script aqProject_pre_and_post.csh for the new project.
 
-5.  Run the aqProject_post_only.csh script to populate the AMET database.
+5.  Run the aqProject_pre_and_post.csh script to populate the AMET database.
 
-For example, to create a new AQ project called “aqNC2007”, use the following commands:
+For example, to create a new AQ project called “aqNC2020”, use the following commands:
 
 ```
 cd $AMETBASE/scripts_db
-cp -r aqExample aqNC2007
+cp -r aqExample aqNC2020
 ```
 
 Next, create a new model data directory and move or link
@@ -1093,8 +1090,8 @@ post-processed model data into it, as follows:
 
 ```
 cd $AMETBASE/model_data/AQ
-mkdir aqNC2007
-cd aqNC2007
+mkdir aqNC2020
+cd aqNC2020
 ln -s <model data directory> .
 ```
 
@@ -1103,24 +1100,24 @@ post-processed model data file(s) output from `Combine`.
 
 The program `Combine` is used to post-process
 CMAQ (and CAMx) I/O API-netCDF formatted files for pairing with observational data. The source code and scripts
-for `Combine` are available in the [CMAQ GitHub repository](https://github.com/USEPA/CMAQ/tree/5.2).
+for `Combine` are available in the [CMAQ GitHub repository](https://github.com/USEPA/CMAQ/tree/main/POST/combine).
 
 For detailed instructions on using `Combine`, see
-[**https://github.com/USEPA/CMAQ/tree/5.2/POST/combine**](https://github.com/USEPA/CMAQ/tree/5.2/POST/combine).
+[**https://github.com/USEPA/CMAQ/blob/main/POST/combine/README.md**](https://github.com/USEPA/CMAQ/blob/main/POST/combine/README.md).
 
-After installing the model data in the AMET directories, configure the $AMETBASE/scripts\_db/aqProject.csh
-script. The aqProject.csh script does several things:
+After installing the model data in the AMET directories, configure the $AMETBASE/scripts\_db/aqProject_pre_and_post.csh
+script. The aqProject_pre_and_post.csh script does several things:
 
 * Creates a project table in the AMET database (if requested). It will also create the database if it does not already exist. 
 * Creates, writes and runs site compare run scripts for each requested network. This step is required regardless of whether or not you plan to you the MySQL database.
 * Populates that database with the model and observational data from the site compare scripts. This step can also be skipped if you do not plan on using the database.
 
-The configuration options for the aqProject.csh script are documented in the script and briefly described below. Upon execution, the script
+The configuration options for the aqProject_pre_and_post.csh script are documented in the script and briefly described below. Upon execution, the script
 calls several R scripts to run the Fortran program `Site Compare` and then populates the AMET database (assumed AMET_DB = T) with
 paired model-observation data. As this script will be used for setting up different AMET-AQ projects, it will likely only need to be
 fully configured once and then reused with little modification for future projects.
 
-Set the following variables to configure the aqProject.csh script for a new project.
+Set the following variables to configure the aqProject_pre_and_post.csh script for a new project.
 * Set **AMETBASE** to the root AMET installation directory for the project.
 * Set **AMET_DATABASE** to the name of the database to use (by default this is set to "amet"). This does not need to be set if not using the database.
 * Set **MYSQL_CONFIG** to the AMET R configuration file. This does not to be set regardless of whether or not you are using the database since it contains the paths to the site compare executables. However, you do not need to specify the database information if you do not plan to use the database.
@@ -1137,7 +1134,7 @@ setting is not currenlty used for anything in AMET and is simply stored along wi
 project information. Not required when not using the database.
 
 The Table 6-3 below describes the other options and file locations that need to be
-specified in the aqProject_post_only.csh and aqProject_pre_and_post.csh scripts.<a id="Table_6-3"></a>
+specified in the aqProject_pre_and_post.csh scripts.<a id="Table_6-3"></a>
 
 | **Variable**   | **Description**                                                                                                                                                                                                                                                                                                                                                                  |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1195,17 +1192,17 @@ specified in the aqProject_post_only.csh and aqProject_pre_and_post.csh scripts.
 | **O3\_UNITS**              | ppb/ppm; Ozone units used. By default this is set to ppb.
 | **PRECIP\_UNITS**          | mm/cm; Precip units used. By default this is set to cm.
 
-After configuring the aqProject.csh script, it can be run to load the air quality model and observation data to the AMET database:
+After configuring the aqProject_pre_and_post.csh script, it can be run to load the air quality model and observation data to the AMET database:
 
 ```
-cd $AMETBASE/scripts_db/aqNC2007
-./aqProject.csh |& tee populate.aqNC2007.log
+cd $AMETBASE/scripts_db/aqNC2020
+./aqProject_pre_and_post.csh |& tee populate.aqExample.log
 ```
 
 This will create a new AQ project in the AMET database. Specifically, it
 will create a new row in the aq\_project\_log table, a series of new
 rows (one for each network) in the project\_units table, and a new
-project table called aqNC2007.
+project table called aqNC2020.
 
 <a id="analysis"></a>
 7. Analysis
@@ -1780,16 +1777,16 @@ To create a new analysis project, follow these basic steps:
 
 3.  Run the new analysis scripts.
 
-For example, to create a new WRF analysis project called “wrfNC2007”:
+For example, to create a new WRF analysis project called “wrfNC2020”:
 
 ```
 cd $AMETBASE/scripts_analysis
-cp -r metExample_wrf wrfNC2007
-cd wrfNC2007
+cp -r metExample_wrf wrfNC2020
+cd wrfNC2020
 ```
 
 Edit each of the C-shell analysis scripts to set the variable
-AMET\_PROJECT to wrfNC2007. The scripts will likely require other changes, like the
+AMET\_PROJECT to wrfNC2020. The scripts will likely require other changes, like the
 analysis dates, output options, plot format, etc.
 
 <a id="adding_new_aq_network"></a>

@@ -42,6 +42,7 @@ The versions of these packages that were used by the CMAS Center in their instal
 * **gzip** (1.3.9)
 * **gfortran** (4.1.2) or other F90 compiler
 * **ImageMagick** (6.2.4.5); *Note*: You need only the **convert** utility from this package.
+* **nco** (4.8.1): used by the MET Analysis Script run_prism_comp.csh
 
 ### AMET Tier 2 Software
 

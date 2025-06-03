@@ -165,8 +165,8 @@ levsSDEV    <- c(-150,-100,-75,-40,-20,-10,0,10,20,40,75,100,150)
 # Inputs from PRISM Tab
   # Used in other scripts
 amet_gui       <- T
-model_outdir   <- "/work/ROMO/met/2021_WRF"
-model_prefix   <- "wrfout_d01_"
+model_outdir   <- "$AMETBASE/model_data/MET/$AMET_PROJECT"
+model_prefix   <- "wrfout_subset_"
 
 daily          <- F
 monthly        <- F
