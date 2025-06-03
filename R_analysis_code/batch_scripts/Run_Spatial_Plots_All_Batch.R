@@ -82,12 +82,13 @@ run_script_command6 	<- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_leafle
 run_script_command7 	<- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_Diff_leaflet.R",sep="")
 run_script_command8 	<- paste(amet_base,"/R_analysis_code/AQ_Stats_Plots_leaflet.R",sep="")
 run_script_command9 	<- paste(amet_base,"/R_analysis_code/AQ_Stats_Plots_leaflet_network.R",sep="")
-run_script_command10 	<- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_animation.R",sep="")
+run_script_command10    <- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_animation_ggplot.R",sep="")
+run_script_command11    <- paste(amet_base,"/R_analysis_code/AQ_Plot_Spatial_animation_plotly.R",sep="")
 
-stat_plot_scripts 	<- c(run_script_command1, run_script_command8, run_script_command9)
-spatial_plot_scripts 	<- c(run_script_command2, run_script_command6, run_script_command10)
-diff_plot_scripts	<- c(run_script_command3, run_script_command7)
-mtom_plot_scripts	<- c(run_script_command4)
+stat_plot_scripts       <- c(run_script_command1, run_script_command8, run_script_command9)
+spatial_plot_scripts    <- c(run_script_command2, run_script_command6, run_script_command10, run_script_command11)
+diff_plot_scripts       <- c(run_script_command3, run_script_command7)
+mtom_plot_scripts       <- c(run_script_command4)
 
 ##########################################################################################
 ### This portion of the code will create monthly spatial plots for the various species ###

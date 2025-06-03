@@ -60,9 +60,9 @@ system(mkdir_main_command)      # This will create a subdirectory with the name 
 #######################################
 
 run_script_command1 <- paste(amet_base,"/R_analysis_code/AQ_Soccerplot.R",sep="")
-run_script_command2 <- paste(amet_base,"/R_analysis_code/AQ_Bugleplot.R",sep="")
-run_script_command3 <- paste(amet_base,"/R_analysis_code/AQ_Kellyplot.R",sep="")
-run_script_command4 <- paste(amet_base,"/R_analysis_code/AQ_Kellyplot_multisim.R",sep="")
+run_script_command2 <- paste(amet_base,"/R_analysis_code/AQ_Soccerplot_plotly.R",sep="")
+run_script_command3 <- paste(amet_base,"/R_analysis_code/AQ_Bugleplot.R",sep="")
+run_script_command4 <- paste(amet_base,"/R_analysis_code/AQ_Summary_Panel_Plot.R",sep="")
 
 #######################################################################################
 ### This portion of the code will create monthly stat plots for the various species ###
@@ -90,12 +90,17 @@ if (hourly_ozone_analysis == 'y') {
          query 			<- paste(query_string,"and (",batch_query[m],")",sep=" ")
          if (soccer_plot == 'y') { 
             system(mkdir_command)
-            try(source(run_script_command1)) 
+            try(source(run_script_command1))
+ 	    try(source(run_script_command2)) 
          }
          if (bugle_plot	== 'y') {
             system(mkdir_command)
-            try(source(run_script_command2)) 
+            try(source(run_script_command3)) 
          }
+	 if (summary_plot == 'y') {
+	    system(mkdir_command)
+            try(source(run_script_command4))
+	 }
       }
    }
 }
@@ -117,7 +122,8 @@ if (daily_ozone_analysis == 'y') {
          }
          mkdir_command  <- paste("mkdir -p",figdir)
          system(mkdir_command)
-         try(source(run_script_command1)) 
+         try(source(run_script_command1))
+	 try(source(run_script_command2))
       }
       for (i in 1:length(species_list)) {
          species <- species_list[i]
@@ -128,7 +134,11 @@ if (daily_ozone_analysis == 'y') {
          mkdir_command          <- paste("mkdir -p",figdir)
          if (bugle_plot == 'y') {
             system(mkdir_command)
-            try(source(run_script_command2)) 
+            try(source(run_script_command3)) 
+         }
+	 if (summary_plot == 'y') {
+            system(mkdir_command)
+            try(source(run_script_command4))
          }
       }
    }
@@ -157,8 +167,9 @@ if (aerosol_analysis == 'y') {
          mkdir_command          <- paste("mkdir -p",figdir)
          system(mkdir_command)
          try(source(run_script_command1))
+	 try(source(run_script_command2))
       }
-      if (bugle_plot == 'y') {
+      if ((bugle_plot == 'y') || (summary_plot == 'y')) {
          for (i in 1:length(species_list)) {
             species <- species_list[i]
             figdir                 <- paste(out_dir,species,sep="/")
@@ -166,8 +177,14 @@ if (aerosol_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command          <- paste("mkdir -p",figdir)
-            system(mkdir_command)
-            try(source(run_script_command2))
+            if (bulgle_plot == 'y') {
+   	       system(mkdir_command)
+               try(source(run_script_command3))
+	    }
+            if (summary_plot == 'y') {
+               system(mkdir_command)
+               try(source(run_script_command4))
+	    }
          }
       }
    }
@@ -192,7 +209,7 @@ if (dep_analysis == 'y') {
          system(mkdir_command)
          try(source(run_script_command1))
       }
-      if (bugle_plot == 'y') {
+      if ((bugle_plot == 'y') || (summary_plot == 'y')) {
          for (i in 1:length(species_list)) {
             species <- species_list[i]
             figdir                 <- paste(out_dir,species,sep="/")
@@ -200,8 +217,14 @@ if (dep_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command          <- paste("mkdir -p",figdir)
-            system(mkdir_command)
-            try(source(run_script_command2))
+            if (bugle_plot == 'y') {
+	       system(mkdir_command)
+               try(source(run_script_command2))
+            }
+            if (summary_plot == 'y') {
+               system(mkdir_command)
+               try(source(run_script_command4))
+	    }
          }
       }
    }
@@ -225,7 +248,7 @@ if (gas_analysis == 'y') {
          system(mkdir_command)
          try(source(run_script_command1))
       }
-      if (bugle_plot == 'y') {
+      if ((bugle_plot == 'y') || (summary_plot == 'y')) {
          for (i in 1:length(species_list)) {
             species <- species_list[i]
             figdir                 <- paste(out_dir,species,sep="/")
@@ -233,8 +256,14 @@ if (gas_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command          <- paste("mkdir -p",figdir)
-            system(mkdir_command)
-            try(source(run_script_command2))
+            if (bugle_plot == 'y') {
+  	       system(mkdir_command)
+               try(source(run_script_command2))
+            }
+            if (summary_plot == 'y') {
+               system(mkdir_command)
+               try(source(run_script_command4))
+	    }
          }
       }
    }
@@ -259,7 +288,7 @@ if (AE6_analysis == 'y') {
          system(mkdir_command)
          try(source(run_script_command1))
       }
-      if (bugle_plot == 'y') {
+      if ((bugle_plot == 'y') || (summary_plot == 'y')) {
          for (i in 1:length(species_list)) {
             species <- species_list[i]
             figdir                 <- paste(out_dir,species,sep="/")
@@ -267,8 +296,14 @@ if (AE6_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command          <- paste("mkdir -p",figdir)
-            system(mkdir_command)
-            try(source(run_script_command2))
+            if (bugle_plot == 'y') {
+   	       system(mkdir_command)
+               try(source(run_script_command2))
+            }
+            if (summary_plot == 'y') {
+               system(mkdir_command)
+               try(source(run_script_command4))
+	    }   
          }
       }
    }
@@ -304,6 +339,10 @@ if (AOD_analysis == 'y') {
             system(mkdir_command)
             try(source(run_script_command2))
          }
+	 if (summary_plot == 'y') {
+            system(mkdir_command)
+            try(source(run_script_command4))
+         }
       }
    }
 }
@@ -328,7 +367,7 @@ if (PAMS_analysis == 'y') {
          system(mkdir_command)
          try(source(run_script_command1))
       }
-      if (bugle_plot == 'y') {
+      if ((bugle_plot == 'y') || (summary_plot == 'y')) {
          for (i in 1:length(species_list)) {
             species <- species_list[i]
             figdir                 <- paste(out_dir,species,sep="/")
@@ -336,8 +375,14 @@ if (PAMS_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command          <- paste("mkdir -p",figdir)
-            system(mkdir_command)
-            try(source(run_script_command2))
+            if (bulge_plot == 'y') {
+   	       system(mkdir_command)
+               try(source(run_script_command2))
+	    }
+	    if (summary_plot == 'y') {
+               system(mkdir_command)
+               try(source(run_script_command4))
+            }
          }
       }
    }
@@ -360,7 +405,7 @@ if (PAMS_analysis == 'y') {
          system(mkdir_command)
          try(source(run_script_command1))
       }
-      if (bugle_plot == 'y') {
+      if ((bugle_plot == 'y') || (summary_plot == 'y')) {
          for (i in 1:length(species_list)) {
             species <- species_list[i]
             figdir                 <- paste(out_dir,species,sep="/")
@@ -368,8 +413,14 @@ if (PAMS_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command          <- paste("mkdir -p",figdir)
-            system(mkdir_command)
-            try(source(run_script_command2))
+            if (bugle_plot == 'y') {
+   	       system(mkdir_command)
+               try(source(run_script_command2))
+	    }
+	    if (summary_plot == 'y') {
+               system(mkdir_command)
+               try(source(run_script_command4))
+            }
          }
       }
    }

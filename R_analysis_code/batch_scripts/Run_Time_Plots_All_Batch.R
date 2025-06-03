@@ -5,6 +5,7 @@ ametRinput       <- Sys.getenv("AMETRINPUT")
 config_file      <- Sys.getenv("MYSQL_CONFIG")                   # MySQL configuration file
 ametR            <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
+print(ametRinput)
 source(ametRinput)
 source(config_file)
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
@@ -99,9 +100,11 @@ run_script_command8 <- paste(ametbase,"/R_analysis_code/AQ_Timeseries_plotly.R",
 run_script_command9 <- paste(ametbase,"/R_analysis_code/AQ_Boxplot_plotly.R",sep="")
 run_script_command10 <- paste(ametbase,"/R_analysis_code/AQ_Boxplot_ggplot.R",sep="")
 run_script_command11 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot.R",sep="")
-run_script_command12 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot_multisim.R",sep="") 
+run_script_command12 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot_plotly.R",sep="") 
 run_script_command13 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot_season.R",sep="")
 run_script_command14 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot_region.R",sep="")
+run_script_command15 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot_season_plotly.R",sep="")
+run_script_command16 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot_region_plotly.R",sep="")
 
 #######################################################################################
 ### This portion of the code will create monthly stat plots for the various species ###
@@ -178,6 +181,8 @@ if (hourly_ozone_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+	       try(source(run_script_command16))
             }
          }
       }
@@ -252,6 +257,8 @@ if (daily_ozone_analysis == 'y') {
                   try(source(run_script_command12))
                   try(source(run_script_command13))
                   try(source(run_script_command14))
+		  try(source(run_script_command15))
+                  try(source(run_script_command16))
                }
             }
          }        
@@ -325,6 +332,8 @@ if (aerosol_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -393,6 +402,8 @@ if (aerosol_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }	
       }
@@ -461,6 +472,8 @@ if (aerosol_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -530,6 +543,8 @@ if (aerosol_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -603,6 +618,8 @@ if (aerosol_analysis == 'y') {
                   try(source(run_script_command12))
                   try(source(run_script_command13))
                   try(source(run_script_command14))
+		  try(source(run_script_command15))
+                  try(source(run_script_command16))
                }
             }
          }
@@ -675,6 +692,8 @@ if (dep_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -750,6 +769,8 @@ if (gas_analysis == 'y') {
                   try(source(run_script_command12))
                   try(source(run_script_command13))
                   try(source(run_script_command14))
+		  try(source(run_script_command15))
+                  try(source(run_script_command16))
                }
             }
          }
@@ -823,6 +844,8 @@ if (gas_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+       	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -894,6 +917,8 @@ if (AE6_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -962,6 +987,8 @@ if (AE6_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -1021,6 +1048,8 @@ if (AOD_analysis == 'y') {
             try(source(run_script_command12))
             try(source(run_script_command13))
             try(source(run_script_command14))
+	    try(source(run_script_command15))
+            try(source(run_script_command16))
          }
       }
    }
@@ -1095,6 +1124,8 @@ if (PAMS_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
@@ -1163,6 +1194,8 @@ if (PAMS_analysis == 'y') {
                try(source(run_script_command12))
                try(source(run_script_command13))
                try(source(run_script_command14))
+	       try(source(run_script_command15))
+               try(source(run_script_command16))
             }
          }
       }
