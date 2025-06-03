@@ -118,12 +118,12 @@ if (num_runs > 1) {
 ##########################################################
 ### Average all data for a species into a single value ###
 ##########################################################
-l <- 10                                                  # offset for first species ob value
+l <- 11                                                  # offset for first species ob value
 
 aqdat_sub.df <- aqdat_query.df
 len <- length(aqdat_sub.df)
 
-while (l < len) {                                       # loop through each column
+while (l < 23) {                                       # loop through each column
    indic.nonzero <- aqdat_sub.df[,l] >= 0               # determine missing data from ob column
    aqdat_sub.df <- aqdat_sub.df[indic.nonzero,]         # remove missing model/ob pairs from dataframe
    l <- l+1
@@ -145,11 +145,11 @@ TC_mod <- medians.df$EC_mod+medians.df$OC_mod
 ##############################################################
 
 if (num_runs > 1) {
-   l <- 10                                          # offset for first species ob value
+   l <- 11                                          # offset for first species ob value
 
    aqdat_sub2.df <- aqdat_query2.df
    len <- length(aqdat_sub2.df)
-   while (l < len) {                                       # loop through each column
+   while (l < 23) {                                       # loop through each column
       indic.nonzero <- aqdat_sub2.df[,l] >= 0               # determine missing data from ob column
       aqdat_sub2.df <- aqdat_sub2.df[indic.nonzero,]         # remove missing model/ob pairs from dataframe
       l <- l+1
@@ -207,7 +207,7 @@ rmse_unsys	<- round(sqrt(c(rmse_unsys, sum((total_mod - (intercept+X*total_ob))^
 index_agree	<- round(1-((sum((data.df[[PM_spec_ob]]-data.df[[PM_spec_mod]])^2))/(sum((abs(data.df[[PM_spec_mod]]-mean(data.df[[PM_spec_ob]]))+abs(data.df[[PM_spec_ob]]-mean(data.df[[PM_spec_ob]])))^2))),2)
 
 if (num_runs > 1) {
-   other_mod2         <- data2.df[[PM_spec_ob]]-(data2.df$SO4_mod+data2.df$NO3_mod+data2.df$NH4_mod+data2.df$EC_mod+data2.df$OC_mod)
+   other_mod2         <- data2.df[[PM_spec_mod]]-(data2.df$SO4_mod+data2.df$NO3_mod+data2.df$NH4_mod+data2.df$EC_mod+data2.df$OC_mod)
    med_other_mod2    <- median(other_mod2)
    total_ob2         <- data2.df[[PM_spec_ob]]
    total_mod2        <- data2.df[[PM_spec_mod]]

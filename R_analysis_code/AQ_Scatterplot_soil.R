@@ -141,7 +141,7 @@ title(main=title,cex.main=1)
 ###################################
 
 ### Plot points and stats for each network ###
-plot_colors     <- c("brown4","purple","seagreen1","grey","black","blue","yellow2","orange","light blue","red3")
+plot_colors     <- c("brown","purple","green","grey","black","blue","yellow","orange")
 #point_color <- plot_colors[i]
 points(Fe_perc_ob_mean,Fe_perc_mod_mean,pch=1,col=plot_colors[1],cex=1)	# plot points for each network
 points(Al_perc_ob_mean,Al_perc_mod_mean,pch=1,col=plot_colors[2],cex=1)

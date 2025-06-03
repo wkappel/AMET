@@ -28,6 +28,7 @@ if(!require(latticeExtra))      { stop("Required Package latticeExtra was not lo
 if(!require(leafpop))           { stop("Required Package leafpop was not loaded") }
 if(!require(leaflet.extras))    { stop("Required Package leaflet.extras was not loaded") }
 
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 if(!exists("png_from_html")) { png_from_html <- "n" }
