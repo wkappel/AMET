@@ -31,7 +31,6 @@
   # Prefix of model output file names with trailing _ or .
   # common examples below.
   setenv METOUT_PRE   wrfout_subset_
-  setenv METOUT_PRE   wrfout_d01_
 
   # Period begin and end day. 
   # Daily:       Daily analysis done for each day of the period
