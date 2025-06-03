@@ -340,7 +340,7 @@ if (length(cols) != (length(bounds)-1)) {
 # NOTE:  Future version will allow user to specify a color scheme and levels
 #
 ###
-   if(!require(fields))           { stop("Required Package fields was not loaded") }
+   require(fields)
 
    plotops<-list(plotfmt="pdf")
         plotSpatial<-function(sinfo,varlab,figure="spatial",nlevs=0,bounds=c(24,50,-120,-60),plotopts=plotopts,histplot=F,shadeplot=F,sres=0.25,plot_units,hist_corr="n")
@@ -1000,6 +1000,8 @@ Average<-function(datain.df,avg_func="mean") {
    States	        <- NULL
    obs_sum		<- NULL
    category		<- NULL
+   Networks		<- NULL
+#   print(datain.df)
 #   names(datain.df)
 #   datain.df$Stat_ID <- paste(datain.df$Stat_ID,datain.df$POCode,sep="")
    if ((!"state" %in% colnames(datain.df)) && (!"State" %in% colnames(datain.df))) {
@@ -1014,16 +1016,16 @@ Average<-function(datain.df,avg_func="mean") {
    indic.nonzero  <- datain.df$Obs_Value >= 0
    datain.df	  <- datain.df[indic.nonzero,]
    {
-   if ((network == "NADP") || (network == "MDN")) {				# Do things differently for deposition networks
-      indic.na <- datain.df$precip_ob <= 0.127
-      datain.df$good_ob[indic.na] <- 1
+#   if ((network == "NADP") || (network == "MDN")) {				# Do things differently for deposition networks
+#      indic.na <- datain.df$precip_ob <= 0.127
+#      datain.df$good_ob[indic.na] <- 1
+#      indic.na <- is.na(datain.df$Obs_Value)
+#      datain.df$good_ob[!indic.na] <- 1
+#   }
+#   else {
       indic.na <- is.na(datain.df$Obs_Value)
       datain.df$good_ob[!indic.na] <- 1
-   }
-   else {
-      indic.na <- is.na(datain.df$Obs_Value)
-      datain.df$good_ob[!indic.na] <- 1
-   }
+#   }
    }
    if (units == "mg/l") {
       datain.df$VWA_ob 	<- datain.df$Obs_Value*datain.df$precip_ob
@@ -1178,6 +1180,7 @@ Average<-function(datain.df,avg_func="mean") {
             Lats	<- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
             Lons	<- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique))
             Years       <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
+	    Networks	<- c(Networks,tapply(data_split.df$Network,data_split.df$Stat_ID,unique))
             avg_text    <- paste(avg_text_1, avg_func,sep="")
          }
       }
@@ -1189,12 +1192,12 @@ Average<-function(datain.df,avg_func="mean") {
       num_hours <- difftime(endtime,starttime,units="hours")
       coverage  <- round((Obs_Good/(as.numeric(num_hours)+24))*100)
    }
-   data_out.df                 <- data.frame(Stat_ID=I(Sites),State=I(States),lat=Lats,lon=Lons,Obs_Value=Obs_Mean,Mod_Value=Mod_Mean,Month=I(category),Averaging_Period=I(category),Coverage=coverage)
+   data_out.df                  <- data.frame(Stat_ID=I(Sites),State=I(States),lat=Lats,lon=Lons,Obs_Value=Obs_Mean,Mod_Value=Mod_Mean,Month=I(category),Averaging_Period=I(category),Coverage=coverage,Network=Networks)
    indic.nan			<- is.nan(data_out.df$Obs_Value)		# check for NaNs
    data_out.df			<- data_out.df[!indic.nan,]			# remove records with NaNs
    indic.good			<- data_out.df$Coverage >= coverage_limit	# check to see if site coverage matches limit
    data_out.df			<- data_out.df[indic.good,]			# remove records that don't meet coverage limit
-   data_out.df$Network		<- network
+#   data_out.df$Network		<- network
    data_out.df$avg_text		<- avg_text
    aqdat.df			<- data_out.df
 }
@@ -1556,7 +1559,6 @@ find_common_sites <- function(run_names_in,network,species,criteria="Default",or
 
 find_common_sites_species <- function(run_names_in,network,species,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"),merge_sitePOC="y")
 {
-   print("GOT HERE")
    for (j in 1:length(species)) {
       run_name_temp <- gsub("[.]","_",run_names_in[1])
       run_name      <- gsub("[-]","_",run_name_temp)
@@ -1638,13 +1640,16 @@ find_common_sites_species <- function(run_names_in,network,species,criteria="Def
 ### Function to AQ query database ###
 #####################################
 
-query_dbase <- function(project_id,network,species.in,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"))
+query_dbase <- function(project_id,networks.in,species.in,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"))
 {
-   print(species.in)
+aqdat_query_out.df <- NULL
+criteria_in <- criteria
+for(j in 1:length(networks.in)) {
+   network_j <- networks.in[j]
    if (!exists("common_sites")) { common_sites <- "n" }
    if (!exists("common_sites_species")) { common_sites_species <- "n" }
    if ((common_sites == "y") && (project_id == run_names[1])) { # Only find the common sites once; assign com_sites as a global variable
-      com_sites <<- find_common_sites(run_names,network,species,merge_sitePOC=merge_statid_POC)
+      com_sites <<- find_common_sites(run_names,network_j,species,merge_sitePOC=merge_statid_POC)
    }
    if (common_sites_species == "y") {
       species.in <- species
@@ -1667,24 +1672,24 @@ query_dbase <- function(project_id,network,species.in,criteria="Default",orderby
       i <- i+1
    }
    if (!exists("rm_negs_query")) { rm_negs_query <- "n" } 
-   if (criteria == "Default") {
-       criteria <- paste(" WHERE d.",species.in[1],"_ob is not NULL and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+   if (criteria_in == "Default") {
+       criteria <- paste(" WHERE d.",species.in[1],"_ob is not NULL and d.network='",network_j,"'",query,sep="")                       # Set first part of the MYSQL query
        if ((rm_negs_query == "y") || (rm_negs_query == "Y") || (rm_negs_query == "t") || (rm_negs_query == "T")) {
-          criteria <- paste(" WHERE d.",species.in[1],"_ob is not NULL and d.",species.in[1],"_ob != -999 and d.network='",network,"'",query,sep="")                       # Set first part of the MYSQL query
+          criteria <- paste(" WHERE d.",species.in[1],"_ob is not NULL and d.",species.in[1],"_ob != -999 and d.network='",network_j,"'",query,sep="")                       # Set first part of the MYSQL query
        }
    }
    if ((exists("custom_species")) && (custom_species != "")) {
       species_query_string <- paste(",",custom_species,sep="")
-      criteria <- paste(" WHERE d.network='",network,"'",query,sep="")
+      criteria <- paste(" WHERE d.network='",network_j,"'",query,sep="")
    }
-   if (network == "NADP") {
+   if (network_j == "NADP") {
       species_query_string <- paste(species_query_string,", d.precip_ob, d.precip_mod",sep="")
    }
    if (zeroprecip == "y") { criteria <- paste(criteria, " and d.precip_ob > 0",sep="") }
-    if ((all_valid == "y") && (network == "NADP")) { # valid flags for NADP obs
+    if ((all_valid == "y") && (network_j == "NADP")) { # valid flags for NADP obs
       criteria <- paste(criteria, " and (d.valid_code = 't' or d.valid_code = 'd' or d.valid_code = 'w' or d.valid_code = 'wi' or d.valid_code = 'wd' or d.valid_code = 'wa')",sep="") 
    } 
-   if ((all_valid == "y") && (network == "AMON")) { # valid flags for AMON obs
+   if ((all_valid == "y") && (network_j == "AMON")) { # valid flags for AMON obs
       criteria <- paste(criteria, " and (d.valid_code = ' ' or d.valid_code = 'A' or d.valid_code = 'B' or d.valid_code IS NULL)",sep="") # include QR values that A, B, missing, or NULL 
    }
    ##########################################################
@@ -1692,7 +1697,7 @@ query_dbase <- function(project_id,network,species.in,criteria="Default",orderby
    check_replicate	<- paste("select * from information_schema.COLUMNS where TABLE_NAME = '",run_name,"' and COLUMN_NAME = 'replicate';",sep="")
    query_table_info.df <-db_Query(check_replicate,mysql)
    if (length(query_table_info.df$COLUMN_NAME) != 0) {	# Check if replicate column exisits or not
-      if ((all_valid == "y") && (network == 'AMON')) { criteria <- paste(criteria, " and (d.replicate != 'T' or d.replicate IS NULL)",sep="") }
+      if ((all_valid == "y") && (network_j == 'AMON')) { criteria <- paste(criteria, " and (d.replicate != 'T' or d.replicate IS NULL)",sep="") }
    }
    ###########################################################
    check_POCode        <- paste("select * from information_schema.COLUMNS where TABLE_NAME = '",run_name,"' and COLUMN_NAME = 'POCode';",sep="")
@@ -1702,7 +1707,7 @@ query_dbase <- function(project_id,network,species.in,criteria="Default",orderby
    if (length(query_table_info.df$COLUMN_NAME) == 0) {        # Check to see if POCode column exists or not
 #      if (length(query_table_info.df$Field) == 0) {        # Check to see if POCode column exists or not
          qs <- paste("SELECT d.network,d.stat_id,s.lat,s.lon,LPAD(d.i,3,'0'),LPAD(d.j,3,'0'),d.ob_dates,d.ob_datee,d.ob_hour,d.month",species_query_string,",s.state,s.county from ",run_name," as d, site_metadata as s",criteria,"ORDER BY",data_order,sep=" ")      # Set the rest of the MYSQL query
-#         print(qs)
+         print(qs)
          aqdat_query.df<-try(db_Query(qs,mysql))
 #         aqdat_query.df$POCode <- 1
       }
@@ -1712,7 +1717,7 @@ query_dbase <- function(project_id,network,species.in,criteria="Default",orderby
          aqdat_query.df<-try(db_Query(qs,mysql))
       }
    }
-   if ((network == "EMEP_Daily") || (network == "NADP")) { aqdat_query.df$ob_hour <- 0 }
+   if ((network_j == "EMEP_Daily") || (network_j == "NADP")) { aqdat_query.df$ob_hour <- 0 }
    aqdat_query.df$ob_hour <- sprintf("%02d",as.integer(aqdat_query.df$ob_hour)) 
 #   ob_col_name <- paste(species,"_ob",sep="")
 #   mod_col_name <- paste(species,"_mod",sep="")
@@ -1734,7 +1739,7 @@ query_dbase <- function(project_id,network,species.in,criteria="Default",orderby
             len   <- length(aqdat_query.df[,mod_col])
             if ((count_na != len) || (count_missing != len)) {
                data_exists_flag <- "y"
-               if ((all_valid == "y") && ((network == "NADP") || (network == "MDN"))) {
+               if ((all_valid == "y") && ((network_j == "NADP") || (network_j == "MDN"))) {
                   indic.missing <- aqdat_query.df[,ob_col] < 0  # Check for observations that are less than zero 
                   aqdat_query.df[indic.missing,ob_col] <- 0     # Replace those observations with 0 (we assume a valid observation, just not negative). Applies primarily to NTN networks (i.e. NADP, AMON, MDN)
                }
@@ -1775,7 +1780,7 @@ query_dbase <- function(project_id,network,species.in,criteria="Default",orderby
       if ((exists("custom_units")) && (custom_units != "")) { units <- custom_units }
       else {
     	 if (!exists("units_qs")) {
-            units_qs        <- paste("SELECT ",species.in[1]," from project_units where proj_code = '",run_name,"' and network = '",network,"'", sep="")
+            units_qs        <- paste("SELECT ",species.in[1]," from project_units where proj_code = '",run_name,"' and network = '",network_j,"'", sep="")
          }
          units <- db_Query(units_qs,mysql)
 	 units <- na.omit(units)
@@ -1794,7 +1799,9 @@ query_dbase <- function(project_id,network,species.in,criteria="Default",orderby
    }
    if (common_sites == "y") { aqdat_query.df <- aqdat_query.df[as.character(aqdat_query.df$stat_id) %in% com_sites, ] }
    ###################################################################
-   return(list(aqdat_query.df,data_exists_flag,units,model_name))
+   aqdat_query_out.df <- rbind(aqdat_query_out.df,aqdat_query.df)
+}
+   return(list(aqdat_query_out.df,data_exists_flag,units,model_name))
 }
 ########################################
 
@@ -1943,7 +1950,8 @@ get_title <- function(run_names,species,network_label,dates,custom_title="",site
             my_title <- paste(my_title,dates,sep=", ")	# add dates regardless of custom title or not
          }
          else if ((custom_title == "") && (length(run_names) > 1)) {
-            my_title <- paste(network,species,sep=", ")
+            run_names_text <- paste(run_names,collapse=", ")
+            my_title <- paste(network,run_names_text,species,sep=", ")
             if (bias == "T") { my_title <- paste(species,"Bias",sep=", ") }        
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
             my_title <- paste(my_title,dates,sep=", ")	# add dates regardless of custom title or not
@@ -1964,11 +1972,11 @@ get_title <- function(run_names,species,network_label,dates,custom_title="",site
 
 ### Miscellaneous leaflet functions ###
 
-if(!require(htmltools))		{ stop("Required Package htmltools was not loaded")}
-if(!require(pandoc))            { stop("Required Package pandoc was not loaded") }
-if(!require(leaflet))           { stop("Required Package leaflet was not loaded") }
-if(!require(maps))         	{ stop("Required Package maps was not loaded") }
-if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") }
+if(!require(htmltools)){stop("Required Package htmltools was not loaded")}
+library(pandoc)
+library(leaflet)
+library(maps)
+library(htmlwidgets)
 
 tag.map.title.html <- tags$style(HTML("
   .leaflet-control.map-title {

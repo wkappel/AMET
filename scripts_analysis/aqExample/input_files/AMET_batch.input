@@ -134,8 +134,8 @@ box_plot		<- 'y'	# AQ_Boxplot.R
 box_plot_hourly		<- 'y'	# AQ_Boxplot_Hourly.R
 box_plot_roselle	<- 'y'	# AQ_Boxplot_Roselle.R
 monthly_stat_plot	<- 'n'	# AQ_Monthly_Stat_Plot.R
-kelly_plot              <- 'y'  # AQ_Kellyplot_multisim.R
-kelly_plot_annual       <- 'n'  # AQ_Kellyplot.R
+kelly_plot              <- 'y'  # AQ_Kellyplot_season.R, AQ_Kellyplot_season_plotly.R, AQ_Kellyplot_region.R, AQ_Kellyplot_region_plotly.R
+kelly_plot_annual       <- 'n'  # AQ_Kellyplot.R, AQ_Kellyplot_plotly.R
 
 ### Choose which scatter plots to run ###
 scatter_plot               <- 'y'	# AQ_Scatterplot.R
@@ -147,9 +147,10 @@ scatter_skill_plot         <- 'y'	# AQ_Scatterplot_skill.R
 scatter_mtom_plot	   <- 'n'	# AQ_Scatterplot_mtom.R
 scatter_soil_plot	   <- 'y'	# AQ_Scatterplot_soil.R
 
-### Choose to plot soccer plots ###
-soccer_plot	<- 'y'	# AQ_Soccerplot.R
+### Choose to plot misc plots ###
+soccer_plot	<- 'y'	# AQ_Soccerplot.R and AQ_Soccerplot_plotly.R
 bugle_plot      <- 'y'  # AQ_Bugleplot.R
+summary_plot	<- 'y'	# AQ_Summary_Panel_Plot.R
 
 ### Use this to add additional query information (e.g. states) ###
 additional_query	<- ""
