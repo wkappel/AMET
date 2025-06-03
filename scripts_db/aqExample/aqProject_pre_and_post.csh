@@ -132,7 +132,7 @@ setenv RUNID ${APPL}
 #> Name and location of daily MET output. Required files = METCRO2D, METCRO3D
 #> This script assumes MET files are dated with the following naming convention:
 #> ${METCRO2D_NAME}_${YY}${MM}${DD}.nc, ${METCRO3D_NAME}_${YY}${MM}${DD}.nc
- setenv METDIR  /work/users/l/i/lizadams/AMET/v1.5_example/MET/metExample_mcip/WRFv4.3.3_LTNG_MCIP5.3.3_compressed/  #> Location of MET ouput.
+ setenv METDIR  $AMETBASE/model_data/MET/metExample_mcip/  #> Location of MET ouput.
  set METCRO2D_NAME = METCRO2D                   #> METCRO2D file name (without date and file extension).
  set METCRO3D_NAME = METCRO3D                   #> METCRO3D file name (without date and file extension).
 
