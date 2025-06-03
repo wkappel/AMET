@@ -24,7 +24,7 @@ if(!require(mapdata))		{ stop("Required Package mapdata was not loaded") }
 if(!require(webshot))		{ stop("Required Package webshot was not loaded") }
 if(!require(lattice))		{ stop("Required Package lattice was not loaded") }
 if(!require(leafpop))      	{ stop("Required Package leafpop was not loaded") }
-if(!require(leafpop.extras))    { stop("Required Package leafpop.extras was not loaded") }
+if(!require(leaflet.extras))    { stop("Required Package leaflet.extras was not loaded") }
 
 ### The current release of leaflet.extras does not contain the groupedLayerControlOptions function.
 ### Hopefully it will be added a a future release of the leaflet.extras library. In the interim, the
