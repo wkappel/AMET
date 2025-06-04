@@ -381,6 +381,52 @@ date -ud "2018-06-30+1days" +%Y-%m-%d
 2018-07-01
 ```
 
-<a id="Debug"></a>2. Verify that sitex csv files were created. 
+<a id="Debug"></a>2. Debug sitecmp errors and verify that sitex csv files are created for each network. 
 
+* Check for errors in the log file
+
+```
+grep -i ERROR $AMETBASE/output/*/sitex_output/*/amet_extract_all*.log
+```
+
+If you see an error such as the following:
+
+ *** ERROR ABORT in subroutine PROCESS 
+
+     Observed Speices [PM25_Tef_Sulfate [ug/m3]] not found 
+
+  
+
+     >>---->  Program sitecmp (Version 1.0)  <----<< 
+
+Finished running site compare for network  SEARCH_Daily . 
+
+Then it indicates that the $AMETBASE/scripts_db/input_files/AQ_species_list.input  file contains variables that are not available in the COMBINE output file.
+
+* Check the sizes of the output csv files in the same directory
+
+Example, for the project aqExample
+```
+cd $AMETBASE/output/aqExample/sitex_output/201807/
+ls -lrt *.csv
+```
+
+Output: - all of the *.csv files should contain data if the sitecmp (comparing data in the combine file with the observational data) for each network was successful for the time period specified in the script.
+
+```
+ls -rlt *.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    1439473 May 13 13:47 IMPROVE_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    9068634 May 13 13:47 CSN_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx     264861 May 13 13:47 CASTNET_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx   17056629 May 13 13:48 CASTNET_Hourly_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx      95292 May 13 13:48 CASTNET_Drydep_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx     477347 May 13 13:49 NADP_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx      18787 May 13 13:49 AMON_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    8487431 May 13 13:53 AQS_Daily_O3_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx   57403007 May 13 13:55 AQS_Daily_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx 1090300120 May 13 14:25 AQS_Hourly_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx   57348985 May 13 15:05 NAPS_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    1281457 May 13 15:08 NAPS_Daily_O3_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx     500385 May 17 10:29 CASTNET_Daily_aqExample.csv
+```
 
