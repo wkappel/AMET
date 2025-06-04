@@ -14,6 +14,7 @@ AMET aqProject Pre- and Post- Analysis Script Guide v1.6
 &nbsp;&nbsp;&nbsp;&nbsp;[2.7 AMET configuration options](#amet)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2.8 Evaluation plotting configuration options](#plots)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2.9 Execution of all post-processing steps](#execute)<br>
+[3. Debugging Errors](#Debug)<br>
 
 <a id="Overview"></a>1. Overview
 ===========
@@ -379,3 +380,7 @@ date -ud "2018-06-30" +%Y%j
 date -ud "2018-06-30+1days" +%Y-%m-%d
 2018-07-01
 ```
+
+<a id="Debug"></a>2. Verify that sitex csv files were created. 
+
+
