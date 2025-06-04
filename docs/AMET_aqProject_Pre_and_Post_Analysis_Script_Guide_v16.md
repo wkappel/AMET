@@ -454,4 +454,17 @@ ls -rlt *.csv
 -rw-rw-r-- 1 lizadams rc_cep-emc_psx     500385 May 17 10:29 CASTNET_Daily_aqExample.csv
 ```
 
+* Also check for errors when creating the plots
 
+```
+cd $AMETBASE/output/aqExample_2016/plots 
+
+grep -i Error *.Rout | sort -u
+
+```
+
+Example errors:
+
+```
+Run_Misc_Plots_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+```
