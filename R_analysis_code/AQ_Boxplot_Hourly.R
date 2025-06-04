@@ -7,7 +7,7 @@ header <- "
 ### provided through a MYSQL query. The script then plots these values
 ### using the default R boxplot function as a box plot.
 ###
-### Last updated by Wyat Appel: Nov 2020
+### Last updated by Wyat Appel: June 2025 
 ################################################################
 "
 
@@ -83,8 +83,6 @@ if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    aqdat2.df <- aqdat_query2.df
    names(aqdat2.df)[names(aqdat2.df) == ob_col_name] <- "Obs_Value"
    names(aqdat2.df)[names(aqdat2.df) == mod_col_name] <- "Mod_Value"
-#   names(aqdat2.df)[9]  <-"Obs_Value"
-#   names(aqdat2.df)[10] <-"Mod_Value"
 }
 
 if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
@@ -103,13 +101,9 @@ if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
    aqdat3.df <- aqdat_query3.df
    names(aqdat3.df)[names(aqdat3.df) == ob_col_name] <- "Obs_Value"
    names(aqdat3.df)[names(aqdat3.df) == mod_col_name] <- "Mod_Value"
-#   names(aqdat3.df)[9]  <-"Obs_Value"
-#   names(aqdat3.df)[10] <-"Mod_Value"
 }
 
 #######################
-
-#aqdat.df <- aqdat_query.df
 
 ### Remove mean if requested ###
 if (remove_mean == 'y') {
@@ -288,21 +282,13 @@ if (inc_median_lines == 'y') {
 #########################################################################
 
 
-#header <- paste("Obs_q1","Obs_median","Obs_q3","Mod_q1","Mod_median","Mod_q3",sep=",")
-#raw_data <- paste(q1.spec1,median.spec1,q3.spec1,q1.spec2,median.spec2,q3.spec2,sep=",")
 raw_data.df <- data.frame(Hour_LST=seq(0,23,by=1),Obs_q1=q1.spec1,Obs_median=median.spec1,Obs_q3=q3.spec1,Mod_q1=q1.spec2,Mod_median=median.spec2,Mod_q3=q3.spec2)
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
-#   header <- c(paste(header,"Mod2_q1","Mod2_median","Mod2_q3",sep=","))
-#   raw_data <- c(paste(raw_data,q1.spec3,median.spec3,q3.spec3,sep=","))
    raw_data.df <- data.frame(Hour_LST=seq(0,23,by=1),Obs_q1=q1.spec1,Obs_median=median.spec1,Obs_q3=q3.spec1,Mod_q1=q1.spec2,Mod_median=median.spec2,Mod_q3=q3.spec2,Mod2_q1=q1.spec3,Mod2_median=median.spec3,Mod2_q3=q3.spec3)
 }
 if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
-#   header <- c(paste(header,"Mod2_q1","Mod2_median","Mod2_q3",sep=","))
-#   raw_data <- c(paste(raw_data,q1.spec4,median.spec4,q3.spec4,sep=","))
    raw_data.df <- data.frame(Hour_LST=seq(0,23,by=1),Obs_q1=q1.spec1,Obs_median=median.spec1,Obs_q3=q3.spec1,Mod_q1=q1.spec2,Mod_median=median.spec2,Mod_q3=q3.spec2,Mod2_q1=q1.spec3,Mod2_median=median.spec3,Mod2_q3=q3.spec3,Mod3_q1=q1.spec4,Mod3_median=median.spec4,Mod3_q3=q3.spec4)
 }
-#write.table(header,file=filename_txt,append=F,col.names=F,row.names=F,sep=",")                     # Write raw data to csv file
-#write.table(raw_data,file=filename_txt,append=T,col.names=F,row.names=F,sep=",")                     # Write raw data to csv file
 write.table(raw_data.df,file=filename_txt,append=F,col.names=T,row.names=F,sep=",")                     # Write raw data to csv file
 
 ### Put legend on the plot ###
@@ -324,9 +310,6 @@ if (run_info_text == 'y') {
    if ((clim_reg != '') && (clim_reg != "None")) {
       text(x=18,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1.2,adj=c(0.5,0))
    }
-#   if (loc_setting != '') {
-#      text(x=18,y=y.axis.max*0.95,paste("Loc_Setting: ",loc_setting,sep=""),cex=1.2,adj=c(0,0))
-#   }
    if ((site != '') && (site != "All")) {
       text(x=18,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1.2,adj=c(0,0))
    }

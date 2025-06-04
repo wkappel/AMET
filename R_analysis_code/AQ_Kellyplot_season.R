@@ -14,7 +14,7 @@ header <- "
 ###
 ### Original concept and some code developed by Jim Kelly of EPA.  
 ###
-### Last updated by Wyat Appel: July 2022
+### Last updated by Wyat Appel: June 2025
 ###########################################################################################
 "
 
@@ -31,9 +31,10 @@ if(!require(data.table))        { stop("Required Package data.table was not load
 if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") }
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded") }
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- length(run_names)
+## Set some defaults
+network 	<- network_names[1]
+network_name 	<- network_label[1]
+num_runs 	<- length(run_names)
 
 ################################################
 ## Set output names and remove existing files ##

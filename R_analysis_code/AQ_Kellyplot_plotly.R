@@ -307,7 +307,6 @@ for (i in 1:6) {
       text.col <- "black"
       stat_in  <- "Correlation"
    }
-#   pdf(file=paste(filename[i],".pdf",sep=""),width=8,height=8)
    if (!exists("inc_kelly_stats")) { inc_kelly_stats <- "n" }
    data.tmp$round_value <- signif(data.tmp$value,2)
    data.orig$round_value <- signif(data.orig$value,2)
@@ -317,23 +316,8 @@ for (i in 1:6) {
       plt <- plt %>% add_annotations(font=list(color=text.col,size=20),text=~value, x=~season, y=~region, showarrow=FALSE)
    }
    saveWidget(plt, file=paste(filename[i],".html",sep=""),selfcontained=T)
-#   ggsave(plt,file=paste(filename[i],".pdf",sep=""),dpi=600,width=10,height=8)
-#   plt
-
-   ### Convert pdf file to png file ###
-   #dev.off()
-#   if ((ametptype == "png") || (ametptype == "both")) {
-#      convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename[i],".pdf"," png:",filename[i],".png",sep="")
-#      system(convert_command)
-
-#      if (ametptype == "png") {
-#         remove_command <- paste("rm ",filename[i],".pdf",sep="")
-#         system(remove_command)
-#      }
-#   }
 }
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
-
 ####################################
 

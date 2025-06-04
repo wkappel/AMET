@@ -6,7 +6,7 @@ header <- "
 ### to create an interactive histogram plot. This script will plot a single
 ### species from a single network and multiple simulations on a single plot.
 ###
-### Last Updated by Wyat Appel: 03/2025
+### Last Updated by Wyat Appel: June 2025 
 ##################################################################################
 "
 
@@ -17,6 +17,7 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
+## Create file names
 filename_html 		<- paste(run_name1,species,pid,"histogram.html",sep="_")             # Set PDF filename
 filename_txt  		<- paste(run_name1,species,pid,"histogram.csv",sep="_")       # Set output file name
 

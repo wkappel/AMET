@@ -12,7 +12,7 @@ header <- "
 ### is two plots, one for the bias and one for the error (in both png and pdf 
 ### formats).
 ###
-### Last updated by Wyat Appel: 03/2025
+### Last updated by Wyat Appel:	June 2025
 ##########################################################################
 "
 
@@ -23,9 +23,13 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
-network  <- network_names[1] 
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
+### Set some defaults ###
+network  			<- network_names[1] 
+if(!exists("dates")) { dates 	<- paste(start_date,"-",end_date) }
+{
+   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
+   else { title <- custom_title }
+}
 ################################################
 
 ### Set file names and titles ###
@@ -33,12 +37,6 @@ filename_error_pdf	<- paste(run_name1,species,pid,"bugle_plot_error.pdf",sep="_"
 filename_bias_pdf 	<- paste(run_name1,species,pid,"bugle_plot_bias.pdf",sep="_")
 filename_error_png 	<- paste(run_name1,species,pid,"bugle_plot_error.png",sep="_")
 filename_bias_png 	<- paste(run_name1,species,pid,"bugle_plot_bias.png",sep="_")
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
 
 ## Create a full path to file
 filename_error_pdf	<- paste(figdir,filename_error_pdf,sep="/")
@@ -48,18 +46,18 @@ filename_bias_png	<- paste(figdir,filename_bias_png,sep="/")
 #################################
 
 ### Set values to NULL ###
-plotinfo <- NULL
-plot_vals <- NULL
-max_conc  <- NULL
+plotinfo 	<- NULL
+plot_vals 	<- NULL
+max_conc  	<- NULL
 ##########################
 
 for (j in 1:length(network_names)) {
-   nmb <- NULL				
-   nme <- NULL
-   fb  <- NULL
-   fe  <- NULL
-   drop_names <- NULL
-   species_names <- NULL
+   nmb 			<- NULL				
+   nme 			<- NULL
+   fb  			<- NULL
+   fe  			<- NULL
+   drop_names 		<- NULL
+   species_names 	<- NULL
    network<-network_names[[j]]
    {
       if (Sys.getenv("AMET_DB") == 'F') {

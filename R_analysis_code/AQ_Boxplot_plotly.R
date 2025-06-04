@@ -7,7 +7,7 @@ header <- "
 ### averaging period (e.g. monthly, seaonal). Observation/model pairs are provided 
 ### through a MYSQL query. 
 ###
-### Last updated by Wyat Appel: Nov 2020
+### Last updated by Wyat Appel: June 2025 
 #################################################################################
 "
 
@@ -45,7 +45,6 @@ title_bias <- get_title(run_names,species,network_names,dates,custom_text="bias"
 title_nmb <- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg) 
 
 num_sites <- NULL
-#num_obs <- NULL
 for (j in 1:length(run_names)) {
    run_name <- run_names[j]
    {
@@ -163,8 +162,6 @@ for (j in 1:length(run_names)) {
                aqdat_out_bias.df     <- data.frame(Value=bias,bin=aqdat.df$Split_On)
                aqdat_out_bias.df$Sim <- run_name
                nmb                   <- lapply(split(aqdat.df,aqdat.df$Split_On), function(x) ((sum(x$Mod_Value-x$Obs_Value)/sum(x$Obs_Value))*100))
-#               nmb		     <- ((aqdat.df$Mod_Value-aqdat.df$Obs_Value)/(aqdat.df$Obs_Value))*100
-#               aqdat_out_nmb.df      <- data.frame(Value=nmb,bin=aqdat.df$Split_On)
                aqdat_out_nmb.df      <- data.frame(bin=names(unlist(nmb)),Value=unlist(nmb))
                nmb_zero              <- data.frame(bin=names(unlist(nmb)),Value=0)
                aqdat_out_nmb.df      <- rbind(aqdat_out_nmb.df,nmb_zero)
@@ -186,8 +183,6 @@ for (j in 1:length(run_names)) {
                aqdat_temp_bias     <- data.frame(Value=bias,bin=aqdat.df$Split_On)
                aqdat_temp_bias$Sim <- run_name
                nmb                 <- lapply(split(aqdat.df,aqdat.df$Split_On), function(x) ((sum(x$Mod_Value-x$Obs_Value)/sum(x$Obs_Value))*100))
-#               nmb		   <- ((aqdat.df$Mod_Value-aqdat.df$Obs_Value)/(aqdat.df$Obs_Value))*100
-#               aqdat_temp_nmb      <- data.frame(Value=nmb,bin=aqdat.df$Split_On)
                aqdat_temp_nmb      <- data.frame(bin=names(unlist(nmb)),Value=unlist(nmb))
                nmb_zero            <- data.frame(bin=names(unlist(nmb)),Value=0)
                aqdat_temp_nmb      <- rbind(aqdat_temp_nmb,nmb_zero)
@@ -196,7 +191,6 @@ for (j in 1:length(run_names)) {
                aqdat_out_bias.df   <- rbind(aqdat_temp_bias,aqdat_out_bias.df)
                aqdat_out_nmb.df    <- rbind(aqdat_temp_nmb,aqdat_out_nmb.df)
                data_to_write       <- cbind(aqdat.df,bias,nmb)
-#               num_obs	           <- cbind(num_obs_temp,num_obs)
                write.table("",file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
                write.table(run_names[j],file=filename_txt,append=T,col.names=F,row.names=F,sep=",")
                write.table(data_to_write,file=filename_txt,append=T,col.names=T,row.names=F,sep=",")
@@ -222,9 +216,7 @@ xform <- list(title=date_title, categoryorder = "array", categoryarray = bin_nam
 
 colors <- brewer.pal(12,"Set1")
 colors <- c("black",colors)
-#colors <- c("firebrick","blue","green","yellow4","orange","brown","purple")
 colors[6] <- "#CCCC00"
-
 
 p <- plot_ly(aqdat_out.df, x=~bin, y = ~Value, height=img_height, width=img_width, color=~Sim, type="box", boxpoints=FALSE, boxmean="sd", colors=c("yellow3","green4","blue","darkorchid4")) %>% 
 layout(boxmode = "group", title=main.title, yaxis=list(title=paste(species,"(",units,")")), xaxis=xform, showlegend=TRUE, line = list(color=colors), annotations=list(x=bin_names,y=-1, text=num_obs, yshift=-15, align="center", valign="bottom", showarrow=FALSE, textangle=-90))

@@ -9,7 +9,7 @@ header <- "
 ### 25% and 75% quartiles, as well as the median values for both obs
 ### and model values.  The script then plots these values as a box plot.
 ###
-### Last updated by Wyat Appel; Nov 2020
+### Last updated by Wyat Appel: June 2025
 ###
 ################################################################
 "
@@ -193,9 +193,6 @@ if (run_info_text == 'y') {
 
 ########################
 
-### Put number of samples above each hour ###
-#text(x=1:24,y=apply(cbind(q3.spec1,q3.spec2),1,max)+((y.axis.max*0.1)*.35),labels=nsamples.table,cex=1.2)
-
 ### Convert pdf to png ###
 dev.off()
 if ((ametptype == "png") || (ametptype == "both")) {
@@ -207,5 +204,4 @@ if ((ametptype == "png") || (ametptype == "both")) {
       system(remove_command)
    }
 }
-
 ##########################

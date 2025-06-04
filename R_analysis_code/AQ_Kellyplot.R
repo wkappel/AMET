@@ -14,7 +14,7 @@ header <- "
 ###
 ### Original concept and some code developed by Jim Kelly of EPA.
 ###
-### Last updated by Wyat Appel: Jun 2020
+### Last updated by Wyat Appel: Jun 2025
 #############################################################################################
 "
 
@@ -26,7 +26,7 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(reshape2))           { stop("Required Package reshape was not loaded") }
+if(!require(reshape2))          { stop("Required Package reshape was not loaded") }
 if(!require(data.table))        { stop("Required Package data.table was not loaded")
 if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") }
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded") }
@@ -323,6 +323,5 @@ for (i in 1:6) {
 }
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
-
 ####################################
 

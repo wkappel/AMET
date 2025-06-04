@@ -14,7 +14,7 @@ header <- "
 ###
 ### Original concept and some code developed by Jim Kelly of EPA.  
 ###
-### Last updated by Wyat Appel: May 2025
+### Last updated by Wyat Appel: June 2025
 ###########################################################################################
 "
 
@@ -33,9 +33,10 @@ if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not lo
 if(!require(plotly))            { stop("Required Package plotly was not loaded") }
 if(!require(dplyr))             { stop("Required Package dplyr was not loaded") }
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- length(run_names)
+## Set some defaults
+network 	<- network_names[1]
+network_name	<- network_label[1]
+num_runs 	<- length(run_names)
 
 ################################################
 ## Set output names and remove existing files ##
@@ -315,18 +316,6 @@ for (i in 1:6) {
    }
    saveWidget(plt, file=paste(filename[i],".html",sep=""),selfcontained=T)
 }
-   ### Convert pdf file to png file ###
-   #dev.off()
-#   if ((ametptype == "png") || (ametptype == "both")) {
-#      convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename[i],".pdf"," png:",filename[i],".png",sep="")
-#      system(convert_command)
-#
-#      if (ametptype == "png") {
-#         remove_command <- paste("rm ",filename[i],".pdf",sep="")
-#         system(remove_command)
-#      }
-#   }
-#}
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
 ####################################
