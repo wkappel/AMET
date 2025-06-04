@@ -424,7 +424,7 @@ Then it indicates that the $AMETBASE/scripts_db/input_files/AQ_species_list.inpu
 
 the AQ_species_list.input file is mechanism dependent, and if one or more species is not found then sitecmp will not do the matching between obs and model data.
 
-The AQ_species_list.input file will need to be edited to remove the species that are not available in the combine output file, and reordered, so for example
+The AQ_species_list.input file will need to be edited to remove the species that are not available in the combine output file, and reordered.
 
 
 
@@ -455,7 +455,7 @@ ls -rlt *.csv
 -rw-rw-r-- 1 lizadams rc_cep-emc_psx     500385 May 17 10:29 CASTNET_Daily_aqExample.csv
 ```
 
-* Also check for errors when creating the plots
+* Also check for errors when creating the plots that are saved to the *.Rout files.
 
 ```
 cd $AMETBASE/output/aqExample_2016/plots 
@@ -468,4 +468,8 @@ Example errors:
 
 ```
 Run_Misc_Plots_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Scatter_Plots_All_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Spatial_Plots_All_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Stacked_Barplot_All_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Time_Plots_All_Batch.Rout:Error in eval(ei, envir) : object 'All_Data.df' not found 
 ```
