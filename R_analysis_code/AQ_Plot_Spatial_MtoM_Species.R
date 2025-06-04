@@ -26,29 +26,29 @@ if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
 
 if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
 
-### Retrieve units label from database table ###
+## Set some defaults
 network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
-#units_qs <- paste("SELECT ",species[1]," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")	# Create MYSQL query from units table
-
-figure_diff	<- paste(run_name1,pid,"spatialplot_mtom_species_diff_avg",sep="_")           # Filename for diff spatial plot
-figure_max	<- paste(run_name1,pid,"spatialplot_mtom_species_diff_max",sep="_")               # Filename for diff spatial plot
-figure_min	<- paste(run_name1,pid,"spatialplot_mtom_species_diff_min",sep="_")               # Filename for diff spatial plot
-figure_perc     <- paste(run_name1,pid,"spatialplot_mtom_species_diff_perc",sep="_")               # Filename for diff spatial plot
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1,species[1],"-",species[2],"for",dates,sep=" ") }
    else { title <- custom_title }
 }
 
-## Create a full path to file
-figure_diff	<-paste(figdir,figure_diff,sep="/")           # Filename for diff spatial plot
-figure_max	<-paste(figdir,figure_max,sep="/")               # Filename for diff spatial plot
-figure_min	<-paste(figdir,figure_min,sep="/")               # Filename for diff spatial plot
+## Create output file names
+figure_diff	<- paste(run_name1,pid,"spatialplot_mtom_species_diff_avg",sep="_")           # Filename for diff spatial plot
+figure_max	<- paste(run_name1,pid,"spatialplot_mtom_species_diff_max",sep="_")               # Filename for diff spatial plot
+figure_min	<- paste(run_name1,pid,"spatialplot_mtom_species_diff_min",sep="_")               # Filename for diff spatial plot
+figure_perc     <- paste(run_name1,pid,"spatialplot_mtom_species_diff_perc",sep="_")               # Filename for diff spatial plot
 
+## Create a full path to output files
+figure_diff	<-paste(figdir,figure_diff,sep="/")           # Filename for diff spatial plot
+figure_max	<-paste(figdir,figure_max,sep="/")            # Filename for diff spatial plot
+figure_min	<-paste(figdir,figure_min,sep="/")            # Filename for diff spatial plot
 ################################################
 
+########################################
 ### Set NULL values and plot symbols ###
+########################################
 sinfo_diff      <- NULL						# Set list for difference values to NULL
 sinfo_max	<- NULL
 sinfo_min	<- NULL
@@ -69,18 +69,18 @@ sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
 legend_names	<- NULL
 legend_chars	<- NULL
-plot.symbols<-as.integer(plot_symbols)
-pick.symbol.name.fun<-function(x){
-   master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
+plot.symbols <- as.integer(plot_symbols)
+pick.symbol.name.fun <- function(x){
+   master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
    as.character(master.symbol.df$names[x==master.symbol.df$plot.symbols])
 }
-pick.symbol2.fun<-function(x){
-   master.symbol2.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
+pick.symbol2.fun <- function(x){
+   master.symbol2.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
    as.integer(master.symbol2.df$plot.symbols2[x==master.symbol2.df$plot.symbols])
 }
-symbols<-apply(matrix(plot.symbols),1,pick.symbol.name.fun)
-spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
-spch<-plot.symbols
+symbols	<- apply(matrix(plot.symbols),1,pick.symbol.name.fun)
+spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
+spch	<- plot.symbols
 ########################################
 
 remove_negatives <- "n"
@@ -188,6 +188,7 @@ for (j in 1:total_networks) {                                           # Loop t
 }
 #########################
 ## plot format options ##
+#########################
 bounds<-c(min(all_lats,bounds[1]),max(all_lats,bounds[2]),min(all_lons,bounds[3]),max(all_lons,bounds[4]))
 plotsize<-1.50									# Set plot size
 symb<-15										# Set symbol character

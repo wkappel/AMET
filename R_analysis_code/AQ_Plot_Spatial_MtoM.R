@@ -8,7 +8,7 @@ header <- "
 ### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: Feb 2022
+### Last modified by Wyat Appel: June 2025
 ########################################################################################
 "
 
@@ -23,32 +23,32 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(maps))	{ stop("Required Package maps was not loaded") }
 if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
 
-if(!exists("quantile_min")) { quantile_min <- 0.001 }
-if(!exists("quantile_max")) { quantile_max <- 0.950 }
-if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
+if(!exists("quantile_min")) 	{ quantile_min <- 0.001 }
+if(!exists("quantile_max")) 	{ quantile_max <- 0.950 }
+if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" }
 
-### Retrieve units label from database table ###
+## Set some defaults
 network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")	# Create MYSQL query from units table
-
-figure_diff	<- paste(run_name1,species,pid,"spatialplot_mtom_diff_avg",sep="_")           # Filename for diff spatial plot
-figure_max	<- paste(run_name1,species,pid,"spatialplot_mtom_diff_max",sep="_")               # Filename for diff spatial plot
-figure_min	<- paste(run_name1,species,pid,"spatialplot_mtom_diff_min",sep="_")               # Filename for diff spatial plot
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
    else { title <- custom_title }
 }
 
-## Create a full path to file
+## Create output file names
+figure_diff	<- paste(run_name1,species,pid,"spatialplot_mtom_diff_avg",sep="_")           # Filename for diff spatial plot
+figure_max	<- paste(run_name1,species,pid,"spatialplot_mtom_diff_max",sep="_")               # Filename for diff spatial plot
+figure_min	<- paste(run_name1,species,pid,"spatialplot_mtom_diff_min",sep="_")               # Filename for diff spatial plot
+
+## Create a full path to output files
 figure_diff	<-paste(figdir,figure_diff,sep="/")           # Filename for diff spatial plot
 figure_max	<-paste(figdir,figure_max,sep="/")               # Filename for diff spatial plot
 figure_min	<-paste(figdir,figure_min,sep="/")               # Filename for diff spatial plot
+#############################
 
-################################################
-
+########################################
 ### Set NULL values and plot symbols ###
+########################################
 sinfo_diff      <- NULL						# Set list for difference values to NULL
 sinfo_max	<- NULL
 sinfo_min	<- NULL
@@ -67,18 +67,18 @@ lev_lab         <- NULL
 legend_names    <- NULL
 legend_chars    <- NULL
 
-plot.symbols<-as.integer(plot_symbols)
-pick.symbol.name.fun<-function(x){
-   master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
+plot.symbols <- as.integer(plot_symbols)
+pick.symbol.name.fun <- function(x){
+   master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
    as.character(master.symbol.df$names[x==master.symbol.df$plot.symbols])
 }
-pick.symbol2.fun<-function(x){
-   master.symbol2.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
+pick.symbol2.fun <- function(x){
+   master.symbol2.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
    as.integer(master.symbol2.df$plot.symbols2[x==master.symbol2.df$plot.symbols])
 }
-symbols<-apply(matrix(plot.symbols),1,pick.symbol.name.fun)
-spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
-spch<-plot.symbols
+symbols	<- apply(matrix(plot.symbols),1,pick.symbol.name.fun)
+spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
+spch	<- plot.symbols
 ########################################
 
 remove_negatives <- "n"
@@ -174,13 +174,13 @@ for (j in 1:total_networks) {                                            # Loop 
          all_diff <- c(all_diff,avg_diff)
          all_max  <- c(all_max,max_diff)
          all_min  <- c(all_min,min_diff)
-         #sub_title    <- paste(sub_title,symbols[j],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched w/ the appropriate symbol
          k<-k+1
       }
    }
 }
 #########################
 ## plot format options ##
+#########################
 bounds<-c(min(all_lats,bounds[1]),max(all_lats,bounds[2]),min(all_lons,bounds[3]),max(all_lons,bounds[4]))
 plotsize<-1.50									# Set plot size
 symb<-15										# Set symbol character
@@ -290,13 +290,11 @@ leg_colors_max                          <- c(low_range,near_zero_color,near_zero
 #####################################################################
 
 for (l in 1:total_networks) {
-
    sinfo_diff[[l]]<-list(lat=sinfo_diff_data[[l]]$lat,lon=sinfo_diff_data[[l]]$lon,plotval=sinfo_diff_data[[l]]$plotval,levs=levs_diff,levcols=cols_diff,levs_legend=levs_legend_diff,cols_legend=leg_colors_diff,convFac=.01)	# Create diff list to be used with PlotSpatial fuction
    sinfo_max[[l]]<-list(lat=sinfo_max_data[[l]]$lat,lon=sinfo_max_data[[l]]$lon,plotval=sinfo_max_data[[l]]$plotval,levs=levs_max,levcols=cols_max,levs_legend=levs_legend_max,cols_legend=leg_colors_max,convFac=.01)   # Create diff list to be used with PlotSpatial fuction
    sinfo_min[[l]]<-list(lat=sinfo_min_data[[l]]$lat,lon=sinfo_min_data[[l]]$lon,plotval=sinfo_min_data[[l]]$plotval,levs=levs_max,levcols=cols_max,levs_legend=levs_legend_max,cols_legend=leg_colors_max,convFac=.01)   # Create diff list to be used with PlotSpatial fuction
 }
    
-
 ###########################
 ### plot text options   ###
 ###########################
