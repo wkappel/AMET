@@ -382,8 +382,10 @@ date -ud "2018-06-30+1days" +%Y-%m-%d
 2018-07-01
 ```
 
-<a id="Debug"></a>2. Debug sitecmp errors and verify that sitex csv files are created for each network. 
+<a id="Debug"></a>3. Debugging 
 ===========
+
+Diagnose sitecmp errors and verify that sitex csv files are created for each network. 
 
 * Check for errors in the log file
 Note, you need to set the environment variables RUNID and DATE that correspond to the project.
