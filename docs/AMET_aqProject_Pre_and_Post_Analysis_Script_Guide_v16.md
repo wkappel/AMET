@@ -85,7 +85,7 @@ A user can choose to do all of the steps at once or run the script multiple time
  METCRO3D_NAME          METCRO3D file name (without date and file extension).
  CCTMOUTDIR             Location of CCTM output.
  CCTM_ACONC_NAME        ACONC file name (without date and file extension).
- CCTM_APMDtIAG_NAME     APMDIAG file name (without date and file extension).
+ CCTM_AELMO_NAME        AELMO file name (without date and file extension).
  CCTM_WETDEP1_NAME      WETDEP1 file name (without date and file extension).
  CCTM_DRYDEP_NAME       DRYDEP file name (without date and file extension).
  POSTDIR                Location to write combine files. (Or location of existing combine files).
@@ -99,12 +99,13 @@ __Required Met and CCTM files__
 1. **METCRO2D** - needed for instantaneous hourly surface temperature (TEMP2), planetary boundary height (PBL), solar radiation (RGRND), 10m wind speed (WSDP10), 10m wind direction (WDIR10), precipitation (RN+RC). 
 2. **METCRO3D** - needed for instantaneous hourly air density (DENS) which is used in unit conversions of gas and aerosol species
 3. **CCTM_ACONC** - needed for hourly average gas and aerosol modeled species time stamped at the top of the hour
-4. **CCTM_APMDIAG** - needed for hourly average relative humidity (RH) and modeled aerosol mode parameters time stamped at the top of the hour
+4. **CCTM_AELMO** or **CCTM_APMDIAG** - needed for hourly average relative humidity (RH) and modeled aerosol mode parameters time stamped at the top of the hour
 5. **CCTM_WETDEP1** - needed for hourly summed gas and aerosol wet deposition species time stamped at the top of the hour
 6. **CCTM_DRYDEP** - needed for hourly summed gas and aerosol dry deposition species time stamped at the top of the hour
 
 *Notes*
-* PM2.5 modeled size distributions from the CCTM_APMDIAG file are used to calculate PM2.5 species with a cut-off diameter of 2.5μm or less.  These species begin with "PM" in the species definition files provided in the CMAQ code base for version 5.2 or later. For example, PM25_NA is all sodium that falls below 2.5μm diameter.  These 'PM' variables are used for comparisons at IMPROVE and CSN sites.
+* PM2.5 modeled size distributions from the CCTM_AELMO or CCTM_APMDIAG file are used to calculate PM2.5 species with a cut-off diameter of 2.5μm or less.  These species begin with "PM" in the species definition files provided in the CMAQ code base for version 5.2 or later. For example, PM25_NA is all sodium that falls below 2.5μm diameter.  These 'PM' variables are used for comparisons at IMPROVE and CSN sites.
+* In CMAQv5.4 The ELMO Module was created to output the aerosol variables to the ELMO and AELMO files. 
 * Prior to CMAQv5.2, aerosol modeled size distributions were contained in the AERODIAM file which contained instantaneous hourly model variables starting with hour 1.  In CMAQv5.2 the CCTM_APMDIAG output was created to produce hourly average model variables starting with hour 0 which is analogous to the structure of the CCTM_ACONC output file.  This script is structured to *only* work with the CCTM_APMDIAG file for extracting model size distributions.  If the CCTM_APMDIAG file was not produced by the model simulation (by setting CTM_APMDIAG flag to F in the run_cctm.csh run script) then this evaluation script can be modified to remove the dependency on the CCTM_APMDIAG file.  See section 4 for more details.
 * Surface temperature and relative humidity are used to calculate an "FRM equivalent" PM2.5 total estimate that accounts for loss of particle nitrate, sulfate and ammonium from the FRM sampling filters. These species are labeled with "\_FRM" in the concentration species definition files provided in the CMAQ code base for versions 5.2 and later, i.e. PMIJ_FRM and PM25_FRM.
 
@@ -198,7 +199,7 @@ The combine Fortran utility combines fields from a set of IOAPI or wrfout files 
 ```
  #layer         1
 / File [1]: CMAQ conc/aconc file
-/ File [2]: APMDIAG file
+/ File [2]: AELMO/APMDIAG file
 /new species    ,units     ,expression
 
 O3              ,ppbV      ,1000.0\*O3[1]
@@ -213,7 +214,7 @@ ATOTK           ,ug/m3     ,ASOIL[1]+ACORS[1]+ASEACAT[1]+ACLK[1]+ASO4K[1] \
 PM25_TOT        ,ug/m3     ,ATOTI[0]*PM25AT[2]+ATOTJ[0]*PM25AC[2]+ATOTK[0]*PM25CO[2]
 ```
 2. In section 5 only select networks that have observation data for O3, NOx or PM2.5.
-3. In section 8a set INFILE1 to the CCTM_ACONC file and INFILE2 to the CCMT_APMDIAG file. Comment out lines for INFILE3 and INFILE4.
+3. In section 8a set INFILE1 to the CCTM_ACONC file and INFILE2 to the CCTM_AELMO or CCTM_APMDIAG file. Comment out lines for INFILE3 and INFILE4.
 4. Since there are no deposition species listed in the species definition file, remove or comment out section 8b which is used to create combine files of deposition species.
 
 <a id="combine"></a>Section 5: HR2DAY configuration options
