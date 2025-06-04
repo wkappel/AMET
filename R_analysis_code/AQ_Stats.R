@@ -18,24 +18,25 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-################################################
-## Set output names and remove existing files ##
-################################################
-filename_zip    <- paste(run_name1,pid,"stats.zip",sep="_")
-
-## Create a full path to file
-filename_zip    <- paste(figdir,filename_zip,sep="/")
-#################################################
-
-### Retrieve units label from database table ###
-network <- network_names[1]
-species_in <- species
-#units_qs <- paste("SELECT ",species_in[1]," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
+## Set some defaults
+network 	<- network_names[1]
+species_in 	<- species
+n 		<- 1
+k               <- 1
+total_networks 	<- length(network_names)
+total_species 	<- length(species_in)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
+## Set output name filenames
+filename_zip    <- paste(run_name1,pid,"stats.zip",sep="_")
+
+## Create a full path to output files
+filename_zip    <- paste(figdir,filename_zip,sep="/")
+#####################################
+
+###################################
+### Set variable initial values ###
+###################################
 sinfo_data <-NULL
 sinfo_nmb  <-NULL
 sinfo_nme  <-NULL
@@ -57,11 +58,8 @@ all_me     <-NULL
 all_corr   <-NULL
 bounds     <-NULL
 sub_title  <-NULL
+####################################
 
-n <- 1
-total_networks <- length(network_names)
-total_species <- length(species_in)
-k <- 1
 for (k in 1:total_networks) {
    network <- network_names[k]
    ################################################

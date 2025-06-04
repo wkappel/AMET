@@ -16,63 +16,51 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1
+## Set some defaults
+network 	<- network_names[1]
+network_name 	<- network_label[1]
+num_runs 	<- 1
+method		<- "Mean"
+if (use_median == "y") { method <- "Median" }
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title		<- custom_title
+if (custom_title == "") { title <- paste(network_name," Stacked Barplot for ",run_name1," for ",dates,sep="") }
+if ((exists("run_name2")) && (nchar(run_name2) > 0)) { num_runs <- 2 }
 
-### Retrieve units and model labels from database table ###
-#units_qs <- paste("SELECT Fe from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-### Set filenames and titles ###
+## Set output filenames 
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_soil.pdf",sep="_")
 filename_png    <- paste(run_name1,pid,"stacked_barplot_soil.png",sep="_")
 filename_txt    <- paste(run_name1,pid,"stacked_barplot_data_soil.csv",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
-{
-   if (use_median == "y") {
-      method <- "Median"
-   }
-   else {
-      method <- "Mean"
-   }
-}
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(network_name," Stacked Barplot for ",run_name1," for ",dates,sep="") }
-   else { title <- custom_title }
-}
 ################################
 
-if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
-   num_runs <- 2
-}
+###################################
+### Set variable initial values ###
+###################################
+medians         <- NULL
+data.df         <- NULL
+medians_2       <- NULL
+data2.df        <- NULL
+drop_names     	<- NULL
+species_names  	<- NULL
+species_names2 	<- NULL
+correlation    	<- NULL
+correlation2   	<- NULL
+rmse           	<- NULL
+rmse2          	<- NULL
+rmse_sys       	<- NULL
+rmse_sys2      	<- NULL
+rmse_unsys     	<- NULL
+rmse_unsys2    	<- NULL
+###################################
 
-medians          <- NULL
-data.df          <- NULL
-medians_2        <- NULL
-data2.df         <- NULL
-drop_names     <- NULL
-species_names  <- NULL
-species_names2 <- NULL
-correlation    <- NULL
-correlation2   <- NULL
-rmse           <- NULL
-rmse2          <- NULL
-rmse_sys       <- NULL
-rmse_sys2      <- NULL
-rmse_unsys     <- NULL
-rmse_unsys2    <- NULL
-
-criteria <- paste(" WHERE d.Fe_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
+criteria 	<- paste(" WHERE d.Fe_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
 species 	<- c("Cl","Na","Fe","Al","Si","Ti","Ca","Mg","K","Mn")
+
 #############################################
 ### Read sitex file or query the database ###
 #############################################

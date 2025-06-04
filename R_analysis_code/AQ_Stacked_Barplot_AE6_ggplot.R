@@ -8,7 +8,7 @@ header <- "
 ### plotted as a stacked bar plot, along with the percent of the total PM2.5 that each 
 ### species comprises.
 ###
-### Last updated by Wyat Appel: May 2025
+### Last updated by Wyat Appel: June 2025
 ######################################################################################
 "
 
@@ -23,24 +23,20 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(plotly))              { stop("Required Package plotly was not loaded") }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1
+## Set some defaults
+network 	<- network_names[1]
+network_name 	<- network_label[1]
+num_runs 	<- 1
 
-### Retrieve units and model labels from database table ###
-#units_qs <- paste("SELECT Fe from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
+### Set output filenames
+filename_pdf    <- paste(run_name1,pid,"stacked_barplot_AE6_ggplot.pdf",sep="_")
+filename_png    <- paste(run_name1,pid,"stacked_barplot_AE6_ggplot.png",sep="_")
+filename_txt	<- paste(run_name1,pid,"stacked_barplot_AE6_data.csv",sep="_")
 
-### Set filenames and titles ###
-filename_pdf     <- paste(run_name1,pid,"stacked_barplot_AE6_ggplot.pdf",sep="_")
-filename_png     <- paste(run_name1,pid,"stacked_barplot_AE6_ggplot.png",sep="_")
-filename_txt	 <- paste(run_name1,pid,"stacked_barplot_AE6_data.csv",sep="_")
-
-## Create a full path to file
-filename_pdf  <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
-filename_png  <- paste(figdir,filename_png,sep="/")      # Set PNG filename
-filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
+## Create a full path to output files
+filename_pdf  	<- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
+filename_png  	<- paste(figdir,filename_png,sep="/")      # Set PNG filename
+filename_txt  	<- paste(figdir,filename_txt,sep="/")      # Set output file name
 
 method <- "Mean"
 if (use_median == "y") {
@@ -90,7 +86,6 @@ species_names2 <- NULL
 
 remove_negatives <- "n"
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
-#species <- c("SO4","NO3","NH4","PM_TOT","PM_FRM","EC","OC","TC","soil","NCOM","NaCl","OTHER","OTHER_REM")
 species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","Al","Fe","Si","Ca","Ti","Mg","Mn","K","Na","Cl","NCOM")
 
 merge_statid_POC <- "n"

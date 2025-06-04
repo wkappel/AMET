@@ -8,7 +8,7 @@ header <- "
 ### Spatial plots are also produced for several select statistics, specifically MB, ME, FB,
 ### FE, NMB, NME, RMSE and Correlation. Images can be output as png, pdf or both.
 ###
-### Last modified by Wyat Appel: Feb 2022
+### Last modified by Wyat Appel: June 2025 
 #####################################################################################
 "
 
@@ -23,13 +23,19 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(maps))	{ stop("Required Package maps was not loaded") }
 if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
 
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-if(!exists("quantile_min")) { quantile_min <- 0.001 }
-if(!exists("quantile_max")) { quantile_max <- 0.950 }
+if(!exists("dates")) 		{ dates <- paste(start_date,"-",end_date) }
+if(!exists("quantile_min")) 	{ quantile_min <- 0.001 }
+if(!exists("quantile_max")) 	{ quantile_max <- 0.950 }
 
-################################################
-## Set output names and remove existing files ##
-################################################
+## Set some defaults
+network		 <- network_names[1]
+n 		 <- 1
+total_networks 	 <- length(network_names)
+remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+k 		 <- 1
+if (length(num_ints) == 0) { num_ints <- 20 }
+
+## Set output names filenames 
 filename_stats 	<- paste(run_name1,species,pid,"stats.csv",sep="_")
 filename_sites 	<- paste(run_name1,species,pid,"sites_stats.csv",sep="_")
 filename_nmb	<- paste(run_name1,species,pid,"stats_plot_NMB",sep="_")
@@ -43,7 +49,7 @@ filename_corr	<- paste(run_name1,species,pid,"stats_plot_Corr",sep="_")
 filename_txt 	<- paste(run_name1,species,pid,"stats_data.csv",sep="_")      # Set output file name
 filename_zip    <- paste(run_name1,species,pid,"stats_plots.zip",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_stats 	<- paste(figdir,filename_stats,sep="/")
 filename_sites 	<- paste(figdir,filename_sites,sep="/")
 filename_nmb	<- paste(figdir,filename_nmb,sep="/")
@@ -58,40 +64,35 @@ filename_txt 	<- paste(figdir,filename_txt,sep="/")
 filename_zip    <- paste(figdir,filename_zip,sep="/")
 filename_all    <- c(filename_nmb,filename_fb,filename_nme,filename_fe,filename_rmse,filename_mb,filename_me,filename_corr)
 #################################################
-###########################
-### Retrieve units label from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
 
-if (length(num_ints) == 0) {
-   num_ints <- 20 
-}
+###################################
+### Set variable initial values ###
+###################################
+sinfo_data 	<- NULL
+sinfo_nmb  	<- NULL
+sinfo_nme  	<- NULL
+sinfo_fb   	<- NULL
+sinfo_fe   	<- NULL
+sinfo_rmse 	<- NULL
+sinfo_mb   	<- NULL
+sinfo_me   	<- NULL
+sinfo_corr 	<- NULL
+all_lat	   	<- NULL
+all_lon    	<- NULL
+all_nmb	   	<- NULL
+all_nme    	<- NULL
+all_fb     	<- NULL
+all_fe     	<- NULL
+all_rmse   	<- NULL
+all_mb     	<- NULL
+all_me     	<- NULL
+all_corr   	<- NULL
+bounds     	<- NULL
+sub_title  	<- NULL
+legend_names 	<- NULL
+legend_chars 	<- NULL
+##################################
 
-sinfo_data <-NULL
-sinfo_nmb  <-NULL
-sinfo_nme  <-NULL
-sinfo_fb   <-NULL
-sinfo_fe   <-NULL
-sinfo_rmse <-NULL
-sinfo_mb   <-NULL
-sinfo_me   <-NULL
-sinfo_corr <-NULL
-all_lat	   <-NULL
-all_lon    <-NULL
-all_nmb	   <-NULL
-all_nme    <-NULL
-all_fb     <-NULL
-all_fe     <-NULL
-all_rmse   <-NULL
-all_mb     <-NULL
-all_me     <-NULL
-all_corr   <-NULL
-bounds     <-NULL
-sub_title  <-NULL
-legend_names <- NULL
-legend_chars <- NULL
 ### Set plot characters ###
 plot.symbols<-as.integer(plot_symbols)
 pick.symbol.name.fun<-function(x){
@@ -102,15 +103,11 @@ pick.symbol2.fun<-function(x){
    master.symbol2.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
    as.integer(master.symbol2.df$plot.symbols2[x==master.symbol2.df$plot.symbols])
 }
-symbols<-apply(matrix(plot.symbols),1,pick.symbol.name.fun)
-spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
-spch<-plot.symbols
+symbols	<- apply(matrix(plot.symbols),1,pick.symbol.name.fun)
+spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
+spch	<- plot.symbols
 ################################################
 
-n <- 1
-total_networks <- length(network_names)
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-k <- 1
 for (j in 1:total_networks) {
    total_obs 		<- NULL
    network_number	<- j							# Set network number (used as a flag later in the code)

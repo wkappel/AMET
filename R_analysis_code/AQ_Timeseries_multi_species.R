@@ -7,7 +7,7 @@ header <- "
 ### to create single time series for the data. The script also plots the bias, RMSE and correlation.
 ### Output format is png, pdf or both.
 ###
-### Last updated by Wyat Appel: Jan 2022
+### Last updated by Wyat Appel: June 2025 
 ###########################################################################################
 "
 
@@ -18,36 +18,34 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
-network <- network_names[1]
-species_in <- species
-#units_qs <- paste("SELECT ",species_in[1]," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-### Set file names and titles ###
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") {
-      main.title        <- paste(run_name1,"for",network_label[1],"for",dates,sep=" ")
-      main.title.bias   <- paste(run_name1,"for",network_label[1],"for",dates,sep=" ")
-   }
-   else {
-     main.title   <- custom_title
-     main.title.bias <- custom_title
-  }
-}
+## Set some defaults
+network 	<- network_names[1]
+species_in 	<- species
 sub.title       <- ""
+run_name 	<- run_name1
+labels 		<- c(network,run_name)
+total_species 	<- length(species_in)
+main.title   	<- custom_title
+main.title.bias <- custom_title
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+if (custom_title == "") {
+   main.title        <- paste(run_name1,"for",network_label[1],"for",dates,sep=" ")
+   main.title.bias   <- paste(run_name1,"for",network_label[1],"for",dates,sep=" ")
+}
 
+## Set output file names
 filename_pdf <- paste(run_name1,pid,"timeseries.pdf",sep="_")
 filename_png <- paste(run_name1,pid,"timeseries.png",sep="_")
 filename_txt <- paste(run_name1,pid,"timeseries.csv",sep="_")
 
-## Create a full path to file
+## Create a full path to output file
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for timeseries pdf plot
 filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for timeseries png plot
 filename_txt    <- paste(figdir,filename_txt,sep="/")           # Filename for csv data file
 
+###################################
+### Set variable initial values ###
+###################################
 Obs_Mean	<- NULL
 Mod_Mean	<- NULL
 Obs_Period_Mean	<- NULL
@@ -64,13 +62,10 @@ x_label		<- "Date"
 num_sites	<- NULL
 Num_Sites       <- NULL
 Num_Records     <- NULL
-
-run_name <- run_name1
-labels <- c(network,run_name)
+###################################
 
 write.table("Time Series Data",file=filename_txt,append=F,row.names=F,sep=",")                       # Write header for raw data file
 
-total_species <- length(species_in)
 for (j in 1:total_species) {	# For each simulation being plotted
    network <- network_names[1]
    species <- species_in[j]
@@ -125,8 +120,6 @@ for (j in 1:total_species) {	# For each simulation being plotted
       Obs_Mean[[j]]        <- (tapply(aqdat.df$Obs_Value,aqdat.df$YearMonth,FUN=avg_func))/s
       Mod_Mean[[j]]        <- (tapply(aqdat.df$Mod_Value,aqdat.df$YearMonth,FUN=avg_func))/s
       Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
-#      Corr_Mean[[j]]       <- by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$YearMonth,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value))
-#      RMSE_Mean[[j]]       <- (by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$YearMonth,function(dfrm)sqrt(mean((dfrm$Mod_Value - dfrm$Obs_Value)^2))))/s
       Dates[[j]]           <- as.POSIXct(paste(unique(aqdat.df$YearMonth),"-01",sep=""),origin="1970-01-01")
       x_label              <- "Month"
    }

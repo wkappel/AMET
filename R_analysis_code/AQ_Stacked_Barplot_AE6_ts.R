@@ -8,7 +8,7 @@ header <- "
 ### PMother and total PM2.5. These averages are then plotted as a stacked bar plot time series.
 ### This script allows for a single network but multiple simulations.
 ###
-### Last updated by Wyat Appel: May 2025 
+### Last updated by Wyat Appel: June 2025 
 #########################################################################################
 "
 
@@ -23,28 +23,14 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(plotly))              { stop("Required Package plotly was not loaded") }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1
-
-### Retrieve units and model labels from database table ###
-#units_qs <- paste("SELECT Fe from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-### Set filenames and titles ###
-filename_pdf     <- paste(run_name1,pid,"stacked_barplot_AE6_ts.pdf",sep="_")
-filename_png     <- paste(run_name1,pid,"stacked_barplot_AE6_ts.png",sep="_")
-filename_html	 <- paste(run_name1,pid,"stacked_barplot_AE6_ts.html",sep="_")
-filename_txt	 <- paste(run_name1,pid,"stacked_barplot_AE6_data_ts.csv",sep="_")
-
-## Create a full path to file
-filename_pdf  <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
-filename_png  <- paste(figdir,filename_png,sep="/")      # Set PNG filename
-filename_html  <- paste(figdir,filename_html,sep="/")
-filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
-method <- "Mean"
+## Set some defaults
+network 		<- network_names[1]
+network_name 		<- network_label[1]
+num_runs 		<- 1
+method 			<- "Mean"
+remove_negatives	<- "n"
+x_factor 		<- network
+merge_statid_POC 	<- "n"
 if (use_median == "y") {
    method <- "Median"
 }
@@ -54,6 +40,18 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
    if (custom_title == "") { title <- paste(network_name," Stacked Barplot for ",run_name1," for ",dates,sep="") }
    else { title <- custom_title }
 }
+
+## Set output filenames
+filename_pdf     <- paste(run_name1,pid,"stacked_barplot_AE6_ts.pdf",sep="_")
+filename_png     <- paste(run_name1,pid,"stacked_barplot_AE6_ts.png",sep="_")
+filename_html	 <- paste(run_name1,pid,"stacked_barplot_AE6_ts.html",sep="_")
+filename_txt	 <- paste(run_name1,pid,"stacked_barplot_AE6_data_ts.csv",sep="_")
+
+## Create a full path to output files
+filename_pdf  <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
+filename_png  <- paste(figdir,filename_png,sep="/")      # Set PNG filename
+filename_html  <- paste(figdir,filename_html,sep="/")
+filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 ################################
 
 {
@@ -78,25 +76,24 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
    }
 }
 
+###################################
+### Set variable initial values ###
+###################################
 axis.max	<- NULL
-sinfo	       <- NULL
-medians        <- NULL
-data.df        <- NULL
-medians_       <- NULL
-data2.df       <- NULL
-drop_names     <- NULL
-species_names  <- NULL
-species_names2 <- NULL
-x_labels       <- NULL
+sinfo	       	<- NULL
+medians        	<- NULL
+data.df        	<- NULL
+medians_       	<- NULL
+data2.df       	<- NULL
+drop_names     	<- NULL
+species_names  	<- NULL
+species_names2 	<- NULL
+x_labels       	<- NULL
+###################################
 
-remove_negatives <- "n"
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
-#species <- c("SO4","NO3","NH4","PM_TOT","PM_FRM","EC","OC","TC","soil","NCOM","NaCl","OTHER","OTHER_REM")
 species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","Al","Fe","Si","Ca","Ti","Mg","K","Na","Cl","NCOM")
 
-x_factor <- network
-
-merge_statid_POC <- "n"
 for (j in 1:length(run_names)) {
    medians.df <- NULL
    run_name <- run_names[j]

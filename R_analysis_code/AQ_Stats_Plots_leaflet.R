@@ -33,47 +33,45 @@ if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 if(!exists("png_from_html")) { png_from_html <- "n" }
 
-################################################
-## Set output names and remove existing files ##
-################################################
+## Set some defaults
+network 	 <- network_names[1]
+n 		 <- 1
+total_networks 	 <- length(network_names)
+remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+k 		 <- 1
+if (length(num_ints) == 0) { num_ints <- 20 }
+
+## Set output filenames
 filename_all 	<- paste(run_name1,species,pid,"stats.csv",sep="_")
 filename_sites 	<- paste(run_name1,species,pid,"sites_stats.csv",sep="_")
 filename_txt    <- paste(run_name1,species,pid,"stats_data.csv",sep="_")      # Set output file name
 filename	<- paste(run_name1,species,pid,"stats_plot",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_all 	<- paste(figdir,filename_all,sep="/")
 filename_sites 	<- paste(figdir,filename_sites,sep="/")
 filename_txt    <- paste(figdir,filename_txt,sep="/")
 filename_html	<- paste(figdir,"/",filename,".html",sep="")
 #################################################
 
-###########################
-### Retrieve units label from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-if (length(num_ints) == 0) {
-   num_ints <- 20 
-}
-
-sinfo_data <-NULL
-all_site   <-NULL
-all_lats   <-NULL
-all_lons   <-NULL
-all_nmb	   <-NULL
-all_nme    <-NULL
-all_fb     <-NULL
-all_fe     <-NULL
-all_rmse   <-NULL
-all_mb     <-NULL
-all_me     <-NULL
-all_corr   <-NULL
-bounds     <-NULL
-available_networks <- NULL
-aqdat_out.df <- NULL
+###################################
+### Set variable initial values ###
+###################################
+sinfo_data 		<- NULL
+all_site   		<- NULL
+all_lats   		<- NULL
+all_lons   		<- NULL
+all_nmb	   		<- NULL
+all_nme    		<- NULL
+all_fb     		<- NULL
+all_fe     		<- NULL
+all_rmse   		<- NULL
+all_mb     		<- NULL
+all_me     		<- NULL
+all_corr   		<- NULL
+bounds     		<- NULL
+available_networks 	<- NULL
+aqdat_out.df 		<- NULL
 
 ### Set plot characters ###
 plot.symbols<-as.integer(plot_symbols)
@@ -90,10 +88,6 @@ spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
 spch<-plot.symbols
 ################################################
 
-n <- 1
-total_networks <- length(network_names)
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-k <- 1
 for (j in 1:total_networks) {
    total_obs 		<- NULL
    network_number	<- j							# Set network number (used as a flag later in the code)
@@ -369,9 +363,6 @@ for (i in 1:8) {
         val_units <- "none"
         ecdf_data <- all_corr
      }
-#    tag.map.title.png <- tag_map_title_png_func(30)
-#    main_title <- tags$div(tag.map.title.html, HTML(paste(run_name1,species,name,dates,sep=" ")))
-#    main_title_png <- tags$div(tag.map.title.png, HTML(paste(run_name1,species,name,dates,sep=" ")))
     data.df <- data.frame(network=sinfo_data$network,site.id=sinfo_data$stat_id,latitude=sinfo_data$lat,longitude=sinfo_data$lon,data.obs=plot_val)
     contents <- paste("Network: ",sinfo_data$network,
                   "<br/>",

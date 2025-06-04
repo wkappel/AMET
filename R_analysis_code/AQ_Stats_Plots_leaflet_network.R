@@ -32,9 +32,15 @@ if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 if(!exists("png_from_html")) { png_from_html <- "n" }
 
-################################################
-## Set output names and remove existing files ##
-################################################
+## Set some defaults
+network 	 <- network_names[1]
+n 		 <- 1
+total_networks 	 <- length(network_names)
+remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+k 		 <- 1
+if (length(num_ints) == 0) { num_ints <- 20 }
+
+## Set output filenames 
 filename_all 	<- paste(run_name1,species,pid,"stats.csv",sep="_")
 filename_sites 	<- paste(run_name1,species,pid,"sites_stats.csv",sep="_")
 filename_nmb	<- paste(run_name1,species,pid,"stats_plot_NMB",sep="_")
@@ -48,7 +54,7 @@ filename_corr	<- paste(run_name1,species,pid,"stats_plot_Corr",sep="_")
 filename_txt 	<- paste(run_name1,species,pid,"stats_data.csv",sep="_")      # Set output file name
 filename_zip    <- paste(run_name1,species,pid,"stats_plots.zip",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_all 	<- paste(figdir,filename_all,sep="/")
 filename_sites 	<- paste(figdir,filename_sites,sep="/")
 filename	<- NULL
@@ -73,17 +79,9 @@ filename_txt 	<- paste(figdir,filename_txt,sep="/")
 filename_zip    <- paste(figdir,filename_zip,sep="/")
 #################################################
 
-###########################
-### Retrieve units label from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-if (length(num_ints) == 0) {
-   num_ints <- 20 
-}
-
+###################################
+### Set variable initial values ###
+###################################
 sinfo_data 		<- NULL
 all_site   		<- NULL
 all_lats   		<- NULL
@@ -99,26 +97,23 @@ all_corr   		<- NULL
 bounds     		<- NULL
 available_networks 	<- NULL
 aqdat_out.df 		<- NULL
+###################################
 
 ### Set plot characters ###
-plot.symbols<-as.integer(plot_symbols)
-pick.symbol.name.fun<-function(x){
-   master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
+plot.symbols	<- as.integer(plot_symbols)
+pick.symbol.name.fun <- function(x){
+   master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
    as.character(master.symbol.df$names[x==master.symbol.df$plot.symbols])
 }
-pick.symbol2.fun<-function(x){
-   master.symbol2.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
+pick.symbol2.fun <- function(x){
+   master.symbol2.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
    as.integer(master.symbol2.df$plot.symbols2[x==master.symbol2.df$plot.symbols])
 }
-symbols<-apply(matrix(plot.symbols),1,pick.symbol.name.fun)
-spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
-spch<-plot.symbols
+symbols	<- apply(matrix(plot.symbols),1,pick.symbol.name.fun)
+spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
+spch	<- plot.symbols
 ################################################
 
-n <- 1
-total_networks <- length(network_names)
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-k <- 1
 for (j in 1:total_networks) {
    total_obs 		<- NULL
    network_number	<- j							# Set network number (used as a flag later in the code)
@@ -494,7 +489,6 @@ for (i in 1:8) {
      webshot("Rplot.html", file = filename_png[i],cliprect = "viewport",zoom=2,vwidth=max(lon_diff*24.5,1600),vheight=max(lat_diff*36.5,800))
   }
 }
-
 zip_files <- paste(run_name1,species,pid,"*",sep="_")
 zip_command<-paste("zip",filename_zip,zip_files,sep=" ")
 system(zip_command)
