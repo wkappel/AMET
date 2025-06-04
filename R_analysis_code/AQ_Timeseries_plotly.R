@@ -10,7 +10,7 @@ header <- "
 ### command from the R htmlwidgets package and PANDOC. If PANDOC is not available, the 
 ### selfcontained option should be set to F. Output format is html.
 ###
-### Last updated by Wyat Appel: Apr 2025
+### Last updated by Wyat Appel: June 2025
 ############################################################################################
 "
 
@@ -32,15 +32,17 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network <- network_names[1]
 ################################################
 
-### Set file names ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
+### Set file names ###
 filename_html   <- paste(run_name1,species[1],pid,"timeseries.html",sep="_")              # Set output file name
 filename_html   <- paste(figdir,filename_html,sep="/")
 filename_png    <- paste(run_name1,species[1],pid,"timeseries.png",sep="_")              # Set output file name
 filename_png    <- paste(figdir,filename_png,sep="/")
 filename_txt	<- paste(run_name1,species[1],pid,"timeseries.csv",sep="_")
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
+######################
+
 
 #######################
 ### Set NULL values ###
@@ -363,15 +365,11 @@ write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # W
    }
    main.title <- get_title(run_names,species[k],network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
 ##################
-#pal <- c("gray",brewer.pal(12,"Paired"))
-#colors <- brewer.pal(12,"Paired")
 colors <- c(brewer.pal(9,"Set1"),brewer.pal(8,"Dark2"),brewer.pal(9,"Set1"))
-#colors <- c("firebrick","blue","green","yellow4","orange","brown","purple")
-#colors[6] <- "#CCCC00"
 colors[colors=="#FFFF33"] <- "#8B8000"	# Replace vivid yellow with dark yellow
 
-inc_nmb <- "n"
-inc_nme <- "n"
+inc_nmb <- "n"	# Not currently implemented
+inc_nme <- "n"	# Not currently implemented
 
 ### Compute the average of the obs data by date. This really should do nothing expect in cases where the obs values differ,
 ### which should not normally happen but can if the input obs data have changed between two simulations. ###
@@ -418,7 +416,9 @@ for (j in 1:num_runs) {
 }
 fig[[k]] <- p
 }
+
+### Save plot using subplot ###
 num_rows <- c(1,2,2,2,3,3,4,4,5,5)
 fig_out <- subplot(fig,nrows=num_rows[k],titleY=T,titleX=T)
 saveWidget(fig_out, file=filename_html,selfcontained=T)
-
+###############################

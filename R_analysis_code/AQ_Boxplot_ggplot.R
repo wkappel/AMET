@@ -6,7 +6,7 @@ header <- "
 ### using ggplot2. Individual observation/model pairs are provided 
 ### through a MYSQL query. The script then plots these values as a box plot.
 ###
-### Last updated by Wyat Appel: Dec 2021
+### Last updated by Wyat Appel: June 2025
 #######################################################################
 "
 
@@ -24,10 +24,10 @@ if(!require(htmlwidgets))	{ stop("Required Package htmlwidgets was not loaded") 
 if(!exists("x_label_angle")) { x_label_angle <- 90 }
 if(!exists("overlap_boxes")) { overlap_boxes <- "n" }
 
-### Set file names and titles ###
 network<-network_names[[1]]
 level_names_bias <- NULL
 
+### Set file names and titles ###
 filename_pdf		<- paste(run_name1,species,pid,"boxplot_ggplot.pdf",sep="_")
 filename_bias_pdf	<- paste(run_name1,species,pid,"boxplot_bias_ggplot.pdf",sep="_")
 filename_png            <- paste(run_name1,species,pid,"boxplot_ggplot.png",sep="_")
@@ -213,12 +213,8 @@ if (length(bias_y_axis_min) > 0) {
     bias_min   <- bias_y_axis_min
 }
 
-#pdf(file=filename_pdf,width=9,height=9)
-#sp<-ggplot(aqdat_out.df,aes(x=bin,y=Value,fill=Sim)) + geom_boxplot(position=position_dodge(0.8)) + theme(legend.position="top",plot.title=element_text(hjust=0.5)) + labs(title=title,x=date_title,y=paste(species,"(",units,")")) + scale_fill_manual(values=plot_colors) + scale_y_continuous(breaks = pretty(aqdat_out.df$Value, n = 10)) + guides(fill=guide_legend(nrow=2,byrow=TRUE))
 sp<-ggplot(aqdat_out.df,aes(x=bin,y=Value,fill=Sim)) + geom_boxplot(position=position_dodge(0.8),outlier.size=1) + theme(legend.title=element_blank(), legend.text = element_text(size=13), legend.key.size = unit(0.8, 'cm'), legend.justification=c(0,1), legend.position=c(0.02,0.98), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5), axis.text.x=element_text(angle=x_label_angle, vjust=0.5)) + labs(title=title,x=date_title,y=paste(species,"(",units,")")) + scale_fill_manual(values=plot_colors) + scale_y_continuous(limits = c(ymin,ymax), breaks = pretty(ymin:ymax, n = 10))
 
-#sp
-#dev.off()
 if (overlap_boxes != "y") { ggsave(filename_pdf,plot=sp,height=9,width=9) }
 
 if ((ametptype == "png") || (ametptype == "both")) {
@@ -232,11 +228,8 @@ if ((ametptype == "png") || (ametptype == "both")) {
 }
 
 
-#pdf(file=filename_pdf_bias,width=9,height=9)
 sp<-ggplot(aqdat_out_bias.df,aes(x=bin,y=Value,fill=Sim)) + geom_boxplot(position=position_dodge(0.8)) + theme(legend.title = element_blank(), legend.text = element_text(size=13), legend.key.size = unit(0.8, 'cm'), legend.justification=c(0,1), legend.position=c(0.02,0.98), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5), axis.text.x=element_text(angle=x_label_angle, vjust=0.5)) + labs(title=bias.title,x=date_title,y=paste(species,"Bias (",units,")")) + geom_hline(yintercept=0,color="black") + scale_fill_manual(values=plot_colors[-1]) + scale_y_continuous(limits= c(bias_min,bias_max), breaks = pretty(aqdat_out_bias.df$Value, n = 10))
 
-#sp
-#dev.off()
 if (overlap_boxes != "y") { ggsave(filename_pdf_bias,plot=sp,height=9,width=9) }
 
 if ((ametptype == "png") || (ametptype == "both")) {

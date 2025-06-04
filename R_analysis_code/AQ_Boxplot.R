@@ -9,7 +9,7 @@ header <- "
 ### and model values.  The script then plots these values as a box plot. Suggest using
 ### the new ggplot or plotly AMET box plots for better box plot graphics. 
 ###
-### Last updated by Wyat Appel: Nov 2020
+### Last updated by Wyat Appel: June 2025 
 #####################################################################################
 "
 
@@ -20,11 +20,16 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
+### Set some defaults ###
 network <- network_names[1] 
 run2 <- "False"
 run3 <- "False"
 ################################################
+
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title       <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title.bias  <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title.normb <- get_title(run_names,species,network_label,dates,custom_text="Normalized Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ### Set file names and titles ###
 network<-network_names[[1]]
@@ -34,11 +39,6 @@ filename_bias_pdf	<- paste(run_name1,species,pid,"boxplot_bias.pdf",sep="_")
 filename_bias_png	<- paste(run_name1,species,pid,"boxplot_bias.png",sep="_")
 filename_norm_bias_pdf  <- paste(run_name1,species,pid,"boxplot_norm_bias.pdf",sep="_")
 filename_norm_bias_png  <- paste(run_name1,species,pid,"boxplot_norm_bias.png",sep="_")
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title       <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title.bias  <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title.normb <- get_title(run_names,species,network_label,dates,custom_text="Normalized Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Create a full path to file
 filename_all_pdf         <- paste(figdir,filename_all_pdf,sep="/")
@@ -403,9 +403,6 @@ legend("topleft", legend_names, fill=plot_colors, pch=plot_symbols, lty=line_typ
 ##############################
 
 ### Put text stating coverage limit used ###
-#if (averaging == "m") {
-#   text("topright",paste("Coverage Limit = ",coverage_limit,"%",sep=""),cex=0.75,adj=c(0,.5))
-#}
 if (averaging == "m") {
    text(x.axis.min,bias.y.axis.max*.96,paste("Coverage Limit = ",coverage_limit,"%",sep=""),cex=1,adj=c(0.75,0))
 }
@@ -419,9 +416,6 @@ if (run_info_text == "y") {
    if ((clim_reg != '') && (clim_reg != "None")) {
       text(x=x.axis.max,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1,adj=c(0.75,0))
    }
-#   if (loc_setting != '') {
-#      text(x=18,y=y.axis.max*0.95,paste("Loc_Setting: ",loc_setting,sep=""),cex=1.2,adj=c(0,0))
-#   }
    if ((site != '') && (site != "All")) {   
       text(x=x.axis.max,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1,adj=c(0.75,0))
    }
