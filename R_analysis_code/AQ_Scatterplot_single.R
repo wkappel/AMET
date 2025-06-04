@@ -7,7 +7,7 @@ header <- "
 ### Although limited to a single network, up to two simulations may be included. Output
 ### format is png, pdf or both.     
 ###
-### Last Updated by Wyat Appel: Feb 2021
+### Last Updated by Wyat Appel: June 2025 
 ######################################################################################
 "
 
@@ -18,7 +18,7 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set file names and titles ###
+### Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 species <- species[1]
 {
@@ -26,56 +26,54 @@ species <- species[1]
    else { title <- custom_title }
 }
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_single.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_single.png",sep="_")             # Set PNG filename
 filename_txt <- paste(run_name1,species,pid,"scatterplot_single.csv",sep="_")       # Set output file name
 
-
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
 #################################
 
-run_names	<- NULL
-axis.max	<- NULL
-num_obs		<- NULL
-sinfo		<- NULL
-avg_text	<- ""
-legend_names	<- NULL
-legend_cols	<- NULL
-legend_chars	<- NULL
-point_char	<- NULL
-point_color	<- NULL
-
-################################
-### Define statistics arrays ###
-################################
-num_pairs	     <- NULL
-num_sites	     <- NULL
-corr                 <- NULL
-index_agr            <- NULL
-rmse                 <- NULL
-rmse_sys             <- NULL
-rmse_unsys           <- NULL
-nmb                  <- NULL
-nme                  <- NULL
-nmdnb                <- NULL
-nmdne                <- NULL
-mean_obs	     <- NULL
-mean_mod	     <- NULL
-mb                   <- NULL
-me                   <- NULL
-median_obs	     <- NULL
-median_mod	     <- NULL
-med_bias             <- NULL
-med_error            <- NULL
-fb                   <- NULL
-fe                   <- NULL
-stats_array          <- NULL
-stats_array_include  <- NULL
-stats_names_include  <- NULL
+###################################
+### Set variable initial values ###
+###################################
+run_names       	<- NULL
+axis.max        	<- NULL
+num_obs         	<- NULL
+sinfo           	<- NULL
+avg_text        	<- ""
+legend_names    	<- NULL
+legend_cols     	<- NULL
+legend_chars    	<- NULL
+point_char      	<- NULL
+point_color     	<- NULL
+num_pairs	     	<- NULL
+num_sites	     	<- NULL
+corr                 	<- NULL
+index_agr            	<- NULL
+rmse                 	<- NULL
+rmse_sys             	<- NULL
+rmse_unsys           	<- NULL
+nmb                  	<- NULL
+nme                  	<- NULL
+nmdnb                	<- NULL
+nmdne                	<- NULL
+mean_obs	     	<- NULL
+mean_mod	     	<- NULL
+mb                   	<- NULL
+me                   	<- NULL
+median_obs	     	<- NULL
+median_mod	     	<- NULL
+med_bias             	<- NULL
+med_error            	<- NULL
+fb                   	<- NULL
+fe                   	<- NULL
+stats_array          	<- NULL
+stats_array_include  	<- NULL
+stats_names_include  	<- NULL
 max_diff		<- NULL
 min_diff		<- NULL
 ###############################
@@ -320,33 +318,24 @@ for (k in 1:num_runs) {
    ##############################################
    text(x=x_stats[7],y=y_stats[14],paste("(",units,")",sep=""),adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[1],"RMSE ",adj=c(0,0),cex=.8)
-#   text(x=x_stats[1],y=y_stats[2],"RMSEs ",adj=c(0,0),cex=.8)
-#   text(x=x_stats[1],y=y_stats[3],"RMSEu ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[2],"MB ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[3],"ME ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[4],"MdnB ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[5],"MdnE ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[7],"MaxDiff ",adj=c(0,0),cex=.8)
-#   text(x=x_stats[1],y=y_stats[9],"MinDiff ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[8],"Mean_O ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[9],"Mean_M ",adj=c(0,0),cex=.8)
    text(x=x_stats[1],y=y_stats[10], "Num_Ob",adj=c(0,0),cex=.8)
-#   text(x=x_stats[1],y=y_stats[12],"Med_O ",adj=c(0,0),cex=.8)
-#   text(x=x_stats[1],y=y_stats[13],"Med_M ",adj=c(0,0),cex=.8)
    text(x=x_stats[8],y=y_stats[14],paste("(%)",sep=""),adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[1],"IA ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[2],"NMB ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[3],"NME ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[4],"NMdnB ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[5],"NMdnE ",adj=c(0,0),cex=.8)
-#   text(x=x_stats[2],y=y_stats[6],"FB ",adj=c(0,0),cex=.8)
-#   text(x=x_stats[2],y=y_stats[7],"FE ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[7],"MinDiff ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[8],"Med_O ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[9],"Med_M ",adj=c(0,0),cex=.8)
    text(x=x_stats[2],y=y_stats[10],"Num_Sites ",adj=c(0,0),cex=.8)
-#   text(x=x_stats[3],y=y_stats[1],"=",adj=c(0,0),cex=.8)
-#   text(x=x_stats[3],y=y_stats[2],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[3],y=y_stats[1],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[3],y=y_stats[2],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[3],y=y_stats[3],"=",adj=c(0,0),cex=.8)
@@ -356,11 +345,6 @@ for (k in 1:num_runs) {
    text(x=x_stats[3],y=y_stats[8],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[3],y=y_stats[9],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[3],y=y_stats[10],"=",adj=c(0,0),cex=.8)
-#   text(x=x_stats[3],y=y_stats[12],"=",adj=c(0,0),cex=.8)
-#   text(x=x_stats[3],y=y_stats[12],"=",adj=c(0,0),cex=.8)
-#   text(x=x_stats[3],y=y_stats[13],"=",adj=c(0,0),cex=.8)
-#   text(x=x_stats[4],y=y_stats[1],"=",adj=c(0,0),cex=.8)
-#   text(x=x_stats[4],y=y_stats[2],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[4],y=y_stats[1],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[4],y=y_stats[2],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[4],y=y_stats[3],"=",adj=c(0,0),cex=.8)
@@ -370,26 +354,19 @@ for (k in 1:num_runs) {
    text(x=x_stats[4],y=y_stats[8],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[4],y=y_stats[9],"=",adj=c(0,0),cex=.8)
    text(x=x_stats[5],y=y_stats[1],sprintf("%.2f",rmse[k]),adj=c(1,0),cex=.8)
-#   text(x=x_stats[5],y=y_stats[2],sprintf("%.2f",rmse_sys[k]),adj=c(1,0),cex=.8)
-#   text(x=x_stats[5],y=y_stats[3],sprintf("%.2f",rmse_unsys[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[2],sprintf("%.2f",mb[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[3],sprintf("%.2f",me[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[4],sprintf("%.2f",med_bias[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[5],sprintf("%.2f",med_error[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[7],sprintf("%.2f",max_diff[k]),adj=c(1,0),cex=.8)
-#   text(x=x_stats[5],y=y_stats[9],sprintf("%.2f",min_diff[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[8],sprintf("%.2f",mean_obs[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[9],sprintf("%.2f",mean_mod[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[5],y=y_stats[10],sprintf("%.0f",num_pairs[k]),adj=c(1,0),cex=.8)
-#   text(x=x_stats[5],y=y_stats[12],sprintf("%.2f",median_obs[k]),adj=c(1,0),cex=.8)
-#   text(x=x_stats[5],y=y_stats[13],sprintf("%.2f",median_mod[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[1],sprintf("%.2f",index_agr[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[2],sprintf("%.1f",nmb[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[3],sprintf("%.1f",nme[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[4],sprintf("%.1f",nmdnb[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[5],sprintf("%.1f",nmdne[k]),adj=c(1,0),cex=.8)
-#   text(x=x_stats[6],y=y_stats[6],sprintf("%.1f",fb[k]),adj=c(1,0),cex=.8)
-#   text(x=x_stats[6],y=y_stats[7],sprintf("%.1f",fe[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[7],sprintf("%.2f",min_diff[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[8],sprintf("%.2f",median_obs[k]),adj=c(1,0),cex=.8)
    text(x=x_stats[6],y=y_stats[9],sprintf("%.2f",median_mod[k]),adj=c(1,0),cex=.8)

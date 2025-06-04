@@ -19,47 +19,46 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
-network <- network_names[1] 														# Use first network to set units
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")	# Query to be used 
-################################################
-
 ## Load Required R Libraries
 if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") }
 if(!require(plotly))              { stop("Required Package plotly was not loaded") }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
+## Set some defaults
+network <- network_names[1] 														# Use first network to set units
 networks_title <- network_label[1]
-n <- 2 
+n <- 2
 while (n <= length(network_names)) {
    networks_title <- paste(networks_title,network_label[n],sep=", ")
    n <- n+1
 }
-
-### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste("Model to Model for",species,"at",networks_title,"sites for",dates,sep=" ") }
    else { title <- custom_title }
 }
 
+## Set output file names
 filename_pdf	<- paste(run_name1,species,pid,"scatterplot_mtom_density.pdf",sep="_")   # Set filename for pdf format file
 filename_png 	<- paste(run_name1,species,pid,"scatterplot_mtom_density.png",sep="_")   # Set filename for png format file
 filename_html	<- paste(run_name1,species,pid,"scatterplot_mtom_density.html",sep="_")   # Set filename for html format file
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf 	<- paste(figdir,filename_pdf,sep="/")                          # Set PDF filename
 filename_png 	<- paste(figdir,filename_png,sep="/")                          # Set PNG filename
 filename_html	<- paste(figdir,filename_html,sep="/")                          # Set HTML filename
-
 #################################
 
+###################################
+### Set variable initial values ###
+###################################
 axis.max 	 <- NULL
 sinfo    	 <- NULL
 avg_text 	 <- ""
 remove_negatives <- "n"
-aqdat1.df <- NULL
-aqdat2.df <- NULL
+aqdat1.df 	 <- NULL
+aqdat2.df 	 <- NULL
+###################################
 
 for (j in 1:length(network_names)) {						# Loop through for each network
    network		<- network_names[[j]]						# Set network name
@@ -98,11 +97,6 @@ for (j in 1:length(network_names)) {						# Loop through for each network
       if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
    }
 }
-#aqdat1.df$ob_dates	<- aqdat1.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-#aqdat2.df$ob_dates	<- aqdat2.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-
-print(max(aqdat1.df$O3_8hrmax_mod))
-print(max(aqdat2.df$O3_8hrmax_mod))
 
 ### Match the points between each of the runs.  This is necessary if the data from each query do not match exactly ###
 aqdat1.df$statdate<-paste(aqdat1.df$stat_id,aqdat1.df$ob_dates,aqdat1.df$ob_hour,sep="")	# Create unique column that combines the site name with the ob start date for run 1
@@ -158,17 +152,10 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 ##############################################
 ########## MAKE SCATTERPLOT: ALL US ##########
 ##############################################
-#pdf(file=filename_pdf,width=8,height=8)
-#plot.density.scatter.plot(x=aqdat.df$Obs_Value,y=aqdat.df$Mod_Value,xlim=c(axis.min,axis.max),ylim=c(axis.min,axis.max),zlim=dens_zlim,main=title,num.bins=number_bins)
-
 y.x.lm <- lm(aqdat.df$Mod_Value~aqdat.df$Obs_Value)$coeff
 
 options(bitmapType='cairo')
 
-print(max(aqdat.df$Obs_Value))
-print(max(aqdat.df$Mod_Value))
-
-#sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + stat_density_2d(aes(fill = ..level..), geom="polygon") + scale_fill_gradient(low="blue", high="red") + geom_abline(intercept = 0, slope=1)
 sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=title,x=run_name2,y=run_name1) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.title = element_text(size=14), legend.text = element_text(size=12), legend.justification=c(1,0), legend.position=c(0.98,0.02), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5))
 p <- ggplotly(sp, width=1450, height=1250)
 
@@ -181,7 +168,6 @@ saveWidget(p, file=filename_html,selfcontained=T)
 ggsave(filename_pdf,height=8,width=8)
 
 ### Convert pdf file to png file ###
-#dev.off()
 if ((ametptype == "png") || (ametptype == "both")) {
    convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf," png:",filename_png,sep="")
    system(convert_command)

@@ -22,22 +22,25 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
+## Create output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_ggplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_ggplot.png",sep="_")
 filename_txt  <- paste(run_name1,species,pid,"scatterplot_ggplot.csv",sep="_")       # Set output file name
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PDF filename
 filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
+################################
 
+## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 if(!exists("trend_line")) { trend_line <- "n" }
-
-#################################
-
 title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
+###################################
+### Set variable initial values ###
+###################################
 sinfo 		<- NULL
 axis.max 	<- NULL
 axis.min 	<- NULL
@@ -46,9 +49,10 @@ num_runs        <- 1
 scatter_colors  <- NULL                                                                   # Set number of runs to 1
 scatter_symbols <- NULL
 legend_names    <- NULL
+num_runs 	<- 1
+run_name 	<- run_name1
+####################################
 
-num_runs <- 1
-run_name <- run_name1
 while (run_count <= num_runs) {
    source(ametRinput)
    total_networks <- length(network_names)

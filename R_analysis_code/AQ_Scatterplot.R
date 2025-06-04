@@ -8,7 +8,7 @@ header <- "
 ### also allow a second run to plotted on top of the first run. Output format is png, pdf
 ### or both.
 ###
-### Last Updated by Wyat Appel: May 2020
+### Last Updated by Wyat Appel: June 2025 
 #####################################################################################
 "
 
@@ -19,23 +19,25 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set file names and titles ###
+## Set some defaults 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title 	<- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+network <- network_names[1]
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot.png",sep="_")		# Set PNG filename
 filename_txt <- paste(run_name1,species,pid,"scatterplot.csv",sep="_")       # Set output file name
-
 
 ## Create a full path to file
 filename_pdf <- paste(figdir,filename_pdf,sep="/")	# Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")	# Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")	# Set output file name
-
-
 #################################
 
+###################################
+### Set variable initial values ###
+###################################
 axis.max     <- NULL
 num_obs      <- NULL
 sinfo        <- NULL
@@ -46,15 +48,10 @@ legend_cols  <- NULL
 legend_chars <- NULL
 point_char   <- NULL
 point_color  <- NULL
+run_count    <- 1
+num_runs     <- 1
+###################################
 
-### Retrieve units and model labels from database table ###
-network 	<- network_names[1]
-#units_qs 	<- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs 	<- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-run_count <- 1
-num_runs <- 1									# Set number of runs to 1
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2								# If so, set number of runs to 2
 }
@@ -272,9 +269,7 @@ while (run_count <= num_runs) {
 
    if (run_count == 2) {
       ### Preset values for plot characters and colors (these can be changed to user preference) ###
-#      plot_chars <- c(5,6,7,8)                                            # set vector of plot characters
       plot_chars <- c(1,2,3,4)
-#      plot_chars <- c(15,16,17,18)
       plot_colors  <- plot_colors2   			# set vector of plot colors
       ##############################################################################################
       #### Define Stats box placement for run 2 ####

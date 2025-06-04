@@ -8,7 +8,7 @@ header <- "
 ### script will also allow a second run to plotted on top of the first run. Output for
 ### is png, pdf or both.
 ###
-### Last Updated by Wyat Appel: Feb 2020
+### Last Updated by Wyat Appel: June 2025 
 ##################################################################################
 "
 
@@ -19,37 +19,36 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set file names and titles ###
+## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
    else { title <- custom_title }
 }
 
+## Create output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_density.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_density.png",sep="_")             # Set PNG filename
 filename_txt <- paste(run_name1,species,pid,"scatterplot_density.csv",sep="_")       # Set output file name
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
 #################################
 
-axis.max      <- NULL
-axis.min      <- NULL
-number_bins   <- NULL
-dens_zlim     <- NULL
-
-### Retrieve units and model labels from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs   <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
+###################################
+### Set variable initial values ###
+###################################
+axis.max      	<- NULL
+axis.min      	<- NULL
+number_bins  	<- NULL
+dens_zlim     	<- NULL
+network 	<- network_names[1]
 run_name 	<- run_name1
 network 	<- network_names[[1]]						# Set network
+###################################
+
 {
    if (Sys.getenv("AMET_DB") == 'F') {
       sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_name1,species)

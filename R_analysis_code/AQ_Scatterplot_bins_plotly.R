@@ -7,7 +7,7 @@ header <- "
 ### plot for a single species from a single network but for multiple   
 ### model runs. 
 ###
-### Last Updated by Wyat Appel: Feb 2020
+### Last Updated by Wyat Appel: June 2025 
 ########################################################################
 "
 
@@ -22,38 +22,21 @@ if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loa
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-################################################
-
-### Set file names and titles ###
+## Set some defaults 
+network 	<- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	  <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title 	<- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+run_names    	<- run_name1               # Set default to just one run being plotted
 
-filename_html <- paste(run_name1,species,pid,"scatterplot_bins.html",sep="_")                          # Set PDF filename
-filename_png <- paste(run_name1,species,pid,"scatterplot_bins.png",sep="_")                          # Set PNG filenam
-filename_txt <- paste(run_name1,species,pid,"scatterplot_bins.csv",sep="_")     # Set output file name
+## Create output file names
+filename_html 	<- paste(run_name1,species,pid,"scatterplot_bins.html",sep="_")                          # Set PDF filename
+filename_png 	<- paste(run_name1,species,pid,"scatterplot_bins.png",sep="_")                          # Set PNG filenam
+filename_txt 	<- paste(run_name1,species,pid,"scatterplot_bins.csv",sep="_")     # Set output file name
 
-## Create a full path to file
-filename_html <- paste(figdir,filename_html,sep="/")                          # Set PDF filename
-filename_png <- paste(figdir,filename_png,sep="/")                          # Set PNG filenam
-filename_txt <- paste(figdir,filename_txt,sep="/")     # Set output file name
-
-axis.max     <- NULL
-num_obs      <- NULL
-sinfo        <- NULL
-avg_text     <- ""
-legend_names <- NULL
-point_char   <- NULL
-point_color  <- NULL
-data_count   <- NULL
-bin_names    <- NULL
-################################################
-
-run_names    <- run_name1		# Set default to just one run being plotted
-legend_names <- NULL			# Set default for legend
-
+## Create a full path to output files
+filename_html 	<- paste(figdir,filename_html,sep="/")                          # Set PDF filename
+filename_png 	<- paste(figdir,filename_png,sep="/")                          # Set PNG filenam
+filename_txt 	<- paste(figdir,filename_txt,sep="/")     # Set output file name
 
 {
    if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
@@ -73,8 +56,22 @@ legend_names <- NULL			# Set default for legend
    }
 }
 
+#################################
+### Set some intial variables ###
+#################################
+axis.max     <- NULL
+num_obs      <- NULL
+sinfo        <- NULL
+avg_text     <- ""
+legend_names <- NULL
+point_char   <- NULL
+point_color  <- NULL
+data_count   <- NULL
+bin_names    <- NULL
 num_obs      <- NULL
 num_runs     <- length(run_names)
+#################################
+
 if ((network ==  "NADP_dep") || (network == "NADP_conc")) {
    species <- c(species,"precip")
 }
@@ -123,7 +120,6 @@ for (j in 1:num_runs) {
          }
          aqdat.df$Bias <- aqdat.df$Mod_Value - aqdat.df$Obs_Value
          aqdat.df$Err <- abs(aqdat.df$Mod_Value - aqdat.df$Obs_Value)
-#         aqdat.df$RMSE <- aqdat.df$Mod_Value - aqdat.df$Obs_Value
          aqdat.df$Bin_Value <- aqdat.df$Obs_Value
          Mod_Obs_label <- "by Observed Value"
          if (bin_by_mod == 'y') {
@@ -165,15 +161,11 @@ for (j in 1:num_runs) {
             }
          }
          data_count[[j]] <- table(factor(aqdat.df$bin, levels=bin_names))        
-#         print(data_count[[j]]) 
-#         sinfo[[j]] <- list(num_obs=num_obs,plotval_mb_q1=mb_q1_mod,plotval_mb_q3=mb_q3_mod,plotval_mb_median=mb_median,plotval_mb_mean=mb_mean,plotval_rmse_q1=rmse_q1_mod,plotval_rmse_q3=rmse_q3_mod,plotval_rmse_median=rmse_median,plotval_rmse_mean=rmse_mean)
       }	# End no data if/else statement
    }	# End enclosure of if/else statement
    ##############################
    ### Write Data to CSV File ###
    ##############################
-#   aqdat_out.df <- aqdat.df
-#   inc_error <- "n"
    if (j == 1) {
       aqdat_out.df     <- data.frame(Value=aqdat.df$Bias,bin=aqdat.df$bin)
       aqdat_out.df$Sim <- paste(run_names[j],"(Bias)")
@@ -208,5 +200,4 @@ xform <- list(title=paste("Bin Range (",units,") ",Mod_Obs_label,sep=""), catego
 
 p <- plot_ly(aqdat_out.df, x=~bin, y = ~Value, height=img_height, width=img_width, color=~Sim, type = "box", colors=c("yellow3","green4","blue","darkorchid4")) %>%
      layout(boxmode = "group", title=main.title, yaxis=list(title=paste(species,"(",units,")")),xaxis=xform, showlegend=TRUE, annotations=list(x=0:(length(bin_range)-1),y=min(aqdat_out.df$Value), text=data_count[[1]], yshift=-15, align="center", valign="bottom", showarrow=FALSE))
-
 saveWidget(p, file=filename_html,selfcontained=T)
