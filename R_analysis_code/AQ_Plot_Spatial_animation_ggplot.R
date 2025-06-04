@@ -11,7 +11,7 @@ header <- "
 ###
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Create by Wyat Appel: Apr 2025
+### Create by Wyat Appel: June 2025
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -29,13 +29,14 @@ if(!require(plotly))            { stop("Required Package plotly was not loaded")
 if(!require(grid))              { stop("Required Package grid was not loaded") }
 if(!require(gridExtra))         { stop("Required Package gridExtra was not loaded") }
 
-if(!exists("quantile_min")) { quantile_min <- 0.001 }
-if(!exists("quantile_max")) { quantile_max <- 0.950 }
-if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
+if(!exists("quantile_min")) 	{ quantile_min 	  <- 0.001 }
+if(!exists("quantile_max")) 	{ quantile_max 	  <- 0.950 }
+if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" }
 
-### Retrieve units label from database table ###
+## Set some defaults 
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-#units_qs	<- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="") # Create MYSQL query from units table
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg
 ################################################
 
 ### Set file names and titles ###
@@ -63,12 +64,6 @@ filename_diff_anim   		<- paste(run_name1,species,pid,"spatialplot_anim_diff.htm
 filename_tile_pdf       	<- paste(run_name1,species,pid,"spatialplot_tile.pdf",sep="_")
 filename_tile_png               <- paste(run_name1,species,pid,"spatialplot_tile.png",sep="_")
 filename_tile_html		<- paste(run_name1,species,pid,"spatialplot_tile.html",sep="_")          # Filename for diff spatial plot
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-#{
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-#     	if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-#   else { title <- custom_title }
-#}
 
 ## Create a full path to file
 filename_obs_png      		<- paste(figdir,filename_obs_png,sep="/")           # Filename for obs spatial plot
@@ -179,12 +174,6 @@ for (j in 1:total_networks) {							# Loop through for each network
 
    }
    #######################
-
-#   count <- sum(is.na(aqdat_query.df[,9]))
-#   len   <- length(aqdat_query.df[,9])
-
-#   if (count != len) {	# Continue if query returned non-missing data
-
    { 
       if (data_exists == "n") {
          total_networks <- (total_networks-1)

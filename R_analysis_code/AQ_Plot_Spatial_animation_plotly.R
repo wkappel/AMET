@@ -1,17 +1,17 @@
 header <- "
-###################################### SPATIAL PLOT ######################################
-### AMET CODE: AQ_Plot_Spatial_animation.R 
+###################### SPATIAL PLOT W/ ANIMATION (PLOTLY VERSION) ########################
+### AMET CODE: AQ_Plot_Spatial_animation_plotly.R 
 ###
 ### This code is part of the AMET-AQ system.  The Plot Spatial code takes a MYSQL database
 ### query for a single species from one or more networks and plots the observation value, 
 ### model value, and difference between the model and ob for each site for each corresponding
 ### network.  Mutiple values for a site are averaged to a single value for static plotting 
 ### purposes, while the temporal data are retained and used to create an html plot with a
-### time slider bar. This script outputs static PDF files and non-static HTML files.
+### time slider bar. This script outputs HTML files.
 ###
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Create by Wyat Appel: May 2025
+### Create by Wyat Appel: June 2025
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -22,21 +22,18 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required Libraries 
-if(!require(maps)){stop("Required Package maps was not loaded")}
-if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
-library(ggplot2)
-library(plotly)
-library(sf)
+if(!require(maps))	{ stop("Required Package maps was not loaded") }
+if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
+if(!require(ggplot2))	{ stop("Required Package ggplot2 was not loaded") }
+if(!require(plotly))   	{ stop("Required Package plotly was not loaded") }
+if(!require(sf))   	{ stop("Required Package sf was not loaded") }
 
-### Retrieve units label from database table ###
+## Set some defaults  
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-#units_qs	<- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="") # Create MYSQL query from units table
-################################################
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-### Set file names and titles ###
+## Set file names and titles
 filename_obs_html               <- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
 filename_mod_html               <- paste(run_name1,species,pid,"spatialplot_mod.html",sep="_")           # Filename for model spatial plot
 filename_diff_html              <- paste(run_name1,species,pid,"spatialplot_diff.html",sep="_")          # Filename for diff spatial plot
@@ -47,6 +44,7 @@ filename_mod_anim    		<- paste(run_name1,species,pid,"spatialplot_anim_mod.html
 filename_diff_anim   		<- paste(run_name1,species,pid,"spatialplot_anim_diff.html",sep="_")          # Filename for diff spatial plot
 filename_html_tile		<- paste(run_name1,species,pid,"spatialplot_tile.html",sep="_")
 filename_html_tile_anim         <- paste(run_name1,species,pid,"spatialplot_tile_anim.html",sep="_")
+
 ## Create a full path to file
 filename_obs_html      		<- paste(figdir,filename_obs_html,sep="/")           # Filename for obs spatial plot
 filename_mod_html 	     	<- paste(figdir,filename_mod_html,sep="/")           # Filename for model spatial plot

@@ -8,7 +8,7 @@ header <- "
 ### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: Feb 2022 
+### Last modified by Wyat Appel: June 2025
 ######################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -23,18 +23,16 @@ if(!require(maps))	{ stop("Required Package maps was not loaded") }
 if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
 if(!require(webshot))	{ stop("Required Package webshot was not loaded") }
 
-if(!exists("quantile_min")) { quantile_min <- 0.001 }
-if(!exists("quantile_max")) { quantile_max <- 0.999 }
-if(!exists("png_from_html")) { png_from_html <- "n" }
+if(!exists("quantile_min")) 	{ quantile_min <- 0.001 }
+if(!exists("quantile_max")) 	{ quantile_max <- 0.999 }
+if(!exists("png_from_html")) 	{ png_from_html <- "n" }
 
-### Retrieve units label from database table ###
+## Set some defaults
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-#units_qs	<- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="") # Create MYSQL query from units table
-################################################
-
-filename     <- NULL
-filename_png <- NULL
-plot_data    <- NULL
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+filename     	<- NULL
+filename_png 	<- NULL
+plot_data    	<- NULL
 
 ### Set file names and titles ###
 filename[1]	<- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
@@ -45,8 +43,6 @@ filename_png[2] <- paste(run_name1,species,pid,"spatialplot_mod.png",sep="_")   
 filename_png[3] <- paste(run_name1,species,pid,"spatialplot_diff.png",sep="_")          # Filename for diff spatial plot
 filename_rat	<- paste(run_name1,species,pid,"spatialplot_ratio",sep="_")         # Filename for diff spatial plot
 
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-
 ## Create a full path to file
 filename[1]      <- paste(figdir,filename[1],sep="/")           # Filename for obs spatial plot
 filename[2]      <- paste(figdir,filename[2],sep="/")           # Filename for model spatial plot
@@ -55,6 +51,8 @@ filename_png[1]  <- paste(figdir,filename_png[1],sep="/")           # Filename f
 filename_png[2]  <- paste(figdir,filename_png[2],sep="/")           # Filename for model spatial plot
 filename_png[3]  <- paste(figdir,filename_png[3],sep="/")          # Filename for diff spatial plot
 filename_rat     <- paste(figdir,filename_rat,sep="/")           # Filename for diff spatial plot
+#################################
+
 ########################################
 ### Set NULL values and plot symbols ###
 ########################################
@@ -76,18 +74,19 @@ all_network	<- NULL
 bounds          <- NULL						# Set map bounds to NULL
 sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
-plot.symbols<-as.integer(plot_symbols)
-pick.symbol.name.fun<-function(x){
-   master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
+
+plot.symbols		<- as.integer(plot_symbols)
+pick.symbol.name.fun	<- function(x){
+   master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
    as.character(master.symbol.df$names[x==master.symbol.df$plot.symbols])
 }
-pick.symbol2.fun<-function(x){
-   master.symbol2.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
+pick.symbol2.fun	<- function(x){
+   master.symbol2.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
    as.integer(master.symbol2.df$plot.symbols2[x==master.symbol2.df$plot.symbols])
 }
-symbols<-apply(matrix(plot.symbols),1,pick.symbol.name.fun)
-spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
-spch<-plot.symbols
+symbols	<- apply(matrix(plot.symbols),1,pick.symbol.name.fun)
+spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
+spch	<- plot.symbols
 ########################################
 
 remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
@@ -117,11 +116,6 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
    #######################
-#   count <- sum(is.na(aqdat_query.df[,9]))
-#   len   <- length(aqdat_query.df[,9])
-
-#   if (count != len) {	# Continue if query returned non-missing data
-
    ob_col_name <- paste(species,"_ob",sep="")
    mod_col_name <- paste(species,"_mod",sep="")
    { 
@@ -134,9 +128,7 @@ for (j in 1:total_networks) {							# Loop through for each network
          ####################################
          ## Compute Averages for Each Site ##
          ####################################
-#         if (averaging == "n") {
-            averaging <- "e"
-#         }
+         averaging <- "e"	# Force averaging all
          aqdat_in.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,State=aqdat_query.df$state,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
          if ((network == "NADP") || (network == "AMON")) {
             aqdat_in.df$precip_ob <- aqdat_query.df$precip_ob
@@ -152,23 +144,19 @@ for (j in 1:total_networks) {							# Loop through for each network
          ##################################################
          ## Store values for each network in array lists ##
          ##################################################
-         sinfo_data[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,State=aqdat.df$State,Obs_Val=aqdat.df$Obs_Value,Mod_Val=aqdat.df$Mod_Value,Diff_Val=aqdat.df$Mod_Obs_Diff,Network=network)
-#         sinfo_mod_data[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Value,network=network)
-#         sinfo_diff_data[[k]]<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Diff,network=network)
-#         sinfo_rat_data[[k]]<-list(lat=aqdat.df$lat,lon=aqdat.df$lon,plotval=aqdat.df$Mod_Obs_Rat,network=network)
-
-
-         all_site     <- c(all_site,aqdat.df$Stat_ID)
-	 all_state    <- c(all_state,aqdat.df$State)
-         all_lats     <- c(all_lats,aqdat.df$lat)
-         all_lons     <- c(all_lons,aqdat.df$lon)
-         all_obs      <- c(all_obs,aqdat.df$Obs_Value)
-         all_mod      <- c(all_mod,aqdat.df$Mod_Value)
-         all_diff     <- c(all_diff,aqdat.df$Mod_Obs_Diff)
-         all_rat      <- c(all_rat,aqdat.df$Mod_Obs_Rat)
-         all_network  <- c(all_network,network)
+         sinfo_data[[k]]	<-list(stat_id=aqdat.df$Stat_ID,lat=aqdat.df$lat,lon=aqdat.df$lon,State=aqdat.df$State,Obs_Val=aqdat.df$Obs_Value,Mod_Val=aqdat.df$Mod_Value,Diff_Val=aqdat.df$Mod_Obs_Diff,Network=network)
+         all_site     		<- c(all_site,aqdat.df$Stat_ID)
+	 all_state    		<- c(all_state,aqdat.df$State)
+         all_lats     		<- c(all_lats,aqdat.df$lat)
+         all_lons     		<- c(all_lons,aqdat.df$lon)
+         all_obs      		<- c(all_obs,aqdat.df$Obs_Value)
+         all_mod      		<- c(all_mod,aqdat.df$Mod_Value)
+         all_diff     		<- c(all_diff,aqdat.df$Mod_Obs_Diff)
+         all_rat      		<- c(all_rat,aqdat.df$Mod_Obs_Rat)
+         all_network  		<- c(all_network,network)
          ##################################################
-         sub_title<-paste(sub_title,symbols[k],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
+
+	 sub_title<-paste(sub_title,symbols[k],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
          k <- k+1
       }
    }
@@ -194,9 +182,6 @@ if ((lat_diff < 9) && (lon_diff < 18)) { zoom_level <- 7 }
 
 my.diff.colors <- colorRampPalette(c("darkorchid4","purple", "#002FFF", "deepskyblue", "lightblue", "palegoldenrod", "yellow", "orange", "red", "brown"))
 my.colors <- colorRampPalette(c(grey(.8),"mediumpurple","darkorchid4", "#002FFF", "green", "yellow", "orange", "red", "brown"))
-#if (quantile_max == 1 && quantile_min == 0) {
-#   my.colors <- colorRampPalette(c("mediumpurple","darkorchid4", "#002FFF", "green", "yellow", "orange", "red", "brown"))
-#}
 if (length(num_ints) == 0) {
    num_ints <- 20
 }
@@ -230,41 +215,28 @@ for (i in 1:3) {
       if (i == 2) { plot_title <- paste(run_name1,species,"Model Values",dates,sep=" ") }
       if (i == 3) { plot_title <- paste(run_name1,species,"Bias",dates,sep=" ") }
    }
-#   tag.map.title.png <- tag_map_title_png_func(30)
    main_title_html <- tags$div(tag.map.title.html, HTML(plot_title))
    main_title_png  <- tags$div(tag.map.title.png, HTML(plot_title))
-#  aqs.dat <- subset(o3.obs.df,date==pick.days[i])
-#  xyz <- data.frame(x=expand.grid(x.proj.12,y.proj.12)[,1]*1000,y=expand.grid(x.proj.12,y.proj.12)[,2]*1000,z=matrix(o3.mod.array[,,i]))
-#  o3.mod.raster <- rasterFromXYZ(xyz,crs="+proj=lcc +lat_1=33 +lat_2=45 +lat_0=40 +lon_0=-97 +a=6370000 +b=6370000")
-
-  if (i == 3) {
-     range_max <- max(abs(min(quantile(plot_data[[i]],probs=quantile_min),na.rm=T)),max(quantile(plot_data[[i]],probs=quantile_max),na.rm=T))
-     data.seq <- pretty(c(-range_max,range_max),n=num_ints)
-     if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
-  #      data.seq <- pretty(seq(diff_range_min,diff_range_max,na.rm=T),n=num_ints)
+   if (i == 3) {
+      range_max <- max(abs(min(quantile(plot_data[[i]],probs=quantile_min),na.rm=T)),max(quantile(plot_data[[i]],probs=quantile_max),na.rm=T))
+      data.seq <- pretty(c(-range_max,range_max),n=num_ints)
+      if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
 	 data.seq <- pretty(c(diff_range_min,diff_range_max),n=num_ints)	#Changed from the line above to this, as having the seq made ranges less than 1 came out asymetrical. Not sure why.
-     }
-#     my.col.cool.n <- sum(data.seq < 0)
-#     my.col.warm.n <- max(0,sum(data.seq >= 0)-1)
-
-     min.data <- min(data.seq)
-     max.data <- max(data.seq)
-     n.bins <- length(data.seq)
-#     binpal2 <- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
-     colors_cool_n <- abs(min.data)
-     colors_warm_n <- abs(max.data)
-     if ((abs(min.data) < 5) || (abs(max.data) < 5)) {
-        colors_cool_n <- 10*(abs(min.data))
-        colors_warm_n <- 10*(abs(max.data))
-     }
-     colors_cool <- colorRampPalette(colors=c("darkorchid4","purple", "#002FFF", "deepskyblue", "lightblue","gray80"))(colors_cool_n)
-     colors_warm <- colorRampPalette(colors=c("gray80","palegoldenrod", "yellow", "orange", "red", "brown"))(colors_warm_n)
-     rampcols <- c(colors_cool,colors_warm)
-     binpal2 <- colorBin(palette=rampcols, c(min.data,max.data), n.bins-1 , pretty = FALSE)
-  }
-
-#        addRasterImage(o3.mod.raster,colors=binpal2,opacity=.5) %>%
-#        addCircles(all_lons,all_lats,color=~binpal2(plot_data[[i]]),radius=100,data=data.df,opacity=1,fillOpacity=1,popup=contents)%>%
+      }
+      min.data <- min(data.seq)
+      max.data <- max(data.seq)
+      n.bins <- length(data.seq)
+      colors_cool_n <- abs(min.data)
+      colors_warm_n <- abs(max.data)
+      if ((abs(min.data) < 5) || (abs(max.data) < 5)) {
+         colors_cool_n <- 10*(abs(min.data))
+         colors_warm_n <- 10*(abs(max.data))
+      }
+      colors_cool <- colorRampPalette(colors=c("darkorchid4","purple", "#002FFF", "deepskyblue", "lightblue","gray80"))(colors_cool_n)
+      colors_warm <- colorRampPalette(colors=c("gray80","palegoldenrod", "yellow", "orange", "red", "brown"))(colors_warm_n)
+      rampcols <- c(colors_cool,colors_warm)
+      binpal2 <- colorBin(palette=rampcols, c(min.data,max.data), n.bins-1 , pretty = FALSE)
+   }
      my.leaf <- my.leaf.base
         for (j in 1:length(network_names)) {
            if(i == 1) { plot_val <- sinfo_data[[j]]$Obs_Val }
@@ -302,13 +274,10 @@ for (i in 1:3) {
            if (i == 3) { ecdf_data <- all_diff }
            plot_rad <- ecdf(abs(ecdf_data))(abs(plot_val))*max.radius
            plot_rad[plot_rad < min.radius] <- min.radius
-#           plot_rad[abs(plot_val) > max.data] <- outlier_radius
 	   if (quantile_max != 1 || quantile_min != 0) {
               plot_rad[abs(plot_val) > max.data] <- outlier_radius
            }
-	   #           plot_rad[plot_rad > 19.98] <- 40
     }
-#           my.leaf <- my.leaf.base
            my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data[[j]]$lon,sinfo_data[[j]]$lat,color="black",fillColor=~binpal2(plot_val),group=network_names[[j]],radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents,label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px")) 
          } 
          my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal2, values = c(min.data,max.data), title = paste(species,"<br/> (",units,")",sep=""), opacity = 2) 

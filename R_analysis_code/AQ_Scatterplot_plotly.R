@@ -6,7 +6,7 @@ header <- "
 ### scatterplot using the R plotly package. This script will plot a single species for multiple
 ### networks and simulations on a single plot.  
 ###
-### Last Updated by Wyat Appel: 03/2025 
+### Last Updated by Wyat Appel: June 2025 
 #####################################################################################
 "
 
@@ -21,9 +21,9 @@ if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not l
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
+## Set output file names
 filename_html <- paste(run_name1,species,pid,"scatterplot.html",sep="_")             # Set PDF filename
 filename_txt  <- paste(run_name1,species,pid,"scatterplot.csv",sep="_")       # Set output file name
-
 
 ## Create a full path to file
 filename_html <- paste(figdir,filename_html,sep="/")      # Set PDF filename
@@ -32,6 +32,9 @@ filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
+###################################
+### Set variable initial values ###
+###################################
 sinfo 		<- NULL
 axis.max 	<- NULL
 axis.min 	<- NULL
@@ -39,6 +42,8 @@ run_count 	<- 1
 num_runs        <- 1
 scatter_colors  <- NULL                                                                   # Set number of runs to 1
 scatter_symbols <- NULL
+###################################
+
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2                                                                # If so, set number of runs to 2
 }
@@ -142,11 +147,8 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 }
 #######################################################
 
-
 p <- plot_ly(data = aqdat_out.df, x=~Obs_Value,y=~Mod_Value,height=img_height,width=img_width,type='scatter',mode='markers',symbol=~Network,symbols=scatter_symbols,colors=scatter_colors,marker=list(size=10),text= ~paste("Site:",Stat_ID,"<br>Lat/Lon:",lat,"/",lon,"<br>State:",State,"<br>Obs:", round(Obs_Value,3), '<br>Mod:', round(Mod_Value,3))) %>%
    add_segments(x=0,xend=axis.max,y=0,yend=axis.max,size=I(0.5),line=list(color="black"))
-  
-#htmlwidgets::saveWidget(as_widget(p), filename_html)
 saveWidget(p, file=filename_html,selfcontained=T)
 
 

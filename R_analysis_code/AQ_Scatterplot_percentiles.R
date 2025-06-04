@@ -17,17 +17,17 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set file names and titles ###
+## Set some defaults 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
    else { title <- custom_title }
 }
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_percentiles.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_percentiles.png",sep="_")             # Set PNG filename
 filename_txt <- paste(run_name1,species,pid,"scatterplot_percentiles.csv",sep="_")       # Set output file name
-
 
 ## Create a full path to file
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
@@ -36,6 +36,9 @@ filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
 
 #################################
 
+###################################
+### Set variable initial values ###
+###################################
 axis.max	<- NULL
 num_obs		<- NULL
 sinfo		<- NULL
@@ -45,6 +48,7 @@ legend_cols	<- NULL
 legend_chars	<- NULL
 point_char	<- NULL
 point_color	<- NULL
+###################################
 
 ################################
 ### Define percentile arrays ###

@@ -6,7 +6,7 @@ header <- "
 ### to create an interactive model-to-obs scatterplot. This script will plot a single 
 ### species from a single network and multiple simulations on a single plot.
 ###
-### Last Updated by Wyat Appel: June, 2019
+### Last Updated by Wyat Appel: June 2025 
 ##################################################################################
 "
 
@@ -21,17 +21,22 @@ if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not l
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
+## Set output file names
 filename_html <- paste(run_name1,species,pid,"scatterplot.html",sep="_")             # Set PDF filename
 filename_txt  <- paste(run_name1,species,pid,"scatterplot.csv",sep="_")       # Set output file name
 
-## Create a full path to file
+## Create a full path to output files
 filename_html <- paste(figdir,filename_html,sep="/")      # Set PDF filename
 filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 #################################
 
+## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 main.title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
+###################################
+### Set variable initial values ###
+###################################
 sinfo 		<- NULL
 axis.max 	<- NULL
 axis.min 	<- NULL
@@ -41,7 +46,7 @@ scatter_colors  <- NULL                                                         
 scatter_symbols <- NULL
 run_names       <- run_name1               # Set default to just one run being plotted
 legend_names    <- NULL                    # Set default for legend
-
+###################################
 {
    if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
       run_names <- c(run_names,run_name2)
@@ -161,8 +166,6 @@ if (is.null(img_width)) { img_width <- 1800 }
 p <- plot_ly(data = aqdat_out.df, x=~Obs_Value,y=~Mod_Value,height=img_height,width=img_width,type='scatter',mode='markers',symbol=~Simulation,symbols=scatter_symbols,colors=scatter_colors,marker=list(size=10),text= ~paste("Site:",Stat_ID,"<br>Lat/Lon:",lat,"/",lon,"<br>State:",State,"<br>Obs:", round(Obs_Value,3), '<br>Mod:', round(Mod_Value,3))) %>%
    add_segments(x=0,xend=axis.max,y=0,yend=axis.max,size=I(0.5),line=list(color="black"))
 p <- p %>% layout(plot_bgcolor='#e5ecf6',title=list(text=main.title,font=list(size=20),y=0.95,x=0.42),xaxis=list(title=network,titlefont=list(size=20),tickfont=list(size=15)),yaxis=list(title="Model Value",titlefont=list(size=20),tickfont=list(size=15)),legend=list(font=list(size=20))) 
-
-#htmlwidgets::saveWidget(as_widget(p), filename_html)
 saveWidget(p, file=filename_html,selfcontained=T)
 
 

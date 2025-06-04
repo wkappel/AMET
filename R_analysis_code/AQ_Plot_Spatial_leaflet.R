@@ -8,7 +8,7 @@ header <- "
 ### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: 03/2025 
+### Last modified by Wyat Appel: June 2025 
 ######################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -35,23 +35,22 @@ if(!exists("quantile_max")) { quantile_max <- 0.999 }
 if(!exists("png_from_html")) { png_from_html <- "n" }
 if(!exists("popup_ts")) { popup_ts <- "n" }
 
-### Retrieve units label from database table ###
+## Set some defaults
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-################################################
-
-filename     <- NULL
-filename_png <- NULL
-plot_data    <- NULL
+filename     	<- NULL
+filename_png 	<- NULL
+plot_data    	<- NULL
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
 ### Set file names and titles ###
 filename[1]	<- paste(run_name1,species,pid,"spatialplot.html",sep="_")           # Filename for obs spatial plot
 filename_png[1] <- paste(run_name1,species,pid,"spatialplot.png",sep="_")           # Filename for obs spatial plot
 
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-
 ## Create a full path to file
 filename[1]      <- paste(figdir,filename[1],sep="/")           # Filename for obs spatial plot
 filename_png[1]  <- paste(figdir,filename_png[1],sep="/")           # Filename for obs spatial plot
+#################################
+
 ########################################
 ### Set NULL values and plot symbols ###
 ########################################

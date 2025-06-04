@@ -10,7 +10,7 @@ header <- "
 ### bias/error in simulation 1 versus simulation 2, while warm colors indicate higher bias/error
 ### in simulation 1 versus simulation 2. 
 ###
-### Last modified by Wyat Appel: Mar 2021
+### Last modified by Wyat Appel: June 2025 
 ################################################################################################
 "
 
@@ -29,13 +29,17 @@ if(!require(htmlwidgets))	{ stop("Required package htmlwidgets was not loaded") 
 if(!require(webshot))		{ stop("Required Package webshot was not loaded") }
 if(!require(plotly))		{ stop("Required Package plotly was not loaded") }
 
-if(!exists("quantile_min")) { quantile_min <- 0.001 }
-if(!exists("quantile_max")) { quantile_max <- 0.950 }
-if(!exists("png_from_html")) { png_from_html <- "n" }
+if(!exists("quantile_min")) 	{ quantile_min <- 0.001 }
+if(!exists("quantile_max")) 	{ quantile_max <- 0.950 }
+if(!exists("png_from_html")) 	{ png_from_html <- "n" }
 
-### Retrieve units label from database table ###
+## Set some defaults 
 network <- network_names[1]	# When using mutiple networks, units from network 1 will be used
-################################################
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+{
+   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
+   else { title <- custom_title }
+}
 
 ### Set file names and titles ###
 filename_html	         <- paste(run_name1,species,pid,"spatialplot_diff",sep="_") # Filename for diff spatial plot
@@ -43,12 +47,6 @@ filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 filename_bias_hist       <- paste(run_name1,species,pid,"histogram_bias_diff",sep="_") # Filename for diff spatial plot
 filename_error_hist      <- paste(run_name1,species,pid,"histogram_error_diff",sep="_") # Filename for diff spatial plot
 filename_corr_hist       <- paste(run_name1,species,pid,"histogram_corr_diff",sep="_") # Filename for diff spatial plot
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
 
 ## Create a full path to file
 filename_html        <- paste(figdir,"/",filename_html,".html",sep="")            # Filename for diff spatial plot
@@ -60,9 +58,9 @@ filename_error_hist_png   <- paste(figdir,"/",filename_error_hist,".png",sep="")
 filename_corr_hist_png    <- paste(figdir,"/",filename_corr_hist,".png",sep="")
 filename_csv	          <- paste(figdir,filename_csv,sep="/")
 
-#################################
-
+########################################
 ### Set NULL values and plot symbols ###
+########################################
 sinfo_data	<- NULL
 sinfo_data_tmp	<- NULL
 diff_min        <- NULL
@@ -133,18 +131,12 @@ for (j in 1:total_networks) {							# Loop through for each network
       if ((data_exists == "n") || (data_exists2 == "n")) {
          All_Data       <- "No stats available.  Perhaps you choose a species for a network that does not observe that species."
          total_networks <- (total_networks-1)
-#         sub_title      <- paste(sub_title,network,"=No Data; ",sep="")
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
 
       ### If there are data, continue ###
       else {
-#         aqdat1.df$ob_dates <- aqdat1.df[,5]          # remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-#         aqdat2.df$ob_dates <- aqdat2.df[,5]          # remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-#         aqdat1.df$ob_datee <- aqdat1.df[,6]          # remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-#         aqdat2.df$ob_datee <- aqdat2.df[,6]          # remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-
-### Match the points between each of the runs.  This is necessary if the data from each query do not match exactly ###
+	 ### Match the points between each of the runs.  This is necessary if the data from each query do not match exactly ###
          aqdat1.df$statdate<-paste(aqdat1.df$stat_id,aqdat1.df$ob_dates,aqdat1.df$ob_datee,aqdat1.df$ob_hour,sep="")     # Create unique column that combines the site name with the ob start date for run 1
          aqdat2.df$statdate<-paste(aqdat2.df$stat_id,aqdat2.df$ob_dates,aqdat2.df$ob_datee,aqdat2.df$ob_hour,sep="")     # Create unique column that combines the site name with the ob start date for run 2
          {
@@ -156,7 +148,6 @@ for (j in 1:total_networks) {							# Loop through for each network
                aqdat.df<-data.frame(network=aqdat2.df$network, stat_id=I(aqdat2.df$stat_id), lat=aqdat2.df$lat, lon=aqdat2.df$lon, state=aqdat2.df$state, ob_dates=aqdat2.df$ob_dates, Mod_Value_1=aqdat1.df[match.ind,mod_col_name], Mod_Value_2=aqdat2.df[[mod_col_name]], Ob_Value_1=aqdat1.df[match.ind,ob_col_name], Ob_Value_2=aqdat2.df[[ob_col_name]], month=aqdat2.df$month)      # eliminate points that are not common between the two runs
             }
          }
-#         remove(aqdat1.df,aqdat2.df)
          ### Remove NAs from paired dataset ###
          indic.na <- !is.na(aqdat.df$Mod_Value_1)
          aqdat.df <- aqdat.df[indic.na,]
@@ -208,15 +199,9 @@ for (j in 1:total_networks) {							# Loop through for each network
                   mod_corr_1_all <- c(mod_corr_1_all, mod_corr_1)
                   mod_corr_2_all <- c(mod_corr_2_all, mod_corr_2)
                   corr_diff	 <- c(corr_diff, (abs(mod_corr_1)-abs(mod_corr_2)))
-#                  mod_error_1    <- mean(abs(sub_good.df$Mod_Value_1-sub_good.df$Ob_Value_1))	# Compute the site mean error for simulation 1
-#                  mod_error_2    <- mean(abs(sub_good.df$Mod_Value_2-sub_good.df$Ob_Value_2))	# Compute the site mean error for simulation 2
-#                  mod_error_1_all    <- c(mod_error_1_all, mod_error_1)				# Store site mean error for simulation 1 in an array
-#                  mod_error_2_all    <- c(mod_error_2_all, mod_error_2)				# Store site mean error for simulation 2 in an array
-#                  error_diff     <- c(error_diff, (mod_error_1-mod_error_2))	# Compute difference in site mean error between two simulations
                }
             }
          }
-#	 print(states)
          sites_avg.df 		<- data.frame(Network=network,Site_ID=I(sites),lat=lats,lon=lons,state=states,Bias_1=mod_bias_1_all,Bias_2=mod_bias_2_all,Bias_Diff=bias_diff,Error_1=mod_error_1_all,Error_2=mod_error_2_all,Error_Diff=error_diff,Corr_1=mod_corr_1_all,Corr_2=mod_corr_2_all,Corr_Diff=corr_diff)	# Create properly formatted dataframe for use with PlotSpatial function
          sinfo_data_tmp		<-data.frame(network=network,stat_id=sites,lat=sites_avg.df$lat,lon=sites_avg.df$lon,state=sites_avg.df$state,Bias_1=sites_avg.df$Bias_1, Bias_2=sites_avg.df$Bias_2, Bias_Diff=sites_avg.df$Bias_Diff, Error_1=sites_avg.df$Error_1, Error_2=sites_avg.df$Error_2, Error_Diff=sites_avg.df$Error_Diff,Corr_1=sites_avg.df$Corr_1,Corr_2=sites_avg.df$Corr_2,Corr_Diff=sites_avg.df$Corr_Diff)
 	 sinfo_data		<- rbind(sinfo_data,sinfo_data_tmp)
@@ -309,41 +294,34 @@ my.leaf <- my.leaf.base
 for (i in 1:9) {
    left_adj <- 30
    if (i > 6) { left_adj <- 10 }
-#   tag.map.title.png <- tag_map_title_png_func(left_adj)
-   main_title <- tags$div(tag.map.title.html, HTML(map_title[1]))
-   main_title_png <- tags$div(tag.map.title.png, HTML(map_title[1]))
-#  aqs.dat <- subset(o3.obs.df,date==pick.days[i])
-#  xyz <- data.frame(x=expand.grid(x.proj.12,y.proj.12)[,1]*1000,y=expand.grid(x.proj.12,y.proj.12)[,2]*1000,z=matrix(o3.mod.array[,,i]))
-#  o3.mod.raster <- rasterFromXYZ(xyz,crs="+proj=lcc +lat_1=33 +lat_2=45 +lat_0=40 +lon_0=-97 +a=6370000 +b=6370000")
-
-   data.df <- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
-   range_max <- max(quantile(abs(plot_data[[i]]),probs=quantile_max,na.rm=T))
-   data.seq <- pretty(c(-range_max,range_max),n=20)
+   main_title 		<- tags$div(tag.map.title.html, HTML(map_title[1]))
+   main_title_png 	<- tags$div(tag.map.title.png, HTML(map_title[1]))
+   data.df 		<- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
+   range_max 		<- max(quantile(abs(plot_data[[i]]),probs=quantile_max,na.rm=T))
+   data.seq 		<- pretty(c(-range_max,range_max),n=20)
    if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
       data.seq <- pretty(c(diff_range_min,diff_range_max),n=20)
    }
-   min.data <- min(data.seq)
-   max.data <- max(data.seq)
-   n.bins <- length(data.seq)
-   num_bins[i] <- n.bins
-   binpal2 <- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
+   min.data 	<- min(data.seq)
+   max.data 	<- max(data.seq)
+   n.bins 	<- length(data.seq)
+   num_bins[i] 	<- n.bins
+   binpal2 	<- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
  
    if ((i == 3) || (i == 4) || (i == 5) || (i == 6)) {
-     data.df <- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
-     range_min <- min(quantile((plot_data[[i]]),probs=quantile_min,na.rm=T))	# Removed abs function on 8/30/2022
-     range_max <- max(quantile((plot_data[[i]]),probs=quantile_max,na.rm=T))	# Removed abs function on 8/30/2022
-     data.seq <- pretty(c(range_min,range_max),n=20)
+     data.df 	<- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
+     range_min 	<- min(quantile((plot_data[[i]]),probs=quantile_min,na.rm=T))	# Removed abs function on 8/30/2022
+     range_max 	<- max(quantile((plot_data[[i]]),probs=quantile_max,na.rm=T))	# Removed abs function on 8/30/2022
+     data.seq 	<- pretty(c(range_min,range_max),n=20)
      if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
       data.seq <- pretty(c(diff_range_min,diff_range_max),n=20)
      }
-     min.data <- min(data.seq)
-     max.data <- max(data.seq)
-     n.bins <- length(data.seq)
-     binpal2 <- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
+     min.data 	<- min(data.seq)
+     max.data 	<- max(data.seq)
+     n.bins 	<- length(data.seq)
+     binpal2 	<- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
    }
 
-#  my.leaf <- my.leaf.base   
-#  for (j in 1:length(network_names)) {
      if(i == 1) { 
         plot_val <- sinfo_data$Bias_1
         name <- "Bias Sim 1"
@@ -483,7 +461,6 @@ corr_pos_vals	 <- sum(all_corr_diff>0,na.rm=T)
 corr_hist	 <- hist(all_corr_diff,breaks=(num_bins[9]+1))
 corr_hist_breaks <- corr_hist$breaks
 corr_diff_colors <- c(cool_colors(sum(corr_hist_breaks<0)),hot_colors(sum(corr_hist_breaks>=0)))
-#p <- plot_ly(x=all_corr_diff, type="histogram",marker = list(color=diff_cols),nbinsx=(num_bins[9]+1))
 p <- plot_ly(x=all_corr_diff, type="histogram",nbinsx=length(corr_hist_breaks),marker = list(color=corr_diff_colors))%>%
  add_segments(x=0,y=0,xend=0,yend=max(corr_hist$counts),line=list(color="black",width=4))%>%
  layout(title=map_title[9],yaxis=list(title="Bin Count (# of Sites)",titlefont=list(size=27)),xaxis=list(title=paste("Absolute Difference in Correlation; # of sites with higher Correlation = ",corr_pos_vals," (",round(100*(corr_pos_vals/total_sites),1),"%)",sep=""),titlefont=list(size=27)))

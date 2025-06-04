@@ -18,37 +18,35 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
+## Set some defaults 
 network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-################################################
-
-### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+pca 	<- NULL
 
+## Create output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_bins.pdf",sep="_")                          # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_bins.png",sep="_")                          # Set PNG filenam
 filename_txt <- paste(run_name1,species,pid,"scatterplot_bins.csv",sep="_")     # Set output file name
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")                          # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")                          # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")     # Set output file name
 
-pca <- NULL
 
+## Query string for Northeast PCA region
 pca[1] <-" and (s.state='ME' or s.state='NH' or s.state='VT' or s.state='MA' or s.state='NY' or s.state='NJ' or s.state='MD' or s.state='DE' or s.state='CT' or s.state='RI' or s.state='PA' or s.state='DC') "
 ############################################
 
-### Query for Aerosol/Ozone Great Lakes PCA region ###
+## Query for Aerosol/Ozone Great Lakes PCA region 
 pca[2] <-" and (s.state='OH' or s.state='MI' or s.state='IN' or s.state='IL' or s.state='WI') "
 ############################################
 
-### Query for Ozone Atlantic PCA region ###
+## Query for Ozone Atlantic PCA region 
 pca[3] <-" and (s.state='WV' or s.state='KY' or s.state='TN' or s.state='VA' or s.state='NC' or s.state='SC' or s.state='GA' or s.state='AL') "
 ############################################
 
-### Query for Ozone Southwest PCA region ###
+## Query for Ozone Southwest PCA region 
 pca[4] <-" and (s.state='LA' or s.state='MS' or s.state='MO' or s.state='TX' or s.state='OK') "
 ############################################
 
@@ -194,9 +192,7 @@ for (j in 1:num_runs) {
             indic.bin <- aqdat.df$Bin_Value > bin_range[n]
             bin.df <- aqdat.df[indic.bin,]
 	    indic.bin <- bin.df$Bin_Value <= bin_range[(n+1)]
-#	    if(length(which(indic.bin)) >= 5) {
-               bin.df <- as.data.frame(bin.df)[indic.bin,]
-#            }
+            bin.df <- as.data.frame(bin.df)[indic.bin,]
 	    if (length(bin.df$Stat_ID) >= 5) {	# IMPORTANT: This sets the miniumum number of pairs to 5 
                bias 		<- bin.df$Mod_Value-bin.df$Obs_Value
                rmse 		<- sqrt((bin.df$Mod_Value-bin.df$Obs_Value)^2)
@@ -280,6 +276,7 @@ par(mai=c(0.7,0.6,0.4,0.1),las=1,lab=c(12,12,7))
 
 plot(1,1,type="n", pch=3, col="red", ylim=c(y.axis.mb.min, y.axis.mb.max), xlim=c(min(bin_range),x.axis.max), xlab=paste("Binned Range of ",Mod_Obs_label," Concentrations (",units,")",sep=""), ylab=paste("Mean Bias (",units,")",sep=""), cex.axis=.9, cex.lab=1,col.axis="white")       # create plot axis and labels, but do not plot any points
 abline(h=0)
+
 ###################################################
 ### This section fixes the plotting of the x axis
 ### so that the greater than sign is included 
@@ -287,13 +284,13 @@ abline(h=0)
 ### to create the bins.  Pretty much a hack, but
 ### it seems to work.
 ###################################################
-x.axis_labels <- bin_range						# set x-axis labels to match bin ranges
-x.axis_labels[length(bin_range)] <- paste(">",max(bin_range),sep="")	# add greater than sign to last bin, since it includes all values greater
-bin_range <- c(bin_range,(x.axis.max+interval))				# set ob_range one interval greater than what was plotted
-x.axis_labels<-c(x.axis_labels,(x.axis.max+interval))			# add one additional interval to x.axis.labels 
-axis(side=1,col.axis="white",col="white",lwd=1.5)			# cover default x axis tick marks and labels with white text 
-axis(side=1,labels=x.axis_labels,at=bin_range,cex.axis=0.8)		# add x axis tick marks and labels at previously specified intervals
-axis(2,cex.axis=0.8)							# add y-axis text back, since it was changed to white in plot command
+x.axis_labels 			 <- bin_range					# set x-axis labels to match bin ranges
+x.axis_labels[length(bin_range)] <- paste(">",max(bin_range),sep="")		# add greater than sign to last bin, since it includes all values greater
+bin_range 			 <- c(bin_range,(x.axis.max+interval))		# set ob_range one interval greater than what was plotted
+x.axis_labels			 <- c(x.axis_labels,(x.axis.max+interval))	# add one additional interval to x.axis.labels 
+axis(side=1,col.axis="white",col="white",lwd=1.5)				# cover default x axis tick marks and labels with white text 
+axis(side=1,labels=x.axis_labels,at=bin_range,cex.axis=0.8)			# add x axis tick marks and labels at previously specified intervals
+axis(2,cex.axis=0.8)								# add y-axis text back, since it was changed to white in plot command
 ###################################################
 abline(v=bin_range,col="grey40",lty=3)
 legend("topright", legend_names, pch=plot_chars, col=plot_cols, merge=F, cex=0.9, bty="n",pt.bg=plot_cols)
@@ -362,7 +359,9 @@ for (n in 1:num_intervals) {
 
 abline(h=0,col="black")
 
+###########################
 ### Convert file to png ###
+###########################
 dev.off()
 if ((ametptype == "png") || (ametptype == "both")) {
    convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf," png:",filename_png,sep="")
@@ -373,5 +372,4 @@ if ((ametptype == "png") || (ametptype == "both")) {
       system(remove_command)
    }
 }
-
 #################################

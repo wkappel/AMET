@@ -9,7 +9,7 @@ header <- "
 ### creates plots for the observed ratio, modeled ratio and the difference between the
 ### observed and modeled ratio. Output format is png, pdf or both.
 ###
-### Last modified by Wyat Appel: June, 2019
+### Last modified by Wyat Appel: June 2025 
 #####################################################################################
 "
 
@@ -27,20 +27,19 @@ if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
 if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 
-### Retrieve units label from database table ###
+## Set some defaults
 network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")	# Create MYSQL query from units table
 
-### Set file names and titles ###
-figure_obs<-paste(run_name1,species,pid,"spatialplot_ratio_obs",sep="_")             # Filename for obs spatial plot
-figure_mod<-paste(run_name1,species,pid,"spatialplot_ratio_mod",sep="_")             # Filename for model spatial plot
-figure_diff<-paste(run_name1,species,pid,"spatialplot_ratio_diff",sep="_")           # Filename for diff spatial plot
+## Set output file names
+figure_obs	<- paste(run_name1,species,pid,"spatialplot_ratio_obs",sep="_")             # Filename for obs spatial plot
+figure_mod	<- paste(run_name1,species,pid,"spatialplot_ratio_mod",sep="_")             # Filename for model spatial plot
+figure_diff	<- paste(run_name1,species,pid,"spatialplot_ratio_diff",sep="_")           # Filename for diff spatial plot
 
-figure_obs<-paste(figdir,figure_obs,sep="/")             # Filename for obs spatial plot
-figure_mod<-paste(figdir,figure_mod,sep="/")             # Filename for model spatial plot
-figure_diff<-paste(figdir,figure_diff,sep="/")           # Filename for diff spatial plot
-
-################################################
+## Set full path to output file names
+figure_obs	<- paste(figdir,figure_obs,sep="/")             # Filename for obs spatial plot
+figure_mod	<- paste(figdir,figure_mod,sep="/")             # Filename for model spatial plot
+figure_diff	<- paste(figdir,figure_diff,sep="/")           # Filename for diff spatial plot
+#####################################
 
 ########################################
 ### Set NULL values and plot symbols ###
@@ -62,18 +61,18 @@ sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
 legend_names	<- NULL
 legend_chars	<- NULL
-plot.symbols<-as.integer(plot_symbols)
-pick.symbol.name.fun<-function(x){
-   master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
+plot.symbols <- as.integer(plot_symbols)
+pick.symbol.name.fun <- function(x){
+   master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
    as.character(master.symbol.df$names[x==master.symbol.df$plot.symbols])
 }
-pick.symbol2.fun<-function(x){
-   master.symbol2.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
+pick.symbol2.fun <- function(x){
+   master.symbol2.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
    as.integer(master.symbol2.df$plot.symbols2[x==master.symbol2.df$plot.symbols])
 }
-symbols<-apply(matrix(plot.symbols),1,pick.symbol.name.fun)
-spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
-spch<-plot.symbols
+symbols	<- apply(matrix(plot.symbols),1,pick.symbol.name.fun)
+spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
+spch	<- plot.symbols
 ########################################
 
 remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
@@ -108,8 +107,6 @@ for (j in 1:total_networks) {							# Loop through for each network
    mod_col_name <- paste(species,"_mod",sep="")
    {
       if (data_exists == "n") {
-#            stats_all.df <- "No stats available.  Perhaps you choose a species for a network that does not observe that species."
-#            sites_stats.df <- "No site stats available.  Perhaps you choose a species for a network that does not observe that species."
             total_networks <- (total_networks-1)
             sub_title<-paste(sub_title,network_label[j],"=No Data; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
             if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
@@ -146,7 +143,6 @@ for (j in 1:total_networks) {							# Loop through for each network
          all_mod  <- c(all_mod,(aqdat_merged.df$Mod_Value.x/aqdat_merged.df$Mod_Value.y)*100)
          all_diff <- c(all_diff,aqdat_merged.df$Mod_Obs_Diff)
          ##################################################
-#         sub_title<-paste(sub_title,symbols[j],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched with the symbol name used for that network
          k <- k+1
       }
    }
@@ -284,6 +280,7 @@ if ((ametptype == "pdf") || (ametptype == "both")) {
    plotSpatial(sinfo_obs,figure=figure_obs,varlab=title_obs,bounds=bounds,plotopts=plotopts,plot_units=units)	# Call PlotSpatial function for ob values
 }
 #########################
+
 ### Plot Modeled Values ###
 if ((ametptype == "png") || (ametptype == "both")) { 
    plotfmt <- "png"												# Set plot format as png
@@ -296,6 +293,7 @@ if ((ametptype == "pdf") || (ametptype == "both")) {
    plotSpatial(sinfo_mod,figure=figure_mod,varlab=title_mod,bounds=bounds,plotopts=plotopts,plot_units=units)   	# Call PlotSpatial function for model values
 }
 ###########################
+
 ### Plot Model/Observation Difference ###
 unique_labels <- "y"												# Flag within Misc_Functions.R to use predefined labels
 levLab <- leg_labels_diff			
