@@ -10,7 +10,7 @@ header <- "
 ### but the script outputs a zipped file of all the individual HTML files for the sites 
 ### requested.
 ###
-### Last updated by Wyat Appel: May 2025
+### Last updated by Wyat Appel: June 2025 
 ############################################################################################
 "
 
@@ -29,11 +29,13 @@ if(!require(pandoc))        { stop("Required Package pandoc was not loaded") }
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
-network <- network_names[1]
-################################################
-
-run_name<-run_names[1]
+## Set some defaults
+network 	<- network_names[1]
+run_name	<- run_names[1]
+query_base 	<- query
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+labels 		<- c(network,run_names)
+num_runs 	<- length(run_names)
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {
@@ -54,23 +56,14 @@ run_name<-run_names[1]
      sites <- unique(aqdat_query.df$stat_id_noPOC)
    }
 }
-query_base <- query
 
-### Set file names ###
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-
+### Set output file names 
 filename_csv_zip        <- paste(run_name1,species,pid,"timeseries_csv.zip",sep="_")
 filename_zip            <- paste(run_name1,species,pid,"timeseries.zip",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_csv_zip        <- paste(figdir,filename_csv_zip,sep="/")           # Filename for diff spatial plot
 filename_zip            <- paste(figdir,filename_zip,sep="/")           # Filename for diff spatial plot
-
-labels <- c(network,run_names)
-num_runs <- length(run_names)
-#if (common_sites == "T") {
-#   sites <- find_common_sites(run_names,network,species)
-#}
 
 for (site_n in 1:length(sites)) {
 

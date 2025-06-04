@@ -7,7 +7,7 @@ header <- "
 ### NCOM, PMother and total PM2.5. These averages are then plotted on a stacked bar plot,
 ### along with the percent of the total PM2.5 that each species comprises.
 ###
-### Last updated by Wyat Appel: 04/2025
+### Last updated by Wyat Appel: June 2025 
 ######################################################################################
 "
 
@@ -19,9 +19,10 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 merge_sitePOC <- "F"
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1
+## Set some defaults
+network 	<- network_names[1]
+network_name 	<- network_label[1]
+num_runs 	<- 1
 
 ### Set filenames and titles ###
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_AE6.pdf",sep="_")
@@ -96,7 +97,6 @@ aqdat_all.df[aqdat_all.df == -999] <- NA
 
 ### Calculate NH4 from NO3 and SO4 if unavailable ###
 aqdat_all.df$NH4_ob[is.na(aqdat_all.df$NH4)] <- 0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob
-#aqdat_all.df$OTHER_ob[is.na(aqdat_all.df$OTHER_ob)] <- aqdat_all.df$PM_TOT_ob-aqdat_all.df$SO4_ob-aqdat_all.df$NO3_ob-(0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob)-aqdat_all.df$OC_ob-aqdat_all.df$EC_ob-aqdat_all.df$NaCl_ob-aqdat_all.df$soil_ob
 aqdat_all.df$NCOM_ob <- 0.8*aqdat_all.df$OC_ob
 
 if (num_runs > 1) {

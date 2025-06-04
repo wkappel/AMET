@@ -18,35 +18,32 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-### Set file names and titles ###
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") {
-      main.title        <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-      main.title.bias   <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-   }
-   else {
-     main.title   <- custom_title
-     main.title.bias <- custom_title
-  }
-}
+## Set some defaults
+network 	<- network_names[1]
 sub.title       <- ""
+run_name 	<- run_name1
+labels 		<- c(network,run_name)
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title   <- custom_title
+main.title.bias <- custom_title
+if (custom_title == "") {
+   main.title        <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
+   main.title.bias   <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
+}
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")
 filename_png <- paste(run_name1,species,pid,"timeseries.png",sep="_")
 filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for timeseries pdf plot
 filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for timeseries png plot
 filename_txt    <- paste(figdir,filename_txt,sep="/")           # Filename for csv data file
 
+###################################
+### Set variable initial values ###
+###################################
 Obs_Mean	<- NULL
 Mod_Mean	<- NULL
 Obs_Period_Mean	<- NULL
@@ -61,9 +58,7 @@ bias_min        <- NULL
 bias_max        <- NULL
 x_label		<- "Date"
 num_sites	<- NULL
-
-run_name <- run_name1
-labels <- c(network,run_name)
+###################################
 
 write.table("Time Series Data",file=filename_txt,append=F,row.names=F,sep=",")                       # Write header for raw data file
 

@@ -9,7 +9,7 @@ header <- "
 ### soil species, Na, Cl, or NCOM as it is designed to work with vesions of CMAQ running AE5 or older.
 ### Output format is png, pdf or both.
 ###
-### Last updated by Wyat Appel: Nov 2020
+### Last updated by Wyat Appel: June 2025 
 ##############################################################################################
 "
 
@@ -20,32 +20,32 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
  
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1  
-
-### Set filenames and titles ###
-filename_pdf    <- paste(run_name1,pid,"stacked_barplot_panel.pdf",sep="_")
-filename_png    <- paste(run_name1,pid,"stacked_barplot_panel.png",sep="_")
-filename_txt    <- paste(run_name1,pid,"stacked_barplot_panel_data.csv",sep="_")
-
-## Create a full path to file
-filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
-filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
-filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
-method <- "Mean"
+## Set some defaults
+network 	<- network_names[1]
+network_name 	<- network_label[1]
+num_runs 	<- 1
+method 		<- "Mean"
+season         	<- NULL
+pca            	<- NULL
 if (use_median == "y") {
    method <- "Median"
 }
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(network_name," Stacked Barplot (",method,") for ",run_name1," for ",dates,sep="") }
    else { title <- custom_title }
 }
-################################
 
+## Set output filenames
+filename_pdf    <- paste(run_name1,pid,"stacked_barplot_panel.pdf",sep="_")
+filename_png    <- paste(run_name1,pid,"stacked_barplot_panel.png",sep="_")
+filename_txt    <- paste(run_name1,pid,"stacked_barplot_panel_data.csv",sep="_")
+
+## Create a full path to output files
+filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
+filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
+filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
+################################
 
 pdf(file=filename_pdf,width=10,height=8)
 my.layout <- layout(matrix(c(1, 5,  9, 13, 17,
@@ -57,22 +57,19 @@ my.layout <- layout(matrix(c(1, 5,  9, 13, 17,
 par(mgp=c(2,0.5,0))
 par(mai=c(0.4,0.4,0.2,0.05))
 
-season         <- NULL
-pca            <- NULL
+pca[1] 		<- " and s.stat_id=d.stat_id and (s.state='ME' or s.state='NH' or s.state='VT' or s.state='MA' or s.state='NY' or s.state='NJ' or s.state='MD' or s.state='DE' or s.state='CT' or s.state='RI' or s.state='PA' or s.state='DC' or s.state='VA' or s.state='WV')"
+pca[2] 		<- " and s.stat_id=d.stat_id and (s.state='OH' or s.state='MI' or s.state='IN' or s.state='IL' or s.state='WI')"
+pca[3] 		<- " and s.stat_id=d.stat_id and (s.state='NC' or s.state='SC' or s.state='GA' or s.state='FL')"
+pca[4] 		<- " and s.stat_id=d.stat_id and (s.state='KY' or s.state='TN' or s.state='MS' or s.state='AL' or s.state='LA' or s.state='MO' or s.state='OK' or s.state='AR')"
 
-pca[1] <- " and s.stat_id=d.stat_id and (s.state='ME' or s.state='NH' or s.state='VT' or s.state='MA' or s.state='NY' or s.state='NJ' or s.state='MD' or s.state='DE' or s.state='CT' or s.state='RI' or s.state='PA' or s.state='DC' or s.state='VA' or s.state='WV')"
-pca[2] <- " and s.stat_id=d.stat_id and (s.state='OH' or s.state='MI' or s.state='IN' or s.state='IL' or s.state='WI')"
-pca[3] <- " and s.stat_id=d.stat_id and (s.state='NC' or s.state='SC' or s.state='GA' or s.state='FL')"
-pca[4] <- " and s.stat_id=d.stat_id and (s.state='KY' or s.state='TN' or s.state='MS' or s.state='AL' or s.state='LA' or s.state='MO' or s.state='OK' or s.state='AR')"
+season[4] 	<- " and (d.month = 12 or d.month = 1 or d.month = 2)"
+season[1] 	<- " and (d.month = 3 or d.month = 4 or d.month = 5)"
+season[2] 	<- " and (d.month = 6 or d.month = 7 or d.month = 8)"
+season[3] 	<- " and (d.month = 9 or d.month = 10 or d.month = 11)"
 
-season[4] <- " and (d.month = 12 or d.month = 1 or d.month = 2)"
-season[1] <- " and (d.month = 3 or d.month = 4 or d.month = 5)"
-season[2] <- " and (d.month = 6 or d.month = 7 or d.month = 8)"
-season[3] <- " and (d.month = 9 or d.month = 10 or d.month = 11)"
-
-season_names <- c("Spring","Summer","Fall","Winter")
-pca_names <- c("Northeast","Great Lakes","Atlantic","South")
-figure_names <- c("(a)","(b)","(c)","(d)")
+season_names 	<- c("Spring","Summer","Fall","Winter")
+pca_names 	<- c("Northeast","Great Lakes","Atlantic","South")
+figure_names 	<- c("(a)","(b)","(c)","(d)")
 
    for (i in 1:4) {
       species_names <- c("Other","OC","EC",expression(paste(NH[4]^"  +")),expression(paste(NO[3]^"  -")),expression(paste(SO[4]^"  2-")))

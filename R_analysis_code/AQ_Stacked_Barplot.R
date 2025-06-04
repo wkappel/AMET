@@ -19,31 +19,29 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1   
-
-### Set filenames and titles ###
-filename_pdf    <- paste(run_name1,pid,"stacked_barplot.pdf",sep="_")
-filename_png    <- paste(run_name1,pid,"stacked_barplot.png",sep="_")
-filename_txt    <- paste(run_name1,pid,"stacked_barplot_data.csv",sep="_")
-
-## Create a full path to file
-filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
-filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
-filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
-method <- "Mean"
+## Set some defaults
+network 	<- network_names[1]
+network_name 	<- network_label[1]
+num_runs 	<- 1
+method 		<- "Mean"
 if (use_median == "y") {
    method <- "Median"
 }
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(network_name," Stacked Barplot (",method,") for ",run_name1," for ",dates,sep="") }
    else { title <- custom_title }
 }
 
+## Set output filenames
+filename_pdf    <- paste(run_name1,pid,"stacked_barplot.pdf",sep="_")
+filename_png    <- paste(run_name1,pid,"stacked_barplot.png",sep="_")
+filename_txt    <- paste(run_name1,pid,"stacked_barplot_data.csv",sep="_")
+
+## Create a full path to output files
+filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
+filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
+filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
 ################################
 
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
@@ -57,24 +55,29 @@ if (is.null(species[1])) {
 PM_spec_ob  <- paste(PM_species,"_ob",sep="")
 PM_spec_mod <- paste(PM_species,"_mod",sep="")
 
-medians          <- NULL
-data             <- NULL
-medians_2        <- NULL
-data2            <- NULL
-drop_names     <- NULL
-species_names  <- NULL
-species_names2 <- NULL
-correlation    <- NULL
-correlation2   <- NULL
-rmse           <- NULL
-rmse2          <- NULL
-rmse_sys       <- NULL
-rmse_sys2      <- NULL
-rmse_unsys     <- NULL
-rmse_unsys2    <- NULL
+###################################
+### Set variable initial values ###
+###################################
+medians		<- NULL
+data            <- NULL
+medians_2       <- NULL
+data2           <- NULL
+drop_names     	<- NULL
+species_names  	<- NULL
+species_names2 	<- NULL
+correlation    	<- NULL
+correlation2   	<- NULL
+rmse           	<- NULL
+rmse2          	<- NULL
+rmse_sys       	<- NULL
+rmse_sys2      	<- NULL
+rmse_unsys     	<- NULL
+rmse_unsys2    	<- NULL
+####################################
 
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
 species <- c("SO4","NO3","NH4","EC","OC",PM_species)
+
 #############################################
 ### Read sitex file or query the database ###
 #############################################
@@ -260,7 +263,9 @@ species_names <- c("Other","OC","EC",expression(paste(NH[4]^"  +")),expression(p
 plot_cols     <- c("yellow","red","orange","black","grey","white")
 plot_cols_leg <- c("white","grey","black","orange","red","yellow")
 
-########## MAKE STACKED BARPLOT: ALL SITES ##########
+##########################################
+########## MAKE STACKED BARPLOT ##########
+##########################################
 pdf(file=filename_pdf,width=10,height=8)
 par(mai=c(1,1,0.5,0.5))		# set margins
 

@@ -7,7 +7,7 @@ header <- "
 ### a single time series for the data. The script also plots the bias, RMSE and correlation.
 ### Output format is png, pdf or both.
 ###
-### Last updated by Wyat Appel: Mar 2021
+### Last updated by Wyat Appel: June 2025 
 ###########################################################################################
 "
 
@@ -18,35 +18,30 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-### Set file names and titles ###
+## Set some defaults
+network 	<- network_names[1]
+sub.title       <- ""
+main.title   	<- custom_title
+main.title.bias <- custom_title
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") {
+if (custom_title == "") {
       main.title      <- paste(run_name1,species,"for",network,"for",dates,sep=" ")
       main.title.bias <- paste("Bias for",run_name1,species,"for",network,"for",dates,sep=" ")
-   }
-   else {
-     main.title   <- custom_title
-     main.title.bias <- custom_title
-  }
 }
-sub.title       <- ""
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"timeseries_mtom.pdf",sep="_")              # Set output file name
 filename_png <- paste(run_name1,species,pid,"timeseries_mtom.png",sep="_")
 filename_txt <- paste(run_name1,species,pid,"timeseries_mtom.csv",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for diff spatial plot
 filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for diff spatial plot
 filename_txt    <- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 
+###################################
+### Set variable initial values ###
+###################################
 Obs_Mean	 <- NULL
 Mod_Mean	 <- NULL
 Obs_Period_Mean	 <- NULL
@@ -61,6 +56,7 @@ bias_min         <- NULL
 bias_max         <- NULL
 x_label	 	 <- "Date"
 remove_negatives <- "n"
+###################################
 
 #############################################
 ### Read sitex file or query the database ###
