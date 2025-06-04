@@ -26,28 +26,26 @@ if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
 
-### Retrieve units label from database table ###
+## Set some defatuls
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-#units_qs	<- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="") # Create MYSQL query from units table
-################################################
-
-### Set file names and titles ###
-filename_obs	<- paste(run_name1,species,pid,"spatialplot_obs",sep="_")           # Filename for obs spatial plot
-filename_mod	<- paste(run_name1,species,pid,"spatialplot_mod",sep="_")           # Filename for model spatial plot
-filename_diff	<- paste(run_name1,species,pid,"spatialplot_diff",sep="_")          # Filename for diff spatial plot
-filename_rat	<- paste(run_name1,species,pid,"spatialplot_ratio",sep="_")         # Filename for diff spatial plot
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
    else { title <- custom_title }
 }
 
-## Create a full path to file
+## Create output file names
+filename_obs	<- paste(run_name1,species,pid,"spatialplot_obs",sep="_")           # Filename for obs spatial plot
+filename_mod	<- paste(run_name1,species,pid,"spatialplot_mod",sep="_")           # Filename for model spatial plot
+filename_diff	<- paste(run_name1,species,pid,"spatialplot_diff",sep="_")          # Filename for diff spatial plot
+filename_rat	<- paste(run_name1,species,pid,"spatialplot_ratio",sep="_")         # Filename for diff spatial plot
+
+## Create a full path to output files
 filename_obs      <- paste(figdir,filename_obs,sep="/")           # Filename for obs spatial plot
 filename_mod      <- paste(figdir,filename_mod,sep="/")           # Filename for model spatial plot
 filename_diff     <- paste(figdir,filename_diff,sep="/")          # Filename for diff spatial plot
 filename_rat      <- paste(figdir,filename_rat,sep="/")           # Filename for diff spatial plot
+############################
 
 ########################################
 ### Set NULL values and plot symbols ###
@@ -72,18 +70,18 @@ sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
 legend_names    <- NULL
 legend_chars    <- NULL
-plot.symbols<-as.integer(plot_symbols)
-pick.symbol.name.fun<-function(x){
-   master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
+plot.symbols <- as.integer(plot_symbols)
+pick.symbol.name.fun <- function(x){
+   master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
    as.character(master.symbol.df$names[x==master.symbol.df$plot.symbols])
 }
-pick.symbol2.fun<-function(x){
-   master.symbol2.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
+pick.symbol2.fun <- function(x){
+   master.symbol2.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),plot.symbols2=c(1,2,0,5,8,11,4))
    as.integer(master.symbol2.df$plot.symbols2[x==master.symbol2.df$plot.symbols])
 }
-symbols<-apply(matrix(plot.symbols),1,pick.symbol.name.fun)
-spch2 <- apply(matrix(plot.symbols),1,pick.symbol2.fun)
-spch<-plot.symbols
+symbols	<- apply(matrix(plot.symbols),1,pick.symbol.name.fun)
+spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
+spch	<- plot.symbols
 ########################################
 
 remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
@@ -113,12 +111,6 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
    #######################
-
-#   count <- sum(is.na(aqdat_query.df[,9]))
-#   len   <- length(aqdat_query.df[,9])
-
-#   if (count != len) {	# Continue if query returned non-missing data
-
    { 
       if (data_exists == "n") {
          total_networks <- (total_networks-1)
@@ -162,7 +154,6 @@ for (j in 1:total_networks) {							# Loop through for each network
          all_diff <- c(all_diff,aqdat.df$Mod_Obs_Diff)
          all_rat  <- c(all_rat,aqdat.df$Mod_Obs_Rat)
          ##################################################
-#         sub_title<-paste(sub_title,symbols[k],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
          k <- k+1
       }
    }
@@ -213,7 +204,6 @@ colors			<- all_colors(levs_max)
 leg_colors		<- colors
 ###########################################################################
 
-
 ##########################
 ### Create Ratio Scale ###
 ##########################
@@ -249,7 +239,6 @@ levs_rat			  <- c(levs_low,levs_legend_high)
 leg_colors_rat			  <- levcols_rat
 leg_labels_rat			  <- levs_legend_rat
 ############################################
-
 
 #################################################
 ### Determine Color Scale for Difference Plot ###
@@ -341,8 +330,9 @@ if ((ametptype == "pdf") || (ametptype == "both")) {
    plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)					# Set plot options list to use with PlotSpatial function
    plotSpatial(sinfo_obs,figure=filename_obs,varlab=title_obs,bounds=bounds,plotopts=plotopts,plot_units=units)	# Call PlotSpatial function for ob values
 }
-#########################
+###########################
 ### Plot Modeled Values ###
+###########################
 if ((ametptype == "png") || (ametptype == "both")) {
    plotfmt <- "png"												# Set plot format as png
    plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)					# Set plot options list to use with PlotSpatial function
@@ -353,8 +343,9 @@ if ((ametptype == "pdf") || (ametptype == "both")) {
    plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)					# Set plot options list to use with PlotSpatial function
    plotSpatial(sinfo_mod,figure=filename_mod,varlab=title_mod,bounds=bounds,plotopts=plotopts,plot_units=units)   	# Call PlotSpatial function for model values
 }
-###########################
+#########################################
 ### Plot Model/Observation Difference ###
+#########################################
 unique_labels <- "y"												# Flag within Misc_Functions.R to use predefined labels
 levLab <- leg_labels_diff											# Set lables to be ones defined above by levels_label_diff
 if ((ametptype == "png") || (ametptype == "both")) {
@@ -367,8 +358,9 @@ if ((ametptype == "pdf") || (ametptype == "both")) {
    plotopts<-list(plotfmt=plotfmt,plotsize=plotsize,symb=symb,symbsiz=symbsiz)					# Set plot options list to use with PlotSpatial function
    plotSpatial(sinfo_diff,figure=filename_diff,varlab=title_diff,bounds=bounds,plotopts=plotopts,plot_units=units)	# Call PlotSpatial function for difference values
 }
-#########################################
+####################################
 ### Plot Model/Observation Ratio ###
+####################################
 unique_labels <- "y"                                                                                            # Flag within Misc_Functions.R to use predefined labels
 levLab <- leg_labels_rat                           
 if ((ametptype == "png") || (ametptype == "both")) {                                                            # Set lables to be ones defined above by levels_label_diff

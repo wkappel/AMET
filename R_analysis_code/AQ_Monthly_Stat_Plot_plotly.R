@@ -10,7 +10,7 @@ header <- "
 ### statistics can be plotted with a small change to the script.  The script 
 ### works with multiple years as well.
 ###
-### Last updated by Wyat Appel: 03/2025
+### Last updated by Wyat Appel: June 2025 
 #################################################################################
 "
 
@@ -25,7 +25,10 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(plotly))            { stop("Required Package plotly was not loaded") }
 if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") }
 
+## Set some defaults
 network		<- network_names[1]
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ################################################
 ## Set output names and remove existing files ##
@@ -33,8 +36,6 @@ network		<- network_names[1]
 filename_stats	<- paste(run_name1,species,pid,"stats.csv",sep="_")
 filename_html	<- paste(run_name1,species,pid,"stats_plot.html",sep="_")
 
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 ## Create a full path to file
 filename_stats	<- paste(figdir,filename_stats,sep="/")
 filename_html   <- paste(figdir,filename_html,sep="/")

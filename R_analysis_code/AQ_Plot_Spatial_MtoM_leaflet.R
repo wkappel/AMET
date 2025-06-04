@@ -8,7 +8,7 @@ header <- "
 ### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: Dec 2021
+### Last modified by Wyat Appel: June 2025 
 ########################################################################################
 "
 
@@ -27,9 +27,9 @@ if(!require(webshot))	{ stop("Required Package mapdata was not loaded") }
 if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 
-### Retrieve units label from database table ###
+## Set some defaults
 network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")	# Create MYSQL query from units table
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
 ### Set file names and titles ###
 filename 	<- NULL
@@ -38,16 +38,16 @@ filename[2]     <- paste(run_name1,species,pid,"spatialplot_mtom_diff_min.html",
 filename[3]     <- paste(run_name1,species,pid,"spatialplot_mtom_diff_avg.html",sep="_")           # Filename for diff spatial plot
 filename[4]     <- paste(run_name1,species,pid,"spatialplot_mtom_ratio.html",sep="_")              # Filename for ratio plot
 
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-
 ## Create a full path to file
 filename[1]      <- paste(figdir,filename[1],sep="/")           # Filename for obs spatial plot
 filename[2]      <- paste(figdir,filename[2],sep="/")           # Filename for model spatial plot
 filename[3]      <- paste(figdir,filename[3],sep="/")          # Filename for diff spatial plot
 filename[4]      <- paste(figdir,filename[4],sep="/")          # Filename for ratio plot
-################################################
+#################################
 
+########################################
 ### Set NULL values and plot symbols ###
+########################################
 sinfo_diff       <- NULL						# Set list for difference values to NULL
 sinfo_max	 <- NULL
 sinfo_min	 <- NULL
@@ -109,7 +109,6 @@ for (j in 1:total_networks) {                                            # Loop 
       if ((data_exists == "n") || (data_exists2 == "n")) {
          All_Data       <- "No stats available.  Perhaps you choose a species for a network that does not observe that species."
          total_networks <- (total_networks-1)
-#         sub_title      <- paste(sub_title,network,"=No Data; ",sep="")
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
       else {
@@ -162,7 +161,6 @@ for (j in 1:total_networks) {                                            # Loop 
          all_max  <- c(all_max,max_diff)
          all_min  <- c(all_min,min_diff)
          all_ratio <- c(all_ratio,avg_ratio)
-         #sub_title    <- paste(sub_title,symbols[j],"=",network_label[j],"; ",sep="")      # Set subtitle based on network matched w/ the appropriate symbol
          k<-k+1
       }
    }

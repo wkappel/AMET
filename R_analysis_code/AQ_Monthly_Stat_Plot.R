@@ -21,7 +21,13 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
+## Set some defaults
 network		<- network_names[1]
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+{
+   if (custom_title == "") { main.title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
+   else { main.title <- custom_title }
+}
 
 ################################################
 ## Set output names and remove existing files ##
@@ -33,12 +39,6 @@ filename2_pdf	<- paste(run_name1,species,pid,"stats_plot1.pdf",sep="_")
 filename2_png	<- paste(run_name1,species,pid,"stats_plot1.png",sep="_")
 filename3_pdf	<- paste(run_name1,species,pid,"stats_plot2.pdf",sep="_")
 filename3_png	<- paste(run_name1,species,pid,"stats_plot2.png",sep="_")
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { main.title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { main.title <- custom_title }
-}
 
 ## Create a full path to file
 filename_stats	<- paste(figdir,filename_stats,sep="/")
@@ -84,8 +84,6 @@ network_name<-network_label[[1]]
 #######################################
 ### Compute total number of  months ###
 #######################################
-#start_month     <- month_start
-#end_month       <- month_end
 if(!exists("year_start")) { year_start <- substr(start_date,1,4) }
 if(!exists("year_end")) { year_end <- substr(end_date,1,4) }
 start_month     <- as.integer(substr(start_date,5,6))
@@ -115,7 +113,6 @@ for (y in 1:num_years) {
       }
    }
        
-#   for (m in 1:12) {
    for (m in s_month:e_month) {
    months <- c(months,i)   
    i <- i+1
@@ -123,7 +120,6 @@ for (y in 1:num_years) {
       ###########################################
       ####        Set Initial Values         ####
       ###########################################
-#      data_all.df				<- NULL
       stats_all.df				<- NULL
       stats_all.df$NUM_OBS			<- NA 
       stats_all.df$Percent_Norm_Mean_Bias	<- NA
@@ -180,7 +176,6 @@ for (y in 1:num_years) {
 }
 num_months      <- length(months)
 #####################################
-
 
 ###########################################
 ### Write Stats File with Monthly Stats ###
