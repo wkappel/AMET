@@ -85,7 +85,7 @@ A user can choose to do all of the steps at once or run the script multiple time
  METCRO3D_NAME          METCRO3D file name (without date and file extension).
  CCTMOUTDIR             Location of CCTM output.
  CCTM_ACONC_NAME        ACONC file name (without date and file extension).
- CCTM_APMDIAG_NAME      APMDIAG file name (without date and file extension).
+ CCTM_APMDtIAG_NAME     APMDIAG file name (without date and file extension).
  CCTM_WETDEP1_NAME      WETDEP1 file name (without date and file extension).
  CCTM_DRYDEP_NAME       DRYDEP file name (without date and file extension).
  POSTDIR                Location to write combine files. (Or location of existing combine files).
@@ -385,26 +385,48 @@ date -ud "2018-06-30+1days" +%Y-%m-%d
 ===========
 
 * Check for errors in the log file
+Note, you need to set the environment variables RUNID and DATE that correspond to the project.
 
 ```
-grep -i ERROR $AMETBASE/output/*/sitex_output/*/amet_extract_all*.log
+setenv RUNID aqExample
+setenv DATE  201601
+grep -i ERROR -B 4 $AMETBASE/output/$RUNID/sitex_output/$DATE/amet_extract_all*.log
 ```
 
 If you see an error such as the following:
 
+```
+ *** ERROR ABORT in subroutine PROCESS 
+
+     Observed Speices [PM10_81102] not found 
+
+     >>---->  Program sitecmp (Version 1.0)  <----<< 
+
+Finished running site compare for network  AQS_Hourly . 
+```
+
+
+```
  *** ERROR ABORT in subroutine PROCESS 
 
      Observed Speices [PM25_Tef_Sulfate [ug/m3]] not found 
-
-  
 
      >>---->  Program sitecmp (Version 1.0)  <----<< 
 
 Finished running site compare for network  SEARCH_Daily . 
 
+``
+
 Then it indicates that the $AMETBASE/scripts_db/input_files/AQ_species_list.input  file contains variables that are not available in the COMBINE output file.
 
-* Check the sizes of the output csv files in the same directory
+the AQ_species_list.input file is mechanism dependent, and if one or more species is not found then sitecmp will not do the matching between obs and model data.
+
+The AQ_species_list.input file will need to be edited to remove the species that are not available in the combine output file, and reordered, so for example
+
+```
+
+
+* Also check the sizes of the output csv files in the same directory
 
 Example, for the project aqExample
 ```
@@ -430,4 +452,5 @@ ls -rlt *.csv
 -rw-rw-r-- 1 lizadams rc_cep-emc_psx    1281457 May 13 15:08 NAPS_Daily_O3_aqExample.csv
 -rw-rw-r-- 1 lizadams rc_cep-emc_psx     500385 May 17 10:29 CASTNET_Daily_aqExample.csv
 ```
+
 
