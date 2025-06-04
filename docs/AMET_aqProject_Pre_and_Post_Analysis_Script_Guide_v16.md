@@ -418,7 +418,7 @@ Finished running site compare for network  AQS_Hourly .
 
 Finished running site compare for network  SEARCH_Daily . 
 
-``
+```
 
 Then it indicates that the $AMETBASE/scripts_db/input_files/AQ_species_list.input  file contains variables that are not available in the COMBINE output file.
 
@@ -426,7 +426,6 @@ the AQ_species_list.input file is mechanism dependent, and if one or more specie
 
 The AQ_species_list.input file will need to be edited to remove the species that are not available in the combine output file, and reordered, so for example
 
-```
 
 
 * Also check the sizes of the output csv files in the same directory
