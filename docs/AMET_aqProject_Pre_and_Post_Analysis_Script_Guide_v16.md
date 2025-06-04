@@ -14,7 +14,7 @@ AMET aqProject Pre- and Post- Analysis Script Guide v1.6
 &nbsp;&nbsp;&nbsp;&nbsp;[2.7 AMET configuration options](#amet)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2.8 Evaluation plotting configuration options](#plots)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2.9 Execution of all post-processing steps](#execute)<br>
-[3. Debugging Errors](#Debug)<br>
+[3. Debugging](#Debug)<br>
 
 <a id="Overview"></a>1. Overview
 ===========
