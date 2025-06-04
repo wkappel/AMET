@@ -7,7 +7,7 @@ header <- "
 ### simulations on a single plot. Additionally, summary statistics are also included on the
 ### plot. The script will also allow a second run to plotted on top of the first run. 
 ###
-### Last Updated by Wyat Appel: Mar 2021
+### Last Updated by Wyat Appel: June 2025 
 ##################################################################################
 "
 
@@ -18,37 +18,39 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set file names and titles ###
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot.png",sep="_")             # Set PNG filename
 filename_txt <- paste(run_name1,species,pid,"scatterplot.csv",sep="_")       # Set output file name
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
 
 #################################
 
-axis.max     <- NULL
-num_obs      <- NULL
-sinfo        <- NULL
-sinfo2	     <- NULL
-avg_text     <- ""
-legend_names <- NULL
-legend_cols  <- NULL
-legend_chars <- NULL
-point_char   <- NULL
-point_color  <- NULL
+###################################
+### Set variable initial values ###
+###################################
+axis.max     	<- NULL
+num_obs      	<- NULL
+sinfo        	<- NULL
+sinfo2	     	<- NULL
+avg_text     	<- ""
+legend_names 	<- NULL
+legend_cols  	<- NULL
+legend_chars 	<- NULL
+point_char   	<- NULL
+point_color  	<- NULL
+network 	<- network_names[1]
+run_names 	<- NULL
+run_names 	<- run_name1
+###################################
 
-network <- network_names[1]
-
-run_names <- NULL
-run_names <- run_name1
 {
    if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
       run_names <- c(run_names,run_name2)
@@ -241,9 +243,7 @@ for (i in 1:length(run_names)) {
       ######################################
 
       ### Preset values for plot characters and colors (these can be changed to user preference) ###
-#      plot_chars <- c(1,2,3,4,5)                                 	# set vector of plot characters
       plot_chars <- c(1,1,1,1,1,1)
-      #plot_colors <- c("red","blue","green","purple","orange")
       ##############################################################################################
       pdf(file=filename_pdf,width=8,height=8)
       ### Plot and draw rectangle with stats ###

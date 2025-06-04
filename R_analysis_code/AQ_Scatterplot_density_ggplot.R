@@ -8,7 +8,7 @@ header <- "
 ### from lower density areas. This script will plot a single species for a single network
 ### using the R ggplot and plotly packages.  
 ###
-### Last Updated by Wyat Appel: 03/2025
+### Last Updated by Wyat Appel: June 2025 
 ####################################################################################
 "
 
@@ -24,34 +24,38 @@ if(!require(ggplot2))             { stop("Required Package ggplot2 was not loade
 if(!require(plotly))              { stop("Required Package plotly was not loaded") }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
-### Set file names and titles ###
+## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
    else { title <- custom_title }
 }
 
-filename_pdf <- paste(run_name1,species,pid,"scatterplot_density_ggplot.pdf",sep="_")             # Set PDF filename
-filename_png <- paste(run_name1,species,pid,"scatterplot_density_ggplot.png",sep="_")             # Set PNG filename
-filename_txt <- paste(run_name1,species,pid,"scatterplot_density_ggplot.csv",sep="_")       # Set output file name
-filename_html <- paste(run_name1,species,pid,"scatterplot_density_ggplot.html",sep="_")
+## Create output file names
+filename_pdf 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.pdf",sep="_")             # Set PDF filename
+filename_png 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.png",sep="_")             # Set PNG filename
+filename_txt 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.csv",sep="_")       # Set output file name
+filename_html 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.html",sep="_")
 
-## Create a full path to file
-filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
-filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
-filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-filename_html <- paste(figdir,filename_html,sep="/")
-
+## Create a full path to output files
+filename_pdf 	<- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
+filename_png 	<- paste(figdir,filename_png,sep="/")      # Set PNG filenam
+filename_txt 	<- paste(figdir,filename_txt,sep="/")      # Set output file name
+filename_html 	<- paste(figdir,filename_html,sep="/")
 #################################
 
-axis.max      <- NULL
-axis.min      <- NULL
-number_bins   <- NULL
-dens_zlim     <- NULL
-network <- network_names[1]
-
+######################################
+## Set some initial variable values ##
+######################################
+axis.max      	<- NULL
+axis.min      	<- NULL
+number_bins   	<- NULL
+dens_zlim     	<- NULL
+network 	<- network_names[1]
 run_name 	<- run_name1
 network 	<- network_names[[1]]						# Set network
+######################################
+
 {
    if (Sys.getenv("AMET_DB") == 'F') {
       sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_name1,species)

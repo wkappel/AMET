@@ -8,7 +8,7 @@ header <- "
 ### is in the database).  Two model runs must be provided.  The script attempts
 ### to match all points in one run with all points in the other run.  
 ###
-### Last Updated by Wyat Appel: May 2025
+### Last Updated by Wyat Appel: June 2025 
 ##########################################################################
 "
 
@@ -19,25 +19,21 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
+## Set some defaults
 network <- network_names[1] 														# Use first network to set units
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")	# Query to be used 
-################################################
-
-### Set file names and titles ###
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1," vs ",run_name2," ",species," for ",dates,sep="") }
    else { title <- custom_title }
 }
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_mtom.pdf",sep="_")   # Set filename for pdf format file
 filename_png <- paste(run_name1,species,pid,"scatterplot_mtom.png",sep="_")   # Set filename for png format file
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")                          # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")                          # Set PNG filenam
-
 #################################
 
 axis.max 	 <- NULL
@@ -81,10 +77,8 @@ for (j in 1:length(network_names)) {						# Loop through for each network
       else {
          aqdat1.df <- aqdat_query.df
          aqdat2.df <- aqdat_query2.df
-#         aqdat1.df$ob_dates	<- aqdat1.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
-#         aqdat2.df$ob_dates	<- aqdat2.df[,5]		# remove hour,minute,second values from start date (should always be 000000 anyway, but could change)
 
-         ### Match the points between each of the runs.  This is necessary if the data from each query do not match exactly ###
+	 ### Match the points between each of the runs.  This is necessary if the data from each query do not match exactly ###
          aqdat1.df$statdate<-paste(aqdat1.df$stat_id,aqdat1.df$ob_dates,aqdat1.df$ob_hour,sep="")	# Create unique column that combines the site name with the ob start date for run 1
          aqdat2.df$statdate<-paste(aqdat2.df$stat_id,aqdat2.df$ob_dates,aqdat2.df$ob_hour,sep="")	# Create unique column that combines the site name with the ob start date for run 2
          {

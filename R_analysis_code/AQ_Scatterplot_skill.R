@@ -9,7 +9,7 @@ header <- "
 ### calculated based on the user specified criteria. So, it may be used with any species.
 ### Output format is png, pdf or both.
 ###
-### Last Updated by Wyat Appel: Feb 2020
+### Last Updated by Wyat Appel: June 2025 
 #####################################################################################
 "
 
@@ -20,48 +20,42 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set file names and titles ###
+## Set some defaults 
+network 	<- network_names[1]
+run_name 	<- run_name1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
    else { title <- custom_title }
 }
 
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_skill.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot_skill.png",sep="_")             # Set PNG filename
 filename_txt <- paste(run_name1,species,pid,"scatterplot_skill.csv",sep="_")       # Set output file name
 
-
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
 #################################
 
-axis.max     <- NULL
-num_obs      <- NULL
-sinfo        <- NULL
-avg_text     <- ""
-legend_names <- NULL
-legend_cols  <- NULL
-legend_chars <- NULL
-point_char   <- NULL
-point_color  <- NULL
-
-hit_exceed    <- 0
-hit_nonexceed <- 0
-miss_exceed   <- 0
-false_alarm   <- 0
-
-### Retrieve units and model labels from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-run_name <- run_name1
-network <- network_names[[1]]						# Set network
+###################################
+### Set variable initial values ###
+###################################
+axis.max     	<- NULL
+num_obs      	<- NULL
+sinfo        	<- NULL
+avg_text     	<- ""
+legend_names 	<- NULL
+legend_cols  	<- NULL
+legend_chars	<- NULL
+point_char   	<- NULL
+point_color  	<- NULL
+hit_exceed    	<- 0
+hit_nonexceed 	<- 0
+miss_exceed   	<- 0
+false_alarm   	<- 0
 
 #############################################
 ### Read sitex file or query the database ###
@@ -272,7 +266,6 @@ text(x=axis.max,y=y[1],sprintf("%.1f",Bias),adj=c(1,0))
 text(x=axis.max,y=y[3],sprintf("%.1f",CSI),adj=c(1,0))
 text(x=axis.max,y=y[4],sprintf("%.1f",POD),adj=c(1,0))
 text(x=axis.max,y=y[5],sprintf("%.1f",FAR),adj=c(1,0))
-
 text(x=axis.max*0.07,y=y[18],paste("(",units,")",sep=""),adj=c(0,0),cex=.8)
 text(x=axis.max*0.01,y=y[10],"r ",adj=c(0,0),cex=.8)
 text(x=axis.max*0.01,y=y[11],"RMSE ",adj=c(0,0),cex=.8)
