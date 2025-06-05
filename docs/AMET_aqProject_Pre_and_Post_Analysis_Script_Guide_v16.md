@@ -385,9 +385,38 @@ date -ud "2018-06-30+1days" +%Y-%m-%d
 <a id="Debug"></a>3. Debugging 
 ===========
 
-Diagnose sitecmp errors and verify that sitex csv files are created for each network. 
+* Diagnose MariaDB version errors.
 
-* Check for errors in the log file
+```
+./aqProject_pre_and_post.csh |& tee ./aqProject_pre_and_post.log.5 
+
+**Setting up AMET database if needed** 
+
+Checking to see if the database amet already exists, creating it if it does not...done.  
+
+Error in .valueClassTest(ans, "character", "dbListTables") :  
+
+  invalid value from generic function ‘dbListTables’, class “numeric”, expected “character” 
+
+Calls: dbListTables -> .valueClassTest 
+
+In addition: Warning message: 
+
+In dbSendQuery(conn, statement, ...) : 
+
+  Decimal MySQL column 0 imported as numeric 
+
+Execution halted 
+
+Error setting up AMET database 
+```
+
+This error may be due to SSL/TSL Security issues with connecting to the database versions starting 11.0+, it is recommended to switch to an older version (MariaDB_10.6.8).
+
+
+* Diagnose sitecmp errors and verify that sitex csv files are created for each network. 
+
+Check for errors in the log file
 Note, you need to set the environment variables RUNID and DATE that correspond to the project.
 
 ```
@@ -455,7 +484,7 @@ ls -rlt *.csv
 -rw-rw-r-- 1 lizadams rc_cep-emc_psx     500385 May 17 10:29 CASTNET_Daily_aqExample.csv
 ```
 
-* Also check for errors when creating the plots that are saved to the *.Rout files.
+* Check for errors when creating the plots that are saved to the *.Rout files.
 
 ```
 cd $AMETBASE/output/aqExample_2016/plots 
