@@ -388,8 +388,13 @@ date -ud "2018-06-30+1days" +%Y-%m-%d
 * Diagnose MariaDB version errors.
 
 ```
-./aqProject_pre_and_post.csh |& tee ./aqProject_pre_and_post.log.5 
+./aqProject_pre_and_post.csh |& tee ./aqProject_pre_and_post.log
+grep -i error aqProject_pre_and_post.log
+```
 
+Output:
+
+```
 **Setting up AMET database if needed** 
 
 Checking to see if the database amet already exists, creating it if it does not...done.  
@@ -411,7 +416,7 @@ Execution halted
 Error setting up AMET database 
 ```
 
-This error may be due to SSL/TSL Security issues with connecting to the database versions starting 11.0+, it is recommended to switch to an older version (MariaDB_10.6.8).
+This dbListTables error may be due to SSL/TSL Security issues with connecting to the database versions starting 11.0+, it is recommended to switch to an older version (MariaDB_10.6.8).
 
 
 * Diagnose sitecmp errors and verify that sitex csv files are created for each network. 
