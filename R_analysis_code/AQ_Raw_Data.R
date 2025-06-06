@@ -7,7 +7,7 @@ header <- "
 ### use in spreadsheet programs. Single simulation, single network,
 ### single species.
 ###
-### Last Updated by Wyat Appel: Dec 2020
+### Last Updated by Wyat Appel: June 2025 
 ################################################################
 "
 
@@ -18,14 +18,14 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
+## Set output file names
 filename_txt <- paste(run_name1,pid,"rawdata.csv",sep="_")     # Set output file name
 filename_txt <- paste(figdir,filename_txt,sep="/")     # Set output file name
 
+## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-network <- network_names[1]
-################################################
-network <- network_names[1]
-run_name <- run_name1
+network 	<- network_names[1]
+run_name 	<- run_name1
 {
    if (Sys.getenv("AMET_DB") == 'F') {
       sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_name[j],species)

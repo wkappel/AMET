@@ -1180,7 +1180,8 @@ Average<-function(datain.df,avg_func="mean") {
             Lats	<- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
             Lons	<- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique))
             Years       <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
-	    Networks	<- c(Networks,tapply(data_split.df$Network,data_split.df$Stat_ID,unique))
+#	    Networks	<- c(Networks,tapply(data_split.df$Network,data_split.df$Stat_ID,unique))
+	    Networks 	<- c(Networks,tapply(data_split.df$Network, data_split.df$Stat_ID, function(x) x[1]))
             avg_text    <- paste(avg_text_1, avg_func,sep="")
          }
       }
@@ -1640,7 +1641,7 @@ find_common_sites_species <- function(run_names_in,network,species,criteria="Def
 ### Function to AQ query database ###
 #####################################
 
-query_dbase <- function(project_id,networks.in,species.in,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"))
+query_dbase <- function(project_id,networks.in,species.in,rm_negs=remove_negatives,criteria="Default",orderby=c("stat_id","ob_dates","ob_hour"))
 {
 aqdat_query_out.df <- NULL
 criteria_in <- criteria
@@ -1743,7 +1744,7 @@ for(j in 1:length(networks.in)) {
                   indic.missing <- aqdat_query.df[,ob_col] < 0  # Check for observations that are less than zero 
                   aqdat_query.df[indic.missing,ob_col] <- 0     # Replace those observations with 0 (we assume a valid observation, just not negative). Applies primarily to NTN networks (i.e. NADP, AMON, MDN)
                }
-               if ((remove_negatives == 'y') || (remove_negatives == 'Y') || (remove_negatives == 't') || (remove_negatives == 'T')) {
+               if ((rm_negs == 'y') || (rm_negs == 'Y') || (rm_negs == 't') || (rm_negs == 'T')) {
                   indic.nonzero       <- aqdat_query.df[,ob_col] >= 0
                   aqdat_query.df      <- aqdat_query.df[indic.nonzero,]
                   indic.nonzero       <- aqdat_query.df[,mod_col] >= 0
@@ -1757,12 +1758,14 @@ for(j in 1:length(networks.in)) {
                   aqdat_query.df <- aqdat_temp.df
                }
             }
+#	    print(aqdat_query.df)
          }
          else {
             data_exists_flag <- "n"
          }
       }
    }
+#   print(aqdat_query.df)
    if (data_exists_flag == "y") {
       if (length(query_table_info.df$COLUMN_NAME) == 0) { aqdat_query.df$POCode <- 1 }
       if ((aggregate_data == 'y') || (aggregate_data == 'Y') || (aggregate_data == 't') || (aggregate_data == 'T')) {
@@ -1943,6 +1946,7 @@ get_title <- function(run_names,species,network_label,dates,custom_title="",site
       my_title <- custom_title
       {
          network <- paste(network_label,collapse=", ")
+         species <- paste(species,collapse=", ")
          if ((custom_title == "") && (length(run_names) == 1)) { 
             my_title <- paste(network,run_name1,species,sep=", ")
             if (bias == "T") { my_title <- paste(run_name1,species,"Bias",sep=", ") }
