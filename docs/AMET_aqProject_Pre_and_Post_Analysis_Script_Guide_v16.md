@@ -14,10 +14,17 @@ AMET aqProject Pre- and Post- Analysis Script Guide v1.6
 &nbsp;&nbsp;&nbsp;&nbsp;[2.7 AMET configuration options](#amet)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2.8 Evaluation plotting configuration options](#plots)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2.9 Execution of all post-processing steps](#execute)<br>
+[3. Debugging](#Debug)<br>
 
 <a id="Overview"></a>1. Overview
 ===========
 This run script controls execution of multiple post-processing and evaluation steps including running combine, sitecmp, sitecmp_dailyo3, loading matched model/obs data (i.e. sitecmp files) into the AMET database and creating AMET "batch" evaluation plots. It contains most of the functionality of the aqProject.csh script (without the database setup and initialization), but adds additional upfront post-processing, specifically running the combine and hr2day programs and backend AMET batch plot creation. This script is intended to be used as a "master" post-processing script used after a CMAQ simulation is complete, performing all the tasks necessary to take raw model output and produce AMET plots in a structured output directory.
+
+Set the environment variable $AMETBASE to your local path
+
+```
+setenv AMETBASE /your_local_path/AMET_v16
+```
 
 Location of run script: 
 ```
@@ -76,15 +83,15 @@ A user can choose to do all of the steps at once or run the script multiple time
  SITE_FILE_FORMAT       Format of site compare site files to use. Options are csv or txt. Latest version of site compare uses CSV files.
  START_DATE_H           Start day. Should be in format "YYYY-MM-DD".
  END_DATE_H             End day. Should be in format "YYYY-MM-DD".
- VRSN                   Model version, e.g. v52
- MECH                   Mechanism ID (should match file name of species definition files, e.g. cb6r3_ae6_aq
+ VRSN                   Model version, e.g. v55
+ MECH                   Mechanism ID (should match file name of species definition files, e.g. cb6r5_ae6_aq
  APPL                   Application Name (e.g. Code version, compiler, gridname, emissions, etc.)
  METDIR                 Location of MET output.
  METCRO2D_NAME          METCRO2D file name (without date and file extension).
  METCRO3D_NAME          METCRO3D file name (without date and file extension).
  CCTMOUTDIR             Location of CCTM output.
  CCTM_ACONC_NAME        ACONC file name (without date and file extension).
- CCTM_APMDIAG_NAME      APMDIAG file name (without date and file extension).
+ CCTM_AELMO_NAME        AELMO file name (without date and file extension).
  CCTM_WETDEP1_NAME      WETDEP1 file name (without date and file extension).
  CCTM_DRYDEP_NAME       DRYDEP file name (without date and file extension).
  POSTDIR                Location to write combine files. (Or location of existing combine files).
@@ -98,12 +105,13 @@ __Required Met and CCTM files__
 1. **METCRO2D** - needed for instantaneous hourly surface temperature (TEMP2), planetary boundary height (PBL), solar radiation (RGRND), 10m wind speed (WSDP10), 10m wind direction (WDIR10), precipitation (RN+RC). 
 2. **METCRO3D** - needed for instantaneous hourly air density (DENS) which is used in unit conversions of gas and aerosol species
 3. **CCTM_ACONC** - needed for hourly average gas and aerosol modeled species time stamped at the top of the hour
-4. **CCTM_APMDIAG** - needed for hourly average relative humidity (RH) and modeled aerosol mode parameters time stamped at the top of the hour
+4. **CCTM_AELMO** or **CCTM_APMDIAG** - needed for hourly average relative humidity (RH) and modeled aerosol mode parameters time stamped at the top of the hour
 5. **CCTM_WETDEP1** - needed for hourly summed gas and aerosol wet deposition species time stamped at the top of the hour
 6. **CCTM_DRYDEP** - needed for hourly summed gas and aerosol dry deposition species time stamped at the top of the hour
 
 *Notes*
-* PM2.5 modeled size distributions from the CCTM_APMDIAG file are used to calculate PM2.5 species with a cut-off diameter of 2.5μm or less.  These species begin with "PM" in the species definition files provided in the CMAQ code base for version 5.2 or later. For example, PM25_NA is all sodium that falls below 2.5μm diameter.  These 'PM' variables are used for comparisons at IMPROVE and CSN sites.
+* PM2.5 modeled size distributions from the CCTM_AELMO or CCTM_APMDIAG file are used to calculate PM2.5 species with a cut-off diameter of 2.5μm or less.  These species begin with "PM" in the species definition files provided in the CMAQ code base for version 5.2 or later. For example, PM25_NA is all sodium that falls below 2.5μm diameter.  These 'PM' variables are used for comparisons at IMPROVE and CSN sites.
+* In CMAQv5.4 The ELMO Module was created to output the aerosol variables to the ELMO and AELMO files. 
 * Prior to CMAQv5.2, aerosol modeled size distributions were contained in the AERODIAM file which contained instantaneous hourly model variables starting with hour 1.  In CMAQv5.2 the CCTM_APMDIAG output was created to produce hourly average model variables starting with hour 0 which is analogous to the structure of the CCTM_ACONC output file.  This script is structured to *only* work with the CCTM_APMDIAG file for extracting model size distributions.  If the CCTM_APMDIAG file was not produced by the model simulation (by setting CTM_APMDIAG flag to F in the run_cctm.csh run script) then this evaluation script can be modified to remove the dependency on the CCTM_APMDIAG file.  See section 4 for more details.
 * Surface temperature and relative humidity are used to calculate an "FRM equivalent" PM2.5 total estimate that accounts for loss of particle nitrate, sulfate and ammonium from the FRM sampling filters. These species are labeled with "\_FRM" in the concentration species definition files provided in the CMAQ code base for versions 5.2 and later, i.e. PMIJ_FRM and PM25_FRM.
 
@@ -144,17 +152,17 @@ For a 2-week simulation that spans two months, e.g. 6/15/2011 - 7/15/2011, evalu
 -------------------------------------
 ```
  compiler         Compiler used to compile combine, sitecmp, sitecmp_dailyo3 (e.g. intel, gcc, pgi)
- compilerVrsn     Compiler version (e.g. 17.0.3)
+ compilerVrsn     Compiler version (e.g. 18.0)
  CMAQ_HOME        Location of CMAQ project directory (see Notes below)
  OBS_DATA_DIR     Location of the sitecmp-ready observation data 
- AMETBASE         Location of AMETv1.3 code base
+ AMETBASE         Location of AMETv1.6 code base
  ```
 *Notes*
 
 Prior to running this post-processing run script, the user is encouraged to build their own executables for the combine, sitecmp and sitecmp_dailyo3 executables using the following steps:
-1. Clone the 5.3.3 branch of the USEPA CMAQ GitHub repository: 
+1. Clone the main branch of the USEPA CMAQ GitHub repository: 
   ```
-  gitclone -b 5.3.3 https://github.com/USEPA/CMAQ.git CMAQ533_repo
+  gitclone -b main https://github.com/USEPA/CMAQ.git CMAQ
   ```
 2. Edit and run bldit_project.csh to create a CMAQ “Project” space:
    ```
@@ -176,7 +184,7 @@ Prior to running this post-processing run script, the user is encouraged to buil
 
 * CMAQ_HOME should be set to the project directory used in the bldit_project.csh script in step 2.  If you are not using a CMAQ5.3.3 repository you can comment out the line for CMAQ_HOME in section 3 and modify the location of the executables and the spec_def files in sections 4 and 5.
 * OBS_DATA_DIR should be set to the location of the observation data from the different routine networks of interest.  These observation files need to be formatted to be compatible with the sitecmp and sitecmp_dailyo3 utilities.  The pre-formatted files are already available on atmos under the directory /work/MOD3EVAL/aq_obs/routine, but can also be downloaded from the  [CMAS Center Data Clearinghouse](https://www.cmascenter.org/download/data.cfm) under the heading "2000-2015 North American Air Quality Observation Data".
-* AMETBASE should be set to the location of the AMETv1.3 code base.  These files are already available on atmos under the directory /work/MOD3EVAL/amet.  They can also be cloned directly from GitHub using the command  `gitclone -b 1.3 https://github.com/USEPA/AMET.git AMET13_repo` 
+* AMETBASE should be set to the location of the AMETv1.6 code base.  These files are already available on atmos under the directory /work/MOD3EVAL/amet.  They can also be cloned directly from GitHub using the command  `gitclone -b 1.6 https://github.com/USEPA/AMET.git AMET16_repo` 
 
 <a id="combine"></a>Section 4: Combine configuration options
 -------------------------------------
@@ -187,7 +195,7 @@ Prior to running this post-processing run script, the user is encouraged to buil
 ```
 This section sets the location of the combine executable and the species definition files for concentration and deposition species.  If ${CMAQ_HOME}, ${compiler}, and ${compilerVrsn} have been set in section 3 then these paths are automatically set and no additional changes are needed in this section.  
 
-The combine Fortran utility combines fields from a set of IOAPI or wrfout files into a single output file. The SPEC_CONC and SPEC_DEP species definition files are used to specify how the concentrations of raw output species from CMAQ should be aggregated or transformed into variables of interest. For example, the concentrations of NO and NO2 from CMAQ can be added together to yield the concentration of NOx. Examples of possible post-processing expressions are shown in the sample species definition files released with CMAQv5.3.3 under the [CCTM/src/MECHS](https://github.com/USEPA/CMAQ/tree/5.2/CCTM/src/MECHS) folder. Because each chemical mechanism being used in CMAQ differs in the number and kind of species it treats, the sample species definition files provided have been labeled according to the mechanism each corresponds to, i.e. "SpecDef\_${MECH}.txt" for concentration species and "SpecDef\_Dep\_${MECH}.txt" for deposition species.
+The combine Fortran utility combines fields from a set of IOAPI or wrfout files into a single output file. The SPEC_CONC and SPEC_DEP species definition files are used to specify how the concentrations of raw output species from CMAQ should be aggregated or transformed into variables of interest. For example, the concentrations of NO and NO2 from CMAQ can be added together to yield the concentration of NOx. Examples of possible post-processing expressions are shown in the sample species definition files released with CMAQv5.3.3 under the [CCTM/src/MECHS](https://github.com/USEPA/CMAQ/tree/5.5/CCTM/src/MECHS) folder. Because each chemical mechanism being used in CMAQ differs in the number and kind of species it treats, the sample species definition files provided have been labeled according to the mechanism each corresponds to, i.e. "SpecDef\_${MECH}.txt" for concentration species and "SpecDef\_Dep\_${MECH}.txt" for deposition species.
 
 *Notes*
 * All the species listed in the species definition files need to be output when CMAQ is being run. One option is to set the ACONC output to be all species.  
@@ -197,7 +205,7 @@ The combine Fortran utility combines fields from a set of IOAPI or wrfout files 
 ```
  #layer         1
 / File [1]: CMAQ conc/aconc file
-/ File [2]: APMDIAG file
+/ File [2]: AELMO/APMDIAG file
 /new species    ,units     ,expression
 
 O3              ,ppbV      ,1000.0\*O3[1]
@@ -212,7 +220,7 @@ ATOTK           ,ug/m3     ,ASOIL[1]+ACORS[1]+ASEACAT[1]+ACLK[1]+ASO4K[1] \
 PM25_TOT        ,ug/m3     ,ATOTI[0]*PM25AT[2]+ATOTJ[0]*PM25AC[2]+ATOTK[0]*PM25CO[2]
 ```
 2. In section 5 only select networks that have observation data for O3, NOx or PM2.5.
-3. In section 8a set INFILE1 to the CCTM_ACONC file and INFILE2 to the CCMT_APMDIAG file. Comment out lines for INFILE3 and INFILE4.
+3. In section 8a set INFILE1 to the CCTM_ACONC file and INFILE2 to the CCTM_AELMO or CCTM_APMDIAG file. Comment out lines for INFILE3 and INFILE4.
 4. Since there are no deposition species listed in the species definition file, remove or comment out section 8b which is used to create combine files of deposition species.
 
 <a id="combine"></a>Section 5: HR2DAY configuration options
@@ -281,7 +289,7 @@ The hr2day Fortran utility takes hourly model data and computes various daily av
  O3_UNITS                  Ozone units to use in output (ppb by default)
  PRECIP_UNITS              Precipitation units used in WDEP file (cm by default)  
 ```
-The following table provides the list of available observations from each network.  Additional information on these routine network observational datasets is available in [Section 4.2 of the the AMETv1.3 User's Guide on GitHub](https://github.com/USEPA/AMET/blob/1.3/docs/AMET_Users_Guide_v1.md#Observational_Data)
+The following table provides the list of available observations from each network.  Additional information on these routine network observational datasets is available in [Section 4.2 of the the AMET User's Guide on GitHub](https://github.com/USEPA/AMET/blob/1.6/docs/AMET_Users_Guide_v16.md#Observational_Data)
 
 | Network       | Available Species                                     | Notes |
 | ------------- |-------------------------------------------------------| -------|
@@ -317,14 +325,14 @@ The following table provides the list of available observations from each networ
 <a id="amet"></a> Section 6: AMET configuration options
 -------------------------------------
 ```
- AMET_DATABASE             AMET database name, e.g. amad_CMAQ_v52_Dev. Model to model 
+ AMET_DATABASE             AMET database name, e.g. amad_CMAQ Model to model 
                            comparisons are possible for all projects loaded within the same database. If you're unsure
                            which AMET database to use, amad_AMAD_AQ is a "catch-all" database for miscellaneous projects.
- AMET_PROJECT              AMET project name, e.g. v52_intel17_0_SE52BENCH.  Character string 
+ AMET_PROJECT              AMET project name, e.g. v55_intel_12NE3BENCH.  Character string 
                            cannot include ".", and should avoid special characters. Project will be created if it does not 
                            already exist.
  MODEL_TYPE                Type of model being evaluated, e.g. "CMAQ"
- RUN_DESCRIPTION           Meta data for the simulation, e.g. "CMAQv5.2 benchmark test case."
+ RUN_DESCRIPTION           Meta data for the simulation, e.g. "CMAQ benchmark test case."
  USER_NAME                 User name, e.g. "myuserid" , or can be set to `whoami`
  EMAIL_ADDR                User email address, e.g. "user.name@epa.gov". Currently not used for anything in AMET.
 ```
@@ -378,4 +386,130 @@ date -ud "2018-06-30" +%Y%j
 ```
 date -ud "2018-06-30+1days" +%Y-%m-%d
 2018-07-01
+```
+
+<a id="Debug"></a>3. Debugging 
+===========
+
+* Diagnose MariaDB version errors.
+
+```
+./aqProject_pre_and_post.csh |& tee ./aqProject_pre_and_post.log
+grep -i error aqProject_pre_and_post.log
+```
+
+Output:
+
+```
+**Setting up AMET database if needed** 
+
+Checking to see if the database amet already exists, creating it if it does not...done.  
+
+Error in .valueClassTest(ans, "character", "dbListTables") :  
+
+  invalid value from generic function ‘dbListTables’, class “numeric”, expected “character” 
+
+Calls: dbListTables -> .valueClassTest 
+
+In addition: Warning message: 
+
+In dbSendQuery(conn, statement, ...) : 
+
+  Decimal MySQL column 0 imported as numeric 
+
+Execution halted 
+
+Error setting up AMET database 
+```
+
+This dbListTables error may be due to SSL/TSL Security issues with connecting to the database versions starting 11.0+, it is recommended to switch to an older version (MariaDB_10.6.8).
+
+
+* Diagnose sitecmp errors and verify that sitex csv files are created for each network. 
+
+Check for errors in the log file
+Note, you need to set the environment variables RUNID and DATE that correspond to the project.
+
+```
+setenv RUNID aqExample
+setenv DATE  201601
+grep -i ERROR -B 4 $AMETBASE/output/$RUNID/sitex_output/$DATE/amet_extract_all*.log
+```
+
+If you see an error such as the following:
+
+```
+ *** ERROR ABORT in subroutine PROCESS 
+
+     Observed Speices [PM10_81102] not found 
+
+     >>---->  Program sitecmp (Version 1.0)  <----<< 
+
+Finished running site compare for network  AQS_Hourly . 
+```
+
+
+```
+ *** ERROR ABORT in subroutine PROCESS 
+
+     Observed Speices [PM25_Tef_Sulfate [ug/m3]] not found 
+
+     >>---->  Program sitecmp (Version 1.0)  <----<< 
+
+Finished running site compare for network  SEARCH_Daily . 
+
+```
+
+Then it indicates that the $AMETBASE/scripts_db/input_files/AQ_species_list.input  file contains variables that are not available in the COMBINE output file.
+
+the AQ_species_list.input file is mechanism dependent, and if one or more species is not found then sitecmp will not do the matching between obs and model data.
+
+The AQ_species_list.input file will need to be edited to remove the species that are not available in the combine output file, and reordered.
+
+
+
+* Also check the sizes of the output csv files in the same directory
+
+Example, for the project aqExample
+```
+cd $AMETBASE/output/aqExample/sitex_output/201807/
+ls -lrt *.csv
+```
+
+Output: - all of the *.csv files should contain data if the sitecmp (comparing data in the combine file with the observational data) for each network was successful for the time period specified in the script.
+
+```
+ls -rlt *.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    1439473 May 13 13:47 IMPROVE_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    9068634 May 13 13:47 CSN_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx     264861 May 13 13:47 CASTNET_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx   17056629 May 13 13:48 CASTNET_Hourly_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx      95292 May 13 13:48 CASTNET_Drydep_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx     477347 May 13 13:49 NADP_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx      18787 May 13 13:49 AMON_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    8487431 May 13 13:53 AQS_Daily_O3_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx   57403007 May 13 13:55 AQS_Daily_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx 1090300120 May 13 14:25 AQS_Hourly_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx   57348985 May 13 15:05 NAPS_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx    1281457 May 13 15:08 NAPS_Daily_O3_aqExample.csv
+-rw-rw-r-- 1 lizadams rc_cep-emc_psx     500385 May 17 10:29 CASTNET_Daily_aqExample.csv
+```
+
+* Check for errors when creating the plots that are saved to the *.Rout files.
+
+```
+cd $AMETBASE/output/aqExample_2016/plots 
+
+grep -i Error *.Rout | sort -u
+
+```
+
+Example errors:
+
+```
+Run_Misc_Plots_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Scatter_Plots_All_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Spatial_Plots_All_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Stacked_Barplot_All_Batch.Rout:Error in eval(ei, envir) : object 'site' not found 
+Run_Time_Plots_All_Batch.Rout:Error in eval(ei, envir) : object 'All_Data.df' not found 
 ```

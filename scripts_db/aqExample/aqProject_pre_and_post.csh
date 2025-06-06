@@ -136,13 +136,13 @@ setenv RUNID ${APPL}
  set METCRO2D_NAME = METCRO2D                   #> METCRO2D file name (without date and file extension).
  set METCRO3D_NAME = METCRO3D                   #> METCRO3D file name (without date and file extension).
 
-#> Name and location of daily CCTM output. Required files = ACONC, APMDIAG, WETDEP1, DRYDEP.
+#> Name and location of daily CCTM output. Required files = ACONC, AELMO, WETDEP1, DRYDEP.
 #> This script assumes daily CCTM output files are dated with the following naming convention:
 #> [File Name]_${YYYY}${MM}${DD}.nc where [File Name] typically = [File Type]_[Application ID].
-#> for example: CCTM_ACONC_v52_intel17.0_SE52BENCH_${YYYY}${MM}${DD}.nc
+#> for example: CCTM_ACONC_v55_intel_12NE3BENCH_${YYYY}${MM}${DD}.nc
  setenv CCTMOUTDIR  /path/SE53BENCH/multi_day/ref_output/cctm    #> Location of CCTM output.
  set CCTM_ACONC_NAME    = CCTM_ACONC_${RUNID}    #> ACONC file name (without date and file extension).
- set CCTM_APMDIAG_NAME  = CCTM_APMDIAG_${RUNID}  #> APMDIAG file name (without date and file extension).
+ set CCTM_AELMO_NAME  = CCTM_AELMO_${RUNID}    #> AELMO file name (without date and file extension).
  set CCTM_WETDEP1_NAME  = CCTM_WETDEP1_${RUNID}  #> WETDEP1 file name (without date and file extension).
  set CCTM_DRYDEP_NAME   = CCTM_DRYDEP_${RUNID}   #> DRYDEP file name (without date and file extension).
 
@@ -156,8 +156,8 @@ setenv RUNID ${APPL}
  set HR2DAY_ACONC_NAME   = HR2DAY_ACONC_${RUNID}  #> Name of hr2day file (without date and file extension).
 
 #> If data for January of the following year exists, set paths and files names here
- # set APPL2 = v532_cb6r3_ae7_aq_WR413_MYR_STAGE_2018_12US1
- # setenv POSTDIR2 /work/MOD3EVAL/wtt/EQUATES/data/output_v532_cb6r3_ae7_aq_WR413_MYR_STAGE_2017_12US1/PostProcess
+ # set APPL2 = v55_cb6r5_ae7_aq_WR413_MYR_STAGE_2018_12US1
+ # setenv POSTDIR2 /work/MOD3EVAL/wtt/EQUATES/data/output_v55_cb6r5_ae7_aq_WR413_MYR_STAGE_2018_12US1/PostProcess
  # set COMBINE_ACONC_NAME2 = COMBINE_ACONC_${APPL2}                         #> Name of combine ACONC file (without date and file extension)
  # set COMBINE_DEP_NAME2   = COMBINE_DEP_${APPL2}                           #> Name of combine DEP file (without date and file extension).
  # set HR2DAY_ACONC_NAME2  = HR2DAY_LST_ACONC_${APPL2}                      #> Name of HR2DAY ACONC file (without date and file extension).
@@ -243,7 +243,8 @@ setenv RUNID ${APPL}
 #> Default is now 0.
  setenv TIME_SHIFT 0
 		
-#> Species list for matching model species names to names in observation data files. 
+#> Species list for matching model species names to names in observation data files
+ # setenv AQ_SPECIES_LIST ${AMETBASE}/scripts_db/input_files/AQ_species_list.input.CRACMM
  setenv AQ_SPECIES_LIST	${AMETBASE}/scripts_db/input_files/AQ_species_list.input
  
 #> Include specific species from the AERO6 chemical mechanism in the species list.
@@ -375,11 +376,11 @@ if (${RUN_COMBINE} == 'T') then
   #> Define name of input files needed for combine program.
   #> File [1]: CMAQ conc/aconc file
   #> File [2]: MCIP METCRO3D file
-  #> File [3]: CMAQ APMDIAG file
+  #> File [3]: CMAQ AELMO file
   #> File [4]: MCIP METCRO2D file
    setenv INFILE1 ${CCTMOUTDIR}/${CCTM_ACONC_NAME}_${YYYY}${MM}${DD}.nc
    setenv INFILE2 ${METDIR}/${METCRO3D_NAME}_${YYYY}${MM}${DD}.nc
-   setenv INFILE3 ${CCTMOUTDIR}/${CCTM_APMDIAG_NAME}_${YYYY}${MM}${DD}.nc
+   setenv INFILE3 ${CCTMOUTDIR}/${CCTM_AELMO_NAME}_${YYYY}${MM}${DD}.nc
    setenv INFILE4 ${METDIR}/${METCRO2D_NAME}_${YYYY}${MM}${DD}.nc
 
   #> Executable call:
