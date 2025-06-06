@@ -7,7 +7,7 @@ header <- "
 ### limited to a single network and species, but will accept multiple simulations. Output
 ### format is png, pdf or both.
 ###
-### Last Updated by Wyat Appel: Feb 2021
+### Last Updated by Wyat Appel: June 2025 
 ######################################################################################
 "
 
@@ -22,9 +22,17 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!require(stats))	{ stop("Required Package stats was not loaded") }
 if(!require(plotrix))	{ stop("Required Package plotrix was not loaded") }
 
-network <- network_names[1]
+## Set some defaults
+network 	<- network_names[1]
+run_count 	<- 1
+num_runs 	<- 1                                                                   # Set number of runs to 1
+run_name 	<- run_name1
+run_names 	<- run_name1
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- custom_title
+if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
 
-### Set file names and titles ###
+### Set output filenames 
 filename_ecdf_pdf 	<- paste(run_name1,species,pid,"ecdf.pdf",sep="_")				# Set PDF filename
 filename_ecdf_png 	<- paste(run_name1,species,pid,"ecdf.png",sep="_") 				# Set PNG filename
 filename_qq_pdf 	<- paste(run_name1,species,pid,"qq.pdf",sep="_")                          # Set PDF filename
@@ -34,7 +42,7 @@ filename_taylor_png 	<- paste(run_name1,species,pid,"taylor.png",sep="_")       
 filename_spectral_pdf 	<- paste(run_name1,species,pid,"periodogram.pdf",sep="_")                          # Set PDF filename
 filename_spectral_png 	<- paste(run_name1,species,pid,"periodogram.png",sep="_")                          # Set PNG filename
 
-## Create a full path to file
+## Create a full path to output files
 filename_ecdf_pdf       <- paste(figdir,filename_ecdf_pdf,sep="/")                              # Set PDF filename
 filename_ecdf_png       <- paste(figdir,filename_ecdf_png,sep="/")                              # Set PNG filename
 filename_qq_pdf         <- paste(figdir,filename_qq_pdf,sep="/")                          # Set PDF filename
@@ -43,15 +51,11 @@ filename_taylor_pdf     <- paste(figdir,filename_taylor_pdf,sep="/")            
 filename_taylor_png     <- paste(figdir,filename_taylor_png,sep="/")                          # Set PNG filename
 filename_spectral_pdf   <- paste(figdir,filename_spectral_pdf,sep="/")                          # Set PDF filename
 filename_spectral_png   <- paste(figdir,filename_spectral_png,sep="/")                          # Set PNG filename
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
-   else { title <- custom_title }
-}
-
 #################################
 
+###################################
+### Set variable initial values ###
+###################################
 axis.max     <- NULL
 qq.axis.max  <- NULL
 num_obs      <- NULL
@@ -63,15 +67,8 @@ legend_cols  <- NULL
 legend_chars <- NULL
 point_char   <- NULL
 point_color  <- NULL
+###################################
 
-### Retrieve units and model labels from database table ###
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-run_count <- 1
-num_runs <- 1									# Set number of runs to 1
-run_names <- run_name1
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2
    run_names <- c(run_names,run_name2)						# If so, set number of runs to 2
@@ -80,53 +77,51 @@ if ((exists("run_name3")) && (nchar(run_name3) > 0)) {
    num_runs <- 3                                                                # If so, set number of runs to 2
    run_names <- c(run_names,run_name3)
 }
-run_name <- run_name1
 
-network <- network_names[[1]]
-   for (j in 1:length(run_names)) {
-      run_name <- run_names[j]						# Set network
-      #############################################
-      ### Read sitex file or query the database ###
-      #############################################
+for (j in 1:length(run_names)) {
+   run_name <- run_names[j]						# Set network
+   #############################################
+   ### Read sitex file or query the database ###
+   #############################################
+   {
+      if (Sys.getenv("AMET_DB") == 'F') {
+         sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_name,species)
+         aqdat_query.df   <- sitex_info$sitex_data
+         data_exists      <- sitex_info$data_exists
+         if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
+      }
+      else {
+         query_result    <- query_dbase(run_name,network,species)
+         aqdat_query.df  <- query_result[[1]]
+         data_exists     <- query_result[[2]]
+         if (data_exists == "y") { units <- query_result[[3]] }
+         model_name      <- query_result[[4]]
+      }
+   }
+   ob_col_name <- paste(species,"_ob",sep="")
+   mod_col_name <- paste(species,"_mod",sep="")
+   #############################################
+
+   if (averaging != "n") {
+      aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
       {
-         if (Sys.getenv("AMET_DB") == 'F') {
-            sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_name,species)
-            aqdat_query.df   <- sitex_info$sitex_data
-            data_exists      <- sitex_info$data_exists
-            if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
+         if (use_avg_stats == "y") {
+            aqdat.df <- Average(aqdat.df)
+            aqdat_stats.df <- aqdat.df                               # Call Monthly_Average function in Misc_Functions.R
          }
          else {
-            query_result    <- query_dbase(run_name,network,species)
-            aqdat_query.df  <- query_result[[1]]
-            data_exists     <- query_result[[2]]
-            if (data_exists == "y") { units <- query_result[[3]] }
-            model_name      <- query_result[[4]]
+            aqdat_stats.df <- aqdat.df
+            aqdat.df <- Average(aqdat.df)
          }
       }
-      ob_col_name <- paste(species,"_ob",sep="")
-      mod_col_name <- paste(species,"_mod",sep="")
-      #############################################
-
-      if (averaging != "n") {
-         aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
-         {
-            if (use_avg_stats == "y") {
-               aqdat.df <- Average(aqdat.df)
-               aqdat_stats.df <- aqdat.df                               # Call Monthly_Average function in Misc_Functions.R
-            }
-            else {
-               aqdat_stats.df <- aqdat.df
-               aqdat.df <- Average(aqdat.df)
-            }
-         }
-      }
-      else { 
-         aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Month=aqdat_query.df$month)      # Create dataframe of network values to be used to create a list
-         aqdat_stats.df <- aqdat.df
-      }
-      axis.max <- max(c(axis.max,aqdat.df$Obs_Value,aqdat.df$Mod_Value)) 
-      sinfo[[j]]<-list(plotval_obs=aqdat.df$Obs_Value,plotval_mod=aqdat.df$Mod_Value)        # create of list of plot values and corresponding statistics
-   }				# End for loop for networks
+   }
+   else { 
+      aqdat.df <- data.frame(Network=aqdat_query.df$network,Stat_ID=aqdat_query.df$stat_id,lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Month=aqdat_query.df$month)      # Create dataframe of network values to be used to create a list
+      aqdat_stats.df <- aqdat.df
+   }
+   axis.max <- max(c(axis.max,aqdat.df$Obs_Value,aqdat.df$Mod_Value)) 
+   sinfo[[j]]<-list(plotval_obs=aqdat.df$Obs_Value,plotval_mod=aqdat.df$Mod_Value)        # create of list of plot values and corresponding statistics
+}				# End for loop for networks
 #######################################################
 
 ### Set Plotting Defaults ###
@@ -138,8 +133,8 @@ leg_names <- network_label[1]
 ### Create Cumulative Distribution Plot ###
 ###########################################
 pdf(file=filename_ecdf_pdf,width=8,height=8)
-Fn_obs <- ecdf(sinfo[[1]]$plotval_obs)  	# Compute CDF information for observations
-xmax <- max(sinfo[[1]]$plotval_obs,sinfo[[1]]$plotval_mod)
+Fn_obs 	<- ecdf(sinfo[[1]]$plotval_obs)  	# Compute CDF information for observations
+xmax 	<- max(sinfo[[1]]$plotval_obs,sinfo[[1]]$plotval_mod)
 plot(Fn_obs, col=plot_colors[1], xlab=paste('value (', units,')',sep=""),xlim=c(0,xmax),main=paste("CDF for",run_name1,"/",network_label[1],species,"for",dates,sep=" "),cex.main=1)	# Plot CDF for Observations
 for (i in 1:num_runs) {		# For each model simulation
    Fn_mod <- ecdf(sinfo[[i]]$plotval_mod)
