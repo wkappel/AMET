@@ -25,17 +25,18 @@ if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not l
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set file names and titles ###
+## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste("Soccergoal plot for ",run_name1," for ",dates,"; State=",state,"; Site=",site,sep="") }   
    else { title <- custom_title }
 }
 
+## Set output file names
 filename_html_norm <- paste(run_name1,pid,"soccerplot_norm.html",sep="_")             # Set PDF filename
 filename_html_frac <- paste(run_name1,pid,"soccerplot_frac.html",sep="_")             # Set PDF filename
 
-## Create a full path to file
+## Create a full path to output files
 filename_html_norm <- paste(figdir,filename_html_norm,sep="/")
 filename_html_frac <- paste(figdir,filename_html_frac,sep="/")
 
@@ -67,7 +68,7 @@ for (j in 1:length(network_names)) {	# Loop through each network
          if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
       }
       else {
-         query_result    <- query_dbase(run_name1,network,species)
+         query_result    <- query_dbase(run_name1,network,species,rm_negs="F")
          aqdat_query.df  <- query_result[[1]]
          data_exists	 <- query_result[[2]]
          if (data_exists == "y") { units <- query_result[[3]] }
@@ -80,7 +81,7 @@ for (j in 1:length(network_names)) {	# Loop through each network
      data_all.df <- data.frame(network=I(aqdat_query.df$network),stat_id=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,ob_val=aqdat_query.df[,l],mod_val=aqdat_query.df[,(l+1)])	# Create properly formatted dataframe to use with DomainStats function
       good_count <- sum(!is.na(data_all.df$ob_val))		# Count the number of non-missing values
       if (good_count > 0) {					# If there are non-missing values, continue
-         stats.df <- DomainStats(data_all.df)		# Call DomainStats function to compute stats for the entire domain
+         stats.df <- DomainStats(data_all.df,remove_negatives)		# Call DomainStats function to compute stats for the entire domain
          stats.df$Network <- network
 	 stats.df$species <- species[i]
 	 stats_all.df <- rbind(stats_all.df,stats.df)
@@ -94,12 +95,10 @@ for (j in 1:length(network_names)) {	# Loop through each network
 ####################################
 
 plot_chars <- c(15,19,23,24,25,seq(from=0,to=14,by=1))
-#plot_chars <- seq(from=15,to=30,by=1)
-#plot_chars <- c(plot_chars,seq(from=0,to=14,by=1))
 
-###########################################################
-########## MAKE SOCCERPLOT: DOMAIN / All SPECIES ##########
-###########################################################
+#############################################
+########## MAKE NMB/FB SOCCERPLOTS ##########
+#############################################
 
 p <- plot_ly(data = stats_all.df, x=~Percent_Norm_Mean_Bias,y=~Percent_Norm_Mean_Err,height=img_height,width=img_width,type='scatter',mode='markers',marker=list(size=20),symbol=~species,symbols=plot_chars,color=~Network,colors=plot_colors,marker=list(size=12),legend=list(title="species"),legendshowlegend=TRUE,text= ~paste("NMB:",Percent_Norm_Mean_Bias,"<br>NME:",Percent_Norm_Mean_Err,"<br>Network:",Network,"<br>species:",species),hoverinfo='text') %>%
 	layout(title=list(text=title,y=0.97),font=list(size=15),xaxis=list(title="Normalized Mean Bias (%)",dtick=10,range=c(-100,100)),yaxis=list(title="Normalized Mean Error (%)",dtick=10,range=c(0,125))) 
@@ -113,7 +112,6 @@ p <- p %>%  add_segments(x=-15,xend=-15,y=0,yend=35,line=list(dash="dash",color=
    add_segments(x=60,xend=60,y=0,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE) %>%
    add_segments(x=-60,xend=60,y=75,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE)
 
-#htmlwidgets::saveWidget(as_widget(p), filename_html)
 saveWidget(p, file=filename_html_norm,selfcontained=T)
 
 p <- plot_ly(data = stats_all.df, x=~Frac_Bias,y=~Frac_Err,height=img_height,width=img_width,type='scatter',mode='markers',marker=list(size=20),symbol=~species,symbols=plot_chars,color=~Network,colors=plot_colors,marker=list(size=12),legend=list(title="species"),legendshowlegend=TRUE,text= ~paste("FB:",Frac_Bias,"<br>FE:",Frac_Err,"<br>Network:",Network,"<br>species:",species),hoverinfo='text') %>%
@@ -128,5 +126,4 @@ p <- p %>%  add_segments(x=-15,xend=-15,y=0,yend=35,line=list(dash="dash",color=
    add_segments(x=60,xend=60,y=0,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE) %>%
    add_segments(x=-60,xend=60,y=75,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE)
 
-#htmlwidgets::saveWidget(as_widget(p), filename_html)
 saveWidget(p, file=filename_html_frac,selfcontained=T)

@@ -6,7 +6,7 @@ header <- "
 ### specific spectrum plots using hourly data.  This code is based on code provided by 
 ### Christian Hogrefe.
 ###
-### Last Updated by Wyat Appel: Nov 2020
+### Last Updated by Wyat Appel: June 2025 
 ########################################################################################
 "
 
@@ -17,32 +17,29 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-plot_all <- 'y'
-
-filename1_pdf <- paste(run_name1,species,pid,"spectrum.pdf",sep="_")                                # Set PDF filename
-filename1_png <- paste(run_name1,species,pid,"spectrum.png",sep="_")                                # Set PNG filename
-filename2_png <- paste(run_name1,species,pid,"spectrum_all.png",sep="_")
-filename2_pdf <- paste(run_name1,species,pid,"spectrum_all.pdf",sep="_")                                # Set PDF filename
-
-## Create a full path to file
-filename1_pdf <- paste(figdir,filename1_pdf,sep="/")                                # Set PDF filename
-filename1_png <- paste(figdir,filename1_png,sep="/")                                # Set PNG filename
-filename2_png <- paste(figdir,filename2_png,sep="/")                                # Set PNG filename
-filename2_pdf <- paste(figdir,filename2_pdf,sep="/")                                # Set PDF filename
-
+## Set some defaults
+plot_all 	<- 'y'
+network         <- network_names[1]
+run_name 	<- run_name1
+j 		<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") { title <- paste("Spectral analysis for",run_name1,species,"for",dates,sep=" ") }
    else { title <- custom_title }
 }
 
+## Set output file names
+filename1_pdf <- paste(run_name1,species,pid,"spectrum.pdf",sep="_")                                # Set PDF filename
+filename1_png <- paste(run_name1,species,pid,"spectrum.png",sep="_")                                # Set PNG filename
+filename2_png <- paste(run_name1,species,pid,"spectrum_all.png",sep="_")
+filename2_pdf <- paste(run_name1,species,pid,"spectrum_all.pdf",sep="_")                                # Set PDF filename
+
+## Create a full path to output files
+filename1_pdf <- paste(figdir,filename1_pdf,sep="/")                                # Set PDF filename
+filename1_png <- paste(figdir,filename1_png,sep="/")                                # Set PNG filename
+filename2_png <- paste(figdir,filename2_png,sep="/")                                # Set PNG filename
+filename2_pdf <- paste(figdir,filename2_pdf,sep="/")                                # Set PDF filename
 #################################
-
-network <- network_names[1]
-run_name <- run_name1
-j <- 1
-
-network <- network_names[[j]]                                             # Set network
 
 #############################################
 ### Read sitex file or query the database ###
@@ -98,18 +95,10 @@ num_rows <- ((max(aqdat.df$Month)-min(aqdat.df$Month)+1)*31*24)/2
 
 obs_spec_freq_m <- matrix(nrow=2592,ncol=num_sites)
 obs_spec_dens_m <- matrix(nrow=2592,ncol=num_sites)
-#obs_spec_freq_m <- matrix(nrow=num_rows,ncol=num_sites)
-#obs_spec_dens_m <- matrix(nrow=num_rows,ncol=num_sites)
-#obs_spec_freq_m <- NULL
-#obs_spec_dens_m <- NULL
 obs_av_spec <- numeric()
 
 mod_spec_freq_m <- matrix(nrow=2592,ncol=num_sites)
 mod_spec_dens_m <- matrix(nrow=2592,ncol=num_sites)
-#mod_spec_freq_m <- matrix(nrow=num_rows,ncol=num_sites)
-#mod_spec_dens_m <- matrix(nrow=num_rows,ncol=num_sites)
-#mod_spec_freq_m <- NULL
-#mod_spec_dens_m <- NULL
 mod_av_spec <- numeric()
 
  
@@ -121,29 +110,21 @@ mod_av_spec <- numeric()
 i <- 1
 
 while (i <= num_sites) {
+   temp_data.df <- (site_data_all.df[[i]])
+   obs_m <- temp_data.df$ob_val
+   obs_int <- approx(obs_m, n=5136)
+   obs_ts <- as.ts(obs_int$y)
+   obs_spec_m <- spectrum(obs_ts,plot=FALSE,fast=TRUE)
+   obs_spec_freq_m[,i]  <- as.numeric(obs_spec_m$freq)
+   obs_spec_dens_m[,i]  <- as.numeric(obs_spec_m$spec)
 
- temp_data.df <- (site_data_all.df[[i]])
- obs_m <- temp_data.df$ob_val
- obs_int <- approx(obs_m, n=5136)
- obs_ts <- as.ts(obs_int$y)
- obs_spec_m <- spectrum(obs_ts,plot=FALSE,fast=TRUE)
- obs_spec_freq_m[,i]  <- as.numeric(obs_spec_m$freq)
- obs_spec_dens_m[,i]  <- as.numeric(obs_spec_m$spec)
-# obs_spec_freq_m  <- as.numeric(obs_spec_m$freq)
-# obs_spec_dens_m  <- as.numeric(obs_spec_m$spec)
-
- mod_m <- temp_data.df$mod_val
-# mod_int <- approx(mod_m, n=2*num_rows)
- mod_int <- approx(mod_m, n=5136)
- mod_ts <- as.ts(mod_int$y)
- mod_spec_m <- spectrum(mod_ts,plot=FALSE,fast=TRUE)
- mod_spec_freq_m[,i]  <- as.numeric(mod_spec_m$freq)
- mod_spec_dens_m[,i]  <- as.numeric(mod_spec_m$spec)
-# mod_spec_freq_m  <- as.numeric(mod_spec_m$freq)
-# mod_spec_dens_m  <- as.numeric(mod_spec_m$spec)
-
- i <- i+1
-
+   mod_m <- temp_data.df$mod_val
+   mod_int <- approx(mod_m, n=5136)
+   mod_ts <- as.ts(mod_int$y)
+   mod_spec_m <- spectrum(mod_ts,plot=FALSE,fast=TRUE)
+   mod_spec_freq_m[,i]  <- as.numeric(mod_spec_m$freq)
+   mod_spec_dens_m[,i]  <- as.numeric(mod_spec_m$spec)
+   i <- i+1
 }
 
 #
@@ -153,16 +134,10 @@ while (i <= num_sites) {
 
 i <- 1
 
-#while (i <= num_rows) {
 while (i <= 2592) {
-
-obs_av_spec[i] <- mean(obs_spec_dens_m[i,])
-mod_av_spec[i] <- mean(mod_spec_dens_m[i,])
-#obs_av_spec[i] <- mean(obs_spec_dens_m[i])
-#mod_av_spec[i] <- mean(mod_spec_dens_m[i])
-
-i <- i+1
-
+   obs_av_spec[i] <- mean(obs_spec_dens_m[i,])
+   mod_av_spec[i] <- mean(mod_spec_dens_m[i,])
+   i <- i+1
 }
 
 obs_spec_freq_m_avg <- apply(obs_spec_freq_m,1,mean)
@@ -188,8 +163,6 @@ lines(x=c(2.,2.),y=c(10^a1[3],10^a1[4]))
 lines(x=c(21.,21.),y=c(10^a1[3],10^a1[4]))
 lines(x=c(730.,730.),y=c(10^a1[3],10^a1[4]))
 
-#lines((1./obs_spec_freq_m[,10])/24.,obs_av_spec[,i],col="red",lwd=2.)
-#lines((1./obs_spec_freq_m[,10])/24.,mod_av_spec[,i],col="blue")
 lines((1./obs_spec_freq_m_avg)/24.,obs_av_spec,col=plot_colors[1],lwd=2.)
 lines((1./obs_spec_freq_m_avg)/24.,mod_av_spec,col=plot_colors[2])
 

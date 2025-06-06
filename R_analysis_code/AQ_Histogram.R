@@ -7,7 +7,7 @@ header <- "
 ### function. Designed for single simulation, single network and
 ### single species.
 ###
-### Last Updated by Wyat Appel: Nov 2020
+### Last Updated by Wyat Appel: June 2025
 ##################################################################
 "
 
@@ -18,9 +18,9 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-network <- network_names[[1]]                                             # Set network
-
-### Set file names and titles ###
+## Set some defaults
+network 	<- network_names[[1]]                                             # Set network
+sub.title       <- ""
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 {
    if (custom_title == "") {
@@ -32,19 +32,20 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
      main.title.bias <- custom_title
   }
 }
-sub.title       <- ""
+
+## Set output file names
 filename_all_pdf	<- paste(run_name1,species,pid,"histogram.pdf",sep="_")			# Set PDF filename
 filename_all_png	<- paste(run_name1,species,pid,"histogram.png",sep="_")			# Set PNG filename
 filename_bias_pdf 	<- paste(run_name1,species,pid,"histogram_bias.pdf",sep="_")                  # Set PDF filename
 filename_bias_png 	<- paste(run_name1,species,pid,"histogram_bias.png",sep="_")                  # Set PNG filename
 
-## Create a full path to file
+## Create a full path to output files
 filename_all_pdf	<- paste(figdir,filename_all_pdf,sep="/")                 # Set PDF filename
 filename_all_png	<- paste(figdir,filename_all_png,sep="/")                 # Set PNG filename
 filename_bias_pdf	<- paste(figdir,filename_bias_pdf,sep="/")                  # Set PDF filename
 filename_bias_png	<- paste(figdir,filename_bias_png,sep="/")                  # Set PNG filename
-
 #####################################################   
+
 {
    if (Sys.getenv("AMET_DB") == 'F') {
       sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_name1,species)

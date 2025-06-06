@@ -105,7 +105,8 @@ for (k in 1:length(species)) {
             data_exists     <- query_result[[2]]
             if (data_exists == "y") { units <- query_result[[3]] }
             model_name      <- query_result[[4]]
-   	    if (is.na(units)) { units <- "NA" }
+            units <- unique(units)
+	    if (is.na(units)) { units <- "NA" }
          }
       }
       ob_col_name <- paste(species[k],"_ob",sep="")

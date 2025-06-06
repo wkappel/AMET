@@ -91,13 +91,8 @@ if (obs_per_day_limit > 0) {
    aqdat.df <- aqdat_new.df
 }
 
-### Use sites only contained in the first simulation specified ###
-#      if (common_sites == "T") { aqdat.df <- aqdat.df[as.character(aqdat.df$Stat_ID) %in% sites, ] }
-#      print(unique(aqdat.df$Stat_ID))
-    num_sites <- length(unique(aqdat.df$Stat_ID))
-#      if (num_sites[j] > num_sites[1]) { title_add <- "(Common Sites)" }
+num_sites <- length(unique(aqdat.df$Stat_ID))
 ###################################################################
-
 
 Date_Hour_Factor     <- factor(aqdat.df$Date_Hour,levels=unique(aqdat.df$Date_Hour))                   # Create unique levels so tapply maintains correct time order
 s <- 1
@@ -116,19 +111,19 @@ RMSE_Mean       <- by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Date_Hour,f
 Mod_Mean2	<- Mod_Mean
 Networks	<- mean(aqdat.df$Network)
 if (multi_run) {
-   Mod_Period_Mean2 <- mean(aqdat.df$Mod_Value2)
-   Mod_Mean2	<- tapply(aqdat.df$Mod_Value2,Date_Hour_Factor,FUN=avg_func)
-   Bias_Mean2	<- Mod_Mean2-Obs_Mean
-   Error_Mean2	<- abs(Mod_Mean2-Obs_Mean)
-   Corr_Mean2	<- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value2")],aqdat.df$Date_Hour,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value2)))
-   RMSE_Mean2	<- by(aqdat.df[,c("Obs_Value","Mod_Value2")],aqdat.df$Date_Hour,function(dfrm)sqrt(mean((dfrm$Mod_Value2-dfrm$Obs_Value)^2)))
+   Mod_Period_Mean2 	<- mean(aqdat.df$Mod_Value2)
+   Mod_Mean2		<- tapply(aqdat.df$Mod_Value2,Date_Hour_Factor,FUN=avg_func)
+   Bias_Mean2		<- Mod_Mean2-Obs_Mean
+   Error_Mean2		<- abs(Mod_Mean2-Obs_Mean)
+   Corr_Mean2		<- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value2")],aqdat.df$Date_Hour,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value2)))
+   RMSE_Mean2		<- by(aqdat.df[,c("Obs_Value","Mod_Value2")],aqdat.df$Date_Hour,function(dfrm)sqrt(mean((dfrm$Mod_Value2-dfrm$Obs_Value)^2)))
 }
 Dates           <- unique(aqdat.df$Date_Hour)
 Num_Records     <- tapply(aqdat.df$Stat_ID,aqdat.df$Date_Hour,FUN = function(x) length(x))
 Num_Sites       <- tapply(aqdat.df$Stat_ID,aqdat.df$Date_Hour,FUN = function(x) length(unique(x)))
 data.df         <- data.frame(Dates=Dates,Obs=Obs_Mean,Mod=Mod_Mean,Num_Obs=Num_Obs,Bias_Mean=Bias_Mean,Error_Mean=Error_Mean,Corr_Mean=Corr_Mean,RMSE_Mean=RMSE_Mean,Num_Records=Num_Records,Num_Sites=Num_Sites,Network=Networks)
 if (multi_run) {
-   data.df         <- data.frame(Dates=Dates,Obs=Obs_Mean,Mod=Mod_Mean,Mod2=Mod_Mean2,Num_Obs=Num_Obs,Bias_Mean=Bias_Mean,Bias_Mean2=Bias_Mean2,Error_Mean=Error_Mean,Error_Mean2=Error_Mean2,Corr_Mean=Corr_Mean,Corr_Mean2=Corr_Mean2,RMSE_Mean=RMSE_Mean,RMSE_Mean2=RMSE_Mean2,Num_Records=Num_Records,Num_Sites=Num_Sites,Network=Networks)
+   data.df <- data.frame(Dates=Dates,Obs=Obs_Mean,Mod=Mod_Mean,Mod2=Mod_Mean2,Num_Obs=Num_Obs,Bias_Mean=Bias_Mean,Bias_Mean2=Bias_Mean2,Error_Mean=Error_Mean,Error_Mean2=Error_Mean2,Corr_Mean=Corr_Mean,Corr_Mean2=Corr_Mean2,RMSE_Mean=RMSE_Mean,RMSE_Mean2=RMSE_Mean2,Num_Records=Num_Records,Num_Sites=Num_Sites,Network=Networks)
 }
 data.df 	<- data.df[order(as.Date(data.df$Dates, format = "%Y-%m-%d")),]
 data.df         <- unique(data.df)
@@ -178,18 +173,18 @@ Num_Sites 	<- length(unique(aqdat.df$Stat_ID))
 Num_Records 	<- length(aqdat.df$Stat_ID)
 xaxis 		<- list(title= x_label, automargin = TRUE,font=list(size=10),tickfont=list(size=12))
 yaxis 		<- list(title=paste(species," (",units,")"),automargin=TRUE,font=list(size=10),tickfont=list(size=15))
-p3 		<- plot_ly(data=data.df, x=~Dates, y=~Obs_Mean, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color=plot_colors[1]), marker=list(symbol='circle',color=plot_colors[1],size=10), name=obs_label) %>%  
+p3 		<- plot_ly(data=data.df, x=~Dates, y=~Obs_Mean, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color=plot_colors[1]), marker=list(symbol='circle',color=plot_colors[1],size=10), name=obs_label, text=~paste("Name: Obs<br>Date: ",Dates,"<br>Obs value: ",round(Obs_Mean,3))) %>%  
      			layout(title=main.title,font=list(size=15),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5,vjust=0.5)),margin=list(t=50,b=110)) %>%
 		        layout(annotations=list(x=~Dates,y=~Obs_Mean,text=~Network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE),plot_bgcolor='#e5ecf6')
-		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean, type="scatter", name=paste(run_names[1]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='circle',color=plot_colors[2])) %>% 
+		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean, type="scatter", name=paste(run_names[1]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='circle',color=plot_colors[2]),text=~paste("Name:",run_name,"<br>Date: ",Dates,"<br>Mod value: ",round(Mod_Mean,3))) %>% 
 		        layout(annotations = list(x=~Dates,y=~Mod_Mean,text=run_names[1],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[2]))) 
-		p3 <- add_trace(p3, x=~Dates, y=~Bias_Mean, type="scatter", name=paste(run_names[1]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='square-open',color=plot_colors[2])) %>%
-		        layout(annotations = list(x=~Dates,y=~Mod_Mean,text=run_names[1],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[2])))
+		p3 <- add_trace(p3, x=~Dates, y=~Bias_Mean, type="scatter", name=paste(run_names[1]," Bias (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='square-open',color=plot_colors[2]),text=~paste("Name:",run_name," Bias<br>Date: ",Dates,"<br>Bias value: ",round(Bias_Mean,3))) %>%
+		        layout(annotations = list(x=~Dates,y=~Bias_Mean,text=run_names[1],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[2])))
 if (multi_run) {
-		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean2, type="scatter", name=paste(run_names[2]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[3]'), marker=list(symbol='circle',color=plot_colors[3])) %>%
+		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean2, type="scatter", name=paste(run_names[2]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[3]'), marker=list(symbol='circle',color=plot_colors[3]),text=~paste("Name:",run_name2,"<br>Date: ",Dates,"<br>Mod value: ",round(Mod_Mean2,3))) %>%
 		        layout(annotations = list(x=~Dates,y=~Mod_Mean,text=run_names[3],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[3])))
-		p3 <- add_trace(p3, x=~Dates, y=~Bias_Mean2, type="scatter", name=paste(run_names[2]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[3]'), marker=list(symbol='square-open',color=plot_colors[3])) %>%
-		        layout(annotations = list(x=~Dates,y=~Mod_Mean,text=run_names[3],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[3])))
+		p3 <- add_trace(p3, x=~Dates, y=~Bias_Mean2, type="scatter", name=paste(run_names[2]," Bias (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[3]'), marker=list(symbol='square-open',color=plot_colors[3]),text=~paste("Name:",run_name2,"Diff<br>Date: ",Dates,"<br>Mod value: ",round(Bias_Mean2,3))) %>%
+		        layout(annotations = list(x=~Dates,y=~Bias_Mean2,text=run_names[3],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[3])))
 }
 #######################
 
@@ -200,11 +195,13 @@ if (multi_run) {
 library(sf)
 if(!require(maps)){stop("Required Package maps was not loaded")}
 if(!require(mapdata)){stop("Required Package mapdata was not loaded")}
-data_in <- data.frame(stat_id=aqdat_spatial.df$Stat_ID,lat=aqdat_spatial.df$lat,lon=aqdat_spatial.df$lon,plotval=(aqdat_spatial.df$Mod_Value-aqdat_spatial.df$Obs_Value),Network=aqdat_spatial.df$Network)
-colorbar_name <- "Mean(Model-Ob)"
+data_in <- data.frame(stat_id=aqdat_spatial.df$Stat_ID,lat=aqdat_spatial.df$lat,lon=aqdat_spatial.df$lon,Obs_Value=aqdat_spatial.df$Obs_Value,Mod_Value=aqdat_spatial.df$Mod_Value,plotval=(aqdat_spatial.df$Mod_Value-aqdat_spatial.df$Obs_Value),Network=aqdat_spatial.df$Network)
+colorbar_name 	<- "Mean(Model-Ob)"
+hovertext	<- "Model-Ob"
 if (multi_run) {
-   colorbar_name <- "Mean(Model-Model)"
-   data_in <- data.frame(stat_id=aqdat_spatial.df$Stat_ID,lat=aqdat_spatial.df$lat,lon=aqdat_spatial.df$lon,plotval=(aqdat_spatial.df$Mod_Value-aqdat_spatial.df$Mod_Value2),Network=aqdat_spatial.df$Network)
+   colorbar_name 	<- "Mean(Model-Model)"
+   hovertext		<- paste(run_name,"-",run_name2)
+   data_in <- data.frame(stat_id=aqdat_spatial.df$Stat_ID,lat=aqdat_spatial.df$lat,lon=aqdat_spatial.df$lon,Obs_Value=aqdat_spatial.df$Obs_Value,Mod_Value=aqdat_spatial.df$Mod_Value,Mod_Value2=aqdat_spatial.df$Mod_Value2,plotval=(aqdat_spatial.df$Mod_Value-aqdat_spatial.df$Mod_Value2),Network=aqdat_spatial.df$Network)
 }
 {
    if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
@@ -226,12 +223,16 @@ canada    <- map_data("worldHires", "Canada")
 mexico    <- map_data("worldHires", "Mexico")
 world_map <- map_data("world")
 world     <- st_as_sf(world_map,coords=c("long","lat"))
-#   data_in    <- data.frame(stat_id=sinfo[[k]]$stat_id,lat=sinfo[[k]]$lat,lon=sinfo[[k]]$lon,plotval=sinfo[[k]]$plotval)
-#   data_in$Network <- network_label[k]
 p4     	<- plot_ly(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG'))
-p4 	<- p4 %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(colorbar_name,"<br>",species,"<br>",units),len=1,lenmode="fraction",x=.92),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=("Sites (Diff)"))
-p4     	<- p4 %>% layout(mapbox = list(style='open-street-map', zoom=3, domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
-#      p4     	<- p4 %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+{
+   if(multi_run) {
+      p4 <- p4 %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(colorbar_name,"<br>",species,"<br>",units),len=1,lenmode="fraction",x=.92),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>",Network,": ",signif(Obs_Value,4),"<br>",run_name,": ",signif(Mod_Value,4),"<br>",run_name2,": ",signif(Mod_Value2,4),"<br>Metric: ",hovertext,"<br>Value: ",signif(plotval,4),sep=""),hoverinfo='text',name=("Sites (Diff)"))
+   }
+   else {
+      p4 <- p4 %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(colorbar_name,"<br>",species,"<br>",units),len=1,lenmode="fraction",x=.92),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>",Network,": ",signif(Obs_Value,4),"<br>",run_name,": ",signif(Mod_Value,4),"<br>Metric: ",hovertext,"<br>Value: ",signif(plotval,4),sep=""),hoverinfo='text',name=("Sites (Diff)"))
+   }
+}
+p4 <- p4 %>% layout(mapbox = list(style='open-street-map', zoom=3, domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
 ##########################
 
 #######################################
