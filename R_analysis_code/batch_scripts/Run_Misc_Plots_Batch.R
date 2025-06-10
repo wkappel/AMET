@@ -375,7 +375,7 @@ if (PAMS_analysis == 'y') {
                figdir                 <- paste(out_dir,batch_names[m],species,sep="/")
             }
             mkdir_command          <- paste("mkdir -p",figdir)
-            if (bulge_plot == 'y') {
+            if (bugle_plot == 'y') {
    	       system(mkdir_command)
                try(source(run_script_command2))
 	    }

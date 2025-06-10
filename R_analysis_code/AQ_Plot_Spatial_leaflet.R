@@ -334,8 +334,12 @@ my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min
 my.leaf <- my.leaf %>% addLegend("bottomleft", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
 my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")
 my.leaf <- my.leaf %>%
-  addGroupedLayersControl(
-    baseGroups = base_Groups, overlayGroups = list("OBS" = Markers_Obs,"MODEL"=Markers_Mod,"DIFF"=Markers_Diff),position="topleft",
-       options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = FALSE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
-  )
+        addLayersControl(
+          baseGroups = base_Groups, overlayGroups = c(network_names), options =  layersControlOptions(collapsed = FALSE,position="topleft")
+        )
+#my.leaf <- my.leaf %>%
+#  addGroupedLayersControl(
+#    baseGroups = base_Groups, overlayGroups = list("OBS" = Markers_Obs,"MODEL"=Markers_Mod,"DIFF"=Markers_Diff),position="topleft",
+#       options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = FALSE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
+#  )
 saveWidget(my.leaf, file=filename,selfcontained=T)

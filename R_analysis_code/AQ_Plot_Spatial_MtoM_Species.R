@@ -44,6 +44,7 @@ figure_perc     <- paste(run_name1,pid,"spatialplot_mtom_species_diff_perc",sep=
 figure_diff	<-paste(figdir,figure_diff,sep="/")           # Filename for diff spatial plot
 figure_max	<-paste(figdir,figure_max,sep="/")            # Filename for diff spatial plot
 figure_min	<-paste(figdir,figure_min,sep="/")            # Filename for diff spatial plot
+figure_perc     <-paste(figdir,figure_perc,sep="/")
 ################################################
 
 ########################################

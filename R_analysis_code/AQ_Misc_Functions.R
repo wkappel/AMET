@@ -1120,28 +1120,30 @@ Average<-function(datain.df,avg_func="mean") {
             category       <- c(category,tapply(data_split.df$YearMonth,data_split.df$Stat_ID,unique))  # If using multiple years, use YearMonth count
          } 
          if ((units == "kg/ha") || (units == "cm") || (units == "mm") || (units == "ppm-hours")) {
-            Obs_Mean       <- c(Obs_Mean,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,sum,na.rm=T))
-            Mod_Mean       <- c(Mod_Mean,tapply(data_split.df$Mod_Value,data_split.df$Stat_ID,sum,na.rm=T))
-            Obs_Count      <- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
-            Obs_Good       <- c(Obs_Good,tapply(data_split.df$good_ob,data_split.df$Stat_ID,sum))
-            Sites          <- c(Sites,tapply(data_split.df$Stat_ID,data_split.df$Stat_ID,unique))
-            States         <- c(States,tapply(as.character(data_split.df$State),data_split.df$Stat_ID,unique))
-            Lats           <- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
-            Lons           <- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique))
-            Years	   <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
+            Obs_Mean    <- c(Obs_Mean,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,sum,na.rm=T))
+            Mod_Mean    <- c(Mod_Mean,tapply(data_split.df$Mod_Value,data_split.df$Stat_ID,sum,na.rm=T))
+            Obs_Count   <- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
+            Obs_Good    <- c(Obs_Good,tapply(data_split.df$good_ob,data_split.df$Stat_ID,sum))
+            Sites       <- c(Sites,tapply(data_split.df$Stat_ID,data_split.df$Stat_ID,unique))
+            States      <- c(States,tapply(as.character(data_split.df$State),data_split.df$Stat_ID,unique))
+            Lats        <- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
+            Lons        <- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique))
+            Years	<- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
+	    Networks    <- c(Networks,tapply(data_split.df$Network, data_split.df$Stat_ID, function(x) x[1]))
             avg_text	<- paste(avg_text_1, " Accumulated",sep="")          # set averaging text to accumulated
          }
          else if (units == "mg/l") { # If dealing with wet concentration, calculate a volume weighted average
-            Obs_Mean       <- c(Obs_Mean,tapply(data_split.df$VWA_ob,data_split.df$Stat_ID,avg_func,na.rm=T))
-            Mod_Mean       <- c(Mod_Mean,tapply(data_split.df$VWA_mod,data_split.df$Stat_ID,avg_func,na.rm=T))
-            Obs_Count      <- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
-            Obs_Good       <- c(Obs_Good,tapply(data_split.df$good_ob,data_split.df$Stat_ID,sum))
-            Sites          <- c(Sites,tapply(data_split.df$Stat_ID,data_split.df$Stat_ID,unique))
-            States         <- c(States,tapply(as.character(data_split.df$State),data_split.df$Stat_ID,unique))
-            Lats           <- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
-            Lons           <- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique)) 
-            Years          <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
-            avg_text      <- paste("VW ",avg_text_1, "Average",sep="")                         # set text as volume weighted average
+            Obs_Mean    <- c(Obs_Mean,tapply(data_split.df$VWA_ob,data_split.df$Stat_ID,avg_func,na.rm=T))
+            Mod_Mean    <- c(Mod_Mean,tapply(data_split.df$VWA_mod,data_split.df$Stat_ID,avg_func,na.rm=T))
+            Obs_Count   <- c(Obs_Count,tapply(data_split.df$Obs_Value,data_split.df$Stat_ID,length))
+            Obs_Good    <- c(Obs_Good,tapply(data_split.df$good_ob,data_split.df$Stat_ID,sum))
+            Sites       <- c(Sites,tapply(data_split.df$Stat_ID,data_split.df$Stat_ID,unique))
+            States      <- c(States,tapply(as.character(data_split.df$State),data_split.df$Stat_ID,unique))
+            Lats        <- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
+            Lons        <- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique)) 
+            Years       <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
+            Networks    <- c(Networks,tapply(data_split.df$Network, data_split.df$Stat_ID, function(x) x[1]))
+	    avg_text    <- paste("VW ",avg_text_1, "Average",sep="")                         # set text as volume weighted average
          }
          else {
             if (remove_mean == 'y') {
