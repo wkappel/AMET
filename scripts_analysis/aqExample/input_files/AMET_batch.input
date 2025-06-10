@@ -96,6 +96,7 @@ if (exists("NAA_regions") && file.exists(SITE_FILE)) {
 ### Specify which scripts to run in batch ###
 #############################################
 hourly_ozone_analysis   <- 'y'	# Flag to include hourly ozone analysis
+hourly_pm_analysis	<- 'y'	# Flag to include hourly pm analysis
 daily_ozone_analysis    <- 'y'	# Flag to include daily ozone analysis
 aerosol_analysis        <- 'y'	# Flag to include aerosol analysis
 dep_analysis            <- 'y'	# Flag to include analysis of deposition performance
