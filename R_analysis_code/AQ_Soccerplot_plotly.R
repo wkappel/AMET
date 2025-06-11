@@ -95,6 +95,7 @@ for (j in 1:length(network_names)) {	# Loop through each network
 ####################################
 
 plot_chars <- c(15,19,23,24,25,seq(from=0,to=14,by=1))
+
 #############################################
 ########## MAKE NMB/FB SOCCERPLOTS ##########
 #############################################
@@ -111,7 +112,6 @@ p <- p %>%  add_segments(x=-15,xend=-15,y=0,yend=35,line=list(dash="dash",color=
    add_segments(x=60,xend=60,y=0,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE) %>%
    add_segments(x=-60,xend=60,y=75,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE)
 
-print(filename_html_norm)
 saveWidget(p, file=filename_html_norm,selfcontained=T)
 
 p <- plot_ly(data = stats_all.df, x=~Frac_Bias,y=~Frac_Err,height=img_height,width=img_width,type='scatter',mode='markers',marker=list(size=20),symbol=~species,symbols=plot_chars,color=~Network,colors=plot_colors,marker=list(size=12),legend=list(title="species"),legendshowlegend=TRUE,text= ~paste("FB:",Frac_Bias,"<br>FE:",Frac_Err,"<br>Network:",Network,"<br>species:",species),hoverinfo='text') %>%
@@ -126,5 +126,4 @@ p <- p %>%  add_segments(x=-15,xend=-15,y=0,yend=35,line=list(dash="dash",color=
    add_segments(x=60,xend=60,y=0,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE) %>%
    add_segments(x=-60,xend=60,y=75,yend=75,line=list(dash="dash",color='black'),inherit=F,showlegend=FALSE)
 
-print(filename_html_frac)
 saveWidget(p, file=filename_html_frac,selfcontained=T)

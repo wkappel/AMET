@@ -27,9 +27,9 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Load Required R Libraries
 if(!require(reshape2))          { stop("Required Package reshape was not loaded") 	}
-if(!require(data.table))        { stop("Required Package data.table was not loaded") 	} 
+if(!require(data.table))        { stop("Required Package data.table was not loaded")	} 
 if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}
-if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded") 	}
+if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded")	}
 if(!require(plotly))		{ stop("Required Package plotly was not loaded") 	}
 if(!require(dplyr))		{ stop("Required Package dplyr was not loaded") 	}
 
