@@ -219,7 +219,7 @@ if (dep_analysis == 'y') {
             mkdir_command          <- paste("mkdir -p",figdir)
             if (bugle_plot == 'y') {
 	       system(mkdir_command)
-               try(source(run_script_command2))
+               try(source(run_script_command3))
             }
             if (summary_plot == 'y') {
                system(mkdir_command)
@@ -258,7 +258,7 @@ if (gas_analysis == 'y') {
             mkdir_command          <- paste("mkdir -p",figdir)
             if (bugle_plot == 'y') {
   	       system(mkdir_command)
-               try(source(run_script_command2))
+               try(source(run_script_command3))
             }
             if (summary_plot == 'y') {
                system(mkdir_command)
@@ -298,7 +298,7 @@ if (AE6_analysis == 'y') {
             mkdir_command          <- paste("mkdir -p",figdir)
             if (bugle_plot == 'y') {
    	       system(mkdir_command)
-               try(source(run_script_command2))
+               try(source(run_script_command3))
             }
             if (summary_plot == 'y') {
                system(mkdir_command)
@@ -337,7 +337,7 @@ if (AOD_analysis == 'y') {
             }
             mkdir_command          <- paste("mkdir -p",figdir)
             system(mkdir_command)
-            try(source(run_script_command2))
+            try(source(run_script_command3))
          }
 	 if (summary_plot == 'y') {
             system(mkdir_command)
@@ -377,7 +377,7 @@ if (PAMS_analysis == 'y') {
             mkdir_command          <- paste("mkdir -p",figdir)
             if (bugle_plot == 'y') {
    	       system(mkdir_command)
-               try(source(run_script_command2))
+               try(source(run_script_command3))
 	    }
 	    if (summary_plot == 'y') {
                system(mkdir_command)
@@ -415,7 +415,7 @@ if (PAMS_analysis == 'y') {
             mkdir_command          <- paste("mkdir -p",figdir)
             if (bugle_plot == 'y') {
    	       system(mkdir_command)
-               try(source(run_script_command2))
+               try(source(run_script_command3))
 	    }
 	    if (summary_plot == 'y') {
                system(mkdir_command)
