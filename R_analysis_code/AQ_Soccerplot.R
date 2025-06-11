@@ -139,7 +139,7 @@ plot_chars <- seq(from=1,to=30,by=1)
 ###########################################################
 ########## MAKE SOCCERPLOT: DOMAIN / All SPECIES ##########
 ###########################################################
-
+print(filename_pdf)
 pdf(file=filename_pdf,width=10,height=8)
 par(mai=c(1,1,0.5,1))									# Set margins
 plot(1, 1, type="n",pch=2, col="green", ylim=c(4.8,125), xlim=c(-85, 85), xlab=xlabel, ylab=ylabel, cex.axis=1.2, cex.lab=1.4, axes=FALSE)

@@ -11,7 +11,7 @@ header <- "
 ###
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Create by Wyat Appel: June 2025
+### Create by Wyat Appel: Apr 2025
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -22,24 +22,25 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required Libraries 
-if(!require(maps))		{stop("Required Package maps was not loaded")		}
-if(!require(mapdata))		{stop("Required Package mapdata was not loaded")	}
-if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}
-if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
-if(!require(grid))              { stop("Required Package grid was not loaded") 		}
-if(!require(gridExtra))         { stop("Required Package gridExtra was not loaded") 	}
+if(!require(maps)){stop("Required Package maps was not loaded")			}
+if(!require(mapdata)){stop("Required Package mapdata was not loaded")		}
+if(!require(ggplot2)){stop("Required Package ggplot2 was not loaded")		}
+if(!require(plotly)){stop("Required Package plotly was not loaded")		}
+if(!require(grid)){stop("Required Package grid was not loaded")			}
+if(!require(gridExtra)){stop("Required Package gridExtra was not loaded")	}
 
-if(!exists("quantile_min")) 	{ quantile_min 	  <- 0.001 }
-if(!exists("quantile_max")) 	{ quantile_max 	  <- 0.950 }
-if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" }
+if(!exists("quantile_min")) { quantile_min <- 0.001 }
+if(!exists("quantile_max")) { quantile_max <- 0.950 }
+if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
 
-## Set some defaults 
+### Retrieve units label from database table ###
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 ################################################
 
-## Set file names and titles
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+
+### Set file names and titles ###
 filename_obs_png		<- paste(run_name1,species,pid,"spatialplot_obs.png",sep="_")           # Filename for obs spatial plot
 filename_mod_png		<- paste(run_name1,species,pid,"spatialplot_mod.png",sep="_")           # Filename for model spatial plot
 filename_diff_png		<- paste(run_name1,species,pid,"spatialplot_diff.png",sep="_")          # Filename for diff spatial plot
@@ -52,14 +53,9 @@ filename_diff_pdf   		<- paste(run_name1,species,pid,"spatialplot_diff.pdf",sep=
 filename_diff_max_pdf		<- paste(run_name1,species,pid,"spatialplot_diff_max.pdf",sep="_")          # Filename for diff spatial plot
 filename_diff_abs_max_pdf	<- paste(run_name1,species,pid,"spatialplot_diff_abs_max.pdf",sep="_")          # Filename for diff spatial plot
 
-filename_obs_html               <- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
-filename_mod_html               <- paste(run_name1,species,pid,"spatialplot_mod.html",sep="_")           # Filename for model spatial plot
-filename_diff_html              <- paste(run_name1,species,pid,"spatialplot_diff.html",sep="_")          # Filename for diff spatial plot
-filename_diff_max_html          <- paste(run_name1,species,pid,"spatialplot_diff_max.html",sep="_")          # Filename for diff spatial plot
-filename_diff_abs_max_html      <- paste(run_name1,species,pid,"spatialplot_diff_abs_max.html",sep="_")          # Filename for diff spatial plot
-filename_obs_anim    		<- paste(run_name1,species,pid,"spatialplot_anim_obs.html",sep="_")           # Filename for obs spatial plot
-filename_mod_anim    		<- paste(run_name1,species,pid,"spatialplot_anim_mod.html",sep="_")           # Filename for model spatial plot
-filename_diff_anim   		<- paste(run_name1,species,pid,"spatialplot_anim_diff.html",sep="_")          # Filename for diff spatial plot
+filename_obs_anim    		<- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
+filename_mod_anim    		<- paste(run_name1,species,pid,"spatialplot_mod.html",sep="_")           # Filename for model spatial plot
+filename_diff_anim   		<- paste(run_name1,species,pid,"spatialplot_diff.html",sep="_")          # Filename for diff spatial plot
 
 filename_tile_pdf       	<- paste(run_name1,species,pid,"spatialplot_tile.pdf",sep="_")
 filename_tile_png               <- paste(run_name1,species,pid,"spatialplot_tile.png",sep="_")
@@ -77,12 +73,6 @@ filename_mod_pdf      		<- paste(figdir,filename_mod_pdf,sep="/")           # Fi
 filename_diff_pdf     		<- paste(figdir,filename_diff_pdf,sep="/")          # Filename for diff spatial plot
 filename_diff_max_pdf 		<- paste(figdir,filename_diff_max_pdf,sep="/")          # Filename for diff spatial plot
 filename_diff_abs_max_pdf	<- paste(figdir,filename_diff_abs_max_pdf,sep="/")          # Filename for diff spatial plot
-
-filename_obs_html      		<- paste(figdir,filename_obs_html,sep="/")           # Filename for obs spatial plot
-filename_mod_html 	     	<- paste(figdir,filename_mod_html,sep="/")           # Filename for model spatial plot
-filename_diff_html	     	<- paste(figdir,filename_diff_html,sep="/")          # Filename for diff spatial plot
-filename_diff_max_html          <- paste(figdir,filename_diff_max_html,sep="/")          # Filename for diff spatial plot
-filename_diff_abs_max_html      <- paste(figdir,filename_diff_abs_max_html,sep="/")          # Filename for diff spatial plot
 
 filename_obs_anim      <- paste(figdir,filename_obs_anim,sep="/")           # Filename for obs spatial plot
 filename_mod_anim      <- paste(figdir,filename_mod_anim,sep="/")           # Filename for model spatial plot
@@ -128,7 +118,6 @@ legend_chars    	<- NULL
 sub_title		<- NULL
 tile_out		<- NULL
 grid_out		<- NULL
-grob_out		<- NULL
 plot.symbols<-as.integer(plot_symbols)
 pick.symbol.name.fun<-function(x){
    master.symbol.df<-data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
@@ -174,6 +163,7 @@ for (j in 1:total_networks) {							# Loop through for each network
 
    }
    #######################
+
    { 
       if (data_exists == "n") {
          total_networks <- (total_networks-1)
@@ -310,10 +300,11 @@ intervals <- num_ints
    }
 }
 #####################################################################
+
 ##############################################
 ## Create PNG and PDF plots for NMB and NME ##
 ##############################################
-plot_names <- c("Obs","Model","Avg Diff","Max Diff","Abs Max Diff")
+plot_names <- c("Obs","Model","Max Diff","Abs Max_Diff","Avg Diff")
 for (i in 1:5) {
    sub_title <- NULL
    if (i == 1) { 
@@ -323,7 +314,6 @@ for (i in 1:5) {
       plot_range_max 	<- max(levs)
       filename_pdf 	<- filename_obs_pdf
       filename_png	<- filename_obs_png
-      filename_html	<- filename_obs_html
       filename_anim	<- filename_obs_anim
       color_palette 	<- c("purple","violet","blue","green","yellow","orange","red","dark red")
       color_direction 	<- 1
@@ -335,47 +325,43 @@ for (i in 1:5) {
       plot_range_max 	<- max(levs)
       filename_pdf      <- filename_mod_pdf
       filename_png      <- filename_mod_png
-      filename_html     <- filename_mod_html
       filename_anim	<- filename_mod_anim
       color_palette 	<- c("purple","violet","blue","green","yellow","orange","red","dark red")
       color_direction 	<- 1
    }
    if (i == 3) {
-      sinfo             <- sinfo_diff
-      sinfo_anim        <- sinfo_diff_anim
-      plot_range_min    <- diff_min
-      plot_range_max    <- diff_max
-      filename_pdf      <- filename_diff_pdf
-      filename_png      <- filename_diff_png
-      filename_html	<- filename_diff_html
-      filename_anim     <- filename_diff_anim
-      color_palette     <- c("purple","violet","blue","green","white","yellow","orange","red","dark red")
-      color_direction   <- 1
-   }
-   if (i == 4) {
       sinfo             <- sinfo_diff_max
       sinfo_anim        <- sinfo_diff_anim
       plot_range_min    <- diff_max_min
       plot_range_max    <- diff_max_max
       filename_pdf      <- filename_diff_max_pdf
       filename_png      <- filename_diff_max_png
-      filename_html     <- filename_diff_max_html
       filename_anim     <- filename_diff_anim
       color_palette     <- c("purple","violet","blue","green","white","yellow","orange","red","dark red")
       color_direction   <- 1
    }
-   if (i == 5) {
+   if (i == 4) {
       sinfo             <- sinfo_diff_abs_max
       sinfo_anim        <- sinfo_diff_anim
       plot_range_min    <- diff_abs_max_min
       plot_range_max    <- diff_abs_max_max
       filename_pdf      <- filename_diff_abs_max_pdf
       filename_png      <- filename_diff_abs_max_png
-      filename_html	<- filename_diff_abs_max_html
       filename_anim     <- filename_diff_anim
       color_palette     <- c("purple","violet","blue","green","yellow","orange","red","dark red")
       color_direction   <- 1
    }
+   if (i == 5) { 
+      sinfo 		<- sinfo_diff
+      sinfo_anim 	<- sinfo_diff_anim
+      plot_range_min 	<- diff_min 
+      plot_range_max 	<- diff_max
+      filename_pdf      <- filename_diff_pdf
+      filename_png      <- filename_diff_png
+      filename_anim	<- filename_diff_anim
+      color_palette     <- c("purple","violet","blue","green","white","yellow","orange","red","dark red")
+      color_direction 	<- 1
+   } 
    for (k in 1:total_networks) {
       library(sf)
       us_state 	<- map_data("state")
@@ -411,11 +397,9 @@ for (i in 1:5) {
       }
       sp <- sp + xlab('Longitude') + ylab('Latitude') + labs(title=title,subtitle=sub_title,color=paste0(species," (",units,")\n",plot_names[i]))
    }
-   grob_out[[i]] <- sp
-   grid_out[[i]] <- ggplotly(sp,tooltip=c("lat","lon","date","plotval")) %>% layout(title=list(text=paste0(title,'<br>',sub_title),y=0.98),showlegend=T)
-   saveWidget(grid_out[[i]], file=filename_html,selfcontained=T)
-   ggsave(sp,filename=filename_pdf,width=16,height=9)
-   ggsave(sp,filename=filename_png,width=16,height=9)
+   grid_out[[i]] <- sp
+   ggsave(filename=filename_pdf,width=16,height=9)
+   ggsave(filename=filename_png,width=16,height=9)
    if (i < 4) {
       for (k in 1:total_networks) {
          plot_data_anim <- data.frame(stat_id=sinfo_anim[[k]]$stat_id,lat=sinfo_anim[[k]]$lat,lon=sinfo_anim[[k]]$lon,plotval=sinfo_anim[[k]]$plotval,date=sinfo_anim[[k]]$date)
@@ -446,10 +430,8 @@ for (i in 1:5) {
       saveWidget(fig, file=filename_anim,selfcontained=T)
    }
 }
-plot_out <- arrangeGrob(grob_out[[1]],grob_out[[2]],grob_out[[3]],grob_out[[4]],nrow = 2)
+plot_out <- arrangeGrob(grid_out[[1]],grid_out[[2]],grid_out[[5]],grid_out[[3]],nrow = 2)
 ggsave(file=filename_tile_pdf,plot_out,width=18,height=10)
 ggsave(file=filename_tile_png,plot_out,width=18,height=10)
 num_rows <- c(2)
-fig_out <- subplot(grid_out[[1]],grid_out[[2]],nrows=1,titleY=T,titleX=T,shareY=F)
-saveWidget(fig_out, file=filename_tile_html,selfcontained=T)
 #########################################   
