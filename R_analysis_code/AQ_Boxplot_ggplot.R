@@ -185,7 +185,7 @@ for (j in 1:length(run_names)) {
    }
 }
 ggsave(filename_pdf,plot=sp1,height=9,width=9)
-ggsave(filename_bias_pdf,plot=sp_bias,height=9,width=9)
+ggsave(filename_pdf_bias,plot=sp_bias,height=9,width=9)
 
 aqdat_out.df$Sim <- factor(aqdat_out.df$Sim, levels = level_names)
 aqdat_out_bias.df$Sim <- factor(aqdat_out_bias.df$Sim, levels=level_names_bias)
