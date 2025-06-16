@@ -40,9 +40,9 @@ filename_nmb_html        <- paste(figdir,filename_nmb_html,sep="/")
 filename_txt             <- paste(figdir,filename_txt,sep="/")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title_bias <- get_title(run_names,species,network_names,dates,custom_text="bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title_nmb <- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg) 
+title 		<- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title_bias 	<- get_title(run_names,species,network_names,dates,custom_text="bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title_nmb 	<- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg) 
 
 num_sites <- NULL
 for (j in 1:length(run_names)) {
