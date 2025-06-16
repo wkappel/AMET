@@ -22,10 +22,11 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ## Set some defaults
 network <- network_names[1] 														# Use first network to set units
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1," vs ",run_name2," ",species," for ",dates,sep="") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+#{
+#   if (custom_title == "") { title <- paste(run_name1," vs ",run_name2," ",species," for ",dates,sep="") }
+#   else { title <- custom_title }
+#}
 
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_mtom.pdf",sep="_")   # Set filename for pdf format file

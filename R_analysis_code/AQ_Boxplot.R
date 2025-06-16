@@ -406,23 +406,23 @@ legend("topleft", legend_names, fill=plot_colors, pch=plot_symbols, lty=line_typ
 if (averaging == "m") {
    text(x.axis.min,bias.y.axis.max*.96,paste("Coverage Limit = ",coverage_limit,"%",sep=""),cex=1,adj=c(0.75,0))
 }
-if (run_info_text == "y") {
-   if ((rpo != '') && (rpo != "None")) {
-      text(x=x.axis.max,y=y.axis.max,paste("RPO: ",rpo,sep=""),cex=1,adj=c(0.75,0))
-   }
-   if ((pca != '') && (pca != "None")) {
-      text(x=x.axis.max,y=y.axis.max,paste("PCA: ",pca,sep=""),cex=1,adj=c(0.75,0))
-   }
-   if ((clim_reg != '') && (clim_reg != "None")) {
-      text(x=x.axis.max,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1,adj=c(0.75,0))
-   }
-   if ((site != '') && (site != "All")) {   
-      text(x=x.axis.max,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1,adj=c(0.75,0))
-   }
-   if ((state != "All") && (state != '')) {
-      text(x=x.axis.max,y=y.axis.max*0.85,paste("State: ",state,sep=""),cex=1,adj=c(0.75,0))
-   }
-}
+#if (run_info_text == "y") {
+#   if ((rpo != '') && (rpo != "None")) {
+#      text(x=x.axis.max,y=y.axis.max,paste("RPO: ",rpo,sep=""),cex=1,adj=c(0.75,0))
+#   }
+#   if ((pca != '') && (pca != "None")) {
+#      text(x=x.axis.max,y=y.axis.max,paste("PCA: ",pca,sep=""),cex=1,adj=c(0.75,0))
+#   }
+#   if ((clim_reg != '') && (clim_reg != "None")) {
+#      text(x=x.axis.max,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1,adj=c(0.75,0))
+#   }
+#   if ((site != '') && (site != "All")) {   
+#      text(x=x.axis.max,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1,adj=c(0.75,0))
+#   }
+#   if ((state != "All") && (state != '')) {
+#      text(x=x.axis.max,y=y.axis.max*0.85,paste("State: ",state,sep=""),cex=1,adj=c(0.75,0))
+#   }
+#}
 if (num_runs > 1) {
    if (sum(obs.stats$n) != sum(obs.stats2$n)) {
       text(x.axis.min,y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
@@ -501,23 +501,23 @@ legend("topleft",legend_names,pch=plot_symbols,fill=plot_colors,lty=line_type,co
 if (averaging == "m") {
    text(x.axis.min,bias.y.axis.max*.96,paste("Coverage Limit = ",coverage_limit,"%",sep=""),cex=1,adj=c(0.75,0))
 }
-if (run_info_text == "y") {
-   if ((rpo != '') && (rpo != "None")) {
-      text(x.axis.max,bias.y.axis.max,paste("RPO = ",rpo,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((pca != '') && (pca != "None")) {
-      text(x.axis.max,bias.y.axis.max,paste("PCA = ",pca,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((clim_reg != '') && (clim_reg != "None")) {
-      text(x.axis.max,bias.y.axis.max,paste("Climate Region = ",clim_reg,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((site != "All") && (site != '')) {
-      text(x.axis.max,bias.y.axis.max*.93,paste("Site = ",site,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((state != "All") && (state != '')) {
-      text(x.axis.max,bias.y.axis.max*.90,paste("State = ",state,sep=""),adj=c(0.75,0),cex=1)
-   }
-}
+#if (run_info_text == "y") {
+#   if ((rpo != '') && (rpo != "None")) {
+#      text(x.axis.max,bias.y.axis.max,paste("RPO = ",rpo,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((pca != '') && (pca != "None")) {
+#      text(x.axis.max,bias.y.axis.max,paste("PCA = ",pca,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((clim_reg != '') && (clim_reg != "None")) {
+#      text(x.axis.max,bias.y.axis.max,paste("Climate Region = ",clim_reg,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((site != "All") && (site != '')) {
+#      text(x.axis.max,bias.y.axis.max*.93,paste("Site = ",site,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((state != "All") && (state != '')) {
+#      text(x.axis.max,bias.y.axis.max*.90,paste("State = ",state,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#}
 if (num_runs > 1) {
    if (sum(obs.stats$n) != sum(obs.stats2$n)) {
       text(x.axis.min,bias.y.axis.max*0.75,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
@@ -609,23 +609,23 @@ legend("topleft",legend_names,pch=plot_symbols,fill=plot_colors,lty=line_type,co
 if (averaging == "m") {
    text(x.axis.min,y.axis.max*.96,paste("Coverage Limit = ",coverage_limit,"%",sep=""),cex=1,adj=c(0.75,0))
 }
-if (run_info_text == "y") {
-   if ((rpo != "None") && (rpo != '')) {
-      text(x.axis.max,norm_bias.y.axis.max,paste("RPO = ",rpo,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((pca != "None") && (pca != '')) {
-      text(x.axis.max,norm_bias.y.axis.max,paste("PCA = ",pca,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((clim_reg != '') && (clim_reg != "None")) {
-      text(x.axis.max,norm_bias.y.axis.max,paste("Climate Region = ",clim_reg,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((site != "All") && (site != '')) {
-      text(x.axis.max,norm_bias.y.axis.max*.93,paste("Site = ",site,sep=""),adj=c(0.75,0),cex=1)
-   }
-   if ((state != "All") && (state != '')) {
-      text(x.axis.max,norm_bias.y.axis.max*.90,paste("State = ",state,sep=""),adj=c(0.75,0),cex=1)
-   }
-}
+#if (run_info_text == "y") {
+#   if ((rpo != "None") && (rpo != '')) {
+#      text(x.axis.max,norm_bias.y.axis.max,paste("RPO = ",rpo,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((pca != "None") && (pca != '')) {
+#      text(x.axis.max,norm_bias.y.axis.max,paste("PCA = ",pca,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((clim_reg != '') && (clim_reg != "None")) {
+#      text(x.axis.max,norm_bias.y.axis.max,paste("Climate Region = ",clim_reg,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((site != "All") && (site != '')) {
+#      text(x.axis.max,norm_bias.y.axis.max*.93,paste("Site = ",site,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#   if ((state != "All") && (state != '')) {
+#      text(x.axis.max,norm_bias.y.axis.max*.90,paste("State = ",state,sep=""),adj=c(0.75,0),cex=1)
+#   }
+#}
 if (num_runs > 1) {
    if (sum(obs.stats$n) != sum(obs.stats2$n)) {
       text(norm.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))

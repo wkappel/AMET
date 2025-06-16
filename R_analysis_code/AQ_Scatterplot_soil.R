@@ -21,10 +21,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ### Set some defaults 
 network <- network_names[[1]]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,network,"soil species for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_soil.pdf",sep="_")             # Set PDF filename

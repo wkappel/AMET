@@ -19,12 +19,12 @@ ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 #Load Required R Libraries
-if(!require(xts))           { stop("Required Package xts was not loaded") 		}
-if(!require(plotly))        { stop("Required Package plotly was not loaded") 		}
-if(!require(htmlwidgets))   { stop("Required Package htmlwidgets was not loaded") 	}
-if(!require(processx))      { stop("Required Package processx was not loaded") 		}
-if(!require(RColorBrewer))  { stop("Required Package RColorBrewer was not loaded") 	}
-if(!require(pandoc))        { stop("Required Package pandoc was not loaded") 		}
+if(!require(xts))           { stop("Required Package xts was not loaded") }
+if(!require(plotly))        { stop("Required Package plotly was not loaded") }
+if(!require(htmlwidgets))   { stop("Required Package htmlwidgets was not loaded") }
+if(!require(processx))      { stop("Required Package processx was not loaded") }
+if(!require(RColorBrewer))  { stop("Required Package RColorBrewer was not loaded") }
+if(!require(pandoc))        { stop("Required Package pandoc was not loaded") }
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
@@ -33,9 +33,10 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network 	<- network_names[1]
 run_name	<- run_names[1]
 query_base 	<- query
+labels          <- c(network,run_names)
+num_runs        <- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-labels 		<- c(network,run_names)
-num_runs 	<- length(run_names)
+main.title <- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {
@@ -332,24 +333,6 @@ for (site_n in 1:length(sites)) {
    #####################################
    ### Plot Model vs. Ob Time Series ###
    #####################################
-
-   ### Set title ###
-   {
-      if (custom_title == "") {
-         main.title        <- paste(run_name1,species[1],"for",network_label[1],"for",dates,sep=" ")
-      }
-      else {
-        main.title   <- custom_title
-      }
-   }
-   if ((state != "All") && (custom_title == "")) {
-      main.title      <- paste(run_name1,species,"for",network,"State:",state,sep=" ")
-   }
-   if ((site != "All") && (custom_title == "")) {
-      main.title      <- paste(run_name1,species,"for",network,"Site:",site,"in",aqdat_query.df$county[1],",",aqdat_query.df$state[1],sep=" ")
-   }
-   main.title <- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
-   ##################
    colors <- c(brewer.pal(9,"Set1"),brewer.pal(8,"Dark2"),brewer.pal(9,"Set1"))
    colors[colors=="#FFFF33"] <- "#8B8000"	# Replace vivid yellow with dark yellow
 

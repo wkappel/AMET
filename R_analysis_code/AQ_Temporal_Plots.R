@@ -19,8 +19,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required Libraries 
-if(!require(stats))	{ stop("Required Package stats was not loaded") 	}
-if(!require(plotrix))	{ stop("Required Package plotrix was not loaded") 	}
+if(!require(stats))	{ stop("Required Package stats was not loaded") }
+if(!require(plotrix))	{ stop("Required Package plotrix was not loaded") }
 
 ## Set some defaults
 network 	<- network_names[1]
@@ -29,8 +29,7 @@ num_runs 	<- 1                                                                  
 run_name 	<- run_name1
 run_names 	<- run_name1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- custom_title
-if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ### Set output filenames 
 filename_ecdf_pdf 	<- paste(run_name1,species,pid,"ecdf.pdf",sep="_")				# Set PDF filename

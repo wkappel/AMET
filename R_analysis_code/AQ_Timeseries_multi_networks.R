@@ -24,12 +24,8 @@ sub.title       <- ""
 run_name 	<- run_name1
 labels 		<- c(network,run_name)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title   <- custom_title
-main.title.bias <- custom_title
-if (custom_title == "") {
-   main.title        <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-   main.title.bias   <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-}
+main.title 	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title.bias	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,bias="T")
 
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")

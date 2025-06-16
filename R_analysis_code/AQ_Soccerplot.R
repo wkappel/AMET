@@ -23,10 +23,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ### Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste("Soccergoal plot for ",run_name1," for ",dates,"; State=",state,"; Site=",site,sep="") }   
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 filename_pdf <- paste(run_name1,pid,"soccerplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,pid,"soccerplot.png",sep="_")             # Set PNG filename

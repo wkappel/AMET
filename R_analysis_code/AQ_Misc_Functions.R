@@ -1914,7 +1914,7 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 ########################################
 }
 
-get_title <- function(run_names,species,network_label,dates,custom_title="",site="All",state="All",pca="None",rpo="None",clim_reg="None",custom_text="",bias=F) {
+get_title <- function(run_names,species,network_label,dates,custom_title="",site=site,state=state,pca=pca,rpo=rpo,clim_reg=clim_reg,custom_text="",bias=F) {
 
    {
       my_title <- custom_title
@@ -1936,12 +1936,12 @@ get_title <- function(run_names,species,network_label,dates,custom_title="",site
          }
       }
       if ((site != "All") || (state != "All") || (clim_reg != "None") || (rpo != "None") || (pca != "None")) { my_title <- paste(my_title,"\n") }
-      if (site != "All") {	my_title <- paste(my_title," Site=",site,sep="") }
-      if (state != "All") {     my_title <- paste(my_title," State=",state,sep="") }
-      if (clim_reg != "None") { my_title <- paste(my_title," Clim_Reg=",clim_reg,sep="") }
-      if (rpo != "None") {      my_title <- paste(my_title," RPO=",rpo,sep="") }
-      if (pca != "None") {      my_title <- paste(my_title," PCA=",pca,sep="") }
-      if (custom_title != "") { my_title <- custom_title }
+      if (site != "All") 	{ my_title <- paste(my_title," Site=",site,sep="") }
+      if (state != "All") 	{ my_title <- paste(my_title," State=",state,sep="") }
+      if (clim_reg != "None") 	{ my_title <- paste(my_title," Clim_Reg=",clim_reg,sep="") }
+      if (rpo != "None") 	{ my_title <- paste(my_title," RPO=",rpo,sep="") }
+      if (pca != "None") 	{ my_title <- paste(my_title," PCA=",pca,sep="") }
+      if (custom_title != "") 	{ my_title <- custom_title }
    }
    return(my_title)
 }

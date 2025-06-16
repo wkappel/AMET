@@ -37,6 +37,8 @@ if(!exists("png_from_html")) { png_from_html <- "n" }
 network 	<- network_names[1]	# When using mutiple networks, units from network 1 will be used
 filename 	<- NULL
 filename_png 	<- NULL
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ### Set file names and titles ###
 filename_bias_1		 <- paste(run_name1,species,pid,"spatialplot_bias_1",sep="_")       # Filename for obs spatial plot
@@ -52,12 +54,6 @@ filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 filename_bias_hist       <- paste(run_name1,species,pid,"histogram_bias_diff",sep="_") # Filename for diff spatial plot
 filename_error_hist      <- paste(run_name1,species,pid,"histogram_error_diff",sep="_") # Filename for diff spatial plot
 filename_corr_hist       <- paste(run_name1,species,pid,"histogram_corr_diff",sep="_") # Filename for diff spatial plot
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
 
 ## Create a full path to file
 filename[1]          <- paste(figdir,"/",filename_bias_1,".html",sep="")		# Filename for obs spatial plot

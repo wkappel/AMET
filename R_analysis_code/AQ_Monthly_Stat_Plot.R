@@ -24,10 +24,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ## Set some defaults
 network		<- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { main.title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { main.title <- custom_title }
-}
+main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ################################################
 ## Set output names and remove existing files ##

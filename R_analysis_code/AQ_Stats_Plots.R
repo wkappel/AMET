@@ -20,8 +20,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required Libraries 
-if(!require(maps))	{ stop("Required Package maps was not loaded") 		}
-if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") 	}
+if(!require(maps))	{ stop("Required Package maps was not loaded") }
+if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
 
 if(!exists("dates")) 		{ dates <- paste(start_date,"-",end_date) }
 if(!exists("quantile_min")) 	{ quantile_min <- 0.001 }
@@ -471,7 +471,7 @@ for (i in 1:8) {
 }
 ###############################################
 
-zip_files <- paste(run_name1,species,pid,"*.png ",run_name1,species,pid,"*.pdf",sep="_")
+zip_files <- paste(run_name1,species,pid,"*",sep="_")
 zip_command<-paste("zip",filename_zip,zip_files,sep=" ")
 print(zip_command)
 system(zip_command)

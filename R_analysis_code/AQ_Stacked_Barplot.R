@@ -28,10 +28,11 @@ if (use_median == "y") {
    method <- "Median"
 }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(network_name," Stacked Barplot (",method,") for ",run_name1," for ",dates,sep="") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+#{
+#   if (custom_title == "") { title <- paste(network_name," Stacked Barplot (",method,") for ",run_name1," for ",dates,sep="") }
+#   else { title <- custom_title }
+#}
 
 ## Set output filenames
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot.pdf",sep="_")

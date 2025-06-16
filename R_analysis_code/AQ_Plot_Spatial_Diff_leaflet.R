@@ -36,10 +36,7 @@ if(!exists("png_from_html")) 	{ png_from_html <- "n" }
 ## Set some defaults 
 network <- network_names[1]	# When using mutiple networks, units from network 1 will be used
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ### Set file names and titles ###
 filename_html	         <- paste(run_name1,species,pid,"spatialplot_diff",sep="_") # Filename for diff spatial plot

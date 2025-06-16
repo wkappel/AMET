@@ -300,23 +300,23 @@ nsamples.table <- table(aqdat.df$ob_hour)
 #########################################
 
 ### Put text on plot ###
-if (run_info_text == 'y') {
-   if ((rpo != '') && (rpo != "None")) {
-      text(x=18,y=y.axis.max,paste("RPO: ",rpo,sep=""),cex=1.2,adj=c(0,0))
-   }
-   if ((pca != '') && (pca != "None")) {
-      text(x=18,y=y.axis.max,paste("PCA: ",pca,sep=""),cex=1.2,adj=c(0,0))
-   }
-   if ((clim_reg != '') && (clim_reg != "None")) {
-      text(x=18,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1.2,adj=c(0.5,0))
-   }
-   if ((site != '') && (site != "All")) {
-      text(x=18,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1.2,adj=c(0,0))
-   }
-   if ((state != "All") && (state != '')) {
-      text(x=18,y=y.axis.max*0.85,paste("State: ",state,sep=""),cex=1.2,adj=c(0,0))
-   }
-}
+#if (run_info_text == 'y') {
+#   if ((rpo != '') && (rpo != "None")) {
+#      text(x=18,y=y.axis.max,paste("RPO: ",rpo,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#   if ((pca != '') && (pca != "None")) {
+#      text(x=18,y=y.axis.max,paste("PCA: ",pca,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#   if ((clim_reg != '') && (clim_reg != "None")) {
+#      text(x=18,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1.2,adj=c(0.5,0))
+#   }
+#   if ((site != '') && (site != "All")) {
+#      text(x=18,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#   if ((state != "All") && (state != '')) {
+#      text(x=18,y=y.axis.max*0.85,paste("State: ",state,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#}
 
 ########################
 

@@ -20,8 +20,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") 	}
-if(!require(plotly))              { stop("Required Package plotly was not loaded")	}
+if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") }
+if(!require(plotly))              { stop("Required Package plotly was not loaded") }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 ## Set some defaults
@@ -33,10 +33,11 @@ while (n <= length(network_names)) {
    n <- n+1
 }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste("Model to Model for",species,"at",networks_title,"sites for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+#{
+#   if (custom_title == "") { title <- paste("Model to Model for",species,"at",networks_title,"sites for",dates,sep=" ") }
+#   else { title <- custom_title }
+#}
 
 ## Set output file names
 filename_pdf	<- paste(run_name1,species,pid,"scatterplot_mtom_density.pdf",sep="_")   # Set filename for pdf format file

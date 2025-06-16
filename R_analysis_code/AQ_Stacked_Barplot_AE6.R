@@ -23,6 +23,8 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network 	<- network_names[1]
 network_name 	<- network_label[1]
 num_runs 	<- 1
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ### Set filenames and titles ###
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_AE6.pdf",sep="_")
@@ -37,15 +39,6 @@ filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
 method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
-}
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { 
-      title <- paste(dates,sep=", ") 
-      if (clim_reg != "None") { title <- paste(title,clim_reg,sep=", ") }
-}
-   else { title <- custom_title }
 }
 ################################
 

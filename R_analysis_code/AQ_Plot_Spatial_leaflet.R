@@ -42,11 +42,11 @@ filename_png 	<- NULL
 plot_data    	<- NULL
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
-### Set file names and titles ###
+### Set output file names
 filename[1]	<- paste(run_name1,species,pid,"spatialplot.html",sep="_")           # Filename for obs spatial plot
 filename_png[1] <- paste(run_name1,species,pid,"spatialplot.png",sep="_")           # Filename for obs spatial plot
 
-## Create a full path to file
+## Create a full path to output files
 filename[1]      <- paste(figdir,filename[1],sep="/")           # Filename for obs spatial plot
 filename_png[1]  <- paste(figdir,filename_png[1],sep="/")           # Filename for obs spatial plot
 #################################
@@ -72,10 +72,11 @@ aqdat_out.df	<- NULL
 remove_negatives_in <- remove_negatives	# Store option to remove negatives (applied later in the code)
 remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
 total_networks <- length(network_names)
+network_names_in <- network_names
 k <- 1
 for (j in 1:total_networks) {							# Loop through for each network
-   Mod_Obs_Diff   <- NULL							# Set model/ob difference to NULL
-   network        <- network_names[[j]]						# Determine network name from loop value
+   Mod_Obs_Diff <- NULL							# Set model/ob difference to NULL
+   network     	<- network_names_in[[j]]						# Determine network name from loop value
    #########################
    ## Query the database ###
    #########################
@@ -97,12 +98,12 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
    #######################
-
    ob_col_name <- paste(species,"_ob",sep="")
    mod_col_name <- paste(species,"_mod",sep="")
    { 
       if (data_exists == "n") {
-         total_networks <- (total_networks-1)
+         total_networks 	<- (total_networks-1)
+	 network_names	 	<- network_names[-j]
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
       else {
@@ -329,7 +330,6 @@ for (i in 1:3) {
       }
    } # End network loop
 } # End plot val loop
-
 my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min.data.obs,max.data.obs), group=Markers_Obs, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
 my.leaf <- my.leaf %>% addLegend("bottomleft", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
 my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")

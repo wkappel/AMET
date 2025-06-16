@@ -31,9 +31,14 @@ if(!require(data.table))        { stop("Required Package data.table was not load
 if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded") 	}
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1
+## Set some defaults
+network         <- network_names[1]
+network_name    <- network_label[1]
+num_runs        <- 1
+season          <- NULL
+region          <- NULL
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ################################################
 ## Set output names and remove existing files ##
@@ -63,17 +68,7 @@ method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
 }
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,network,species,"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
-
 ################################################
-
-season         <- NULL
-region         <- NULL
 
 ### Define NOAA climate region database queries ###
 region[1] <- " and (s.state='IL' or s.state='IN' or s.state='KY' or s.state='MO' or s.state='OH' or s.state='TN' or s.state='WV')"

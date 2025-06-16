@@ -29,10 +29,7 @@ if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
 ## Set some defatuls
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Create output file names
 filename_obs	<- paste(run_name1,species,pid,"spatialplot_obs",sep="_")           # Filename for obs spatial plot

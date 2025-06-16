@@ -294,7 +294,8 @@ axis(2,cex.axis=0.8)								# add y-axis text back, since it was changed to whit
 ###################################################
 abline(v=bin_range,col="grey40",lty=3)
 legend("topright", legend_names, pch=plot_chars, col=plot_cols, merge=F, cex=0.9, bty="n",pt.bg=plot_cols)
-title_all <- paste(species," Site Mean Bias for ",dates,sep="")	# Set plot title
+title_all <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,custom_text=",Binned Bias")
+#title_all <- paste(species," Site Mean Bias for ",dates,sep="")	# Set plot title
 title(main=title_all,cex.main=0.8)
 font_size <- 0.8
 if (num_runs > 4) {
@@ -331,7 +332,8 @@ axis(side=1,labels=x.axis_labels,at=bin_range,cex.axis=0.8)		# add x axis tick m
 axis(2,cex.axis=0.8)                                                    # add y-axis text back, since it was changed to white in plot command
 abline(v=bin_range,col="grey40",lty=3)
 legend("topleft", legend_names, pch=plot_chars, col=plot_cols, merge=F, cex=0.9, bty="n",pt.bg=plot_cols)
-title_all <- paste(species," Site RMSE for ",dates,sep="")	# Set plot title
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,custom_text=",Binned RMSE")
+#title_all <- paste(species," Site RMSE for ",dates,sep="")	# Set plot title
 title(main=title_all,cex.main=0.8)
 font_size <- 0.8
 if (num_runs > 4) {
