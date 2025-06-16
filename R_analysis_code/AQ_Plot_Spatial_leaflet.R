@@ -331,7 +331,7 @@ for (i in 1:3) {
    } # End network loop
 } # End plot val loop
 my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min.data.obs,max.data.obs), group=Markers_Obs, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
-my.leaf <- my.leaf %>% addLegend("bottomleft", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
+my.leaf <- my.leaf %>% addLegend("topright", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
 my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")
 my.leaf <- my.leaf %>%
         addLayersControl(

@@ -26,7 +26,7 @@ num_runs 		<- 1
 merge_statid_POC 	<- "n" # Do not merge statid and POC. Need them separate from CSN merging of PM_TOT and speciated data
 remove_negatives 	<- "n" # Do not remove negatives. This will be handled in another fuction
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title <- get_title(run_names,species="Multiple Species",network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ### Set filenames and titles ###
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_AE6.pdf",sep="_")

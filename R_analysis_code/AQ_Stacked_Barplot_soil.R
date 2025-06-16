@@ -23,7 +23,7 @@ num_runs 	<- 1
 method		<- "Mean"
 if (use_median == "y") { method <- "Median" }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title <- get_title(run_names,species="Multiple Species",network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) { num_runs <- 2 }
 
 ## Set output filenames 
