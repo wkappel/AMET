@@ -7,7 +7,7 @@ header <- "
 ### species from a single network but for multiple simulations. Output format
 ### in png, pdf or both.
 ###
-### Last Updated by Wyat Appel: Mar 2021
+### Last Updated by Wyat Appel: June 2025 
 ###########################################################################
 "
 
@@ -19,9 +19,11 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Set some defaults 
-network <- network_names[1]
+network		<- network_names[1]
+pca     	<- NULL
+pca_names 	<- c("Northeast","Great Lakes","Atlantic","South")
+run_names    	<- run_name1               # Set default to just one run being plotted
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-pca 	<- NULL
 
 ## Create output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_bins.pdf",sep="_")                          # Set PDF filename
@@ -32,7 +34,7 @@ filename_txt <- paste(run_name1,species,pid,"scatterplot_bins.csv",sep="_")     
 filename_pdf <- paste(figdir,filename_pdf,sep="/")                          # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")                          # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")     # Set output file name
-
+#####################################
 
 ## Query string for Northeast PCA region
 pca[1] <-" and (s.state='ME' or s.state='NH' or s.state='VT' or s.state='MA' or s.state='NY' or s.state='NJ' or s.state='MD' or s.state='DE' or s.state='CT' or s.state='RI' or s.state='PA' or s.state='DC') "
@@ -50,8 +52,9 @@ pca[3] <-" and (s.state='WV' or s.state='KY' or s.state='TN' or s.state='VA' or 
 pca[4] <-" and (s.state='LA' or s.state='MS' or s.state='MO' or s.state='TX' or s.state='OK') "
 ############################################
 
-pca_names <- c("Northeast","Great Lakes","Atlantic","South")
-
+###################################
+### Set variable initial values ###
+###################################
 axis.max     <- NULL
 num_obs      <- NULL
 sinfo        <- NULL
@@ -59,11 +62,8 @@ avg_text     <- ""
 legend_names <- NULL
 point_char   <- NULL
 point_color  <- NULL
-
-################################################
-
-run_names    <- run_name1		# Set default to just one run being plotted
-legend_names <- NULL			# Set default for legend
+legend_names <- NULL
+####################################
 
 if (pca_flag == 'y') {
    run_names <- c(run_name1,run_name1,run_name1,run_name1)
@@ -294,7 +294,8 @@ axis(2,cex.axis=0.8)								# add y-axis text back, since it was changed to whit
 ###################################################
 abline(v=bin_range,col="grey40",lty=3)
 legend("topright", legend_names, pch=plot_chars, col=plot_cols, merge=F, cex=0.9, bty="n",pt.bg=plot_cols)
-title_all <- paste(species," Site Mean Bias for ",dates,sep="")	# Set plot title
+title_all <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,custom_text=",Binned Bias")
+#title_all <- paste(species," Site Mean Bias for ",dates,sep="")	# Set plot title
 title(main=title_all,cex.main=0.8)
 font_size <- 0.8
 if (num_runs > 4) {
@@ -331,7 +332,8 @@ axis(side=1,labels=x.axis_labels,at=bin_range,cex.axis=0.8)		# add x axis tick m
 axis(2,cex.axis=0.8)                                                    # add y-axis text back, since it was changed to white in plot command
 abline(v=bin_range,col="grey40",lty=3)
 legend("topleft", legend_names, pch=plot_chars, col=plot_cols, merge=F, cex=0.9, bty="n",pt.bg=plot_cols)
-title_all <- paste(species," Site RMSE for ",dates,sep="")	# Set plot title
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,custom_text=",Binned RMSE")
+#title_all <- paste(species," Site RMSE for ",dates,sep="")	# Set plot title
 title(main=title_all,cex.main=0.8)
 font_size <- 0.8
 if (num_runs > 4) {

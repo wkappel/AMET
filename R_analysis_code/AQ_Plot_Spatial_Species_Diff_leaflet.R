@@ -8,7 +8,7 @@ header <- "
 ### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: Feb 2022 
+### Last modified by Wyat Appel: June 2025 
 ######################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -28,11 +28,14 @@ if(!exists("quantile_max")) 	{ quantile_max <- 0.999 }
 if(!exists("png_from_html")) 	{ png_from_html <- "n" }
 
 ## Set some defaults
-network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-species_in      <- species
-filename     	<- NULL
-filename_png 	<- NULL
-plot_data    	<- NULL
+network			<- network_names[1] 	# When using mutiple networks, units from network 1 will be used
+species_in      	<- species
+remove_negatives 	<- 'n'      		# Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+total_networks 		<- length(network_names)
+k 			<- 1
+filename     		<- NULL
+filename_png 		<- NULL
+plot_data    		<- NULL
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
 ### Set output file names 
@@ -89,9 +92,6 @@ spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
 spch	<- plot.symbols
 ########################################
 
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-total_networks <- length(network_names)
-k <- 1
 for (j in 1:total_networks) {							# Loop through for each network
    Mod_Obs_Diff   <- NULL							# Set model/ob difference to NULL
    network        <- network_names[[j]]						# Determine network name from loop value

@@ -7,7 +7,7 @@ header <- "
 ### time and space to create single time series for each individual site. The script 
 ### also plots the bias, RMSE, and correlation.
 ###
-### Last updated by Wyat Appel: May 2025 
+### Last updated by Wyat Appel: June 2025 
 ###################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -25,12 +25,8 @@ labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 run_name	<- run_names[1]
 query_base 	<- query
-main.title   	<- custom_title
-main.title.bias <- custom_title
-if (custom_title == "") { 
-   main.title 	<- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") 
-   main.title.bias 	<- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-}
+main.title 	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title.bias	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,bias="T")
 
 ## Set output file names
 filename_csv_zip 	<- paste(run_name1,species,pid,"timeseries_csv.zip",sep="_")
@@ -39,6 +35,7 @@ filename_zip 		<- paste(run_name1,species,pid,"timeseries.zip",sep="_")
 ## Create a full path to output files
 filename_csv_zip	<- paste(figdir,filename_csv_zip,sep="/")           # Filename for diff spatial plot
 filename_zip    	<- paste(figdir,filename_zip,sep="/")           # Filename for diff spatial plot
+#####################################
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {

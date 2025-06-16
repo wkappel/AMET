@@ -10,7 +10,7 @@ header <- "
 ### 1 versus simulation 2, while warm colors indicate higher bias/error in simulation
 ### 1 versus simulation 2. 
 ###
-### Last modified by Wyat Appel: Feb 2022
+### Last modified by Wyat Appel: June 2025 
 ###################################################################################
 "
 
@@ -32,12 +32,9 @@ if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" }
 ## Set some defaults
 network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-### Set file names and titles ###
+## Set output file names
 filename_bias_1		 <- paste(run_name1,species,pid,"spatialplot_bias_1",sep="_")       # Filename for obs spatial plot
 filename_bias_2		 <- paste(run_name1,species,pid,"spatialplot_bias_2",sep="_")       # Filename for model spatial plot
 filename_bias_diff	 <- paste(run_name1,species,pid,"spatialplot_bias_diff",sep="_") # Filename for diff spatial plot
@@ -52,7 +49,7 @@ filename_corr_diff       <- paste(run_name1,species,pid,"spatialplot_corr_diff",
 filename_corr_diff_hist  <- paste(run_name1,species,pid,"spatialplot_corr_diff_hist",sep="_")       # Filename for diff spatial plot
 filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename_bias_1           <- paste(figdir,filename_bias_1,sep="/")		# Filename for obs spatial plot
 filename_bias_2           <- paste(figdir,filename_bias_2,sep="/")       	# Filename for model spatial plot
 filename_bias_diff        <- paste(figdir,filename_bias_diff,sep="/") 		# Filename for diff spatial plot
@@ -107,6 +104,8 @@ sub_title       	<- NULL						# Set sub title to NULL
 lev_lab         	<- NULL
 legend_names    	<- NULL
 legend_chars    	<- NULL
+##################################
+
 plot.symbols		<- as.integer(plot_symbols)
 pick.symbol.name.fun	<- function(x){
    master.symbol.df	<- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))

@@ -8,7 +8,7 @@ header <- "
 ### network.  Mutiple values for a site are averaged to a single value for plotting purposes.
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Last modified by Wyat Appel: Feb 2022
+### Last modified by Wyat Appel: June 2025 
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -27,12 +27,12 @@ if(!exists("quantile_max")) { quantile_max <- 0.950 }
 if(!exists("near_zero_color")) { near_zero_color <- "grey50" }
 
 ## Set some defatuls
-network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
+network			<- network_names[1] # When using mutiple networks, units from network 1 will be used
+remove_negatives 	<- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+total_networks 		<- length(network_names)
+k 			<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Create output file names
 filename_obs	<- paste(run_name1,species,pid,"spatialplot_obs",sep="_")           # Filename for obs spatial plot
@@ -47,9 +47,9 @@ filename_diff     <- paste(figdir,filename_diff,sep="/")          # Filename for
 filename_rat      <- paste(figdir,filename_rat,sep="/")           # Filename for diff spatial plot
 ############################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+###################################
+### Set variable initial values ###
+###################################
 sinfo_obs       <- NULL						# Set list for obs values to NULL
 sinfo_mod       <- NULL						# Set list for model values to NULL
 sinfo_diff      <- NULL						# Set list for difference values to NULL
@@ -70,6 +70,8 @@ sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
 legend_names    <- NULL
 legend_chars    <- NULL
+###################################
+
 plot.symbols <- as.integer(plot_symbols)
 pick.symbol.name.fun <- function(x){
    master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
@@ -84,9 +86,6 @@ spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
 spch	<- plot.symbols
 ########################################
 
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-total_networks <- length(network_names)
-k <- 1
 for (j in 1:total_networks) {							# Loop through for each network
    Mod_Obs_Diff   <- NULL							# Set model/ob difference to NULL
    network        <- network_names[[j]]						# Determine network name from loop value

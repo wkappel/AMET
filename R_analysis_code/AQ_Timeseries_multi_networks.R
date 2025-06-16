@@ -7,7 +7,7 @@ header <- "
 ### to create single time series for the data. The script also plots the bias, RMSE and correlation.
 ### Output format is png, pdf or both.
 ###
-### Last updated by Wyat Appel: Dec 2019
+### Last updated by Wyat Appel: June 2025 
 ##########################################################################################
 "
 
@@ -24,12 +24,8 @@ sub.title       <- ""
 run_name 	<- run_name1
 labels 		<- c(network,run_name)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title   <- custom_title
-main.title.bias <- custom_title
-if (custom_title == "") {
-   main.title        <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-   main.title.bias   <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-}
+main.title 	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title.bias	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,bias="T")
 
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")
@@ -40,6 +36,7 @@ filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for timeseries pdf plot
 filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for timeseries png plot
 filename_txt    <- paste(figdir,filename_txt,sep="/")           # Filename for csv data file
+#####################################
 
 ###################################
 ### Set variable initial values ###

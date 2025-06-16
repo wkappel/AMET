@@ -20,31 +20,31 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Load Required R Libraries
 if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
-if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded")	} 
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") 	} 
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded") 	}
 
-### Set file names and titles ###
-network<-network_names[[1]]
+## Set some defaults
+network		 <-network_names[[1]]
 level_names_bias <- NULL
 level_names_nmb  <- NULL
+num_sites 	 <- NULL
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title            <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title_bias       <- get_title(run_names,species,network_names,dates,custom_text="bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title_nmb        <- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
+## Set output file names
 filename_html		<- paste(run_name1,species,pid,"boxplot.html",sep="_")
 filename_bias_html	<- paste(run_name1,species,pid,"boxplot_bias.html",sep="_")
 filename_nmb_html       <- paste(run_name1,species,pid,"boxplot_nmb.html",sep="_")
 filename_txt            <- paste(run_name1,species,pid,"boxplot.csv",sep="_")
 
-## Create a full path to file
-filename_html            <- paste(figdir,filename_html,sep="/")
-filename_bias_html       <- paste(figdir,filename_bias_html,sep="/")
-filename_nmb_html        <- paste(figdir,filename_nmb_html,sep="/")
-filename_txt             <- paste(figdir,filename_txt,sep="/")
+## Create full path to output files
+filename_html           <- paste(figdir,filename_html,sep="/")
+filename_bias_html      <- paste(figdir,filename_bias_html,sep="/")
+filename_nmb_html       <- paste(figdir,filename_nmb_html,sep="/")
+filename_txt            <- paste(figdir,filename_txt,sep="/")
 
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title_bias <- get_title(run_names,species,network_names,dates,custom_text="bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title_nmb <- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg) 
-
-num_sites <- NULL
 for (j in 1:length(run_names)) {
    run_name <- run_names[j]
    {

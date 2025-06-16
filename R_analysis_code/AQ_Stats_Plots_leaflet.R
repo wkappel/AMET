@@ -10,7 +10,7 @@ header <- "
 ### self-contained using PANDOC. If PANDOC is unavailable, the selfcontained options at
 ### the end of this code should be set to false.
 ###
-### Last modified by Wyat Appel: May 2025
+### Last modified by Wyat Appel: June 2025
 ##################################################################################
 "
 

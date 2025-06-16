@@ -23,10 +23,7 @@ network         <- network_names[1]
 run_name 	<- run_name1
 j 		<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste("Spectral analysis for",run_name1,species,"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Set output file names
 filename1_pdf <- paste(run_name1,species,pid,"spectrum.pdf",sep="_")                                # Set PDF filename

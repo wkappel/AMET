@@ -15,7 +15,7 @@ ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 
 ## Load Required R Libraries
-if(!require(plotly))              { stop("Required Package plotly was not loaded") 	}
+if(!require(plotly))              { stop("Required Package plotly was not loaded") }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 ## source miscellaneous R input file 
@@ -31,6 +31,9 @@ filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 #################################
 
 ## Set some defaults
+num_runs        <- length(run_names)
+network         <- network_names[1]
+labels          <- c(network,run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
@@ -40,12 +43,8 @@ main.title <- get_title(run_names,species,network_label,dates,custom_title,site=
 sinfo 		<- NULL
 axis.max 	<- NULL
 axis.min 	<- NULL
-run_count 	<- 1
-num_runs        <- length(run_names)
 scatter_colors  <- NULL                                                                   # Set number of runs to 1
 scatter_symbols <- NULL
-network         <- network_names[1]
-labels          <- c(network,run_names)
 fig		<- NULL
 ###################################
 
@@ -149,7 +148,6 @@ for (k in 1:length(species)) {
       scatter_colors[j]  <- plot_colors[j]
       scatter_symbols[j] <- plot_symbols[j]
    }    # End for loop for num runs
-   run_count <- run_count+1
    run_name <- run_name2
 #}       # End for loop for species
 

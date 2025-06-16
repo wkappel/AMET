@@ -23,15 +23,11 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Set some defaults
 network		<- network_names[1]
+network_name	<- network_label[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { main.title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { main.title <- custom_title }
-}
+main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-################################################
-## Set output names and remove existing files ##
-################################################
+## Set output file names 
 filename_stats	<- paste(run_name1,species,pid,"stats.csv",sep="_")
 filename1_pdf	<- paste(run_name1,species,pid,"plot1.pdf",sep="_")
 filename1_png	<- paste(run_name1,species,pid,"plot1.png",sep="_")
@@ -40,7 +36,7 @@ filename2_png	<- paste(run_name1,species,pid,"stats_plot1.png",sep="_")
 filename3_pdf	<- paste(run_name1,species,pid,"stats_plot2.pdf",sep="_")
 filename3_png	<- paste(run_name1,species,pid,"stats_plot2.png",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename_stats	<- paste(figdir,filename_stats,sep="/")
 filename1_pdf   <- paste(figdir,filename1_pdf,sep="/")
 filename1_png   <- paste(figdir,filename1_png,sep="/")
@@ -48,9 +44,11 @@ filename2_pdf   <- paste(figdir,filename2_pdf,sep="/")
 filename2_png   <- paste(figdir,filename2_png,sep="/")
 filename3_pdf   <- paste(figdir,filename3_pdf,sep="/")
 filename3_png   <- paste(figdir,filename3_png,sep="/")
-
 ################################################
 
+###################################
+### Set variable initial values ###
+###################################
 query_in		<- query
 monthly_OBS		<- NULL
 monthly_Mean_OBS	<- NULL
@@ -77,9 +75,7 @@ y.axis.min		<- NULL
 y.axis.max		<- NULL
 right.axis.max		<- NULL
 month_labels		<- NULL
-
-network<-network_names[[1]]                                               # Set network name
-network_name<-network_label[[1]]
+###################################
 
 #######################################
 ### Compute total number of  months ###

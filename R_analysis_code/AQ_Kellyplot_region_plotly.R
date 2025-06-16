@@ -34,13 +34,17 @@ if(!require(plotly))            { stop("Required Package plotly was not loaded")
 if(!require(dplyr))             { stop("Required Package dplyr was not loaded") 	}
 
 ## Set some defaults
-network 	<- network_names[1]
-network_name	<- network_label[1]
-num_runs 	<- length(run_names)
+network         <- network_names[1]
+network_name    <- network_label[1]
+num_runs        <- length(run_names)
+season          <- NULL
+region          <- NULL
+sim_labels      <- NULL
+sub_title       <- paste("Sim1:",run_names[1])
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-################################################
-## Set output names and remove existing files ##
-################################################
+## Set output file names 
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_region_NMB",sep="_")
 filename_nme    <- paste(run_name1,species,pid,"Kellyplot_region_NME",sep="_")
 filename_rmse   <- paste(run_name1,species,pid,"Kellyplot_region_RMSE",sep="_")
@@ -50,7 +54,7 @@ filename_corr   <- paste(run_name1,species,pid,"Kellyplot_region_Corr",sep="_")
 filename_txt    <- paste(run_name1,species,pid,"Kellyplot_stats_data_region.csv",sep="_")      # Set output file name
 filename_zip    <- paste(run_name1,species,pid,"Kellyplot_region.zip",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename        <- NULL
 filename[1]     <- paste(figdir,filename_nmb,sep="/")
 filename[2]     <- paste(figdir,filename_nme,sep="/")
@@ -66,18 +70,7 @@ method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
 }
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(network,species,"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
 ################################################
-
-season         <- NULL
-region         <- NULL
-sim_labels	<- NULL
-sub_title	<- paste("Sim1:",run_names[1])
 
 ### Define NOAA climate regions database queries ###
 region[1] <- " and (s.state='IL' or s.state='IN' or s.state='KY' or s.state='MO' or s.state='OH' or s.state='TN' or s.state='WV')"

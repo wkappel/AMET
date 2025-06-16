@@ -8,7 +8,7 @@ header <- "
 ### is in the database).  Two model runs must be provided.  The script attempts
 ### to match all points in one run with all points in the other run.  
 ###
-### Last Updated by Wyat Appel: Jun 2020
+### Last Updated by Wyat Appel: June 2025
 ##########################################################################
 "
 
@@ -21,22 +21,19 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Load Required R Libraries
 if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") 	}
-if(!require(plotly))              { stop("Required Package plotly was not loaded")	}
+if(!require(plotly))              { stop("Required Package plotly was not loaded") 	}
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 ## Set some defaults
-network <- network_names[1] 														# Use first network to set units
-networks_title <- network_label[1]
-n <- 2
+network 	<- network_names[1] 														# Use first network to set units
+networks_title 	<- network_label[1]
+n 		<- 2
 while (n <= length(network_names)) {
    networks_title <- paste(networks_title,network_label[n],sep=", ")
    n <- n+1
 }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste("Model to Model for",species,"at",networks_title,"sites for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Set output file names
 filename_pdf	<- paste(run_name1,species,pid,"scatterplot_mtom_density.pdf",sep="_")   # Set filename for pdf format file

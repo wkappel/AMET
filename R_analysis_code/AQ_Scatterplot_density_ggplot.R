@@ -26,10 +26,7 @@ if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not l
 
 ## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
-   else { title <- custom_title }
-}
+title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Create output file names
 filename_pdf 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.pdf",sep="_")             # Set PDF filename

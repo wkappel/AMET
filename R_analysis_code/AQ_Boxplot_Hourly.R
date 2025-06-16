@@ -18,24 +18,20 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Retrieve units label from database table ###
+## Set some defaults
 network  <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-################################################
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,clim_reg=clim_reg)
 
-### Set file names and titles ###
+## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"boxplot_hourly.pdf",sep="_")
 filename_png <- paste(run_name1,species,pid,"boxplot_hourly.png",sep="_")
 filename_txt <- paste(run_name1,species,pid,"boxplot_hourly_data.csv",sep="_")      # Set output file name
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")
 filename_png <- paste(figdir,filename_png,sep="/")
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,clim_reg=clim_reg)
-
 #################################
 {
    if (Sys.getenv("AMET_DB") == 'F') {
@@ -63,9 +59,6 @@ mod_col_name <- paste(species,"_mod",sep="")
 aqdat.df <- aqdat_query.df
 names(aqdat.df)[names(aqdat.df) == ob_col_name] <- "Obs_Value"
 names(aqdat.df)[names(aqdat.df) == mod_col_name] <- "Mod_Value"
-#names(aqdat.df)[9]  <-"Obs_Value"
-#names(aqdat.df)[10] <-"Mod_Value"
-
 
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    {
@@ -300,23 +293,23 @@ nsamples.table <- table(aqdat.df$ob_hour)
 #########################################
 
 ### Put text on plot ###
-if (run_info_text == 'y') {
-   if ((rpo != '') && (rpo != "None")) {
-      text(x=18,y=y.axis.max,paste("RPO: ",rpo,sep=""),cex=1.2,adj=c(0,0))
-   }
-   if ((pca != '') && (pca != "None")) {
-      text(x=18,y=y.axis.max,paste("PCA: ",pca,sep=""),cex=1.2,adj=c(0,0))
-   }
-   if ((clim_reg != '') && (clim_reg != "None")) {
-      text(x=18,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1.2,adj=c(0.5,0))
-   }
-   if ((site != '') && (site != "All")) {
-      text(x=18,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1.2,adj=c(0,0))
-   }
-   if ((state != "All") && (state != '')) {
-      text(x=18,y=y.axis.max*0.85,paste("State: ",state,sep=""),cex=1.2,adj=c(0,0))
-   }
-}
+#if (run_info_text == 'y') {
+#   if ((rpo != '') && (rpo != "None")) {
+#      text(x=18,y=y.axis.max,paste("RPO: ",rpo,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#   if ((pca != '') && (pca != "None")) {
+#      text(x=18,y=y.axis.max,paste("PCA: ",pca,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#   if ((clim_reg != '') && (clim_reg != "None")) {
+#      text(x=18,y=y.axis.max,paste("Climate Region: ",clim_reg,sep=""),cex=1.2,adj=c(0.5,0))
+#   }
+#   if ((site != '') && (site != "All")) {
+#      text(x=18,y=y.axis.max*0.90,paste("Site: ",site,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#   if ((state != "All") && (state != '')) {
+#      text(x=18,y=y.axis.max*0.85,paste("State: ",state,sep=""),cex=1.2,adj=c(0,0))
+#   }
+#}
 
 ########################
 

@@ -29,9 +29,9 @@ if(!require(plotly))            { stop("Required Package plotly was not loaded")
 if(!require(grid))              { stop("Required Package grid was not loaded") 		}
 if(!require(gridExtra))         { stop("Required Package gridExtra was not loaded") 	}
 
-if(!exists("quantile_min")) 	{ quantile_min 	  <- 0.001 }
-if(!exists("quantile_max")) 	{ quantile_max 	  <- 0.950 }
-if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" }
+if(!exists("quantile_min")) 	{ quantile_min 	  <- 0.001 	}
+if(!exists("quantile_max")) 	{ quantile_max 	  <- 0.950 	}
+if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" 	}
 
 ## Set some defaults 
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
@@ -39,7 +39,7 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 ################################################
 
-## Set file names and titles
+## Set output file names
 filename_obs_png		<- paste(run_name1,species,pid,"spatialplot_obs.png",sep="_")           # Filename for obs spatial plot
 filename_mod_png		<- paste(run_name1,species,pid,"spatialplot_mod.png",sep="_")           # Filename for model spatial plot
 filename_diff_png		<- paste(run_name1,species,pid,"spatialplot_diff.png",sep="_")          # Filename for diff spatial plot
@@ -65,7 +65,7 @@ filename_tile_pdf       	<- paste(run_name1,species,pid,"spatialplot_tile.pdf",s
 filename_tile_png               <- paste(run_name1,species,pid,"spatialplot_tile.png",sep="_")
 filename_tile_html		<- paste(run_name1,species,pid,"spatialplot_tile.html",sep="_")          # Filename for diff spatial plot
 
-## Create a full path to file
+## Create full path to output files
 filename_obs_png      		<- paste(figdir,filename_obs_png,sep="/")           # Filename for obs spatial plot
 filename_mod_png      		<- paste(figdir,filename_mod_png,sep="/")           # Filename for model spatial plot
 filename_diff_png     		<- paste(figdir,filename_diff_png,sep="/")          # Filename for diff spatial plot

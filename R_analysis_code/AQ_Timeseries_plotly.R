@@ -34,15 +34,16 @@ network 	<- network_names[1]
 labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title(run_names,species[k],network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
 
-### Set output file names ###
+## Set output file names 
 filename_html   <- paste(run_name1,species[1],pid,"timeseries.html",sep="_")              # Set output file name
 filename_html   <- paste(figdir,filename_html,sep="/")
 filename_png    <- paste(run_name1,species[1],pid,"timeseries.png",sep="_")              # Set output file name
 filename_png    <- paste(figdir,filename_png,sep="/")
 filename_txt	<- paste(run_name1,species[1],pid,"timeseries.csv",sep="_")
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
-######################
+#############################
 
 ###################################
 ### Set variable initial values ###
@@ -322,26 +323,6 @@ for (k in 1:length(species)) {
    #####################################
    ### Plot Model vs. Ob Time Series ###
    #####################################
-
-   ### Set title ###
-   {
-      if (custom_title == "") {
-         main.title        <- paste(run_name1,species[1],"for",network_label[1],"for",dates,sep=" ")
-      }
-      else {
-        main.title   <- custom_title
-      }
-   }
-   if ((state != "All") && (custom_title == "")) {
-#      main.title      <- paste(run_name1,species,"for",network,"State:",aqdat_query.df$state[1],sep=" ")
-#      state <- paste(state,collapse=" ")
-      main.title      <- paste(run_name1,species[k],"for",network,"State:",state,sep=" ")
-   }
-   if ((site != "All") && (custom_title == "")) {
-      main.title      <- paste(run_name1,species[k],"for",network,"Site:",site,"in",aqdat_query.df$county[1],",",aqdat_query.df$state[1],sep=" ")
-   }
-   main.title <- get_title(run_names,species[k],network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
-   ##################
    colors <- c(brewer.pal(9,"Set1"),brewer.pal(8,"Dark2"),brewer.pal(9,"Set1"))
    colors[colors=="#FFFF33"] <- "#8B8000"	# Replace vivid yellow with dark yellow
 
