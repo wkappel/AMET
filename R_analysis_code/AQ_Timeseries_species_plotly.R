@@ -10,7 +10,7 @@ header <- "
 ### from the R htmlwidgets package and PANDOC. If PANDOC is not available, the selfcontained option
 ### should be set to F. Output format is html.
 ###
-### Last updated by Wyat Appel: Jan 2022
+### Last updated by Wyat Appel: June 2025 
 ###############################################################################################
 "
 
@@ -19,10 +19,10 @@ ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 #Load Required R Libraries
-if(!require(xts))           { stop("Required Package xts was not loaded") }
-if(!require(plotly))        { stop("Required Package plotly was not loaded") }
-if(!require(htmlwidgets))   { stop("Required Package htmlwidgets was not loaded") }
-if(!require(RColorBrewer))  { stop("Required Package RColorBrewer was not loaded") }
+if(!require(xts))           { stop("Required Package xts was not loaded") 		}
+if(!require(plotly))        { stop("Required Package plotly was not loaded") 		}
+if(!require(htmlwidgets))   { stop("Required Package htmlwidgets was not loaded") 	}
+if(!require(RColorBrewer))  { stop("Required Package RColorBrewer was not loaded") 	}
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
@@ -38,8 +38,10 @@ main.title.bias <- get_title(run_names,species,network_label,dates,custom_title,
 
 ## Set output file names
 filename_html   <- paste(run_name1,"multispec",pid,"timeseries.html",sep="_")              # Set output file name
+filename_txt    <- paste(run_name1,"multispec",pid,"timeseries.csv",sep="_")
+
+## Create full path to output files
 filename_html   <- paste(figdir,filename_html,sep="/")
-filename_txt	<- paste(run_name1,"multispec",pid,"timeseries.csv",sep="_")
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 ########################
 

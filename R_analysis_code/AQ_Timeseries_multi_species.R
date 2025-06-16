@@ -38,6 +38,7 @@ filename_txt <- paste(run_name1,pid,"timeseries.csv",sep="_")
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for timeseries pdf plot
 filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for timeseries png plot
 filename_txt    <- paste(figdir,filename_txt,sep="/")           # Filename for csv data file
+####################################
 
 ###################################
 ### Set variable initial values ###

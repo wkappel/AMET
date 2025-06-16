@@ -15,7 +15,7 @@ ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 
 ## Load Required R Libraries
-if(!require(plotly))              { stop("Required Package plotly was not loaded") }
+if(!require(plotly))              { stop("Required Package plotly was not loaded") 	}
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 ## source miscellaneous R input file 
@@ -31,6 +31,7 @@ filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 #################################
 
 ## Set some defaults
+network <- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 main.title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
@@ -40,8 +41,6 @@ main.title <- get_title(run_names,species,network_names,dates,custom_title,site=
 sinfo 		<- NULL
 axis.max 	<- NULL
 axis.min 	<- NULL
-run_count 	<- 1
-num_runs        <- 1
 scatter_colors  <- NULL                                                                   # Set number of runs to 1
 scatter_symbols <- NULL
 run_names       <- run_name1               # Set default to just one run being plotted
@@ -63,10 +62,9 @@ legend_names    <- NULL                    # Set default for legend
    if ((exists("run_name6")) && (nchar(run_name6) > 0)) {
       run_names <- c(run_names,run_name6)
    }
+   num_runs <- length(run_names)
 }
 
-network <- network_names[[1]]
-num_runs <- length(run_names)
 for (j in 1:num_runs) {
    run_name <- run_names[j]
    {
@@ -119,7 +117,7 @@ for (j in 1:num_runs) {
    ##############################
    ### Write Data to CSV File ###
    ##############################
-   if ((j == 1) && (run_count == 1)){
+   if (j == 1) {
       write.table(run_name,file=filename_txt,append=F,col.names=F,row.names=F,sep=",")
    }
    else {

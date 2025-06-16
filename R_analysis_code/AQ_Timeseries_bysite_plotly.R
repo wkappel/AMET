@@ -19,12 +19,12 @@ ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 #Load Required R Libraries
-if(!require(xts))           { stop("Required Package xts was not loaded") }
-if(!require(plotly))        { stop("Required Package plotly was not loaded") }
-if(!require(htmlwidgets))   { stop("Required Package htmlwidgets was not loaded") }
-if(!require(processx))      { stop("Required Package processx was not loaded") }
-if(!require(RColorBrewer))  { stop("Required Package RColorBrewer was not loaded") }
-if(!require(pandoc))        { stop("Required Package pandoc was not loaded") }
+if(!require(xts))           { stop("Required Package xts was not loaded") 		}
+if(!require(plotly))        { stop("Required Package plotly was not loaded") 		}
+if(!require(htmlwidgets))   { stop("Required Package htmlwidgets was not loaded") 	}
+if(!require(processx))      { stop("Required Package processx was not loaded") 		}
+if(!require(RColorBrewer))  { stop("Required Package RColorBrewer was not loaded") 	}
+if(!require(pandoc))        { stop("Required Package pandoc was not loaded") 		}
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
@@ -37,6 +37,15 @@ labels          <- c(network,run_names)
 num_runs        <- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 main.title <- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
+
+### Set output file names
+filename_csv_zip        <- paste(run_name1,species,pid,"timeseries_csv.zip",sep="_")
+filename_zip            <- paste(run_name1,species,pid,"timeseries.zip",sep="_")
+
+## Create a full path to output files
+filename_csv_zip        <- paste(figdir,filename_csv_zip,sep="/")           # Filename for diff spatial plot
+filename_zip            <- paste(figdir,filename_zip,sep="/")           # Filename for diff spatial plot
+#####################################
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {
@@ -57,14 +66,6 @@ main.title <- get_title(run_names,species,network_names,site=site,state=state,rp
      sites <- unique(aqdat_query.df$stat_id_noPOC)
    }
 }
-
-### Set output file names 
-filename_csv_zip        <- paste(run_name1,species,pid,"timeseries_csv.zip",sep="_")
-filename_zip            <- paste(run_name1,species,pid,"timeseries.zip",sep="_")
-
-## Create a full path to output files
-filename_csv_zip        <- paste(figdir,filename_csv_zip,sep="/")           # Filename for diff spatial plot
-filename_zip            <- paste(figdir,filename_zip,sep="/")           # Filename for diff spatial plot
 
 for (site_n in 1:length(sites)) {
 

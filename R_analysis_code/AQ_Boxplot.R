@@ -22,16 +22,14 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ### Set some defaults ###
 network <- network_names[1] 
-run2 <- "False"
-run3 <- "False"
-################################################
-
+run2 	<- "False"
+run3 	<- "False"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title       <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 title.bias  <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 title.normb <- get_title(run_names,species,network_label,dates,custom_text="Normalized Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-### Set file names and titles ###
+## Set output file names
 network<-network_names[[1]]
 filename_all_pdf	<- paste(run_name1,species,pid,"boxplot_all.pdf",sep="_")
 filename_all_png	<- paste(run_name1,species,pid,"boxplot_all.png",sep="_")
@@ -40,7 +38,7 @@ filename_bias_png	<- paste(run_name1,species,pid,"boxplot_bias.png",sep="_")
 filename_norm_bias_pdf  <- paste(run_name1,species,pid,"boxplot_norm_bias.pdf",sep="_")
 filename_norm_bias_png  <- paste(run_name1,species,pid,"boxplot_norm_bias.png",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_all_pdf         <- paste(figdir,filename_all_pdf,sep="/")
 filename_all_png         <- paste(figdir,filename_all_png,sep="/")
 filename_bias_pdf        <- paste(figdir,filename_bias_pdf,sep="/")
@@ -49,6 +47,9 @@ filename_norm_bias_pdf   <- paste(figdir,filename_norm_bias_pdf,sep="/")
 filename_norm_bias_png   <- paste(figdir,filename_norm_bias_png,sep="/")
 #################################
 
+###################################
+### Set variable initial values ###
+###################################
 q1.bias2 	<- NULL
 q1.bias3 	<- NULL
 q3.bias2 	<- NULL

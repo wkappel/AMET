@@ -28,7 +28,10 @@ if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 
 ## Set some defaults
-network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
+network 		<- network_names[1]														# When using mutiple networks, units from network 1 will be used
+remove_negatives 	<- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+total_networks 		<- length(network_names)
+k 			<- 1
 
 ## Set output file names
 figure_obs	<- paste(run_name1,species,pid,"spatialplot_ratio_obs",sep="_")             # Filename for obs spatial plot
@@ -41,9 +44,9 @@ figure_mod	<- paste(figdir,figure_mod,sep="/")             # Filename for model 
 figure_diff	<- paste(figdir,figure_diff,sep="/")           # Filename for diff spatial plot
 #####################################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+###################################
+### Set variable initial values ###
+###################################
 sinfo_obs       <- NULL						# Set list for obs values to NULL
 sinfo_mod       <- NULL						# Set list for model values to NULL
 sinfo_diff      <- NULL						# Set list for difference values to NULL
@@ -61,6 +64,8 @@ sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
 legend_names	<- NULL
 legend_chars	<- NULL
+###################################
+
 plot.symbols <- as.integer(plot_symbols)
 pick.symbol.name.fun <- function(x){
    master.symbol.df <- data.frame(plot.symbols=c(16,17,15,18,8,11,4),names=c("CIRCLE","TRIANGLE","SQUARE","DIAMOND","BURST","STAR","X"))
@@ -75,9 +80,6 @@ spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
 spch	<- plot.symbols
 ########################################
 
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-total_networks <- length(network_names)
-k <- 1
 for (j in 1:total_networks) {							# Loop through for each network
    Mod_Obs_Diff   <- NULL							# Set model/ob difference to NULL
    network        <- network_names[[j]]						# Determine network name from loop value

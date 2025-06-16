@@ -34,7 +34,7 @@ filename     	<- NULL
 filename_png 	<- NULL
 plot_data    	<- NULL
 
-### Set file names and titles ###
+## Set output file names
 filename[1]	<- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
 filename[2]	<- paste(run_name1,species,pid,"spatialplot_mod.html",sep="_")           # Filename for model spatial plot
 filename[3]	<- paste(run_name1,species,pid,"spatialplot_diff.html",sep="_")          # Filename for diff spatial plot
@@ -43,7 +43,7 @@ filename_png[2] <- paste(run_name1,species,pid,"spatialplot_mod.png",sep="_")   
 filename_png[3] <- paste(run_name1,species,pid,"spatialplot_diff.png",sep="_")          # Filename for diff spatial plot
 filename_rat	<- paste(run_name1,species,pid,"spatialplot_ratio",sep="_")         # Filename for diff spatial plot
 
-## Create a full path to file
+## Create full path to output files
 filename[1]      <- paste(figdir,filename[1],sep="/")           # Filename for obs spatial plot
 filename[2]      <- paste(figdir,filename[2],sep="/")           # Filename for model spatial plot
 filename[3]      <- paste(figdir,filename[3],sep="/")          # Filename for diff spatial plot
@@ -53,9 +53,9 @@ filename_png[3]  <- paste(figdir,filename_png[3],sep="/")          # Filename fo
 filename_rat     <- paste(figdir,filename_rat,sep="/")           # Filename for diff spatial plot
 #################################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+###################################
+### Set variable initial values ###
+###################################
 sinfo_obs       <- NULL						# Set list for obs values to NULL
 sinfo_mod       <- NULL						# Set list for model values to NULL
 sinfo_diff      <- NULL						# Set list for difference values to NULL
@@ -74,6 +74,7 @@ all_network	<- NULL
 bounds          <- NULL						# Set map bounds to NULL
 sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
+###################################
 
 plot.symbols		<- as.integer(plot_symbols)
 pick.symbol.name.fun	<- function(x){

@@ -34,18 +34,19 @@ if(!exists("quantile_max")) 	{ quantile_max <- 0.950 }
 if(!exists("png_from_html")) 	{ png_from_html <- "n" }
 
 ## Set some defaults 
-network <- network_names[1]	# When using mutiple networks, units from network 1 will be used
+network 	 <- network_names[1]	# When using mutiple networks, units from network 1 will be used
+remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-### Set file names and titles ###
+## Set output file names
 filename_html	         <- paste(run_name1,species,pid,"spatialplot_diff",sep="_") # Filename for diff spatial plot
 filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 filename_bias_hist       <- paste(run_name1,species,pid,"histogram_bias_diff",sep="_") # Filename for diff spatial plot
 filename_error_hist      <- paste(run_name1,species,pid,"histogram_error_diff",sep="_") # Filename for diff spatial plot
 filename_corr_hist       <- paste(run_name1,species,pid,"histogram_corr_diff",sep="_") # Filename for diff spatial plot
 
-## Create a full path to file
+## Create full path to output files
 filename_html        <- paste(figdir,"/",filename_html,".html",sep="")            # Filename for diff spatial plot
 filename_bias_hist_html   <- paste(figdir,"/",filename_bias_hist,".html",sep="")
 filename_error_hist_html  <- paste(figdir,"/",filename_error_hist,".html",sep="")
@@ -54,10 +55,11 @@ filename_bias_hist_png    <- paste(figdir,"/",filename_bias_hist,".png",sep="")
 filename_error_hist_png   <- paste(figdir,"/",filename_error_hist,".png",sep="")
 filename_corr_hist_png    <- paste(figdir,"/",filename_corr_hist,".png",sep="")
 filename_csv	          <- paste(figdir,filename_csv,sep="/")
+########################################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+###################################
+### Set variable initial values ###
+###################################
 sinfo_data	<- NULL
 sinfo_data_tmp	<- NULL
 diff_min        <- NULL
@@ -75,9 +77,8 @@ all_corr	<- NULL
 all_corr2	<- NULL
 all_corr_diff	<- NULL
 map_title	<- NULL
-########################################
+###################################
 
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
 for (j in 1:total_networks) {							# Loop through for each network
    sites          	<- NULL							# Set sites vector to NULL
    lats          	<- NULL							# Set lats vector to NULL

@@ -7,7 +7,7 @@ header <- "
 ### time and space to create single time series for each individual site. The script 
 ### also plots the bias, RMSE, and correlation.
 ###
-### Last updated by Wyat Appel: May 2025 
+### Last updated by Wyat Appel: June 2025 
 ###################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -35,6 +35,7 @@ filename_zip 		<- paste(run_name1,species,pid,"timeseries.zip",sep="_")
 ## Create a full path to output files
 filename_csv_zip	<- paste(figdir,filename_csv_zip,sep="/")           # Filename for diff spatial plot
 filename_zip    	<- paste(figdir,filename_zip,sep="/")           # Filename for diff spatial plot
+#####################################
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {

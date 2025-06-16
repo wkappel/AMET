@@ -18,36 +18,34 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(plotly))		{ stop("Required Package plotly was not loaded") }
-if(!require(htmlwidgets))	{ stop("Required Package htmlwidgets was not loaded") }
+if(!require(plotly))		{ stop("Required Package plotly was not loaded") 	}
+if(!require(htmlwidgets))	{ stop("Required Package htmlwidgets was not loaded") 	}
 
 if(!exists("x_label_angle")) { x_label_angle <- 90 }
 if(!exists("overlap_boxes")) { overlap_boxes <- "n" }
 
-network<-network_names[[1]]
+## Set some defaults
+network		 <-network_names[[1]]
 level_names_bias <- NULL
+sp_new 		 <- NULL
+widths 		 <- c(0.7,0.5,0.3,0.1)
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+bias.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,bias=T)
 
-### Set file names and titles ###
+## Set output file names
 filename_pdf		<- paste(run_name1,species,pid,"boxplot_ggplot.pdf",sep="_")
 filename_bias_pdf	<- paste(run_name1,species,pid,"boxplot_bias_ggplot.pdf",sep="_")
 filename_png            <- paste(run_name1,species,pid,"boxplot_ggplot.png",sep="_")
 filename_bias_png       <- paste(run_name1,species,pid,"boxplot_bias_ggplot.png",sep="_")
 filename_txt            <- paste(run_name1,species,pid,"boxplot_ggplot.csv",sep="_")
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf            <- paste(figdir,filename_pdf,sep="/")
 filename_pdf_bias       <- paste(figdir,filename_bias_pdf,sep="/")
 filename_png            <- paste(figdir,filename_png,sep="/")
 filename_png_bias       <- paste(figdir,filename_bias_png,sep="/")
 filename_txt            <- paste(figdir,filename_txt,sep="/")
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title_bias <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,bias=T)
-bias.title <- title_bias
-
-sp_new <- NULL
-widths <- c(0.7,0.5,0.3,0.1)
 
 for (j in 1:length(run_names)) {
    run_name <- run_names[j]
@@ -189,9 +187,6 @@ ggsave(filename_pdf_bias,plot=sp_bias,height=9,width=9)
 
 aqdat_out.df$Sim <- factor(aqdat_out.df$Sim, levels = level_names)
 aqdat_out_bias.df$Sim <- factor(aqdat_out_bias.df$Sim, levels=level_names_bias)
-
-main.title <- title
-bias.title <- title_bias
 
 options(bitmapType='cairo')
 

@@ -8,7 +8,7 @@ header <- "
 ### bar plot, along with the percent of the total PM2.5 that each species comprises.
 ### Output format is png, pdf or both.
 ###
-### Last updated by Wyat Appel: Nov 2020
+### Last updated by Wyat Appel: June 2025 
 ######################################################################################
 "
 
@@ -24,6 +24,7 @@ network 	<- network_names[1]
 network_name 	<- network_label[1]
 num_runs 	<- 1
 method 		<- "Mean"
+PM_species 	<- species
 if (use_median == "y") {
    method <- "Median"
 }
@@ -49,10 +50,10 @@ if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2
 }
 
-PM_species <- species
 if (is.null(species[1])) {
    PM_species <- "PM_TOT"
 }
+
 PM_spec_ob  <- paste(PM_species,"_ob",sep="")
 PM_spec_mod <- paste(PM_species,"_mod",sep="")
 

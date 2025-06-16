@@ -16,8 +16,8 @@ ametbase        <- Sys.getenv("AMETBASE")			# base directory of AMET
 ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 ## Load Required R Libraries
-if(!require(plotly))		{ stop("Required Package plotly was not loaded") }
-if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") }
+if(!require(plotly))		{ stop("Required Package plotly was not loaded") 	}
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") 	}
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
@@ -54,6 +54,7 @@ filename_txt 	<- paste(figdir,filename_txt,sep="/")     # Set output file name
    if ((exists("run_name6")) && (nchar(run_name6) > 0)) {
       run_names <- c(run_names,run_name6)
    }
+   num_runs     <- length(run_names)
 }
 
 #################################
@@ -69,7 +70,6 @@ point_color  <- NULL
 data_count   <- NULL
 bin_names    <- NULL
 num_obs      <- NULL
-num_runs     <- length(run_names)
 #################################
 
 if ((network ==  "NADP_dep") || (network == "NADP_conc")) {

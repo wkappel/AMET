@@ -29,9 +29,13 @@ main.title.bias <- get_title(run_names,species,network_label,dates,custom_text="
 sub.title	<- ""
 
 ## Set output file name
-filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
+filename_txt 	<- paste(run_name1,species,pid,"timeseries.csv",sep="_")
+filename_pdf    <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
+filename_png    <- paste(run_name1,species,pid,"timeseries.png",sep="_")
 
-## Create a full path to file
+## Create full path to output file
+filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
+filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 
 #######################
@@ -268,12 +272,6 @@ if (length(bias_y_axis_min) > 0) {
 }
 
 #################################################
-
-filename_pdf         <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
-filename_png         <- paste(run_name1,species,pid,"timeseries.png",sep="_")
-
-filename_pdf         <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
-filename_png         <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
 
 #####################################
 ### Plot Model vs. Ob Time Series ###

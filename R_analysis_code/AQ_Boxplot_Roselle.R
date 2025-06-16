@@ -29,13 +29,13 @@ legend_names 			<- NULL
 run_names 			<- run_name1
 ################################################
 
-### Set file names and titles ###
+## Set output file names
 filename_pdf	 	<- paste(run_name1,species,pid,"boxplot_roselle.pdf",sep="_")
 filename_png 	 	<- paste(run_name1,species,pid,"boxplot_roselle.png",sep="_")
 filename_bias_pdf 	<- paste(run_name1,species,pid,"boxplot_roselle_bias.pdf",sep="_")
 filename_bias_png 	<- paste(run_name1,species,pid,"boxplot_roselle_bias.png",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename_pdf		<- paste(figdir,filename_pdf,sep="/")
 filename_png		<- paste(figdir,filename_png,sep="/")
 filename_bias_pdf	<- paste(figdir,filename_bias_pdf,sep="/")

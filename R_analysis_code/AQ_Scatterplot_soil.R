@@ -7,7 +7,7 @@ header <- "
 ### will create a single plot for a single network and model simulation. Output format is
 ### png, pdf or both.  
 ###
-### Last Updated by Wyat Appel: June, 2019
+### Last Updated by Wyat Appel: June 2025
 ########################################################################################
 "
 

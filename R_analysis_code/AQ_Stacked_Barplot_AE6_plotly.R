@@ -20,13 +20,15 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(plotly))              { stop("Required Package plotly was not loaded") }
+if(!require(plotly))              { stop("Required Package plotly was not loaded") 	}
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 ## Set some defaults
-network 	<- network_names[1]
-network_name 	<- network_label[1]
-num_runs 	<- 1
+network 		<- network_names[1]
+network_name 		<- network_label[1]
+num_runs 		<- 1
+remove_negatives 	<- "n"
+merge_statid_POC 	<- "n"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
@@ -66,7 +68,9 @@ if (use_median == "y") {
       run_names <- c(run_names,run_name7)
    }
 }
-
+###################################
+### Set variable initial values ###
+###################################
 sinfo	        <- NULL
 medians         <- NULL
 data.df         <- NULL
@@ -77,12 +81,11 @@ species_names   <- NULL
 species_names2  <- NULL
 num_sites	<- NULL
 num_pairs	<- NULL
+###################################
 
-remove_negatives <- "n"
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
 species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","Al","Fe","Si","Ca","Ti","Mg","Mn","K","Na","Cl","NCOM")
 
-merge_statid_POC <- "n"
 for (j in 1:length(run_names)) {
    medians.df <- NULL
    run_name <- run_names[j]

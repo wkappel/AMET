@@ -19,6 +19,7 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ### Set some defaults
+network <- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 species <- species[1]
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
@@ -37,7 +38,7 @@ filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
 ###################################
 ### Set variable initial values ###
 ###################################
-run_names       	<- NULL
+run_names       	<- run_name1 
 axis.max        	<- NULL
 num_obs         	<- NULL
 sinfo           	<- NULL
@@ -73,17 +74,10 @@ stats_array_include  	<- NULL
 stats_names_include  	<- NULL
 max_diff		<- NULL
 min_diff		<- NULL
+run_count 		<- 1
+num_runs 		<- 1
 ###############################
 
-### Retrieve units and model labels from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
-
-run_count <- 1
-num_runs <- 1									# Set number of runs to 1
-run_names[1] <- run_name1
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2								# If so, set number of runs to 2
    run_names[2] <- run_name2

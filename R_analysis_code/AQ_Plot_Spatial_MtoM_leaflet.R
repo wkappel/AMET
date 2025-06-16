@@ -28,7 +28,10 @@ if(!exists("quantile_min")) { quantile_min <- 0.001 }
 if(!exists("quantile_max")) { quantile_max <- 0.950 }
 
 ## Set some defaults
-network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
+network 		<- network_names[1]														# When using mutiple networks, units from network 1 will be used
+remove_negatives 	<- "n"
+total_networks 		<- length(network_names)
+k 			<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
 ### Set file names and titles ###
@@ -66,9 +69,6 @@ all_min		 <- NULL
 all_ratio	 <- NULL
 ########################################
 
-remove_negatives <- "n"
-total_networks <- length(network_names)
-k <- 1
 for (j in 1:total_networks) {                                            # Loop through for each network
    sites	<- NULL
    lats		<- NULL

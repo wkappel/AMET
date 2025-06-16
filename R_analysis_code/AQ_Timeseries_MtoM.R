@@ -34,6 +34,7 @@ filename_txt <- paste(run_name1,species,pid,"timeseries_mtom.csv",sep="_")
 filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for diff spatial plot
 filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for diff spatial plot
 filename_txt    <- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
+#####################################
 
 ###################################
 ### Set variable initial values ###

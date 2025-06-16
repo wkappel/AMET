@@ -21,6 +21,9 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
+## Set some defaults
+network         <- network_names[1]
+
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,species,pid,"scatterplot.png",sep="_")             # Set PNG filename
@@ -46,8 +49,6 @@ legend_cols  	<- NULL
 legend_chars 	<- NULL
 point_char   	<- NULL
 point_color  	<- NULL
-network 	<- network_names[1]
-run_names 	<- NULL
 run_names 	<- run_name1
 ###################################
 

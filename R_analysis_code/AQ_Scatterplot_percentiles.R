@@ -18,6 +18,7 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Set some defaults 
+network <- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
@@ -30,7 +31,6 @@ filename_txt <- paste(run_name1,species,pid,"scatterplot_percentiles.csv",sep="_
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
 #################################
 
 ###################################
@@ -62,11 +62,6 @@ percentile_95_ob	<- NULL
 percentile_95_mod	<- NULL
 ###############################
 
-### Retrieve units and model labels from database table ###
-network <- network_names[1]
-#units_qs <- paste("SELECT ",species," from project_units where proj_code = '",run_name1,"' and network = '",network,"'", sep="")
-#model_name_qs <- paste("SELECT model from aq_project_log where proj_code ='",run_name1,"'", sep="")
-################################################
 {
    if (Sys.getenv("AMET_DB") == 'F') {
          sitex_info      <- read_sitex(Sys.getenv("OUTDIR"),network,run_name1,species)

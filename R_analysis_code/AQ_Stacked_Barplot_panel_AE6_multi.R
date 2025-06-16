@@ -31,7 +31,7 @@ if (use_median == "y") {
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-## Set output filenames
+## Set output file names
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_panel_AE6_multi.pdf",sep="_")
 filename_png    <- paste(run_name1,pid,"stacked_barplot_panel_AE6_multi.png",sep="_")
 filename_txt    <- paste(run_name1,pid,"stacked_barplot_panel_AE6_multi_data.csv",sep="_")
@@ -40,6 +40,7 @@ filename_txt    <- paste(run_name1,pid,"stacked_barplot_panel_AE6_multi_data.csv
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
+#####################################
 
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2

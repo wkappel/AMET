@@ -20,9 +20,11 @@ merge_sitePOC <- "F"
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Set some defaults
-network 	<- network_names[1]
-network_name 	<- network_label[1]
-num_runs 	<- 1
+network 		<- network_names[1]
+network_name 		<- network_label[1]
+num_runs 		<- 1
+merge_statid_POC 	<- "n" # Do not merge statid and POC. Need them separate from CSN merging of PM_TOT and speciated data
+remove_negatives 	<- "n" # Do not remove negatives. This will be handled in another fuction
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
@@ -46,6 +48,9 @@ if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2
 }
 
+###################################
+### Set variable initial values ###
+###################################
 medians          <- NULL
 data.df          <- NULL
 medians_2        <- NULL
@@ -61,11 +66,11 @@ rmse_sys       <- NULL
 rmse_sys2      <- NULL
 rmse_unsys     <- NULL
 rmse_unsys2    <- NULL
+###################################
 
-merge_statid_POC <- "n"	# Do not merge statid and POC. Need them separate from CSN merging of PM_TOT and speciated data
-remove_negatives <- "n"	# Do not remove negatives. This will be handled in another fuction
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
 species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") 
+
 #############################################
 ### Read sitex file or query the database ###
 #############################################

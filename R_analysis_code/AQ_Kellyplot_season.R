@@ -42,9 +42,7 @@ sub_title       <- paste("Sim1:",run_names[1])
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-################################################
-## Set output names and remove existing files ##
-################################################
+## Set output file names 
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_season_NMB",sep="_")
 filename_nme    <- paste(run_name1,species,pid,"Kellyplot_season_NME",sep="_")
 filename_rmse   <- paste(run_name1,species,pid,"Kellyplot_season_RMSE",sep="_")

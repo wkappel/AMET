@@ -8,7 +8,7 @@ header <- "
 ### These four plots are then combined into a single html plot using
 ### the plotly subplot function. 
 ###
-### Created by Wyat Appel: Apr 2025
+### Created by Wyat Appel: June 2025
 ################################################################
 "
 
@@ -18,22 +18,27 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
-require(ggplot2)
-library(plotly)
-library(htmlwidgets)
-library(gridExtra)
 
-filename_html <- paste(run_name1,species,pid,"summary_panel_plot.html",sep="_")     # Set output file name
-filename_html <- paste(figdir,filename_html,sep="/")     # Set output file name
+## Load required R libraries
+if(!require(ggplot2))		{ stop("Required Package ggplot2 was not loaded")	}
+if(!require(plotly))    	{ stop("Required Package plotly was not loaded")      	}
+if(!require(gridExtra))         { stop("Required Package gridExtra was not loaded")    	}
+if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded")  	}
 
+## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+run_name 	<- run_names[1]
+ob_col_name 	<- paste(species,"_ob",sep="")
+mod_col_name 	<- paste(species,"_mod",sep="")
+averaging 	<- 'e'
+multi_run 	<- 0
 
-run_name <- run_names[1]
-ob_col_name <- paste(species,"_ob",sep="")
-mod_col_name <- paste(species,"_mod",sep="")
-averaging <- 'e'
-multi_run <- 0
+## Set output file names
+filename_html <- paste(run_name1,species,pid,"summary_panel_plot.html",sep="_")     # Set output file name
+filename_html <- paste(figdir,filename_html,sep="/")     # Set output file name
+########################
+
 if (run_name2 != "") { multi_run <- 1 }
 {
    if (Sys.getenv("AMET_DB") == 'F') {

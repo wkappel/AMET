@@ -26,7 +26,7 @@ if(!require(lattice))		{ stop("Required Package lattice was not loaded") 	 }
 if(!require(leafpop))      	{ stop("Required Package leafpop was not loaded") 	 }
 if(!require(leaflet.extras))    { stop("Required Package leaflet.extras was not loaded") }
 
-### The current release of leaflet.extras does not contain the groupedLayerControlOptions function.
+### The current cran release of leaflet.extras does not contain the groupedLayerControlOptions function.
 ### Hopefully it will be added a a future release of the leaflet.extras library. In the interim, the
 ### function can be loaded using the instructions here:https://rdrr.io/github/bhaskarvk/leaflet.extras/.
 
@@ -36,24 +36,29 @@ if(!exists("png_from_html")) { png_from_html <- "n" }
 if(!exists("popup_ts")) { popup_ts <- "n" }
 
 ## Set some defaults
-network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-filename     	<- NULL
-filename_png 	<- NULL
-plot_data    	<- NULL
+network			<- network_names[1] # When using mutiple networks, units from network 1 will be used
+filename     		<- NULL
+filename_png 		<- NULL
+plot_data    		<- NULL
+remove_negatives_in     <- remove_negatives     # Store option to remove negatives (applied later in the code)
+remove_negatives        <- 'n'                  # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+total_networks          <- length(network_names)
+network_names_in        <- network_names
+k                       <- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
 ### Set output file names
 filename[1]	<- paste(run_name1,species,pid,"spatialplot.html",sep="_")           # Filename for obs spatial plot
 filename_png[1] <- paste(run_name1,species,pid,"spatialplot.png",sep="_")           # Filename for obs spatial plot
 
-## Create a full path to output files
+## Create full path to output files
 filename[1]      <- paste(figdir,filename[1],sep="/")           # Filename for obs spatial plot
 filename_png[1]  <- paste(figdir,filename_png[1],sep="/")           # Filename for obs spatial plot
 #################################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+##################################
+### Set variable initial value ###
+##################################
 sinfo_data      <- NULL
 sinfo_data_tmp	<- NULL
 diff_min        <- NULL
@@ -67,13 +72,8 @@ all_diff        <- NULL
 all_rat	   	<- NULL
 all_network	<- NULL
 aqdat_out.df	<- NULL
-########################################
+##################################
 
-remove_negatives_in <- remove_negatives	# Store option to remove negatives (applied later in the code)
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-total_networks <- length(network_names)
-network_names_in <- network_names
-k <- 1
 for (j in 1:total_networks) {							# Loop through for each network
    Mod_Obs_Diff <- NULL							# Set model/ob difference to NULL
    network     	<- network_names_in[[j]]						# Determine network name from loop value

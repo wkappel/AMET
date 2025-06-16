@@ -31,9 +31,9 @@ if(!require(sf))   	{ stop("Required Package sf was not loaded") 		}
 ## Set some defaults  
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title 		<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
-## Set file names and titles
+## Set output file names
 filename_obs_html               <- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
 filename_mod_html               <- paste(run_name1,species,pid,"spatialplot_mod.html",sep="_")           # Filename for model spatial plot
 filename_diff_html              <- paste(run_name1,species,pid,"spatialplot_diff.html",sep="_")          # Filename for diff spatial plot
@@ -45,7 +45,7 @@ filename_diff_anim   		<- paste(run_name1,species,pid,"spatialplot_anim_diff.htm
 filename_html_tile		<- paste(run_name1,species,pid,"spatialplot_tile.html",sep="_")
 filename_html_tile_anim         <- paste(run_name1,species,pid,"spatialplot_tile_anim.html",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename_obs_html      		<- paste(figdir,filename_obs_html,sep="/")           # Filename for obs spatial plot
 filename_mod_html 	     	<- paste(figdir,filename_mod_html,sep="/")           # Filename for model spatial plot
 filename_diff_html	     	<- paste(figdir,filename_diff_html,sep="/")          # Filename for diff spatial plot
@@ -53,10 +53,10 @@ filename_diff_max_html          <- paste(figdir,filename_diff_max_html,sep="/") 
 filename_diff_abs_max_html      <- paste(figdir,filename_diff_abs_max_html,sep="/")          # Filename for diff spatial plot
 filename_html_tile		<- paste(figdir,filename_html_tile,sep="/")
 
-filename_obs_anim      	<- paste(figdir,filename_obs_anim,sep="/")           # Filename for obs spatial plot
-filename_mod_anim      	<- paste(figdir,filename_mod_anim,sep="/")           # Filename for model spatial plot
-filename_diff_anim     	<- paste(figdir,filename_diff_anim,sep="/")          # Filename for diff spatial plot
-filename_html_tile_anim	<- paste(figdir,filename_html_tile_anim,sep="/")
+filename_obs_anim      		<- paste(figdir,filename_obs_anim,sep="/")           # Filename for obs spatial plot
+filename_mod_anim      		<- paste(figdir,filename_mod_anim,sep="/")           # Filename for model spatial plot
+filename_diff_anim     		<- paste(figdir,filename_diff_anim,sep="/")          # Filename for diff spatial plot
+filename_html_tile_anim		<- paste(figdir,filename_html_tile_anim,sep="/")
 
 ########################################
 ### Set NULL values and plot symbols ###

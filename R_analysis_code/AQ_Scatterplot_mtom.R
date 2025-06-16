@@ -20,7 +20,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Set some defaults
-network <- network_names[1] 														# Use first network to set units
+network 	 <- network_names[1] 														# Use first network to set units
+remove_negatives <- "n"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 #{
@@ -37,10 +38,13 @@ filename_pdf <- paste(figdir,filename_pdf,sep="/")                          # Se
 filename_png <- paste(figdir,filename_png,sep="/")                          # Set PNG filenam
 #################################
 
+###################################
+### Set variable initial values ###
+###################################
 axis.max 	 <- NULL
 sinfo    	 <- NULL
 avg_text 	 <- ""
-remove_negatives <- "n"
+###################################
 
 for (j in 1:length(network_names)) {						# Loop through for each network
    network		<- network_names[[j]]						# Set network name

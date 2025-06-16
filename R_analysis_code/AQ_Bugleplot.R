@@ -23,30 +23,31 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-### Set some defaults ###
+## Set some defaults
 network  			<- network_names[1] 
 if(!exists("dates")) { dates 	<- paste(start_date,"-",end_date) }
 title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-################################################
 
-### Set file names and titles ###
+## Set output file names
 filename_error_pdf	<- paste(run_name1,species,pid,"bugle_plot_error.pdf",sep="_")
 filename_bias_pdf 	<- paste(run_name1,species,pid,"bugle_plot_bias.pdf",sep="_")
 filename_error_png 	<- paste(run_name1,species,pid,"bugle_plot_error.png",sep="_")
 filename_bias_png 	<- paste(run_name1,species,pid,"bugle_plot_bias.png",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename_error_pdf	<- paste(figdir,filename_error_pdf,sep="/")
 filename_bias_pdf	<- paste(figdir,filename_bias_pdf,sep="/")
 filename_error_png	<- paste(figdir,filename_error_png,sep="/")
 filename_bias_png	<- paste(figdir,filename_bias_png,sep="/")
 #################################
 
-### Set values to NULL ###
+###################################
+### Set variable initial values ###
+###################################
 plotinfo 	<- NULL
 plot_vals 	<- NULL
 max_conc  	<- NULL
-##########################
+###################################
 
 for (j in 1:length(network_names)) {
    nmb 			<- NULL				

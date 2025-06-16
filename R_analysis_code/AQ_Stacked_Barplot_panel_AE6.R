@@ -7,7 +7,7 @@ header <- "
 ### includes percent composition on each plot. Requires a full year and CONUS data to work properly,
 ### as plots are created for each season and region. Output format is png, pdf or both.
 ###
-### Last updated by Wyat Appel: Nov 2020
+### Last updated by Wyat Appel: June 2025 
 ##############################################################################################
 "
 
