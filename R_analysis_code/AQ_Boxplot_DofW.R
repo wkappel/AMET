@@ -23,7 +23,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ## Set some defaults
 network		<- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title)
+title <- get_title()
 
 ## Set output file names 
 filename_pdf <- paste(run_name1,species,pid,"boxplot_dow.pdf",sep="_")

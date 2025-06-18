@@ -42,7 +42,7 @@ region          <- NULL
 sim_labels      <- NULL
 sub_title       <- paste("Sim1:",run_names[1])
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ## Set output file names
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_season_NMB",sep="_")
@@ -309,7 +309,7 @@ for (i in 1:6) {
    data.orig$round_value <- signif(data.orig$value,2)
 
    plt <- plot_ly(data=data.tmp,x=~season,y=~simulation,z=~round_value,type="heatmap",zauto=FALSE,zmin=axis.min,zmax=axis.max,colors=col.rng,colorbar=list(title=paste(stat_in,stat_unit_in)),text=~paste(stat_in,": ",value," ",stat_unit_in,"<br>Simulation: ",simulation,"<br>Season: ",season,sep=""),hoverinfo='text') %>%
-   layout(title=list(text=title,margin=list(l=0,r=0,t=0,b=200),font=list(size=25)),xaxis=list(title=list(text="Region",standoff=25),titlefont=list(size=25),tickfont=list(size=25),side="bottom"), yaxis=list(title=list(text="Simulation",standoff=25),titlefont=list(size=25),tickfont=list(size=20),side="left"),showlegend=TRUE,margin=list(l=400,r=200,b=150,t=100),hoverlabel=list(font=list(size=20)))
+   layout(title=list(text=main.title,margin=list(l=0,r=0,t=0,b=200),font=list(size=25)),xaxis=list(title=list(text="Region",standoff=25),titlefont=list(size=25),tickfont=list(size=25),side="bottom"), yaxis=list(title=list(text="Simulation",standoff=25),titlefont=list(size=25),tickfont=list(size=20),side="left"),showlegend=TRUE,margin=list(l=400,r=200,b=150,t=100),hoverlabel=list(font=list(size=20)))
    if (inc_kelly_stats == "y") {
       plt <- plt %>% add_annotations(font=list(color=text.col,size=20),text=~round_value, x=~season, y=~simulation, showarrow=FALSE)
    }

@@ -25,8 +25,8 @@ labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 run_name	<- run_names[1]
 query_base 	<- query
-main.title 	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-main.title.bias	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,bias="T")
+main.title 	<- get_title()
+main.title.bias	<- get_title(bias="T")
 
 ## Set output file names
 filename_csv_zip 	<- paste(run_name1,species,pid,"timeseries_csv.zip",sep="_")

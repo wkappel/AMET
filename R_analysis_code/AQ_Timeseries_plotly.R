@@ -34,7 +34,6 @@ network 	<- network_names[1]
 labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names,species[k],network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
 
 ## Set output file names 
 filename_html   <- paste(run_name1,species[1],pid,"timeseries.html",sep="_")              # Set output file name
@@ -83,6 +82,7 @@ if (length(network_names) > 1) {
 ###############################################
 
 for (k in 1:length(species)) {
+   main.title <- get_title(species[k])
    for (j in 1:num_runs) {	# For each simulation being plotted
       run_name <- run_names[j]
       if (length(network_names) > 1) {

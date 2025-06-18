@@ -25,9 +25,9 @@ network <- network_names[1]
 run2 	<- "False"
 run3 	<- "False"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title       <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title.bias  <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title.normb <- get_title(run_names,species,network_label,dates,custom_text="Normalized Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title  <- get_title()
+title.bias  <- get_title(custom_text="Bias")
+title.normb <- get_title(custom_text="Normalized Bias")
 
 ## Set output file names
 network<-network_names[[1]]
@@ -358,7 +358,7 @@ if (run3 == "True") {
 ###############################################################
 
 ### Put title at top of boxplot ###
-title(main=title, cex.main=0.9)
+title(main=main.title, cex.main=0.9)
 
 ### Count number of samples per month ###
 nsamples.table <- obs.stats$n

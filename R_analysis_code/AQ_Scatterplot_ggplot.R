@@ -37,7 +37,7 @@ filename_txt  	<- paste(figdir,filename_txt,sep="/")      # Set output file name
 run_name        <- run_name1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 if(!exists("trend_line")) { trend_line <- "n" }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ###################################
 ### Set variable initial values ###
@@ -179,7 +179,7 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 }
 #######################################################
 pdf(file=filename_pdf,width=9,height=9)
-sp <- ggplot(aqdat_out.df,aes(x=Obs_Value,y=Mod_Value)) + geom_point(aes(colour=Network,shape=Network)) + scale_color_manual(breaks=network_names,values=plot_colors) + labs(title=title,x=paste("Obs (",units,")",sep=""),y=paste(model_name," (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(0,1), legend.position=c(0.02,0.98), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5), legend.title=element_blank(), legend.text=element_text(size=15))
+sp <- ggplot(aqdat_out.df,aes(x=Obs_Value,y=Mod_Value)) + geom_point(aes(colour=Network,shape=Network)) + scale_color_manual(breaks=network_names,values=plot_colors) + labs(title=main.title,x=paste("Obs (",units,")",sep=""),y=paste(model_name," (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(0,1), legend.position=c(0.02,0.98), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5), legend.title=element_blank(), legend.text=element_text(size=15))
 if (trend_line == 'y') {
    sp <- sp + geom_smooth(method=lm, linetype="dashed", color="black")
 }

@@ -1,6 +1,6 @@
 header <- "
 ##################### HOURLY BOX PLOT ##########################
-### AMET CODE: AQ_Boxplot_hourly.R
+### AMET CODE: AQ_Boxplot_Hourly.R
 ###
 ### This script is part of the AMET-AQ system.  It plots a box plot
 ### using only hourly data. Individual observation/model pairs are 
@@ -21,7 +21,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ## Set some defaults
 network  <- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,clim_reg=clim_reg)
+title <- get_title()
 
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"boxplot_hourly.pdf",sep="_")

@@ -29,7 +29,6 @@ num_runs 	<- 1                                                                  
 run_name 	<- run_name1
 run_names 	<- run_name1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ### Set output filenames 
 filename_ecdf_pdf 	<- paste(run_name1,species,pid,"ecdf.pdf",sep="_")				# Set PDF filename

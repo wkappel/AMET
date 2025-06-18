@@ -33,7 +33,7 @@ while (n <= length(network_names)) {
    n <- n+1
 }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ## Set output file names
 filename_pdf	<- paste(run_name1,species,pid,"scatterplot_mtom_density.pdf",sep="_")   # Set filename for pdf format file
@@ -153,7 +153,7 @@ y.x.lm <- lm(aqdat.df$Mod_Value~aqdat.df$Obs_Value)$coeff
 
 options(bitmapType='cairo')
 
-sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=title,x=run_name2,y=run_name1) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.title = element_text(size=14), legend.text = element_text(size=12), legend.justification=c(1,0), legend.position=c(0.98,0.02), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5))
+sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x=run_name2,y=run_name1) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.title = element_text(size=14), legend.text = element_text(size=12), legend.justification=c(1,0), legend.position=c(0.98,0.02), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5))
 p <- ggplotly(sp, width=1450, height=1250)
 
 sp <- sp + annotate("text",0.02*(axis.max),0.97*(axis.max),label=paste("Y =",signif(y.x.lm[1],2),"+",signif(y.x.lm[2],2),"* X"),hjust=0,vjust=1,size=5)

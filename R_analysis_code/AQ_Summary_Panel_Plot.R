@@ -27,7 +27,7 @@ if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loa
 
 ## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 run_name 	<- run_names[1]
 ob_col_name 	<- paste(species,"_ob",sep="")
 mod_col_name 	<- paste(species,"_mod",sep="")

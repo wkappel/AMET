@@ -26,7 +26,7 @@ if (use_median == "y") {
    method <- "Median"
 }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species="Multiple Species",network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title(species="Multiple Species")
 #{
 #   if (custom_title == "") { title <- paste(network_name," Stacked Barplot for ",run_name1," for ",dates,sep="") }
 #   else { title <- custom_title }
@@ -342,7 +342,7 @@ if (total_networks > 1) {
 ######################################
 
 ## Put title at top of barplot ##
-title(main=title,cex.main=1)
+title(main=main.title,cex.main=1)
 
 ## Convert pdf to png ##
 dev.off()

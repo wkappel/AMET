@@ -24,7 +24,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ### Set some defaults
 remove_negatives <- "n"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ## Set output file names
 filename_pdf <- paste(run_name1,pid,"soccerplot.pdf",sep="_")             # Set PDF filename
@@ -168,7 +168,7 @@ for (n in 1:length(network_names)) {							# For each network, plot values as po
 }
 
 ### Put title at top of boxplot ###
-title(main=title,cex.main=1.2)
+title(main=main.title,cex.main=1.2)
 ###################################
 
 ### Put legend on the plot ###
