@@ -25,7 +25,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network		<- network_names[1]
 network_name	<- network_label[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ## Set output file names 
 filename_stats	<- paste(run_name1,species,pid,"stats.csv",sep="_")

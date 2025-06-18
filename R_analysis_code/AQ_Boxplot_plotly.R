@@ -29,9 +29,9 @@ level_names_bias <- NULL
 level_names_nmb  <- NULL
 num_sites 	 <- NULL
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title            <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title_bias       <- get_title(run_names,species,network_names,dates,custom_text="bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-title_nmb        <- get_title(run_names,species,network_names,dates,custom_text="NMB",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title            <- get_title()
+title_bias       <- get_title(custom_text="bias")
+title_nmb        <- get_title(custom_text="NMB")
 
 ## Set output file names
 filename_html		<- paste(run_name1,species,pid,"boxplot.html",sep="_")

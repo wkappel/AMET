@@ -36,7 +36,7 @@ if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" 	}
 ## Set some defaults 
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 ################################################
 
 ## Set output file names
@@ -125,7 +125,6 @@ sub_title       	<- NULL						# Set sub title to NULL
 lev_lab         	<- NULL
 legend_names    	<- NULL
 legend_chars    	<- NULL
-sub_title		<- NULL
 tile_out		<- NULL
 grid_out		<- NULL
 grob_out		<- NULL
@@ -251,6 +250,25 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
 }
+
+####################################################################################
+### Deal with different dates with available data between the different networks ###
+### This avoids issues with the color bar disappearing on some of the panels     ###
+####################################################################################
+unique_dates <- unique(unlist(lapply(sinfo_obs_anim, function(x) x$date)))
+for (d in 1:total_networks) {
+   sinfo_obs_anim[[d]]          <- as.data.frame(sinfo_obs_anim[[d]])
+   sinfo_obs_anim[[d]]          <- sinfo_obs_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_obs_anim[[d]]$network  <- network_names[d]
+   sinfo_mod_anim[[d]]          <- as.data.frame(sinfo_mod_anim[[d]])
+   sinfo_mod_anim[[d]]          <- sinfo_mod_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_mod_anim[[d]]$network  <- network_names[d]
+   sinfo_diff_anim[[d]]         <- as.data.frame(sinfo_diff_anim[[d]])
+   sinfo_diff_anim[[d]]         <- sinfo_diff_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_diff_anim[[d]]$network <- network_names[d]
+}
+####################################################################################
+
 #########################
 ## plot format options ##
 #########################
@@ -409,10 +427,10 @@ for (i in 1:5) {
           geom_point(data = plot_data, shape=spch[k], aes(lon, lat, col = plotval),size=4) +
           geom_point(data = plot_data, shape=spch2[k], size=4,color="black",aes(x=lon,y=lat))
       }
-      sp <- sp + xlab('Longitude') + ylab('Latitude') + labs(title=title,subtitle=sub_title,color=paste0(species," (",units,")\n",plot_names[i]))
+      sp <- sp + xlab('Longitude') + ylab('Latitude') + labs(title=main.title,subtitle=sub_title,color=paste0(species," (",units,")\n",plot_names[i]))
    }
    grob_out[[i]] <- sp
-   grid_out[[i]] <- ggplotly(sp,tooltip=c("lat","lon","date","plotval")) %>% layout(title=list(text=paste0(title,'<br>',sub_title),y=0.98),showlegend=T)
+   grid_out[[i]] <- ggplotly(sp,tooltip=c("lat","lon","date","plotval")) %>% layout(title=list(text=paste0(main.title,'<br>',sub_title),y=0.98),showlegend=T)
    saveWidget(grid_out[[i]], file=filename_html,selfcontained=T)
    ggsave(sp,filename=filename_pdf,width=16,height=9)
    ggsave(sp,filename=filename_png,width=16,height=9)
@@ -441,7 +459,7 @@ for (i in 1:5) {
             geom_point(data = plot_data_anim, shape=spch2[k] ,size=5,color="black",aes(x=lon,y=lat,frame=(date), group=date))
          }
       }
-      fig <- ggplotly(sp_anim,tooltip=c("lat","lon","date","plotval")) %>% animation_opts(transition=0,easing="elastic",redraw=FALSE) %>% layout(title=list(text=paste0(title,'<br>',sub_title),y=0.98)) 
+      fig <- ggplotly(sp_anim,tooltip=c("lat","lon","date","plotval")) %>% animation_opts(transition=0,easing="elastic",redraw=FALSE) %>% layout(title=list(text=paste0(main.title,'<br>',sub_title),y=0.98)) 
       tile_out[[i]] <- fig
       saveWidget(fig, file=filename_anim,selfcontained=T)
    }

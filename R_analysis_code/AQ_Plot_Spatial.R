@@ -32,7 +32,6 @@ remove_negatives 	<- 'n'      # Set remove negatives to false. Negatives are nee
 total_networks 		<- length(network_names)
 k 			<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Create output file names
 filename_obs	<- paste(run_name1,species,pid,"spatialplot_obs",sep="_")           # Filename for obs spatial plot

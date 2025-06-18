@@ -21,7 +21,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ## Create output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_density.pdf",sep="_")             # Set PDF filename
@@ -149,7 +149,7 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 ##############################################
 plot_chars <- c(1,2,3,4)                                 	# set vector of plot characters
 pdf(file=filename_pdf,width=8,height=8)
-plot.density.scatter.plot(x=aqdat.df$Obs_Value,y=aqdat.df$Mod_Value,xlim=c(axis.min,axis.max),ylim=c(axis.min,axis.max),zlim=dens_zlim,main=title,num.bins=number_bins)
+plot.density.scatter.plot(x=aqdat.df$Obs_Value,y=aqdat.df$Mod_Value,xlim=c(axis.min,axis.max),ylim=c(axis.min,axis.max),zlim=dens_zlim,main=main.title,num.bins=number_bins)
 
 #### Define Stats placement and add text ####
 axis.length <- (axis.max - axis.min)

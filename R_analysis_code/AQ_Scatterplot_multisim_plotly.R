@@ -33,7 +33,7 @@ filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 ## Set some defaults
 network <- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ###################################
 ### Set variable initial values ###

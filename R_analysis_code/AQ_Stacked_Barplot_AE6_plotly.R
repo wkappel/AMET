@@ -30,7 +30,7 @@ num_runs 		<- 1
 remove_negatives 	<- "n"
 merge_statid_POC 	<- "n"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species="Multiple Species",network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title(species="Multiple Species")
 
 ## Set output filenames 
 filename_html    <- paste(run_name1,pid,"stacked_barplot_AE6.html",sep="_")
@@ -272,7 +272,7 @@ p <- plot_ly(data=merged.df,x=ob_mod,y=~SO4,type="bar",height=img_height,width=i
   add_trace(y=~Cl, name="Cl", marker=list(color="lightseagreen"), text=paste("% of total:",Cl_perc)) %>%
   add_trace(y=~NCOM, name="NCOM", marker=list(color="pink"), text=paste("% of total:",NCOM_perc)) %>%
   add_trace(y=~OTHR, name="Other", marker=list(color="lightgray"), text=paste("% of total:",OTHR_perc)) %>%
-  layout(title=title,yaxis=list(title=paste(method," Concentration (",units,")")),barmode='stack', xaxis=xform)
+  layout(title=main.title,yaxis=list(title=paste(method," Concentration (",units,")")),barmode='stack', xaxis=xform)
 
 saveWidget(p, file=filename_html,selfcontained=T)
 

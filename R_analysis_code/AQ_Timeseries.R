@@ -24,8 +24,8 @@ species 	<- species[1]
 labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	<- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
-main.title.bias <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title 	<- get_title()
+main.title.bias <- get_title(custom_text="Bias")
 sub.title	<- ""
 
 ## Set output file name

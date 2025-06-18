@@ -23,6 +23,7 @@
 #	get_title							#
 #	GetURL								#
 #	vline								#
+#	addLegend_decreasing						#
 #									#
 #	Last UpDate:	April 2025					#
 #	Contributors:	Wyat Appel, Robert Gilliam, Kristen Foley,	#
@@ -895,33 +896,47 @@ rmse_unsys    <- NULL   # Unsystematic RMSE
 ## Compute hour specific statistics 
 temp <- split(datain_all.df,datain_all.df$Date_Hour)
 for (i in 1:length(temp)) {
-   ls_regress 		<- NULL
-   intercept  		<- NULL
-   X          		<- NULL
-   sub.df 		<- temp[[i]]
-   num_good_obs 	<- length(sub.df$Date_Hour)                       # First assume all queried obs are valid
-   indic.missing 	<- sub.df$ob_val >= 0
-   sub.df 		<- sub.df[indic.missing,]
-   indic.missing 	<- sub.df$mod_val >= 0
-   sub.df 		<- sub.df[indic.missing,]
-   num_good_obs 	<- length(sub.df$Date_Hour)
-   coverage 		<- round((num_good_obs/total_obs[i])*100)
+   ls_regress <- NULL
+   intercept  <- NULL
+   X          <- NULL
+   sub.df <- temp[[i]]
+   num_good_obs <- length(sub.df$Date_Hour)                       # First assume all queried obs are valid
+#   if ((valid_only == "y") && (remove_negatives == "y")) {      # Check that we assuming all records are valid and we are removing negative values
+#   if (valid_only == "y") {
+#      indic.missing <- sub.df$ob_val < 0                        # Check for observations that are less than 0
+#      sub.df$ob_val[indic.missing] <- 0                         # Replace those observations with 0 (we assume a valid observation, just not negative)
+#      indic.missing <- sub.df$mod_val >= 0                      # Find all the good model values
+#      sub.df <- sub.df[indic.missing,]                          # Remove any records with a missing modeled value
+#      num_good_obs <- length(sub.df$Date_Hour)                    # Count the remaining records
+#   }
+#   else {
+#      if (remove_negatives == "y") {    # If removing negative observations and valid_only (which applies only to NADP) is not checked
+         indic.missing <- sub.df$ob_val >= 0
+         sub.df <- sub.df[indic.missing,]
+         indic.missing <- sub.df$mod_val >= 0
+         sub.df <- sub.df[indic.missing,]
+         num_good_obs <- length(sub.df$Date_Hour)
+#      }
+#   }
+   coverage <- round((num_good_obs/total_obs[i])*100)
    if (rm_negs_query == "y") {  # if removing negatives at the query level, calculate coverage based on time range (assumes hourly data)
       coverage  <- round((num_good_obs/(as.numeric(num_hours)+24))*100)
    }
    if ((length(sub.df$Date_Hour) > 0) && (coverage >= coverage_limit) && (num_good_obs >= num_obs_limit)) {       # number of observations necessary for evaluation(completeness criteria)
       hour_coverage	<- c(hour_coverage, coverage)
       date_hour		<- c(date_hour, as.character(unique(sub.df$Date_Hour)))           # Set site ID
-      num_obs       	<- c(num_obs,length(sub.df$Date_Hour))
-      mean_obs      	<- c(mean_obs, round(mean(sub.df$ob_val),3))
-      mean_model    	<- c(mean_model, round(mean(sub.df$mod_val),3))
-      median_obs    	<- c(median_obs, median(sub.df$ob_val))
-      median_mod    	<- c(median_mod, median(sub.df$mod_val))
-      median_diff   	<- c(median_diff, median(sub.df$mod_val-sub.df$ob_val))
-      skew_obs      	<- c(skew_obs, round((median(sub.df$ob_val)/mean(sub.df$ob_val)),2))
-      skew_mod      	<- c(skew_mod, round((median(sub.df$mod_val)/mean(sub.df$mod_val)),2))
-      hour_mb       	<- c(hour_mb, round(mean(sub.df$mod_val-sub.df$ob_val),4))
-      hour_me       	<- c(hour_me, round(abs(mean(sub.df$mod_val-sub.df$ob_val)),4))
+#      lats          <- c(lats, sub.df$lat[1])           # Set lat to first lat record in sub.df
+#      lons          <- c(lons, sub.df$lon[1])           # Set lon to first lon record in sub.df
+      num_obs       <- c(num_obs,length(sub.df$Date_Hour))
+      mean_obs      <- c(mean_obs, round(mean(sub.df$ob_val),3))
+      mean_model    <- c(mean_model, round(mean(sub.df$mod_val),3))
+      median_obs    <- c(median_obs, median(sub.df$ob_val))
+      median_mod    <- c(median_mod, median(sub.df$mod_val))
+      median_diff   <- c(median_diff, median(sub.df$mod_val-sub.df$ob_val))
+      skew_obs      <- c(skew_obs, round((median(sub.df$ob_val)/mean(sub.df$ob_val)),2))
+      skew_mod      <- c(skew_mod, round((median(sub.df$mod_val)/mean(sub.df$mod_val)),2))
+      hour_mb       <- c(hour_mb, round(mean(sub.df$mod_val-sub.df$ob_val),4))
+      hour_me       <- c(hour_me, round(abs(mean(sub.df$mod_val-sub.df$ob_val)),4))
       if (mean(sub.df$ob_val) > 0) {
          hour_nmb      <- c(hour_nmb, round(((sum(sub.df$mod_val-sub.df$ob_val))/sum(sub.df$ob_val))*100,2))
          hour_nme      <- c(hour_nme, round((sum((abs(sub.df$mod_val-sub.df$ob_val)))/sum(sub.df$ob_val))*100,2))
@@ -987,6 +1002,9 @@ Average<-function(datain.df,avg_func="mean") {
    obs_sum		<- NULL
    category		<- NULL
    Networks		<- NULL
+#   print(datain.df)
+#   names(datain.df)
+#   datain.df$Stat_ID <- paste(datain.df$Stat_ID,datain.df$POCode,sep="")
    if ((!"state" %in% colnames(datain.df)) && (!"State" %in% colnames(datain.df))) {
       datain.df$State <- "NA"
    }
@@ -994,11 +1012,22 @@ Average<-function(datain.df,avg_func="mean") {
    datain.df$Year <- substr(datain.df$Start_Date,1,4)
    indic.nonzero  <- datain.df$Mod_Value >= 0
    datain.df      <- datain.df[indic.nonzero,]
+#   indic.na <- datain.df$Obs_Value < 0
+#   datain.df$Obs_Value[indic.na] <- NA
    indic.nonzero  <- datain.df$Obs_Value >= 0
    datain.df	  <- datain.df[indic.nonzero,]
-   indic.na 	  <- is.na(datain.df$Obs_Value)
-
-   datain.df$good_ob[!indic.na] <- 1
+   {
+#   if ((network == "NADP") || (network == "MDN")) {				# Do things differently for deposition networks
+#      indic.na <- datain.df$precip_ob <= 0.127
+#      datain.df$good_ob[indic.na] <- 1
+#      indic.na <- is.na(datain.df$Obs_Value)
+#      datain.df$good_ob[!indic.na] <- 1
+#   }
+#   else {
+      indic.na <- is.na(datain.df$Obs_Value)
+      datain.df$good_ob[!indic.na] <- 1
+#   }
+   }
    if (units == "mg/l") {
       datain.df$VWA_ob 	<- datain.df$Obs_Value*datain.df$precip_ob
       datain.df$VWA_mod	<- datain.df$Mod_Value*datain.df$precip_mod
@@ -1114,8 +1143,8 @@ Average<-function(datain.df,avg_func="mean") {
             Lats        <- c(Lats,tapply(data_split.df$lat,data_split.df$Stat_ID,unique))
             Lons        <- c(Lons,tapply(data_split.df$lon,data_split.df$Stat_ID,unique)) 
             Years       <- c(Years,tapply(data_split.df$Year,data_split.df$Stat_ID,unique))
-            Networks    <- c(Networks,tapply(data_split.df$Network, data_split.df$Stat_ID, function(x) x[1]))
-	    avg_text    <- paste("VW ",avg_text_1, "Average",sep="")                         # set text as volume weighted average
+	    Networks    <- c(Networks,tapply(data_split.df$Network, data_split.df$Stat_ID, function(x) x[1]))
+            avg_text    <- paste("VW ",avg_text_1, "Average",sep="")                         # set text as volume weighted average
          }
          else {
             if (remove_mean == 'y') {
@@ -1914,34 +1943,34 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 ########################################
 }
 
-get_title <- function(run_names,species,network_label,dates,custom_title="",site=site,state=state,pca=pca,rpo=rpo,clim_reg=clim_reg,custom_text="",bias=F) {
+get_title <- function(run_names_title=run_names,species_title=species,networks_title=network_label,dates_title=dates,custom_title="",site="All",state="All",pca="None",rpo="None",clim_reg="None",custom_text="",bias=F) {
 
    {
       my_title <- custom_title
       {
-         network <- paste(network_label,collapse=", ")
-         species <- paste(species,collapse=", ")
-         if ((custom_title == "") && (length(run_names) == 1)) { 
-            my_title <- paste(network,run_name1,species,sep=", ")
-            if (bias == "T") { my_title <- paste(run_name1,species,"Bias",sep=", ") }
+         network_in <- paste(networks_title,collapse=", ")
+         species_in <- paste(species_title,collapse=", ")
+	 if ((custom_title == "") && (length(run_names) == 1)) { 
+            my_title <- paste(network_in,run_name1,species_in,sep=", ")
+            if (bias == "T") { my_title <- paste(run_name1,species_in,"Bias",sep=", ") }
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
-            my_title <- paste(my_title,dates,sep=", ")	# add dates regardless of custom title or not
+            my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not
          }
-         else if ((custom_title == "") && (length(run_names) > 1)) {
-            run_names_text <- paste(run_names,collapse=", ")
-            my_title <- paste(network,run_names_text,species,sep=", ")
-            if (bias == "T") { my_title <- paste(species,"Bias",sep=", ") }        
+         else if ((custom_title == "") && (length(run_names_title) > 1)) {
+            run_names_text <- paste(run_names_title,collapse=", ")
+            my_title <- paste(network,run_names_text,species_title,sep=", ")
+            if (bias == "T") { my_title <- paste(species_title,"Bias",sep=", ") }        
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
-            my_title <- paste(my_title,dates,sep=", ")	# add dates regardless of custom title or not
+            my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not
          }
       }
       if ((site != "All") || (state != "All") || (clim_reg != "None") || (rpo != "None") || (pca != "None")) { my_title <- paste(my_title,"\n") }
-      if (site != "All") 	{ my_title <- paste(my_title," Site=",site,sep="") }
-      if (state != "All") 	{ my_title <- paste(my_title," State=",state,sep="") }
-      if (clim_reg != "None") 	{ my_title <- paste(my_title," Clim_Reg=",clim_reg,sep="") }
-      if (rpo != "None") 	{ my_title <- paste(my_title," RPO=",rpo,sep="") }
-      if (pca != "None") 	{ my_title <- paste(my_title," PCA=",pca,sep="") }
-      if (custom_title != "") 	{ my_title <- custom_title }
+      if (site != "All") {	my_title <- paste(my_title," Site=",site,sep="") }
+      if (state != "All") {     my_title <- paste(my_title," State=",state,sep="") }
+      if (clim_reg != "None") { my_title <- paste(my_title," Clim_Reg=",clim_reg,sep="") }
+      if (rpo != "None") {      my_title <- paste(my_title," RPO=",rpo,sep="") }
+      if (pca != "None") {      my_title <- paste(my_title," PCA=",pca,sep="") }
+      if (custom_title != "") { my_title <- custom_title }
    }
    return(my_title)
 }
@@ -2024,3 +2053,113 @@ vline <- function(x = 0, color = "black") {
   )
 }
 ############################################################
+
+#####################################################
+### Function to reverse order of a leaflet legend ###
+### Code authored by everet, Nov 13, 2019	  ###
+### https://gitlab.com/-/snippets/1912912	  ###
+#####################################################
+addLegend_decreasing <- function (map, position = c("topright", "bottomright", "bottomleft",
+                                                    "topleft"), pal, values, na.label = "NA", bins = 7, colors,
+                                  opacity = 0.5, labels = NULL, labFormat = labelFormat(),
+                                  title = NULL, className = "info legend", layerId = NULL,
+                                  group = NULL, data = getMapData(map), decreasing = FALSE) {
+  position <- match.arg(position)
+  type <- "unknown"
+  na.color <- NULL
+  extra <- NULL
+  if (!missing(pal)) {
+    if (!missing(colors))
+      stop("You must provide either 'pal' or 'colors' (not both)")
+    if (missing(title) && inherits(values, "formula"))
+      title <- deparse(values[[2]])
+    values <- evalFormula(values, data)
+    type <- attr(pal, "colorType", exact = TRUE)
+    args <- attr(pal, "colorArgs", exact = TRUE)
+    na.color <- args$na.color
+    if (!is.null(na.color) && col2rgb(na.color, alpha = TRUE)[[4]] ==
+        0) {
+      na.color <- NULL
+    }
+    if (type != "numeric" && !missing(bins))
+      warning("'bins' is ignored because the palette type is not numeric")
+    if (type == "numeric") {
+      cuts <- if (length(bins) == 1)
+        pretty(values, bins)
+      else bins
+
+      if (length(bins) > 2)
+        if (!all(abs(diff(bins, differences = 2)) <=
+                 sqrt(.Machine$double.eps)))
+          stop("The vector of breaks 'bins' must be equally spaced")
+      n <- length(cuts)
+      r <- range(values, na.rm = TRUE)
+      cuts <- cuts[cuts >= r[1] & cuts <= r[2]]
+      n <- length(cuts)
+      p <- (cuts - r[1])/(r[2] - r[1])
+      extra <- list(p_1 = p[1], p_n = p[n])
+      p <- c("", paste0(100 * p, "%"), "")
+      if (decreasing == TRUE){
+        colors <- pal(rev(c(r[1], cuts, r[2])))
+        labels <- rev(labFormat(type = "numeric", cuts))
+      }else{
+        colors <- pal(c(r[1], cuts, r[2]))
+        labels <- rev(labFormat(type = "numeric", cuts))
+      }
+      colors <- paste(colors, p, sep = " ", collapse = ", ")
+
+    }
+    else if (type == "bin") {
+      cuts <- args$bins
+      n <- length(cuts)
+      mids <- (cuts[-1] + cuts[-n])/2
+      if (decreasing == TRUE){
+        colors <- pal(rev(mids))
+        labels <- rev(labFormat(type = "bin", cuts))
+      }else{
+        colors <- pal(mids)
+        labels <- labFormat(type = "bin", cuts)
+      }
+
+    }
+    else if (type == "quantile") {
+      p <- args$probs
+      n <- length(p)
+      cuts <- quantile(values, probs = p, na.rm = TRUE)
+      mids <- quantile(values, probs = (p[-1] + p[-n])/2,
+                       na.rm = TRUE)
+      if (decreasing == TRUE){
+        colors <- pal(rev(mids))
+        labels <- rev(labFormat(type = "quantile", cuts, p))
+      }else{
+        colors <- pal(mids)
+        labels <- labFormat(type = "quantile", cuts, p)
+      }
+    }
+    else if (type == "factor") {
+      v <- sort(unique(na.omit(values)))
+      colors <- pal(v)
+      labels <- labFormat(type = "factor", v)
+      if (decreasing == TRUE){
+        colors <- pal(rev(v))
+        labels <- rev(labFormat(type = "factor", v))
+      }else{
+        colors <- pal(v)
+        labels <- labFormat(type = "factor", v)
+      }
+    }
+    else stop("Palette function not supported")
+    if (!any(is.na(values)))
+      na.color <- NULL
+  }
+  else {
+    if (length(colors) != length(labels))
+      stop("'colors' and 'labels' must be of the same length")
+  }
+  legend <- list(colors = I(unname(colors)), labels = I(unname(labels)),
+                 na_color = na.color, na_label = na.label, opacity = opacity,
+                 position = position, type = type, title = title, extra = extra,
+                 layerId = layerId, className = className, group = group)
+  invokeMethod(map, data, "addLegend", legend)
+}
+##################################################################################

@@ -29,7 +29,6 @@ if (use_median == "y") {
    method <- "Median"
 }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species="Multiple Species",network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 
 ## Set output file names
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_panel_AE6_multi.pdf",sep="_")

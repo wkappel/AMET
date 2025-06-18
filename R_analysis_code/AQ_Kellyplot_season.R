@@ -40,7 +40,7 @@ region          <- NULL
 sim_labels      <- NULL
 sub_title       <- paste("Sim1:",run_names[1])
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ## Set output file names 
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_season_NMB",sep="_")
@@ -306,7 +306,7 @@ for (i in 1:6) {
            legend.title=element_text(size=13),
            plot.title=element_text(size=14,hjust=0.5),
            plot.subtitle=element_text(size=6,hjust=0)) +
-     labs(title=title)
+     labs(title=main.title)
      if (inc_kelly_stats == "y") {
       plt <- plt + geom_text(size=2.5,data=data.orig,aes(x=season,y=simulation,label=round_value))   #Add the value for each color square to the Kelly plot.
    }

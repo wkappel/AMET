@@ -31,7 +31,7 @@ if(!require(sf))   	{ stop("Required Package sf was not loaded") 		}
 ## Set some defaults  
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title 		<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title 	<- get_title()
 
 ## Set output file names
 filename_obs_html               <- paste(run_name1,species,pid,"spatialplot_obs.html",sep="_")           # Filename for obs spatial plot
@@ -135,17 +135,10 @@ for (j in 1:total_networks) {							# Loop through for each network
 
    }
    #######################
-
-#   count <- sum(is.na(aqdat_query.df[,9]))
-#   len   <- length(aqdat_query.df[,9])
-
-#   if (count != len) {	# Continue if query returned non-missing data
-
    { 
       if (data_exists == "n") {
          total_networks <- (total_networks-1)
          network_names <- network_names[-j]
-#         sub_title<-paste(sub_title,network_label[j],"=No Data; ",sep="")      # Set subtitle based on network matched with the appropriate symbol
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
       else {
@@ -216,6 +209,25 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
 }
+
+####################################################################################
+### Deal with different dates with available data between the different networks ###
+### This avoids issues with the color bar disappearing on some of the panels     ###
+####################################################################################
+unique_dates <- unique(unlist(lapply(sinfo_obs_anim, function(x) x$date)))
+for (d in 1:total_networks) {
+   sinfo_obs_anim[[d]]          <- as.data.frame(sinfo_obs_anim[[d]])
+   sinfo_obs_anim[[d]]          <- sinfo_obs_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_obs_anim[[d]]$network  <- network_names[d]
+   sinfo_mod_anim[[d]]          <- as.data.frame(sinfo_mod_anim[[d]])
+   sinfo_mod_anim[[d]]          <- sinfo_mod_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_mod_anim[[d]]$network  <- network_names[d]
+   sinfo_diff_anim[[d]]         <- as.data.frame(sinfo_diff_anim[[d]])
+   sinfo_diff_anim[[d]]         <- sinfo_diff_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_diff_anim[[d]]$network <- network_names[d]
+}
+####################################################################################
+
 #########################
 ## plot format options ##
 #########################
@@ -257,9 +269,6 @@ intervals <- num_ints
 }
 ###########################################################################
 
-
-
-#################################################
 {
    if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
       diff_max <- max(quantile(abs(all_diff),quantile_max))
@@ -361,9 +370,9 @@ for (i in 1:5) {
             sp <- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(plot_names[i],"<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k],"(",plot_names[i],")"))
 	 }
          sp 	<- sp %>% layout(mapbox = list(style='open-street-map', zoom=4, subplot=subplot_names[i],domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99))
-	 sp 	<- sp %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+	 sp 	<- sp %>% layout(title=list(text=main.title,y=0.98,font=list(size=20)))
 	 spTile <- spTile %>% layout(mapbox = list(style='open-street-map', zoom=4, subplot=subplot_names[i],domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.01,y=0.99))
-         spTile <- spTile %>% layout(title=list(text=title,y=1,font=list(size=20)))
+         spTile <- spTile %>% layout(title=list(text=main.title,y=1,font=list(size=20)))
       }
       else {
          sp 	<- sp %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG (',plot_names[i],")"))
@@ -385,7 +394,7 @@ for (i in 1:5) {
 	       sp_anim <- sp_anim %>% add_trace(data=anim_data_in,lat = ~lat, lon=~lon,marker = list(color = ~plotval,colorbar=list(title=paste0("Diff<br>",species,"<br>",units)),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),frame=~date,mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>Value: ",signif(plotval,4)),hoverinfo='text',name=paste0(network_label[k]," (",plot_names_anim[i],")"))
 	    }
             sp_anim <- sp_anim %>% layout(mapbox = list(style='open-street-map', subplot=subplot_names[i],domain=list(x=c(0,1),y=c(0,1)),zoom=4,center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE,legend=list(x=0.02,y=0.98)) 
-            sp_anim <- sp_anim %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+            sp_anim <- sp_anim %>% layout(title=list(text=main.title,y=0.98,font=list(size=20)))
          }
          else {
             sp_anim <- sp_anim %>% add_trace(data=anim_data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),frame=~date,mode='markers',type='scattermapbox',name=paste0('BG (',plot_names_anim[i],")"))
@@ -412,8 +421,8 @@ for (i in 1:5) {
       spTile_anim 	<- sp_anim %>% layout(mapbox4 = list(style='open-street-map', zoom=3.1, subplot="mapbox4",domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
    }
 
-   spTile <- spTile %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
-   spTile_anim <- spTile_anim %>% layout(title=list(text=title,y=0.98,font=list(size=20)))
+   spTile <- spTile %>% layout(title=list(text=main.title,y=0.98,font=list(size=20)))
+   spTile_anim <- spTile_anim %>% layout(title=list(text=main.title,y=0.98,font=list(size=20)))
    sp_tile[i] <- spTile
    sp_anim_tile[i] <- sp_anim
    saveWidget(sp, file=filename_html,selfcontained=T)
@@ -423,7 +432,7 @@ for (i in 1:5) {
 ### Create and save multipanel plot ###
 #######################################
 fig <- subplot(sp_tile[[1]],sp_tile[[2]],sp_tile[[3]],sp_tile[[4]],nrows=2,shareX=F,shareY=F,titleY=F,titleX=F)
-fig <- layout(fig,title=list(text=title,y=0.995,font=list(size=20)),annotations=list(list(x=0.445,y=0.532,text="Obs",showarrow=F,xref="paper",yref="paper",font=list(size=25)),list(x=0.98,y=0.532,text="Model",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.41,y=0.00,text="Mean(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.98,y=0.0,text="Max(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25))))
+fig <- layout(fig,title=list(text=main.title,y=0.995,font=list(size=20)),annotations=list(list(x=0.445,y=0.532,text="Obs",showarrow=F,xref="paper",yref="paper",font=list(size=25)),list(x=0.98,y=0.532,text="Model",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.41,y=0.00,text="Mean(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25)),list(x=0.98,y=0.0,text="Max(Model-Obs)",xref="paper",yref="paper",showarrow=F,font=list(size=25))))
 saveWidget(fig, file=filename_html_tile,selfcontained=T)
 #######################################
 

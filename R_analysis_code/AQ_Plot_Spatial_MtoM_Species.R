@@ -36,10 +36,6 @@ ob_col_name2     	<- paste(species[2],"_ob",sep="")
 mod_col_name2    	<- paste(species[2],"_mod",sep="")
 k 			<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species[1],"-",species[2],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
 
 ## Create output file names
 figure_diff	<- paste(run_name1,pid,"spatialplot_mtom_species_diff_avg",sep="_")           # Filename for diff spatial plot

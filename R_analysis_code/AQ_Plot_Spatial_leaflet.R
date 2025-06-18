@@ -331,15 +331,25 @@ for (i in 1:3) {
    } # End network loop
 } # End plot val loop
 my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min.data.obs,max.data.obs), group=Markers_Obs, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
-my.leaf <- my.leaf %>% addLegend("topright", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
+my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
 my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")
+
+### This seciton is required when GroupedLayersControl is not available
 my.leaf <- my.leaf %>%
         addLayersControl(
-          baseGroups = base_Groups, overlayGroups = c(network_names), options =  layersControlOptions(collapsed = FALSE,position="topleft")
+           baseGroups = base_Groups, overlayGroups = c(Markers_Obs,Markers_Mod,Markers_Diff), options =  layersControlOptions(collapsed = FALSE,position="topleft")
         )
+########################################################################
+
+############################################################################################################################
+### This secion requires the groupledLayersControl function that should eventually be part of the leaflet.extras package ###
+### However, currently the groupledLayersControl needs to be installed directly from Github				 ###
+### If GroupledLayersControl is installed in R, this section of code can be used for additonal control of the plot	 ###
+############################################################################################################################
 #my.leaf <- my.leaf %>%
 #  addGroupedLayersControl(
 #    baseGroups = base_Groups, overlayGroups = list("OBS" = Markers_Obs,"MODEL"=Markers_Mod,"DIFF"=Markers_Diff),position="topleft",
 #       options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = FALSE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
 #  )
+############################################################################################################################
 saveWidget(my.leaf, file=filename,selfcontained=T)

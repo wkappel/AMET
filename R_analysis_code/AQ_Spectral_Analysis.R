@@ -23,7 +23,7 @@ network         <- network_names[1]
 run_name 	<- run_name1
 j 		<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 
 ## Set output file names
 filename1_pdf <- paste(run_name1,species,pid,"spectrum.pdf",sep="_")                                # Set PDF filename
@@ -172,7 +172,7 @@ text(800.,ymin,"Longterm",pos=4)
 text(0.08,ymax,paste("# of Sites = ",num_sites,sep=""),pos=4,cex=0.8)
 
 ### Put title at top of boxplot ###
-title(main=title,cex.main=1.1)
+title(main=main.title,cex.main=1.1)
 ###################################
 
 

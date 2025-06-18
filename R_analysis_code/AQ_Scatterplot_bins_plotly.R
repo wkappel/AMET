@@ -25,7 +25,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ## Set some defaults 
 network 	<- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	<- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title 	<- get_title()
 run_names    	<- run_name1               # Set default to just one run being plotted
 
 ## Create output file names

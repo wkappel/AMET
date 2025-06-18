@@ -23,10 +23,10 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network 	 <- network_names[1] 														# Use first network to set units
 remove_negatives <- "n"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 #{
 #   if (custom_title == "") { title <- paste(run_name1," vs ",run_name2," ",species," for ",dates,sep="") }
-#   else { title <- custom_title }
+#   else { main.title <- custom_title }
 #}
 
 ## Set output file names
@@ -216,7 +216,7 @@ for (i in 1:length(network_names)) {
 }
 
 ### Put title at top of boxplot ###
-title(main=title,cex.main=1)
+title(main=main.title,cex.main=1)
 ###################################
 
 ### Put legend on the plot ###
