@@ -368,6 +368,9 @@ quantile_max	<- 0.999
 ### Only applies to queries < 100 sites due to time contraints ###
 popup_ts        <- 'y'
 
+### Enable grouped layer control in the AQ_Plot_Spatial_leaflet.R script. Requires GroupedLayerControl library in R
+GroupedLayerControl <- 0
+
 #######################
 ### Boxplot Options ###
 #######################

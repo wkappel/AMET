@@ -142,7 +142,7 @@ for (r in 1:length(region_names)) {
 
 data_melted.df <- melt(sinfo_data.df,id=c("season","region"))
 data_melted.df = as.data.table(data_melted.df)
-data_melted.df$season = factor(data_melted.df$season, levels=c('Fall','Winter','Spring','Summer'),labels=c('Fall','Winter','Spring','Summmer'))
+data_melted.df$season = factor(data_melted.df$season, levels=c('Winter','Spring','Summer','Fall'),labels=c('Winter','Spring','Summer','Fall'))
 data_melted.df$region = factor(data_melted.df$region, levels=rev(c("Northeast","Ohio Valley","Upper Midwest","Southeast","South","NRockiesPlains","Southwest","West","Northwest")))
 
 

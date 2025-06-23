@@ -1,18 +1,18 @@
 header <- "
-################################ KELLY PLOT - REGIONS ####################################
-### AMET CODE: AQ_Kellyplot_region.R 
+############################ KELLY PLOT - REGIONS (PLOTLY) ################################
+### AMET CODE: AQ_Kellyplot_region_plotly.R
 ###
 ### This script is part of the AMET-AQ system. It essentially creates a grid plot of model
-### NMB, NME, RMSE, MB, ME and correlation for a single network/species and multiple 
+### NMB, NME, RMSE, MB, ME and correlation for a single network/species and multiple
 ### simulations. The grid is plotted with NOAA climate region on the y-axis and simulation
-### on the x-axis. Each shaded box in the grid is color coded to the performance range for 
-### that particular region/simulation. This particular version of the code is designed to 
+### on the x-axis. Each shaded box in the grid is color coded to the performance range for
+### that particular region/simulation. This particular version of the code is designed to
 ### work for multiple simulations.
 ###
-### Note that this code does not currently work without the database, as database metadata 
+### Note that this code does not currently work without the database, as database metadata
 ### are needed to identify the NOAA climate regions by State.
 ###
-### Original concept and some code developed by Jim Kelly of EPA.  
+### Original concept and some code developed by Jim Kelly of EPA.
 ###
 ### Last updated by Wyat Appel: June 2025
 ###########################################################################################
@@ -26,7 +26,7 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(reshape))           { stop("Required Package reshape was not loaded") 	}
+if(!require(reshape2))          { stop("Required Package reshape2 was not loaded") 	}
 if(!require(data.table))        { stop("Required Package data.table was not loaded")	}
 if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}	
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded")	}
@@ -42,7 +42,8 @@ region          <- NULL
 sim_labels      <- NULL
 sub_title       <- paste("Sim1:",run_names[1])
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title()
+main.title <- get_title(run_names_title=run_names[1])
+if (num_runs > 1) { get_title(run_names="Multiple Runs") }
 
 ## Set output file names 
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_region_NMB",sep="_")
@@ -168,18 +169,14 @@ for (i in 1:6) {
       nmb.val <- max(abs(data.tmp$value),na.rm=T)
       nmb.max <- signif(nmb.val,1)
       nmb.min <- signif(min(abs(data.tmp$value),na.rm=T),1)
+      if (length(nmb_max) != 0) { nmb.max <- nmb_max }
       int <- ceiling((2*nmb.max)/10)
+      if (length(nmb_int) != 0) { int <- nmb_int }
       nmb.max <- 5*int
       if (int <= 0) { int <- 1 }
       while ((nmb.max/int) > 6) { nmb.max <- nmb.max-int }
       if (int < 1) { int <- 1 }
-      if (length(nmb_max) != 0) { nmb.max <- nmb_max }
-      if (length(nmb_int) != 0) { int <- nmb_int }
-      data.tmp <- binval(dt=data.tmp,mn=-nmb.max,mx=nmb.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'RdBu'))
-      col.rng[ceiling(nlab/2)] <- 'grey70'
-      alp <- 1
+      col.rng <- colorRampPalette(brewer.pal(11, "RdBu"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,append=F,sep=",")
       axis.max <- nmb.max
       axis.min <- -nmb.max
@@ -189,19 +186,16 @@ for (i in 1:6) {
       nme.val <- max(abs(data.tmp$value),na.rm=T)
       nme.max <- ceiling(max(data.tmp$value,na.rm=T))
       nme.min <- floor(min(data.tmp$value,na.rm=T))
+      if (length(nme_max) != 0) { nme.max <- nme_max }
+      if (length(nme_int) != 0) { int <- nme_int }
+      if (length(nme_min) != 0) { nme.min <- nme_min }
       nme.range <- nme.max-nme.min
       if (nme.range < 1) { int <- ceiling(100*(signif((nme.range)/9,2)))/100 }
       if (nme.range >= 1) { int <- ceiling(10*(signif((nme.range)/9,2)))/10 }
       if (nme.range > 100) { int <- signif((nme.range)/9,1) }
       nme.max <- nme.min+(9*int)
       if (int < 1) { int <- 1 }
-      if (length(nme_max) != 0) { nme.max <- nme_max }
-      if (length(nme_int) != 0) { int <- nme_int }
-      if (length(nme_min) != 0) { nme.min <- nme_min }
-      data.tmp <- binval(dt=data.tmp,mn=nme.min,mx=nme.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'YlOrBr'))
-      alp <- 1
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- nme.max
       axis.min <- nme.min
@@ -211,16 +205,12 @@ for (i in 1:6) {
       mb.val <- max(abs(quantile(data.tmp$value,quantile_max,na.rm=T)),abs(quantile(data.tmp$value,quantile_min,na.rm=T)),na.rm=T)
       if (mb.val < 1) { mb.max <- signif(mb.val,2) }
       if (mb.val >= 1) { mb.max <- signif(mb.val,1) }
+      if (length(mb_max) != 0) { mb.max <- mb_max }
       int <- signif((2*mb.max)/10,2)
+      if (length(mb_int) != 0) { int <- mb_int }
       mb.max <- 5*int
       if (mb.max < mb.val) { mb.max <- mb.max+int }
-      if (length(mb_max) != 0) { mb.max <- mb_max }
-      if (length(mb_int) != 0) { int <- mb_int }
-      data.tmp <- binval(dt=data.tmp,mn=-mb.max,mx=mb.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'RdBu'))
-      col.rng[ceiling(nlab/2)] <- 'grey70'
-      alp <- 1
+      col.rng <- colorRampPalette(brewer.pal(11, "RdBu"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- mb.max
       axis.min <- -mb.max
@@ -229,6 +219,8 @@ for (i in 1:6) {
    if (stat_in == "ME") {
       me.max    <- (max(data.tmp$value,na.rm=T))
       me.min    <- (min(data.tmp$value,na.rm=T))
+      if (length(me_min) != 0) { me.min <- me_min }
+      if (length(me_max) != 0) { me.max <- me_max }
       {
          if (me.max < 1) { me.max <- ceiling(me.max*10)/10 }
          else if (me.max < 10) { me.max <- ceiling(me.max*10)/10 }
@@ -239,15 +231,10 @@ for (i in 1:6) {
          else if (me.min < 10) { me.min <- floor(me.min*10)/10 }
          else if (me.min < 100) { me.min <- floor(me.min*100)/100 }
       }
-      if (length(me_min) != 0) { me.min <- me_min }
-      if (length(me_max) != 0) { me.max <- me_max }
       me.range  <- me.max-me.min
       int <- signif((me.range/9),2)
       me.max <- me.min+(9*int)
-      data.tmp  <- binval(dt=data.tmp,mn=me.min,mx=me.max,sp=int)
-      nlab      <- data.tmp[,length(levels(fac))]
-      col.rng   <- rev(brewer.pal(nlab,'YlOrBr'))
-      alp <- 1
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- me.max
       axis.min <- me.min
@@ -256,6 +243,8 @@ for (i in 1:6) {
    if (stat_in == "RMSE") {
       rmse.max  <- (max(data.tmp$value,na.rm=T))
       rmse.min  <- (min(data.tmp$value,na.rm=T))
+      if (length(rmse_min) != 0) { rmse.min <- rmse_min }
+      if (length(rmse_max) != 0) { rmse.max <- rmse_max }
       {
          if (rmse.max < 1) { rmse.max <- ceiling(rmse.max*10)/10 }
          else if (rmse.max < 10) { rmse.max <- ceiling(rmse.max*10)/10 }
@@ -266,15 +255,10 @@ for (i in 1:6) {
          else if (rmse.min < 10) { rmse.min <- floor(rmse.min*10)/10 }
          else if (rmse.min < 100) { rmse.min <- floor(rmse.min*100)/100 }
       }
-      if (length(rmse_min) != 0) { rmse.min <- rmse_min }
-      if (length(rmse_max) != 0) { rmse.max <- rmse_max }
       rmse.range <- rmse.max-rmse.min
       int <- signif((rmse.range/9),2)
       rmse.max <- rmse.min+(9*int)
-      data.tmp <- binval(dt=data.tmp,mn=rmse.min,mx=rmse.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'YlOrBr'))
-      alp <- 0.9
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- rmse.max
       axis.min <- rmse.min
@@ -288,9 +272,7 @@ for (i in 1:6) {
       cor.range <- cor.max-cor.min
       int <- signif((cor.range/8),1)
       if (length(cor_int) != 0) { int <- cor_int }
-      data.tmp <- binval(dt=data.tmp,mn=cor.min,mx=cor.max,sp=int)
-      nlab      <- data.tmp[,length(levels(fac))]
-      col.rng   <- rev(brewer.pal(nlab,'YlOrBr'))
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       alp <- 0.9   
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- cor.max
