@@ -1950,15 +1950,15 @@ get_title <- function(run_names_title=run_names,species_title=species,networks_t
       {
          network_in <- paste(networks_title,collapse=", ")
          species_in <- paste(species_title,collapse=", ")
-	 if ((custom_title == "") && (length(run_names) == 1)) { 
-            my_title <- paste(network_in,run_name1,species_in,sep=", ")
+	 if ((custom_title == "") && (length(run_names_title) == 1)) { 
+            my_title <- paste(run_names_title,network_in,species_in,sep=", ")
             if (bias == "T") { my_title <- paste(run_name1,species_in,"Bias",sep=", ") }
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
             my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not
          }
          else if ((custom_title == "") && (length(run_names_title) > 1)) {
             run_names_text <- paste(run_names_title,collapse=", ")
-            my_title <- paste(network,run_names_text,species_title,sep=", ")
+            my_title <- paste(run_names_text,network_in,species_title,sep=", ")
             if (bias == "T") { my_title <- paste(species_title,"Bias",sep=", ") }        
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
             my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not

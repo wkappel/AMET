@@ -26,7 +26,7 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(reshape2))          { stop("Required Package reshape was not loaded") 	}
+if(!require(reshape2))          { stop("Required Package reshape2 was not loaded") 	}
 if(!require(data.table))        { stop("Required Package data.table was not loaded")	} 
 if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded")	}
@@ -40,7 +40,7 @@ num_runs 	<- 1
 season         	<- NULL
 region         	<- NULL
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title()
+title <- get_title(run_names_title=run_name1)
 
 ## Set output file names
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_NMB",sep="_")

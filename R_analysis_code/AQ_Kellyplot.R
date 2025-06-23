@@ -38,7 +38,7 @@ num_runs        <- 1
 season          <- NULL
 region          <- NULL
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title()
+main.title <- get_title(run_names_title=run_name1)
 
 ## Set output file names 
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_NMB",sep="_")

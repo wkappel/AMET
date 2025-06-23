@@ -40,7 +40,8 @@ region          <- NULL
 sim_labels      <- NULL
 sub_title       <- paste("Sim1:",run_names[1])
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title()
+main.title <- get_title(run_names_title=run_names[1])
+if (num_runs > 1) { main.title <- get_title(run_names_title="Multiple Runs") }
 
 ## Set output file names 
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_season_NMB",sep="_")
