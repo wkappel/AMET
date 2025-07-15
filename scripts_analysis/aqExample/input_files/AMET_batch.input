@@ -342,27 +342,28 @@ rmse_max        <- NULL
 ############################
 ### Spatial Plot Options ###
 ############################
-plot_radius     <- 0
-outlier_radius  <- 40
-fill_opacity    <- 0.8
-num_ints	<- NULL 
-perc_error_max	<- NULL
-abs_error_max	<- NULL
-rmse_range_max	<- NULL
-perc_range_min	<- NULL
-perc_range_max	<- NULL
-abs_range_min	<- NULL
-abs_range_max	<- NULL
-diff_range_min	<- NULL
-diff_range_max	<- NULL
-greyscale	<- "n"
-inc_counties	<- "y"
-symbsizfac	<- 1
-map_leg_size	<- 0.65
-hist_max	<- NULL
-map_type	<- 1
-quantile_min	<- 0.001
-quantile_max	<- 0.999
+plot_radius     	<- 0
+outlier_radius  	<- 40
+fill_opacity    	<- 0.8
+num_ints		<- NULL 
+perc_error_max		<- NULL
+abs_error_max		<- NULL
+rmse_range_max		<- NULL
+perc_range_min		<- NULL
+perc_range_max		<- NULL
+abs_range_min		<- NULL
+abs_range_max		<- NULL
+diff_range_min		<- NULL
+diff_range_max		<- NULL
+greyscale		<- "n"
+inc_counties		<- "y"
+symbsizfac		<- 1
+map_leg_size		<- 0.65
+hist_max		<- NULL
+map_type		<- 1
+quantile_min		<- 0.001
+quantile_max		<- 0.999
+GroupedLayerControl 	<- 0
 
 ### Embed pop-up time series plots on some leaflet spatial plots. 
 ### Only applies to queries < 100 sites due to time contraints ###

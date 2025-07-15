@@ -1893,7 +1893,8 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
     names(aqdat_query_temp.df)[7] <- paste(species,"_ob",sep="")
     names(aqdat_query_temp.df)[8] <- paste(species,"_mod",sep="")
    aqdat_query.df <- data.frame(network=aqdat_query_temp.df$ob_network,stat_id=aqdat_query_temp.df$stat_id,lat=aqdat_query_temp.df$lat,lon=aqdat_query_temp.df$lon,ob_dates=aqdat_query_temp.df$ob_date,ob_datee=aqdat_query_temp.df$ob_date,ob_hour=aqdat_query_temp.df$ob_time,aqdat_query_temp.df[7],aqdat_query_temp.df[8])
-   aqdat_query.df$month <- substr(as.character(aqdat_query_temp.df$ob_date),9,10)
+#   aqdat_query.df$month <- substr(as.character(aqdat_query_temp.df$ob_date),9,10)
+   aqdat_query.df$month <- as.numeric(format(as.Date(aqdat_query_temp.df$ob_date), "%m"))
    
    aqdat_query.df$POCode <- 1
    aqdat_query.df$state <- aqdat_query_temp.df$state
@@ -1950,15 +1951,15 @@ get_title <- function(run_names_title=run_names,species_title=species,networks_t
       {
          network_in <- paste(networks_title,collapse=", ")
          species_in <- paste(species_title,collapse=", ")
-	 if ((custom_title == "") && (length(run_names) == 1)) { 
-            my_title <- paste(network_in,run_name1,species_in,sep=", ")
+	 if ((custom_title == "") && (length(run_names_title) == 1)) { 
+            my_title <- paste(run_names_title,network_in,species_in,sep=", ")
             if (bias == "T") { my_title <- paste(run_name1,species_in,"Bias",sep=", ") }
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
             my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not
          }
          else if ((custom_title == "") && (length(run_names_title) > 1)) {
             run_names_text <- paste(run_names_title,collapse=", ")
-            my_title <- paste(network,run_names_text,species_title,sep=", ")
+            my_title <- paste(run_names_text,network_in,species_title,sep=", ")
             if (bias == "T") { my_title <- paste(species_title,"Bias",sep=", ") }        
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
             my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not
