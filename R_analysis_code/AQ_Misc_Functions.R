@@ -1893,7 +1893,8 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
     names(aqdat_query_temp.df)[7] <- paste(species,"_ob",sep="")
     names(aqdat_query_temp.df)[8] <- paste(species,"_mod",sep="")
    aqdat_query.df <- data.frame(network=aqdat_query_temp.df$ob_network,stat_id=aqdat_query_temp.df$stat_id,lat=aqdat_query_temp.df$lat,lon=aqdat_query_temp.df$lon,ob_dates=aqdat_query_temp.df$ob_date,ob_datee=aqdat_query_temp.df$ob_date,ob_hour=aqdat_query_temp.df$ob_time,aqdat_query_temp.df[7],aqdat_query_temp.df[8])
-   aqdat_query.df$month <- substr(as.character(aqdat_query_temp.df$ob_date),9,10)
+#   aqdat_query.df$month <- substr(as.character(aqdat_query_temp.df$ob_date),9,10)
+   aqdat_query.df$month <- as.numeric(format(as.Date(aqdat_query_temp.df$ob_date), "%m"))
    
    aqdat_query.df$POCode <- 1
    aqdat_query.df$state <- aqdat_query_temp.df$state

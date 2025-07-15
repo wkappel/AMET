@@ -114,7 +114,8 @@ for (k in 1:length(species)) {
       mod_col_name <- paste(species[k],"_mod",sep="")
       #############################################
       {
-         aqdat_query.df <- na.omit(aqdat_query.df)
+#         aqdat_query.df <- na.omit(aqdat_query.df)
+	 aqdat_query.df <- aqdat_query.df[complete.cases(aqdat_query.df[, c(ob_col_name, mod_col_name)]), ]
          if (data_exists == "n") {
             All_Data.df <- merge(All_Data.df,paste("No Data for ",run_name,sep=""))
          }

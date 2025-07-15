@@ -1,20 +1,20 @@
 header <- "
-############################# KELLY PLOT - SEASONS (PLOTLY) ###############################
-### AMET CODE: AQ_Kellyplot_season_plotly.R
+################################# KELLY PLOT - SEASONS ####################################
+### AMET CODE: AQ_Kellyplot_season.R 
 ###
 ### This script is part of the AMET-AQ system. It essentially creates a grid plot of model
-### NMB, NME, RMSE, MB, ME and correlation for a single network/species and multiple
+### NMB, NME, RMSE, MB, ME and correlation for a single network/species and multiple 
 ### simulations. The grid is plotted with season on the x-axis and simulation
-### on the y-axis. Each shaded box in the grid is color coded to the performance range for
-### that particular season/simulation. This particular version of the code is designed to
+### on the y-axis. Each shaded box in the grid is color coded to the performance range for 
+### that particular season/simulation. This particular version of the code is designed to 
 ### work for multiple simulations.
 ###
-### Note that this code does not currently work without the database, as database metadata
+### Note that this code does not currently work without the database, as database metadata 
 ### are needed to identify the seasons by month.
 ###
-### Original concept and some code developed by Jim Kelly of EPA.
+### Original concept and some code developed by Jim Kelly of EPA.  
 ###
-### Last updated by Wyat Appel: June 2025
+### Last updated by Wyat Appel: July 2025
 ###########################################################################################
 "
 
@@ -26,26 +26,21 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(reshape2))          { stop("Required Package reshape2 was not loaded") 	}
+if(!require(reshape2))          { stop("Required Package reshape was not loaded") 	}
 if(!require(data.table))        { stop("Required Package data.table was not loaded")	}
-if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}	
+if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded")	}
 if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
 if(!require(dplyr))             { stop("Required Package dplyr was not loaded") 	}
 
 ## Set some defaults
-network         <- network_names[1]
-network_name    <- network_label[1]
-num_runs        <- length(run_names)
-season          <- NULL
-region          <- NULL
-sim_labels      <- NULL
-sub_title       <- paste("Sim1:",run_names[1])
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names_title=run_names[1])
-if (num_runs > 1) { main.title <- get_title(run_names_title="Multiple Runs") }
+network 	<- network_names[1]
+network_name 	<- network_label[1]
+num_runs 	<- length(run_names)
 
-## Set output file names
+################################################
+## Set output names and remove existing files ##
+################################################
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_season_NMB",sep="_")
 filename_nme    <- paste(run_name1,species,pid,"Kellyplot_season_NME",sep="_")
 filename_rmse   <- paste(run_name1,species,pid,"Kellyplot_season_RMSE",sep="_")
@@ -55,7 +50,7 @@ filename_corr   <- paste(run_name1,species,pid,"Kellyplot_season_Corr",sep="_")
 filename_txt    <- paste(run_name1,species,pid,"Kellyplot_stats_data_season.csv",sep="_")      # Set output file name
 filename_zip    <- paste(run_name1,species,pid,"Kellyplot_season.zip",sep="_")
 
-## Create full path to output files
+## Create a full path to file
 filename        <- NULL
 filename[1]     <- paste(figdir,filename_nmb,sep="/")
 filename[2]     <- paste(figdir,filename_nme,sep="/")
@@ -71,7 +66,18 @@ method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
 }
+
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+{
+   if (custom_title == "") { title <- paste(network,species,"for",dates,sep=" ") }
+   else { title <- custom_title }
+}
 ################################################
+
+season         <- NULL
+region         <- NULL
+sim_labels	<- NULL
+sub_title	<- paste("Sim1:",run_names[1])
 
 ### Define NOAA climate regions database queries ###
 region[1] <- " and (s.state='IL' or s.state='IN' or s.state='KY' or s.state='MO' or s.state='OH' or s.state='TN' or s.state='WV')"
@@ -172,14 +178,16 @@ for (i in 1:6) {
       nmb.val <- ceiling(max(abs(data.tmp$value),na.rm=T))
       nmb.max <- signif(nmb.val,1)
       nmb.min <- signif(min(abs(data.tmp$value),na.rm=T),1)
-      if (length(nmb_max) != 0) { nmb.max <- nmb_max }
       int <- ceiling((2*nmb.max)/10)
-      if (length(nmb_int) != 0) { int <- nmb_int
       nmb.max <- 5*int
       if (int <= 0) { int <- 1 }
       while ((nmb.max/int) > 6) { nmb.max <- nmb.max-int }
       if (int < 1) { int <- 1 }
-      col.rng <- colorRampPalette(brewer.pal(11, "RdBu"))(100)
+      if (length(nmb_max) != 0) { nmb.max <- nmb_max }
+      if (length(nmb_int) != 0) { int <- nmb_int }
+      data.tmp <- binval(dt=data.tmp,mn=-nmb.max,mx=nmb.max,sp=int)
+      col.rng <- colorRampPalette(rev(brewer.pal(11, "RdBu")))(100)
+      alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,append=F,sep=",")
       axis.max <- nmb.max
       axis.min <- -nmb.max
@@ -198,7 +206,9 @@ for (i in 1:6) {
       if (length(nme_max) != 0) { nme.max <- nme_max }
       if (length(nme_int) != 0) { int <- nme_int }
       if (length(nme_min) != 0) { nme.min <- nme_min }
+      data.tmp <- binval(dt=data.tmp,mn=nme.min,mx=nme.max,sp=int)
       col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- nme.max
       axis.min <- nme.min
@@ -213,7 +223,9 @@ for (i in 1:6) {
       if (mb.max < mb.val) { nmb.max <- nmb.max+int }
       if (length(mb_max) != 0) { mb.max <- mb_max }
       if (length(mb_int) != 0) { int <- mb_int }
-      col.rng <- colorRampPalette(brewer.pal(11, "RdBu"))(100)
+      data.tmp <- binval(dt=data.tmp,mn=-mb.max,mx=mb.max,sp=int)
+      col.rng <- colorRampPalette(rev(brewer.pal(11, "RdBu")))(100)
+      alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- mb.max
       axis.min <- -mb.max
@@ -237,8 +249,9 @@ for (i in 1:6) {
       me.range  <- me.max-me.min
       int <- signif((me.range/9),2)
       me.max <- me.min+(9*int)
-      col.rng   <- (brewer.pal(nlab,'YlOrBr'))
+      data.tmp <- binval(dt=data.tmp,mn=me.min,mx=me.max,sp=int)
       col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- me.max
       axis.min <- me.min
@@ -263,7 +276,9 @@ for (i in 1:6) {
       if (rmse.range == 0) { rmse.range = 0.1 }
       int <- signif((rmse.range/9),2)
       rmse.max <- rmse.min+(9*int)
+      data.tmp <- binval(dt=data.tmp,mn=rmse.min,mx=rmse.max,sp=int)
       col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      alp <- 0.9
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- rmse.max
       axis.min <- rmse.min
@@ -279,7 +294,9 @@ for (i in 1:6) {
       int <- signif((cor.range/8),1)
       if (length(cor_int) != 0) { int <- cor_int }
       cor.max  <- cor.min+(9*int)
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      data.tmp <- binval(dt=data.tmp,mn=cor.min,mx=cor.max,sp=int)
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)         
+      alp <- 0.9   
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- cor.max
       axis.min <- cor.min
@@ -291,7 +308,7 @@ for (i in 1:6) {
    data.orig$round_value <- signif(data.orig$value,2)
 
    plt <- plot_ly(data=data.tmp,x=~season,y=~simulation,z=~round_value,type="heatmap",zauto=FALSE,zmin=axis.min,zmax=axis.max,colors=col.rng,colorbar=list(title=paste(stat_in,stat_unit_in)),text=~paste(stat_in,": ",value," ",stat_unit_in,"<br>Simulation: ",simulation,"<br>Season: ",season,sep=""),hoverinfo='text') %>%
-   layout(title=list(text=main.title,margin=list(l=0,r=0,t=0,b=200),font=list(size=25)),xaxis=list(title=list(text="Region",standoff=25),titlefont=list(size=25),tickfont=list(size=25),side="bottom"), yaxis=list(title=list(text="Simulation",standoff=25),titlefont=list(size=25),tickfont=list(size=20),side="left"),showlegend=TRUE,margin=list(l=400,r=200,b=150,t=100),hoverlabel=list(font=list(size=20)))
+   layout(title=list(text=title,margin=list(l=0,r=0,t=0,b=200),font=list(size=25)),xaxis=list(title=list(text="Region",standoff=25),titlefont=list(size=25),tickfont=list(size=25),side="bottom"), yaxis=list(title=list(text="Simulation",standoff=25),titlefont=list(size=25),tickfont=list(size=20),side="left"),showlegend=TRUE,margin=list(l=400,r=200,b=150,t=100),hoverlabel=list(font=list(size=20)))
    if (inc_kelly_stats == "y") {
       plt <- plt %>% add_annotations(font=list(color=text.col,size=20),text=~round_value, x=~season, y=~simulation, showarrow=FALSE)
    }

@@ -26,7 +26,7 @@ if(!require(lattice))		{ stop("Required Package lattice was not loaded") 	 }
 if(!require(leafpop))      	{ stop("Required Package leafpop was not loaded") 	 }
 if(!require(leaflet.extras))    { stop("Required Package leaflet.extras was not loaded") }
 
-### The current release of leaflet.extras does not contain the groupedLayerControlOptions function.
+### The current cran release of leaflet.extras does not contain the groupedLayerControlOptions function.
 ### Hopefully it will be added a a future release of the leaflet.extras library. In the interim, the
 ### function can be loaded using the instructions here:https://rdrr.io/github/bhaskarvk/leaflet.extras/.
 
@@ -36,25 +36,29 @@ if(!exists("png_from_html")) { png_from_html <- "n" }
 if(!exists("popup_ts")) { popup_ts <- "n" }
 
 ## Set some defaults
-network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
-filename     	<- NULL
-filename_png 	<- NULL
-plot_data    	<- NULL
+network			<- network_names[1] # When using mutiple networks, units from network 1 will be used
+filename     		<- NULL
+filename_png 		<- NULL
+plot_data    		<- NULL
+remove_negatives_in     <- remove_negatives     # Store option to remove negatives (applied later in the code)
+remove_negatives        <- 'n'                  # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
+total_networks          <- length(network_names)
+network_names_in        <- network_names
+k                       <- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-if(!exists("GroupedLayerControl")) { GroupedLayerControl <- 0 }
 
-### Set file names and titles ###
+### Set output file names
 filename[1]	<- paste(run_name1,species,pid,"spatialplot.html",sep="_")           # Filename for obs spatial plot
 filename_png[1] <- paste(run_name1,species,pid,"spatialplot.png",sep="_")           # Filename for obs spatial plot
 
-## Create a full path to file
+## Create full path to output files
 filename[1]      <- paste(figdir,filename[1],sep="/")           # Filename for obs spatial plot
 filename_png[1]  <- paste(figdir,filename_png[1],sep="/")           # Filename for obs spatial plot
 #################################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+##################################
+### Set variable initial value ###
+##################################
 sinfo_data      <- NULL
 sinfo_data_tmp	<- NULL
 diff_min        <- NULL
@@ -68,15 +72,11 @@ all_diff        <- NULL
 all_rat	   	<- NULL
 all_network	<- NULL
 aqdat_out.df	<- NULL
-########################################
+##################################
 
-remove_negatives_in <- remove_negatives	# Store option to remove negatives (applied later in the code)
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
-total_networks <- length(network_names)
-k <- 1
 for (j in 1:total_networks) {							# Loop through for each network
-   Mod_Obs_Diff   <- NULL							# Set model/ob difference to NULL
-   network        <- network_names[[j]]						# Determine network name from loop value
+   Mod_Obs_Diff <- NULL							# Set model/ob difference to NULL
+   network     	<- network_names_in[[j]]						# Determine network name from loop value
    #########################
    ## Query the database ###
    #########################
@@ -98,12 +98,12 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
    #######################
-
    ob_col_name <- paste(species,"_ob",sep="")
    mod_col_name <- paste(species,"_mod",sep="")
    { 
       if (data_exists == "n") {
-         total_networks <- (total_networks-1)
+         total_networks 	<- (total_networks-1)
+	 network_names	 	<- network_names[-j]
          if (total_networks == 0) { stop("Stopping because total_networks is zero. Likely no data found for query.") }
       }
       else {
@@ -206,8 +206,7 @@ Markers_Diff <- NULL
 sinfo_data_in <- sinfo_data
 for (i in 1:3) {
    if (custom_title == "") {
-#      plot_title <- paste(run_name1,species,dates,sep=" ") 
-       plot_title <- get_title()
+      plot_title <- paste(run_name1,species,dates,sep=" ") 
    }
    main_title_html <- tags$div(tag.map.title.html, HTML(plot_title))
    main_title_png  <- tags$div(tag.map.title.png, HTML(plot_title))
@@ -236,42 +235,24 @@ for (i in 1:3) {
 
    for (j in 1:length(network_names)) {
       sinfo_data <- subset(sinfo_data_in,Network==network_names[j])
-      Marker <- plot_names[i]
-      if (GroupedLayerControl) {
-         Marker <- c(paste(network_names[j],plot_names[i],sep="_"))
-      }
+      Marker <- c(paste(network_names[j],plot_names[i],sep="_"))
       if(i == 1) { 
          plot_val <- sinfo_data$Obs_Val 
-         if (!GroupedLayerControl) {
-            Markers_Obs <- Marker
-	 }
-         if (GroupedLayerControl) {
-            Markers_Obs <-  c(Markers_Obs,Marker)
-	 }
+         Markers_Obs <-  c(Markers_Obs,Marker)
          min.data.obs <- min.data
          max.data.obs <- max.data
          binpal_obs <- binpal2
       }
       if(i == 2) { 
          plot_val <- sinfo_data$Mod_Val 
-         if (!GroupedLayerControl) {
-            Markers_Mod <- Marker
-	 }
-         if (GroupedLayerControl) {
-            Markers_Mod <-  c(Markers_Mod,Marker)
-	 }
+         Markers_Mod <-  c(Markers_Mod,Marker)
          min.data.mod <- min.data
          max.data.mod <- max.data
          binpal_mod <- binpal2
       }
       if(i == 3) { 
          plot_val <- sinfo_data$Diff_Val 
-         if (!GroupedLayerControl) {
-            Markers_Diff <- Marker
-	 }
-         if (GroupedLayerControl) {
-            Markers_Diff <-  c(Markers_Diff,Marker)
-	 }
+         Markers_Diff <-  c(Markers_Diff,Marker)
          min.data.diff <- min.data
          max.data.diff <- max.data
          binpal_diff <- binpal2
@@ -344,27 +325,32 @@ for (i in 1:3) {
             my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=Marker,radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=popupGraph(plist,width=1000,height=1000),label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px")) 
 	 }
 	 else {
-  	    my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=Marker,radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents, label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
+	    my.leaf <- my.leaf %>% addCircleMarkers(sinfo_data$lon,sinfo_data$lat,color="black",fillColor=~binpal2(plot_val),group=Marker,radius=plot_rad*symbsizfac,data=data.df,opacity=1,fillOpacity=fill_opacity,stroke=TRUE,weight=1,popup=contents, label=contents2, labelOptions = labelOptions(noHide = F, textsize = "15px"))
          }
       }
    } # End network loop
 } # End plot val loop
-
 my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min.data.obs,max.data.obs), group=Markers_Obs, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
-my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min.data.obs,max.data.obs), group=Markers_Mod, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
+if (total_networks == 1) {
+   my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_mod, values = c(min.data.obs,max.data.obs), group=Markers_Mod, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
+}
 my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
 my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")
+
+### This seciton is required when GroupedLayersControl is not available
+if (!exists("GroupedLayerControl")) { GroupedLayerControl <- 0 }	# Set to false if missing
 if (!GroupedLayerControl) {
    my.leaf <- my.leaf %>%
      addLayersControl(
        baseGroups = base_Groups, overlayGroups = c(Markers_Obs,Markers_Mod,Markers_Diff), options =  layersControlOptions(collapsed = FALSE,position="topleft")
      )
 }
+########################################################################
+
 ############################################################################################################################
 ### This secion requires the groupledLayersControl function that should eventually be part of the leaflet.extras package ###
-### However, currently the groupledLayersControl needs to be installed directly from Github                              ###
+### However, currently the groupledLayersControl needs to be installed directly from Github				 ###
 ### If GroupledLayersControl is installed in R, this section of code can be used for additonal control of the plot	 ###
-### by setting the GroupedLayerControl flag to T (i.e. 1)								 ###
 ############################################################################################################################
 if (GroupedLayerControl) {
    my.leaf <- my.leaf %>%
@@ -373,4 +359,5 @@ if (GroupedLayerControl) {
        options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = FALSE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
      )
 }
+############################################################################################################################
 saveWidget(my.leaf, file=filename,selfcontained=T)
