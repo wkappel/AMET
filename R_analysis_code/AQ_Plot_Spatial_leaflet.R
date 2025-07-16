@@ -110,13 +110,13 @@ for (j in 1:total_networks) {							# Loop through for each network
          ####################################
          ## Compute Averages for Each Site ##
          ####################################
-         averaging <- "e"	# For data to be averaged across all data for each site
+         if (averaging != "t10") { averaging <- "e" }	# For data to be averaged across all data for each site
          aqdat_in.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,State=aqdat_query.df$state,Obs_Value=round(aqdat_query.df[[ob_col_name]],5),Mod_Value=round(aqdat_query.df[[mod_col_name]],5),Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
          if ((network == "NADP") || (network == "AMON")) {
             aqdat_in.df$precip_ob <- aqdat_query.df$precip_ob
             aqdat_in.df$precip_mod <- aqdat_query.df$precip_mod
          }
-         aqdat.df <- Average(aqdat_in.df)
+	 aqdat.df <- Average(aqdat_in.df)
          aqdat_out.df <- rbind(aqdat_out.df,aqdat_in.df)
 	 Mod_Obs_Diff <- aqdat.df$Mod_Value-aqdat.df$Obs_Value
          Mod_Obs_Rat  <- aqdat.df$Mod_Value/aqdat.df$Obs_Value
@@ -145,10 +145,7 @@ for (j in 1:total_networks) {							# Loop through for each network
    }
 }
 if ((remove_negatives_in == 'y') || (remove_negatives_in == 'Y') || (remove_negatives_in == 't') || (remove_negatives_in == 'T')) {
-   indic.nonzero       	<- aqdat_out.df$Obs_Value >= 0
-   aqdat_out.df		<- aqdat_out.df[indic.nonzero,]
-   indic.nonzero       	<- aqdat_out.df$Mod_Value >= 0
-   aqdat_out.df       	<- aqdat_out.df[indic.nonzero,]
+   aqdat_out.df <- subset(aqdat_out.df, Obs_Value >= 0 & Mod_Value >= 0)
 }
 if (custom_title != "") { 
    plot_title <- custom_title 
@@ -334,16 +331,15 @@ my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_obs, values = c(min
 if (total_networks == 1) {
    my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_mod, values = c(min.data.obs,max.data.obs), group=Markers_Mod, title = paste(species,"<br/>Ob / Mod <br/> (",units,")",sep=""), opacity = 2)
 }
-my.leaf <- my.leaf %>% addLegend("bottomright", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
-my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title")
+my.leaf <- my.leaf %>% addLegend("bottomleft", pal = binpal_diff, values = c(min.data.diff,max.data.diff), group=Markers_Diff, title = paste(species,"<br/>Diff <br/> (",units,")",sep=""), opacity = 2)
+my.leaf <- my.leaf %>% addControl(main_title_html,position="topright",className="map-title") 
 
 ### This seciton is required when GroupedLayersControl is not available
-if (!exists("GroupedLayerControl")) { GroupedLayerControl <- 0 }	# Set to false if missing
 if (!GroupedLayerControl) {
    my.leaf <- my.leaf %>%
-     addLayersControl(
-       baseGroups = base_Groups, overlayGroups = c(Markers_Obs,Markers_Mod,Markers_Diff), options =  layersControlOptions(collapsed = FALSE,position="topleft")
-     )
+        addLayersControl(
+           baseGroups = base_Groups, overlayGroups = c(Markers_Obs,Markers_Mod,Markers_Diff), options =  layersControlOptions(collapsed = TRUE,position="topleft")
+        )
 }
 ########################################################################
 
@@ -356,8 +352,26 @@ if (GroupedLayerControl) {
    my.leaf <- my.leaf %>%
      addGroupedLayersControl(
        baseGroups = base_Groups, overlayGroups = list("OBS" = Markers_Obs,"MODEL"=Markers_Mod,"DIFF"=Markers_Diff),position="topleft",
-       options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = FALSE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
-     )
+       options = groupedLayersControlOptions(groupCheckboxes = TRUE,collapsed = TRUE,groupsCollapsable = FALSE,sortLayers = FALSE,sortGroups = FALSE,sortBaseLayers = FALSE)
+  )
 }
 ############################################################################################################################
+my.leaf <- my.leaf %>%
+  addControl(tags$style(HTML("
+    /* Make sure top controls appear above bottom controls */
+    .leaflet-top, .leaflet-control {
+      z-index: 1200 !important;
+    }
+    .leaflet-control-layers {
+      z-index: 2000 !important;
+    }
+    .leaflet-bottom .leaflet-control {
+      z-index: 1000 !important;
+    }
+    /* Optional: lift only the expanded layer control popup */
+    .leaflet-control-layers-expanded {
+      z-index: 3000 !important;
+    }
+  ")), position = "topleft", className = "custom-zindex-style")
+
 saveWidget(my.leaf, file=filename,selfcontained=T)

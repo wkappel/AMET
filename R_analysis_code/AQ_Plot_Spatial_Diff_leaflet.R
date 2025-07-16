@@ -291,32 +291,41 @@ my.leaf <- my.leaf.base
 for (i in 1:9) {
    left_adj <- 30
    if (i > 6) { left_adj <- 10 }
-   main_title 		<- tags$div(tag.map.title.html, HTML(map_title[1]))
-   main_title_png 	<- tags$div(tag.map.title.png, HTML(map_title[1]))
-   data.df 		<- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
-   range_max 		<- max(quantile(abs(plot_data[[i]]),probs=quantile_max,na.rm=T))
-   data.seq 		<- pretty(c(-range_max,range_max),n=20)
+   main_title           <- tags$div(tag.map.title.html, HTML(map_title[1]))
+   main_title_png       <- tags$div(tag.map.title.png, HTML(map_title[1]))
+   data.df              <- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
+   range_max            <- max(quantile(abs(plot_data[[i]]),probs=quantile_max,na.rm=T))
+   if ((i == 1) || (i == 2)) {
+      range_max         <- max(quantile(c(abs(plot_data[[1]]),abs(plot_data[[2]])),probs=quantile_max,na.rm=T))
+   }
+   data.seq             <- pretty(c(-range_max,range_max),n=20)
    if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
       data.seq <- pretty(c(diff_range_min,diff_range_max),n=20)
    }
-   min.data 	<- min(data.seq)
-   max.data 	<- max(data.seq)
-   n.bins 	<- length(data.seq)
-   num_bins[i] 	<- n.bins
-   binpal2 	<- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
- 
+   min.data     <- min(data.seq)
+   max.data     <- max(data.seq)
+   n.bins       <- length(data.seq)
+   num_bins[i]  <- n.bins
+   binpal2      <- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
+
    if ((i == 3) || (i == 4) || (i == 5) || (i == 6)) {
-     data.df 	<- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
-     range_min 	<- min(quantile((plot_data[[i]]),probs=quantile_min,na.rm=T))	# Removed abs function on 8/30/2022
-     range_max 	<- max(quantile((plot_data[[i]]),probs=quantile_max,na.rm=T))	# Removed abs function on 8/30/2022
-     data.seq 	<- pretty(c(range_min,range_max),n=20)
+     data.df    <- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
+     if ((i == 3) || (i == 4)) {
+        range_min       <- min(quantile(c(plot_data[[3]],plot_data[[4]]),probs=quantile_min,na.rm=T))   # Removed abs function on 8/30/2022
+        range_max       <- max(quantile(c(plot_data[[3]],plot_data[[4]]),probs=quantile_max,na.rm=T))   # Removed abs function on 8/30/2022
+     }
+     if ((i == 5) || (i == 6)) {
+        range_min       <- min(quantile(c(plot_data[[5]],plot_data[[6]]),probs=quantile_min,na.rm=T))    # Removed abs function on 8/30/2022
+        range_max       <- max(quantile(c(plot_data[[5]],plot_data[[6]]),probs=quantile_max,na.rm=T))    # Removed abs function on 8/30/2022
+     }
+     data.seq   <- pretty(c(range_min,range_max),n=20)
      if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
       data.seq <- pretty(c(diff_range_min,diff_range_max),n=20)
      }
-     min.data 	<- min(data.seq)
-     max.data 	<- max(data.seq)
-     n.bins 	<- length(data.seq)
-     binpal2 	<- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
+     min.data   <- min(data.seq)
+     max.data   <- max(data.seq)
+     n.bins     <- length(data.seq)
+     binpal2    <- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
    }
 
      if(i == 1) { 
