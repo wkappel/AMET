@@ -7,7 +7,7 @@ header <- "
 ### averaging period (e.g. monthly, seaonal). Observation/model pairs are provided 
 ### through a MYSQL query. 
 ###
-### Last updated by Wyat Appel: June 2025 
+### Last updated by Wyat Appel: July 2025 
 #################################################################################
 "
 
@@ -212,21 +212,49 @@ nmb.title  <- title_nmb
 
 bin_names <- as.character(names(split(aqdat_out.df$Value,aqdat.df$Split_On)))
 
-xform <- list(title=date_title, categoryorder = "array", categoryarray = bin_names)
+aqdat_out.df$bin <- factor(aqdat_out.df$bin, levels=bin_names)
+
+xform <- list(
+  title = date_title,
+  categoryorder = "array",
+  categoryarray = bin_names
+)
 
 colors <- brewer.pal(12,"Set1")
 colors <- c("black",colors)
 colors[6] <- "#CCCC00"
 
-p <- plot_ly(aqdat_out.df, x=~bin, y = ~Value, height=img_height, width=img_width, color=~Sim, type="box", boxpoints=FALSE, boxmean="sd", colors=c("yellow3","green4","blue","darkorchid4")) %>% 
-layout(boxmode = "group", title=main.title, yaxis=list(title=paste(species,"(",units,")")), xaxis=xform, showlegend=TRUE, line = list(color=colors), annotations=list(x=bin_names,y=-1, text=num_obs, yshift=-15, align="center", valign="bottom", showarrow=FALSE, textangle=-90))
+obs_vec <- as.numeric(unlist(num_obs))  # Unwrap named list to regular numeric vector
+
+make_annotations <- function(bin_names, obs_vec, y_pos) {
+  lapply(seq_along(bin_names), function(i) {
+    list(
+      x = i - 1,
+      y = y_pos,
+      text = as.character(obs_vec[i]),
+      xref = "x",
+      yref = "y",
+      yshift = -15,
+      align = "center",
+      valign = "bottom",
+      showarrow = FALSE,
+      textangle = -90
+    )
+  })
+}
+
+annotations      <- make_annotations(bin_names, obs_vec, -1)
+annotations_bias <- make_annotations(bin_names, obs_vec, min(aqdat_out_bias.df$Value))
+annotations_nmb  <- make_annotations(bin_names, obs_vec, min(aqdat_out_nmb.df$Value))
+
+p <- plot_ly(aqdat_out.df, x=~bin, y = ~Value, height=img_height, width=img_width, color=~Sim, type="box", boxpoints=FALSE, boxmean="sd", colors=c("yellow3","green4","blue","darkorchid4")) %>%
+layout(boxmode = "group", title=main.title, yaxis=list(title=paste(species,"(",units,")")), xaxis=xform, showlegend=TRUE, line = list(color=colors), annotations=annotations)
 saveWidget(p, file=filename_html,selfcontained=T)
 
 p <- plot_ly(aqdat_out_bias.df, x=~bin, y = ~Value, height=img_height, width=img_width, color=~Sim, type="box", boxpoints=FALSE, boxmean="sd", colors=c("yellow3","green4","blue","darkorchid4")) %>%
-layout(boxmode = "group", title=bias.title, yaxis=list(title=paste(species,"Bias (",units,")")), xaxis=xform, showlegend=TRUE, annotations=list(x=bin_names,y=min(aqdat_out_bias.df$Value), text=num_obs, yshift=-15, align="center", valign="bottom", showarrow=FALSE, textangle=-90))
+layout(boxmode = "group", title=bias.title, yaxis=list(title=paste(species,"Bias (",units,")")), xaxis=xform, showlegend=TRUE, annotations=annotations_bias)
 saveWidget(p, file=filename_bias_html,selfcontained=T)
 
 p <- plot_ly(aqdat_out_nmb.df, x=~bin, y = ~Value, height=img_height, width=img_width, color=~Sim, type="box", boxpoints=FALSE, boxmean="sd", colors=c("yellow3","green4","blue","darkorchid4")) %>%
-layout(boxmode = "group", title=nmb.title, yaxis=list(title=paste(species,"NMB (%)")), xaxis=xform, showlegend=TRUE, annotations=list(x=bin_names,y=min(aqdat_out_nmb.df$Value), text=num_obs, yshift=-15, align="center", valign="bottom", showarrow=FALSE, textangle=-90))
+layout(boxmode = "group", title=nmb.title, yaxis=list(title=paste(species,"NMB (%)")), xaxis=xform, showlegend=TRUE, annotations=annotations_nmb)
 saveWidget(p, file=filename_nmb_html,selfcontained=T)
-
