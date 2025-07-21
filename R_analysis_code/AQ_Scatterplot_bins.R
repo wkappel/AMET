@@ -111,7 +111,7 @@ for (j in 1:num_runs) {
          if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
       }
       else {
-         query_result   <- query_dbase(run_names[j],network,species,criteria)
+         query_result   <- query_dbase(run_names[j],network,species,criteria=criteria)
          aqdat_query.df <- query_result[[1]]
          data_exists    <- query_result[[2]]
          if (data_exists == "y") { units <- query_result[[3]] }

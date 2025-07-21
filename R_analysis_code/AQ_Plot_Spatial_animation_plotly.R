@@ -11,7 +11,7 @@ header <- "
 ###
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Create by Wyat Appel: June 2025
+### Created by Wyat Appel: July 2025
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -27,6 +27,7 @@ if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") 	}
 if(!require(ggplot2))	{ stop("Required Package ggplot2 was not loaded") 	}
 if(!require(plotly))   	{ stop("Required Package plotly was not loaded") 	}
 if(!require(sf))   	{ stop("Required Package sf was not loaded") 		}
+if(!require(tidyr))     { stop("Required Package tidyr was not loaded")         }
 
 ## Set some defaults  
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used

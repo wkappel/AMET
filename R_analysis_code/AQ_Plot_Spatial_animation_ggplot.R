@@ -1,6 +1,6 @@
 header <- "
-###################################### SPATIAL PLOT ######################################
-### AMET CODE: AQ_Plot_Spatial_animation.R 
+############################### SPATIAL PLOT (GGPLOT VERSION) ############################
+### AMET CODE: AQ_Plot_Spatial_animation_ggplot.R 
 ###
 ### This code is part of the AMET-AQ system.  The Plot Spatial code takes a MYSQL database
 ### query for a single species from one or more networks and plots the observation value, 
@@ -11,7 +11,7 @@ header <- "
 ###
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Create by Wyat Appel: June 2025
+### Create by Wyat Appel: July 2025
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -28,6 +28,7 @@ if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded"
 if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
 if(!require(grid))              { stop("Required Package grid was not loaded") 		}
 if(!require(gridExtra))         { stop("Required Package gridExtra was not loaded") 	}
+if(!require(tidyr))             { stop("Required Package tidyr was not loaded")         }
 
 if(!exists("quantile_min")) 	{ quantile_min 	  <- 0.001 	}
 if(!exists("quantile_max")) 	{ quantile_max 	  <- 0.950 	}
