@@ -8,7 +8,7 @@ header <- "
 ### These four plots are then combined into a single html plot using
 ### the plotly subplot function. 
 ###
-### Created by Wyat Appel: June 2025
+### Created by Wyat Appel: July 2025 
 ################################################################
 "
 
@@ -20,26 +20,25 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load required R libraries
-if(!require(ggplot2))		{ stop("Required Package ggplot2 was not loaded")	}
-if(!require(plotly))    	{ stop("Required Package plotly was not loaded")      	}
-if(!require(gridExtra))         { stop("Required Package gridExtra was not loaded")    	}
-if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded")  	}
+if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded")	}
+if(!require(plotly))           	{ stop("Required Package plotly was not loaded")       	}
+if(!require(htmlwidgets))	{ stop("Required Package htmlwidgets was not loaded")	}
+if(!require(gridExtra))		{ stop("Required Package gridExtra was not loaded")     }
+
+## Set output file names
+filename_html <- paste(run_name1,species,pid,"summary_panel_plot.html",sep="_")     # Set output file name
+filename_html <- paste(figdir,filename_html,sep="/")     # Set output file name
 
 ## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title()
+main.title 	<- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 run_name 	<- run_names[1]
 ob_col_name 	<- paste(species,"_ob",sep="")
 mod_col_name 	<- paste(species,"_mod",sep="")
 averaging 	<- 'e'
 multi_run 	<- 0
-
-## Set output file names
-filename_html <- paste(run_name1,species,pid,"summary_panel_plot.html",sep="_")     # Set output file name
-filename_html <- paste(figdir,filename_html,sep="/")     # Set output file name
-########################
-
 if (run_name2 != "") { multi_run <- 1 }
+
 {
    if (Sys.getenv("AMET_DB") == 'F') {
       sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_names[1],species)
@@ -86,6 +85,7 @@ if (run_name2 != "") { multi_run <- 1 }
    aqdat_spatial.df <- merge(aqdat_spatial.df, aqdat_spatial2_sub.df, by=c("Stat_ID"), all=FALSE, suffixes=c("","2"))
    aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),State=I(aqdat_query.df$state),County=I(aqdat_query.df$county),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Mod_Value2=aqdat_query.df[[mod_col_name2]],Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
 }
+print("GOT HERE")
 averaging <- 'e'
 Date_Hour            <- paste(aqdat.df$Start_Date," ",aqdat.df$Hour,sep="") # Create unique Date/Hour field
 aqdat.df$Date_Hour   <- Date_Hour                                                    # Add Date_Hour field to dataframe
@@ -162,9 +162,9 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 }
 y.x.lm <- lm(aqdat.df$Mod_Value~aqdat.df$Obs_Value)$coeff
 options(bitmapType='cairo')
-sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x="Obs",y="Model") + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5))
+sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(axis.min,axis.max) + ylim(axis.min,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x="Obs",y="Model") + scale_y_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5))
 if (multi_run) {
-   sp <- ggplot(aqdat.df,aes(x=Mod_Value,y=Mod_Value2)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x=run_name1,y=run_name2) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5),axis.title.x=element_text(margin=margin(t=30)))
+   sp <- ggplot(aqdat.df,aes(x=Mod_Value,y=Mod_Value2)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(axis.min,axis.max) + ylim(axis.min,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x=run_name1,y=run_name2) + scale_y_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5),axis.title.x=element_text(margin=margin(t=30)))
 }
 p2 <- ggplotly(sp)
 ########################################################
@@ -181,7 +181,7 @@ yaxis 		<- list(title=paste(species," (",units,")"),automargin=TRUE,font=list(si
 p3 		<- plot_ly(data=data.df, x=~Dates, y=~Obs_Mean, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color=plot_colors[1]), marker=list(symbol='circle',color=plot_colors[1],size=10), name=obs_label, text=~paste("Name: Obs<br>Date: ",Dates,"<br>Obs value: ",round(Obs_Mean,3))) %>%  
      			layout(title=main.title,font=list(size=15),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5,vjust=0.5)),margin=list(t=50,b=110)) %>%
 		        layout(annotations=list(x=~Dates,y=~Obs_Mean,text=~Network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE),plot_bgcolor='#e5ecf6')
-		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean, type="scatter", name=paste(run_names[1]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='circle',color=plot_colors[2]),text=~paste("Name:",run_name,"<br>Date: ",Dates,"<br>Mod value: ",round(Mod_Mean,3))) %>% 
+		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean, type="scatter", name=paste(run_names[1]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color=plot_colors[2]), marker=list(symbol='circle',color=plot_colors[2]),text=~paste("Name:",run_name,"<br>Date: ",Dates,"<br>Mod value: ",round(Mod_Mean,3))) %>% 
 		        layout(annotations = list(x=~Dates,y=~Mod_Mean,text=run_names[1],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[2]))) 
 		p3 <- add_trace(p3, x=~Dates, y=~Bias_Mean, type="scatter", name=paste(run_names[1]," Bias (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='square-open',color=plot_colors[2]),text=~paste("Name:",run_name," Bias<br>Date: ",Dates,"<br>Bias value: ",round(Bias_Mean,3))) %>%
 		        layout(annotations = list(x=~Dates,y=~Bias_Mean,text=run_names[1],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[2])))
@@ -231,10 +231,10 @@ world     <- st_as_sf(world_map,coords=c("long","lat"))
 p4     	<- plot_ly(data=data_in,lat = ~lat, lon=~lon, marker = list(color = 'black',showscale=FALSE,size=22),mode='markers',type='scattermapbox',name=paste0('BG'))
 {
    if(multi_run) {
-      p4 <- p4 %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(colorbar_name,"<br>",species,"<br>",units),len=1,lenmode="fraction",x=.92),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>",Network,": ",signif(Obs_Value,4),"<br>",run_name,": ",signif(Mod_Value,4),"<br>",run_name2,": ",signif(Mod_Value2,4),"<br>Metric: ",hovertext,"<br>Value: ",signif(plotval,4),sep=""),hoverinfo='text',name=("Sites (Diff)"))
+      p4 <- p4 %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(colorbar_name,"<br>",species,"<br>",units),len=1,lenmode="fraction",x=.92),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>",Network,": ",signif(Obs_Value,4)," ",units,"<br>",run_name,": ",signif(Mod_Value,4)," ",units,"<br>",run_name2,": ",signif(Mod_Value2,4),"<br>Metric: ",hovertext,"<br>Value: ",signif(plotval,4)," ",units,sep=""),hoverinfo='text',name=("Sites (Diff)"))
    }
    else {
-      p4 <- p4 %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(colorbar_name,"<br>",species,"<br>",units),len=1,lenmode="fraction",x=.92),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>",Network,": ",signif(Obs_Value,4),"<br>",run_name,": ",signif(Mod_Value,4),"<br>Metric: ",hovertext,"<br>Value: ",signif(plotval,4),sep=""),hoverinfo='text',name=("Sites (Diff)"))
+      p4 <- p4 %>% add_trace(data=data_in,lat = ~lat, lon=~lon, marker = list(color = ~plotval,colorbar=list(title=paste0(colorbar_name,"<br>",species,"<br>",units),len=1,lenmode="fraction",x=.92),colorscale=color_palette,cmin=plot_range_min,cmax=plot_range_max,showscale=TRUE,size=20),mode='markers',type='scattermapbox',text=~paste("Stat_ID: ",stat_id,"<br>Network: ",Network,"<br>Lat: ",lat,"<br>Lon: ",lon,"<br>",Network,": ",signif(Obs_Value,4)," ",units,"<br>",run_name,": ",signif(Mod_Value,4)," ",units,"<br>Metric: ",hovertext,"<br>Value: ",signif(plotval,4)," ",units,sep=""),hoverinfo='text',name=("Sites (Diff)"))
    }
 }
 p4 <- p4 %>% layout(mapbox = list(style='open-street-map', zoom=3, domain=list(x = c(0, 1), y = c(0, 1)),center=list(lon=lon_mid,lat=lat_mid)),showlegend=TRUE)
