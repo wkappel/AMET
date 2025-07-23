@@ -1938,7 +1938,10 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 #   if (species == "Wind Speed") { units <- "m/s" }
 #   if (species == "SRAD") { units <- "watts/m2" }
 #   if (species == "PSFC") { units <- "hPa" }
-   model_name <- "WRF/MPAS" 
+   model_name <- "WRF/MPAS"
+   aqdat_query.df$stat_id_noPOC <- aqdat_query.df$stat_id       # Met data don't use POCodes
+   aqdat_query.df <- aqdat_query.df[complete.cases(aqdat_query.df[, c("ob_dates", "ob_datee")]), ] # Remove an NAs that may be in the data
+   aqdat_query.df$county <- "NA" # Currently no county data in the met stations list table, so set to "NA"
    return(list(aqdat_query.df,data_exists_flag,units,model_name))
 }
 ########################################

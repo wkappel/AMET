@@ -14,7 +14,7 @@ header <- "
 ###
 ### Original concept and some code developed by Jim Kelly of EPA.
 ###
-### Last updated by Wyat Appel: May 2025 
+### Last updated by Wyat Appel: July 2025 
 #############################################################################################
 "
 
@@ -33,16 +33,14 @@ if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not lo
 if(!require(plotly))		{ stop("Required Package plotly was not loaded") 	}
 if(!require(dplyr))		{ stop("Required Package dplyr was not loaded") 	}
 
-## Set some defaults
-network 	<- network_names[1]
-network_name 	<- network_label[1]
-num_runs 	<- 1
-season         	<- NULL
-region         	<- NULL
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names_title=run_name1)
 
-## Set output file names
+network <- network_names[1]
+network_name <- network_label[1]
+num_runs <- 1
+
+################################################
+## Set output names and remove existing files ##
+################################################
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_NMB",sep="_")
 filename_nme    <- paste(run_name1,species,pid,"Kellyplot_NME",sep="_")
 filename_rmse   <- paste(run_name1,species,pid,"Kellyplot_RMSE",sep="_")
@@ -52,7 +50,7 @@ filename_corr   <- paste(run_name1,species,pid,"Kellyplot_Corr",sep="_")
 filename_txt    <- paste(run_name1,species,pid,"Kellyplot_stats_data.csv",sep="_")      # Set output file name
 filename_zip    <- paste(run_name1,species,pid,"Kellyplot.zip",sep="_")
 
-## Create full path to output files
+## Create a full path to file
 filename        <- NULL
 filename[1]     <- paste(figdir,filename_nmb,sep="/")
 filename[2]     <- paste(figdir,filename_nme,sep="/")
@@ -68,7 +66,17 @@ method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
 }
+
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+{
+   if (custom_title == "") { title <- paste(run_name1,network,species,"for",dates,sep=" ") }
+   else { title <- custom_title }
+}
+
 ################################################
+
+season         <- NULL
+region         <- NULL
 
 ### Define NOAA climate region database queries ###
 region[1] <- " and (s.state='IL' or s.state='IN' or s.state='KY' or s.state='MO' or s.state='OH' or s.state='TN' or s.state='WV')"
@@ -163,119 +171,51 @@ for (i in 1:6) {
    data.tmp <- data_melted.df[data_melted.df$variable == stat_in,]
    data.orig <- data_melted.df[data_melted.df$variable == stat_in,]
    if (stat_in == "NMB") {
-      nmb.val <- max(abs(data.tmp$value),na.rm=T)
-      nmb.max <- signif(nmb.val,1)
-      nmb.min <- signif(min(abs(data.tmp$value),na.rm=T),1)
-      int <- ceiling((2*nmb.max)/10)
-      nmb.max <- 5*int
-      if (int <= 0) { int <- 1 }
-      while ((nmb.max/int) > 6) { nmb.max <- nmb.max-int }
-      if (int < 1) { int <- 1 }
+      nmb.max <- max(abs(data.tmp$value),na.rm=T)
       if (length(nmb_max) != 0) { nmb.max <- nmb_max }
-      if (length(nmb_int) != 0) { int <- nmb_int }
-      data.tmp <- binval(dt=data.tmp,mn=-nmb.max,mx=nmb.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'RdBu'))
-      col.rng[ceiling(nlab/2)] <- 'grey70'
-      alp <- 1
+      col.rng <- colorRampPalette(rev(brewer.pal(11, "RdBu")))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,append=F,sep=",")
       axis.max <- nmb.max
       axis.min <- -nmb.max
       text.col <- "black"
    }
    if (stat_in == "NME") {
-      nme.val <- max(abs(data.tmp$value),na.rm=T)
-      nme.max <- ceiling(max(data.tmp$value,na.rm=T))
-      nme.min <- floor(min(data.tmp$value,na.rm=T))
-      nme.range <- nme.max-nme.min
-      if (nme.range < 1) { int <- ceiling(100*(signif((nme.range)/9,2)))/100 }
-      if (nme.range >= 1) { int <- ceiling(10*(signif((nme.range)/9,2)))/10 }
-      if (nme.range > 100) { int <- signif((nme.range)/9,1) }
-      nme.max <- nme.min+(9*int)
-      if (int < 1) { int <- 1 }
+      nme.max <- max(data.tmp$value,na.rm=T)
+      nme.min <- min(data.tmp$value,na.rm=T)
       if (length(nme_max) != 0) { nme.max <- nme_max }
-      if (length(nme_int) != 0) { int <- nme_int }
       if (length(nme_min) != 0) { nme.min <- nme_min }
-      data.tmp <- binval(dt=data.tmp,mn=nme.min,mx=nme.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'YlOrBr'))
-      if (nlab > 9) { col.rng <- c("salmon4",col.rng) }
-      alp <- 1
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- nme.max
       axis.min <- nme.min
       text.col <- "blue"
    }
    if (stat_in == "MB") {
-      mb.val <- max(abs(quantile(data.tmp$value,quantile_max,na.rm=T)),abs(quantile(data.tmp$value,quantile_min,na.rm=T)),na.rm=T)
-      if (mb.val < 1) { mb.max <- signif(mb.val,2) }
-      if (mb.val >= 1) { mb.max <- signif(mb.val,1) }
-      int <- signif((2*mb.max)/10,2)
-      mb.max <- 5*int
-      if (mb.max < mb.val) { mb.max <- mb.max+int }
+       mb.max <- max(abs(quantile(data.tmp$value,quantile_max,na.rm=T)),abs(quantile(data.tmp$value,quantile_min,na.rm=T)),na.rm=T)
       if (length(mb_max) != 0) { mb.max <- mb_max }
-      if (length(mb_int) != 0) { int <- mb_int }
-      data.tmp <- binval(dt=data.tmp,mn=-mb.max,mx=mb.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'RdBu'))
-      col.rng[ceiling(nlab/2)] <- 'grey70'
-      alp <- 1
+      col.rng <- colorRampPalette(rev(brewer.pal(11, "RdBu")))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- mb.max
       axis.min <- -mb.max
       text.col <- "black"
    }
    if (stat_in == "ME") {
-      me.max    <- (max(data.tmp$value,na.rm=T))
-      me.min    <- (min(data.tmp$value,na.rm=T))
-      {
-         if (me.max < 1) { me.max <- ceiling(me.max*10)/10 }
-         else if (me.max < 10) { me.max <- ceiling(me.max*10)/10 }
-         else if (me.max < 100) { me.max <- ceiling(me.max*100)/100 }
-      }
-      {
-         if (me.min < 1) { me.min <- floor(me.min*10)/10 }
-         else if (me.min < 10) { me.min <- floor(me.min*10)/10 }
-         else if (me.min < 100) { me.min <- floor(me.min*100)/100 }
-      }
+      me.max    <- max(data.tmp$value,na.rm=T)
+      me.min    <- min(data.tmp$value,na.rm=T)
       if (length(me_min) != 0) { me.min <- me_min }
       if (length(me_max) != 0) { me.max <- me_max }
-      me.range  <- me.max-me.min
-      int <- signif((me.range/9),2)
-      me.max <- me.min+(9*int)
-      data.tmp  <- binval(dt=data.tmp,mn=me.min,mx=me.max,sp=int)
-      nlab      <- data.tmp[,length(levels(fac))]
-      col.rng   <- rev(brewer.pal(nlab,'YlOrBr'))
-      if (nlab > 9) { col.rng <- c("salmon4",col.rng) } 
-      alp <- 1
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- me.max
       axis.min <- me.min
       text.col <- "blue"
    }
    if (stat_in == "RMSE") {
-      rmse.max  <- (max(data.tmp$value,na.rm=T))
-      rmse.min  <- (min(data.tmp$value,na.rm=T))
-      {
-         if (rmse.max < 1) { rmse.max <- ceiling(rmse.max*10)/10 }
-         else if (rmse.max < 10) { rmse.max <- ceiling(rmse.max*10)/10 }
-         else if (rmse.max < 100) { rmse.max <- ceiling(rmse.max*100)/100 }
-      }
-      {
-         if (rmse.min < 1) { rmse.min <- floor(rmse.min*10)/10 }
-         else if (rmse.min < 10) { rmse.min <- floor(rmse.min*10)/10 }
-         else if (rmse.min < 100) { rmse.min <- floor(rmse.min*100)/100 }
-      }
+      rmse.max  <- max(data.tmp$value,na.rm=T)
+      rmse.min  <- min(data.tmp$value,na.rm=T)
       if (length(rmse_min) != 0) { rmse.min <- rmse_min }
       if (length(rmse_max) != 0) { rmse.max <- rmse_max }
-      rmse.range <- rmse.max-rmse.min
-      int <- signif((rmse.range/9),2)
-      rmse.max <- rmse.min+(9*int)
-      data.tmp <- binval(dt=data.tmp,mn=rmse.min,mx=rmse.max,sp=int)
-      nlab     <- data.tmp[,length(levels(fac))]
-      col.rng  <- rev(brewer.pal(nlab,'YlOrBr'))
-      if (nlab > 9) { col.rng <- c("salmon4",col.rng) }
-      alp <- 0.9
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- rmse.max
       axis.min <- rmse.min
@@ -286,13 +226,7 @@ for (i in 1:6) {
       cor.min   <- (floor(10*((min(data.tmp$value,na.rm=T)))))/10
       if (length(cor_min) != 0) { cor.min <- cor_min }
       if (length(cor_max) != 0) { cor.max <- cor_max }
-      cor.range <- cor.max-cor.min
-      int <- signif((cor.range/8),1)
-      if (length(cor_int) != 0) { int <- cor_int }
-      data.tmp <- binval(dt=data.tmp,mn=cor.min,mx=cor.max,sp=int)
-      nlab      <- data.tmp[,length(levels(fac))]
-      col.rng   <- rev(brewer.pal(nlab,'YlOrBr'))
-      alp <- 0.9
+      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- cor.max
       axis.min <- cor.min
