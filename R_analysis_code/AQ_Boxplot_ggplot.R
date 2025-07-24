@@ -36,10 +36,10 @@ filename_txt            <- paste(run_name1,species,pid,"boxplot_ggplot.csv",sep=
 
 ## Create a full path to file
 filename_pdf            <- paste(figdir,filename_pdf,sep="/")
-filename_pdf_bias       <- paste(figdir,filename_bias_pdf,sep="/")
+filename_bias_pdf       <- paste(figdir,filename_bias_pdf,sep="/")
 filename_png            <- paste(figdir,filename_png,sep="/")
-filename_png_bias       <- paste(figdir,filename_bias_png,sep="/")
-filename_txt             <- paste(figdir,filename_txt,sep="/")
+filename_bias_pdf       <- paste(figdir,filename_bias_png,sep="/")
+filename_txt            <- paste(figdir,filename_txt,sep="/")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 title <- get_title()

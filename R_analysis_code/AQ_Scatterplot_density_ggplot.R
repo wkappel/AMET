@@ -8,7 +8,7 @@ header <- "
 ### from lower density areas. This script will plot a single species for a single network
 ### using the R ggplot and plotly packages.  
 ###
-### Last Updated by Wyat Appel: June 2025 
+### Last Updated by Wyat Appel: July 2025 
 ####################################################################################
 "
 
@@ -20,8 +20,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required R Libraries
-if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded") 	}
-if(!require(plotly))              { stop("Required Package plotly was not loaded") 	}
+if(!require(ggplot2))             { stop("Required Package ggplot2 was not loaded")     }
+if(!require(plotly))              { stop("Required Package plotly was not loaded")      }
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 ## Set some defaults
@@ -29,16 +29,16 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 main.title <- get_title()
 
 ## Create output file names
-filename_pdf 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.pdf",sep="_")             # Set PDF filename
-filename_png 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.png",sep="_")             # Set PNG filename
-filename_txt 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.csv",sep="_")       # Set output file name
-filename_html 	<- paste(run_name1,species,pid,"scatterplot_density_ggplot.html",sep="_")
+filename_pdf    <- paste(run_name1,species,pid,"scatterplot_density_ggplot.pdf",sep="_")             # Set PDF filename
+filename_png    <- paste(run_name1,species,pid,"scatterplot_density_ggplot.png",sep="_")             # Set PNG filename
+filename_txt    <- paste(run_name1,species,pid,"scatterplot_density_ggplot.csv",sep="_")       # Set output file name
+filename_html   <- paste(run_name1,species,pid,"scatterplot_density_ggplot.html",sep="_")
 
 ## Create a full path to output files
-filename_pdf 	<- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
-filename_png 	<- paste(figdir,filename_png,sep="/")      # Set PNG filenam
-filename_txt 	<- paste(figdir,filename_txt,sep="/")      # Set output file name
-filename_html 	<- paste(figdir,filename_html,sep="/")
+filename_pdf    <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
+filename_png    <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
+filename_txt    <- paste(figdir,filename_txt,sep="/")      # Set output file name
+filename_html   <- paste(figdir,filename_html,sep="/")
 #################################
 
 ######################################
@@ -129,7 +129,6 @@ if ((length(y_axis_max) > 0) || (length(x_axis_max) > 0)) {
 if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
    axis.min <- min(y_axis_min,x_axis_min)
 }
-
 dens_zlim <- 0.5 
 if(length(aqdat.df$Obs_Value > 50000)) { dens_zlim <- 1 }
 
@@ -139,31 +138,13 @@ if (length(density_zlim) > 0) {
 #######################################################
 
 axis.length <- (axis.max - axis.min)
-x1 <- axis.max*0.12
-x2 <- axis.max*0.02
-x3 <- axis.max*0.14
-x4 <- axis.max*0.10
-y1 <- axis.max - (axis.length * 0.890)                    # define y for labels
-y2 <- axis.max - (axis.length * 0.860)                    # define y for run name
-y3 <- axis.max - (axis.length * 0.920)                    # define y for network 1
-y4 <- axis.max - (axis.length * 0.950)                    # define y for network 2
-y5 <- axis.max - (axis.length * 0.980)                    # define y for network 3
-y6 <- axis.max - (axis.length * 0.700)                    # define y for species text
-y7 <- axis.max - (axis.length * 0.660)                    # define y for timescale (averaging)
-y8 <- axis.max - (axis.length * 0.740)
-y9 <- axis.max - (axis.length * 0.780)
-y10 <- axis.max - (axis.length * 0.110)
-y11 <- axis.max - (axis.length * 0.140)
-y12 <- axis.max - (axis.length * 0.170)
-y13 <- axis.max - (axis.length * 0.200)
-y14 <- axis.max - (axis.length * 0.230)
-y15 <- axis.max - (axis.length * 0.260)
-y16 <- axis.max - (axis.length * 0.290)
-y17 <- axis.max - (axis.length * 0.320)
-y18 <- axis.max - (axis.length * 0.070)
-x <- c(x1,x2,x3)
-y <- c(y1,y2,y3,y4,y5,y6,y7,y8,y9,y10,y11,y12,y13,y14,y15,y16,y17,y18)  # set vector of y offsets
-
+x <- axis.max - axis.length * c(0.88, 0.98, 0.86, 0.90)
+y <- axis.max - axis.length * c(
+  0.890, 0.860, 0.920, 0.950, 0.980,
+  0.700, 0.660, 0.740, 0.780, 0.110,
+  0.140, 0.170, 0.200, 0.230, 0.260,
+  0.290, 0.320, 0.070, 0.020
+)
 
 #########################################################
 ########## MAKE SCATTERPLOT: GGPLOT and PLOTLY ##########
@@ -173,9 +154,9 @@ y.x.lm <- lm(aqdat.df$Mod_Value~aqdat.df$Obs_Value)$coeff
 options(bitmapType='cairo')
 
 #sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + stat_density_2d(aes(fill = ..level..), geom="polygon") + scale_fill_gradient(low="blue", high="red") + geom_abline(intercept = 0, slope=1)
-sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x=network,y=model_name) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position=c(0.98,0.02), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5))
+sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(axis.min,axis.max) + ylim(axis.min,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=title,x=network,y=model_name) + scale_y_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position=c(0.98,0.02), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5))
 p <- ggplotly(sp, width=1250, height=1250)
-sp <- sp + annotate("text",0.02*(axis.max),0.97*(axis.max),label=paste("Y =",signif(y.x.lm[1],2),"+",signif(y.x.lm[2],2),"* X"),hjust=0,vjust=1,size=5)
+sp <- sp + annotate("text",x[2],y[19],label=paste("Y =",signif(y.x.lm[1],2),"+",signif(y.x.lm[2],2),"* X"),hjust=0,vjust=1,size=5)
 sp <- sp + annotate("text",x[1],y[18],label=paste("(",units,")                          (%)",sep=""),hjust=.55,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[10],label=paste("r = ",sprintf("%.2f",corr),"                    NMB = ",sprintf("%.1f",nmb)),hjust=0,vjust=1,size=3)
 sp <- sp + annotate("text",x[2],y[11],label=paste("RMSE = ",sprintf("%.2f",rmse),"           NME = ",sprintf("%.1f",nme)),hjust=0,vjust=1,size=3)

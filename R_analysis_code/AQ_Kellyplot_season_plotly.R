@@ -32,6 +32,7 @@ if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded"
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded")	}
 if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
 if(!require(dplyr))             { stop("Required Package dplyr was not loaded") 	}
+if(!require(webshot))           { stop("Required Package webshot was not loaded")       }
 
 ## Set some defaults
 network 	<- network_names[1]
@@ -68,34 +69,14 @@ if (use_median == "y") {
 }
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(network,species,"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+main.title <- get_title(run_names_title=run_names[1],html_break=T)
+if (num_runs > 1) { main.title <- get_title(run_names_title="Multiple Runs",html_break=T) }
 ################################################
 
-season         <- NULL
-region         <- NULL
+season         	<- NULL
 sim_labels	<- NULL
 sub_title	<- paste("Sim1:",run_names[1])
-
-### Define NOAA climate regions database queries ###
-region[1] <- " and (s.state='IL' or s.state='IN' or s.state='KY' or s.state='MO' or s.state='OH' or s.state='TN' or s.state='WV')"
-region[2] <- " and (s.state='IA' or s.state='MI' or s.state='MN' or s.state='WI')"
-region[3] <- " and (s.state='CT' or s.state='DE' or s.state='ME' or s.state='MD' or s.state='MA' or s.state='NH' or s.state='NJ' or s.state='NY' or s.state='PA' or s.state='RI' or s.state='VT')"
-region[4] <- " and (s.state='ID' or s.state='OR' or s.state='WA')"
-region[5] <- " and (s.state='AR' or s.state='KS' or s.state='LA' or s.state='MS' or s.state='OK' or s.state='TX')"
-region[6] <- " and (s.state='AL' or s.state='FL' or s.state='GA' or s.state='SC' or s.state='NC' or s.state='VA')"
-region[7] <- " and (s.state='AZ' or s.state='CO' or s.state='NM' or s.state='UT')"
-region[8] <- " and (s.state='CA' or s.state='NV')"
-region[9] <- " and (s.state='MT' or s.state='NE' or s.state='ND' or s.state='SD' or s.state='WY')"
-
-### NOAA climate region names ###
-region_names <- c("Ohio Valley","Upper Midwest","Northeast","Northwest","South","Southeast","Southwest","West","NRockiesPlains")
-k <- 1
-
-### Categorize each state into a climate region ###
-state2region <- data.frame(state=c("IL","IN","KY","MO","OH","TN","WV","IA","MI","MN","WI","CT","DE","ME","MD","MA","NH","NJ","NY","PA","RI","VT","ID","OR","WA","AR","KS","LA","MS","OK","TX","AL","FL","GA","SC","NC","VA","AZ","CO","NM","UT","CA","NV","MT","NE","ND","SD","WY"),reg=c("Ohio Valley","Ohio Valley","Ohio Valley","Ohio Valley","Ohio Valley","Ohio Valley","Ohio Valley","Upper Midwest","Upper Midwest","Upper Midwest","Upper Midwest","Northeast","Northeast","Northeast","Northeast","Northeast","Northeast","Northeast","Northeast","Northeast","Northeast","Northeast","Northwest","Northwest","Northwest","South","South","South","South","South","South","Southeast","Southeast","Southeast","Southeast","Southeast","Southeast","Southwest","Southwest","Southwest","Southwest","West","West","NRockiesPlains","NRockiesPlains","NRockiesPlains","NRockiesPlains","NRockiesPlains"))
+k 		<- 1
 
 ### Categorize each month into a season ###
 month2season <- data.frame(month=c(1,2,3,4,5,6,7,8,9,10,11,12),season = c("Winter","Winter","Spring","Spring","Spring","Summer","Summer","Summer","Fall","Fall","Fall","Winter"))
@@ -190,7 +171,7 @@ for (i in 1:6) {
       nme.min <- min(data.tmp$value,na.rm=T)
       if (length(nme_max) != 0) { nme.max <- nme_max }
       if (length(nme_min) != 0) { nme.min <- nme_min }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)
       alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- nme.max
@@ -212,7 +193,7 @@ for (i in 1:6) {
       me.min    <- (min(data.tmp$value,na.rm=T))
       if (length(me_min) != 0) { me.min <- me_min }
       if (length(me_max) != 0) { me.max <- me_max }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)
       alp <- 1
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- me.max
@@ -224,7 +205,7 @@ for (i in 1:6) {
       rmse.min  <- (min(data.tmp$value,na.rm=T))
       if (length(rmse_min) != 0) { rmse.min <- rmse_min }
       if (length(rmse_max) != 0) { rmse.max <- rmse_max }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)
       alp <- 0.9
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- rmse.max
@@ -236,7 +217,7 @@ for (i in 1:6) {
       cor.min   <- (floor(10*((min(data.tmp$value,na.rm=T)))))/10
       if (length(cor_min) != 0) { cor.min <- cor_min }
       if (length(cor_max) != 0) { cor.max <- cor_max }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)         
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)         
       alp <- 0.9   
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- cor.max
@@ -249,11 +230,13 @@ for (i in 1:6) {
    data.orig$round_value <- signif(data.orig$value,2)
 
    plt <- plot_ly(data=data.tmp,x=~season,y=~simulation,z=~round_value,type="heatmap",zauto=FALSE,zmin=axis.min,zmax=axis.max,colors=col.rng,colorbar=list(title=paste(stat_in,stat_unit_in)),text=~paste(stat_in,": ",value," ",stat_unit_in,"<br>Simulation: ",simulation,"<br>Season: ",season,sep=""),hoverinfo='text') %>%
-   layout(title=list(text=title,margin=list(l=0,r=0,t=0,b=200),font=list(size=25)),xaxis=list(title=list(text="Region",standoff=25),titlefont=list(size=25),tickfont=list(size=25),side="bottom"), yaxis=list(title=list(text="Simulation",standoff=25),titlefont=list(size=25),tickfont=list(size=20),side="left"),showlegend=TRUE,margin=list(l=400,r=200,b=150,t=100),hoverlabel=list(font=list(size=20)))
+   layout(title=list(text=main.title,margin=list(l=0,r=0,t=0,b=200),font=list(size=25)),xaxis=list(title=list(text="Region",standoff=25),titlefont=list(size=25),tickfont=list(size=25),side="bottom"), yaxis=list(title=list(text="Simulation",standoff=25),titlefont=list(size=25),tickfont=list(size=20),side="left"),showlegend=TRUE,margin=list(l=400,r=200,b=150,t=100),hoverlabel=list(font=list(size=20)))
    if (inc_kelly_stats == "y") {
       plt <- plt %>% add_annotations(font=list(color=text.col,size=20),text=~round_value, x=~season, y=~simulation, showarrow=FALSE)
    }
-   saveWidget(plt, file=paste(filename[i],".html",sep=""),selfcontained=T)
+   filename_out <- paste(filename[i],".html",sep="")
+   saveWidget(plt, file=filename_out,selfcontained=T)
+   if (png_from_html == "y") { webshot(filename_out,file=paste(filename[i],".png",sep="")) }
 }
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")

@@ -8,7 +8,7 @@ header <- "
 ### script will also allow a second run to plotted on top of the first run. Output for
 ### is png, pdf or both.
 ###
-### Last Updated by Wyat Appel: June 2025 
+### Last Updated by Wyat Appel: July 2025 
 ##################################################################################
 "
 
@@ -21,7 +21,10 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title()
+{
+   if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
+   else { title <- custom_title }
+}
 
 ## Create output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_density.pdf",sep="_")             # Set PDF filename
@@ -86,6 +89,9 @@ med_bias    <- NULL
 med_error   <- NULL
 fb          <- NULL
 fe          <- NULL
+num_pairs   <- floor(stats.df$NUM_OBS)
+mean_obs    <- round(stats.df$MEAN_OBS,1)
+mean_mod    <- round(stats.df$MEAN_MODEL,1)
 nmb         <- round(stats.df$Percent_Norm_Mean_Bias,1)
 nme         <- round(stats.df$Percent_Norm_Mean_Err,1)
 nmdnb       <- round(stats.df$Norm_Median_Bias,1)
@@ -97,10 +103,27 @@ med_error   <- round(stats.df$Median_Error,2)
 fb          <- round(stats.df$Frac_Bias,2)
 fe          <- round(stats.df$Frac_Err,2)
 corr        <- round(stats.df$Correlation,2)
+r_sqrd      <- round(stats.df$R_Squared,2)
 rmse        <- round(stats.df$RMSE,2)
 rmse_sys    <- round(stats.df$RMSE_systematic,2)
 rmse_unsys  <- round(stats.df$RMSE_unsystematic,2)
 index_agr   <- round(stats.df$Index_of_Agree,2)
+
+stats_array_include <- NULL
+stats_names_include <- NULL
+units_array_include <- NULL
+stats_array <- c(num_pairs,mean_obs,mean_mod,index_agr,corr,r_sqrd,rmse,rmse_sys,rmse_unsys,nmb,nme,nmdnb,nmdne,mb,me,med_bias,med_error,fb,fe)             # Order must be matched to AMET query page order
+units_array <- c("None",units,units,"None","None","None",units,units,units,"%","%","%","%",units,units,units,units,units,units)
+stats_names <- c("n","Mn_O","Mn_M","IofA","r",expression(paste(R^2)),"RMSE",expression(paste(RMSE[s])),expression(paste(RMSE[u])),"NMB","NME","NMdnB","NMdnE","MB","ME","MdnB","MdnE","FB","FE")    # Order must be matched to order above
+for (k in 1:19) {
+   if (stats_flags[k] == "y") {
+      stats_array_include <- c(stats_array_include,stats_array[k])
+      stats_names_include <- c(stats_names_include,stats_names[k])
+      units_array_include <- c(units_array_include,units_array[k])
+   }
+}
+#######################################
+
 #########################################################
 
 
@@ -149,83 +172,32 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 ##############################################
 plot_chars <- c(1,2,3,4)                                 	# set vector of plot characters
 pdf(file=filename_pdf,width=8,height=8)
-plot.density.scatter.plot(x=aqdat.df$Obs_Value,y=aqdat.df$Mod_Value,xlim=c(axis.min,axis.max),ylim=c(axis.min,axis.max),zlim=dens_zlim,main=main.title,num.bins=number_bins)
+plot.density.scatter.plot(x=aqdat.df$Obs_Value,y=aqdat.df$Mod_Value,xlim=c(axis.min,axis.max),ylim=c(axis.min,axis.max),zlim=dens_zlim,main=title,num.bins=number_bins)
 
 #### Define Stats placement and add text ####
 axis.length <- (axis.max - axis.min)
-x1 <- axis.max*0.12
-x2 <- axis.max*0.05
-x3 <- axis.max*0.37
-x4 <- axis.max*0.29
-x5 <- axis.max*0.15
-x6 <- axis.max*0.37
-x7 <- axis.max*0.22
-x8 <- axis.max*0.45
-y1 <- axis.max - (axis.length * 0.890)                    # define y for labels
-y2 <- axis.max - (axis.length * 0.860)                    # define y for run name
-y3 <- axis.max - (axis.length * 0.920)                    # define y for network 1
-y4 <- axis.max - (axis.length * 0.950)                    # define y for network 2
-y5 <- axis.max - (axis.length * 0.980)                    # define y for network 3
-y6 <- axis.max - (axis.length * 0.700)                    # define y for species text
-y7 <- axis.max - (axis.length * 0.660)                    # define y for timescale (averaging)
-y8 <- axis.max - (axis.length * 0.740)
-y9 <- axis.max - (axis.length * 0.780)
-y10 <- axis.max - (axis.length * 0.110)
-y11 <- axis.max - (axis.length * 0.140)
-y12 <- axis.max - (axis.length * 0.170)
-y13 <- axis.max - (axis.length * 0.200)
-y14 <- axis.max - (axis.length * 0.230)
-y15 <- axis.max - (axis.length * 0.260)
-y16 <- axis.max - (axis.length * 0.290)
-y17 <- axis.max - (axis.length * 0.320)
-y18 <- axis.max - (axis.length * 0.070)
-x <- c(x1,x2,x3,x4,x5,x6,x7,x8)
-y <- c(y1,y2,y3,y4,y5,y6,y7,y8,y9,y10,y11,y12,y13,y14,y15,y16,y17,y18)  # set vector of y offsets
+x1 <- axis.max - (axis.length * 0.95)
+x2 <- axis.max - (axis.length * 0.83)
+x3 <- axis.max - (axis.length * 0.78)
+y1 <- axis.max - (axis.length * 0.050)
+y2 <- axis.max - (axis.length * 0.080)
+y3 <- axis.max - (axis.length * 0.110)
+y4 <- axis.max - (axis.length * 0.140)
+y5 <- axis.max - (axis.length * 0.170)
+y6 <- axis.max - (axis.length * 0.200)
+y7 <- axis.max - (axis.length * 0.230)
+y8 <- axis.max - (axis.length * 0.260)
+y9 <- axis.max - (axis.length * 0.290)
+y10 <- axis.max - (axis.length * 0.320)
 
-text(x=x[1],y=y[18],paste("(",units,")",sep=""),adj=c(0,0),cex=.8)
-text(x=x[2],y=y[10],"r ",adj=c(0,0),cex=.8)
-text(x=x[2],y=y[11],"RMSE ",adj=c(0,0),cex=.8)
-text(x=x[2],y=y[12],expression(paste(RMSE[s])),adj=c(0,0),cex=.8)
-text(x=x[2],y=y[13],expression(paste(RMSE[u])),adj=c(0,0),cex=.8)
-text(x=x[2],y=y[14],"MB ",adj=c(0,0),cex=.8)
-text(x=x[2],y=y[15],"ME ",adj=c(0,0),cex=.8)
-text(x=x[2],y=y[16],"MdnB ",adj=c(0,0),cex=.8)
-text(x=x[2],y=y[17],"MdnE ",adj=c(0,0),cex=.8)
-text(x=x[3],y=y[18],paste("(%)",sep=""),adj=c(0,0),cex=.8)
-text(x=x[4],y=y[10],"NMB ",adj=c(0,0),cex=.8)
-text(x=x[4],y=y[11],"NME ",adj=c(0,0),cex=.8)
-text(x=x[4],y=y[12],"NMdnB ",adj=c(0,0),cex=.8)
-text(x=x[4],y=y[13],"NMdnE ",adj=c(0,0),cex=.8)
-text(x=x[4],y=y[14],"FB ",adj=c(0,0),cex=.8)
-text(x=x[4],y=y[15],"FE ",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[10],"=",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[11],"=",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[12],"=",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[13],"=",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[14],"=",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[15],"=",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[16],"=",adj=c(0,0),cex=.8)
-text(x=x[5],y=y[17],"=",adj=c(0,0),cex=.8)
-text(x=x[6],y=y[10],"=",adj=c(0,0),cex=.8)
-text(x=x[6],y=y[11],"=",adj=c(0,0),cex=.8)
-text(x=x[6],y=y[12],"=",adj=c(0,0),cex=.8)
-text(x=x[6],y=y[13],"=",adj=c(0,0),cex=.8)
-text(x=x[6],y=y[14],"=",adj=c(0,0),cex=.8)
-text(x=x[6],y=y[15],"=",adj=c(0,0),cex=.8)
-text(x=x[7],y=y[10],sprintf("%.2f",corr),adj=c(1,0),cex=.8)
-text(x=x[7],y=y[11],sprintf("%.2f",rmse),adj=c(1,0),cex=.8)
-text(x=x[7],y=y[12],sprintf("%.2f",rmse_sys),adj=c(1,0),cex=.8)
-text(x=x[7],y=y[13],sprintf("%.2f",rmse_unsys),adj=c(1,0),cex=.8)
-text(x=x[7],y=y[14],sprintf("%.2f",mb),adj=c(1,0),cex=.8)
-text(x=x[7],y=y[15],sprintf("%.2f",me),adj=c(1,0),cex=.8)
-text(x=x[7],y=y[16],sprintf("%.2f",med_bias),adj=c(1,0),cex=.8)
-text(x=x[7],y=y[17],sprintf("%.2f",med_error),adj=c(1,0),cex=.8)
-text(x=x[8],y=y[10],sprintf("%.1f",nmb),adj=c(1,0),cex=.8)
-text(x=x[8],y=y[11],sprintf("%.1f",nme),adj=c(1,0),cex=.8)
-text(x=x[8],y=y[12],sprintf("%.1f",nmdnb),adj=c(1,0),cex=.8)
-text(x=x[8],y=y[13],sprintf("%.1f",nmdne),adj=c(1,0),cex=.8)
-text(x=x[8],y=y[14],sprintf("%.1f",fb),adj=c(1,0),cex=.8)
-text(x=x[8],y=y[15],sprintf("%.1f",fe),adj=c(1,0),cex=.8)
+x <- c(x1,x2,x3)
+y <- c(y1,y2,y3,y4,y5,y6,y7,y8,y9,y10)  # set vector of y offsets
+
+for (i in 1:length(stats_array_include)) {
+   text(x=x[1],y=y[i],stats_names_include[i],adj=c(0,0),cex=.8)
+   text(x=x[2],y=y[i],"=",adj=c(0,0),cex=.8)
+   text(x=x[3],y=y[i],paste(stats_array_include[i],"(",units_array_include[i],")"),adj=c(0,0),cex=.8)
+}
 ###########################
 
 ### Convert pdf file to png file ###

@@ -10,7 +10,7 @@ header <- "
 ### self-contained using PANDOC. If PANDOC is unavailable, the selfcontained options at
 ### the end of this code should be set to false.
 ###
-### Last modified by Wyat Appel: June 2025
+### Last modified by Wyat Appel: May 2025
 ##################################################################################
 "
 
@@ -227,8 +227,11 @@ my.leaf <- my.leaf.base
 run_name_elements <-unlist(strsplit(run_name1,"_"))
 run_name_title <- run_name_elements[1]
 
-main_title <- tags$div(tag.map.title.html, HTML(paste(run_name1,species,dates,sep=" ")))
-main_title_png <- tags$div(tag.map.title.png, HTML(paste(run_name1,species,dates,sep=" ")))
+title_html <- get_title(run_names_title=run_names[1],html_break=F)
+if (num_runs > 1) { title_html <- get_title(run_names_title="Multiple Runs",html_break=F) }
+
+main_title <- tags$div(tag.map.title.html, HTML(title_html))
+
 for (l in 2:length(run_name_elements)) { run_name_title <- paste(run_name_title,run_name_elements[l],sep="<br>") }
 for (i in 1:8) {
   plot_data <- get(plot_data_all[i])

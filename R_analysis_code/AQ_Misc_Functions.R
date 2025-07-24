@@ -1295,7 +1295,7 @@ plot.density.scatter.plot <- function(x, y,  xlim=NULL, ylim=NULL, zlim=NULL, ma
  my.col.ramp <- colorRampPalette(c(grey(.9),"darkorchid4", "blue","darkgreen","yellow","orange","red", "brown"))
  my.col <- my.col.ramp(200)
  require(fields)
- image.plot(plot.seq.x,plot.seq.y,tab.x.y,col=my.col,zlim=zlim,main=main,xlab=xlab,ylab=ylab,...)
+ image.plot(plot.seq.x,plot.seq.y,tab.x.y,col=my.col,zlim=zlim,main=main,xlab=xlab,ylab=ylab,cex.main=1,...)
  # Include 1-1 line
  abline(0,1,col=1)
  # Include regression line
@@ -1947,29 +1947,42 @@ query_dbase <- function(project_id,network,species,criteria="Default",orderby=c(
 ########################################
 }
 
-get_title <- function(run_names_title=run_names,species_title=species,networks_title=network_label,dates_title=dates,custom_title="",site="All",state="All",pca="None",rpo="None",clim_reg="None",custom_text="",bias=F) {
-
-   {
+################################
+### Function to create title ###
+################################
+if (!exists("custom_title_text")) { custom_title_text <- "" }
+get_title <- function(run_names_title=run_names,species_title=species,networks_title=network_label,dates_title=dates,custom_title="",site="All",state="All",pca="None",rpo="None",clim_reg="None",custom_text=custom_title_text,bias=F,html_break=F,newline_break=F) {
+      {
       my_title <- custom_title
       {
          network_in <- paste(networks_title,collapse=", ")
          species_in <- paste(species_title,collapse=", ")
-	 if ((custom_title == "") && (length(run_names_title) == 1)) { 
+         if ((custom_title == "") && (length(run_names_title) == 1)) {
             my_title <- paste(run_names_title,network_in,species_in,sep=", ")
             if (bias == "T") { my_title <- paste(run_name1,species_in,"Bias",sep=", ") }
+            date_title_sep <- ", "
+            if (html_break) {
+               my_title <- paste(my_title,"<br>",sep="")
+               date_title_sep <- " "
+            }
+            if (newline_break) {
+               my_title <- paste(my_title,"\n",sep="")
+               date_title_sep <- " "
+            }
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
-            my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not
+            my_title <- paste(my_title,"for",dates_title,sep=" ")       # add dates regardless of custom title or not
          }
          else if ((custom_title == "") && (length(run_names_title) > 1)) {
             run_names_text <- paste(run_names_title,collapse=", ")
             my_title <- paste(run_names_text,network_in,species_title,sep=", ")
-            if (bias == "T") { my_title <- paste(species_title,"Bias",sep=", ") }        
+            if (bias == "T") { my_title <- paste(species_title,"Bias",sep=", ") }
+            if (html_break) { my_title <- paste(my_title,"<br>",sep="") }
             if (custom_text != "") { my_title <- paste(my_title,custom_text,sep=" ") }
-            my_title <- paste(my_title,dates_title,sep=", ")	# add dates regardless of custom title or not
+            my_title <- paste(my_title,"for",dates_title,sep=" ")       # add dates regardless of custom title or not
          }
       }
       if ((site != "All") || (state != "All") || (clim_reg != "None") || (rpo != "None") || (pca != "None")) { my_title <- paste(my_title,"\n") }
-      if (site != "All") {	my_title <- paste(my_title," Site=",site,sep="") }
+      if (site != "All") {      my_title <- paste(my_title," Site=",site,sep="") }
       if (state != "All") {     my_title <- paste(my_title," State=",state,sep="") }
       if (clim_reg != "None") { my_title <- paste(my_title," Clim_Reg=",clim_reg,sep="") }
       if (rpo != "None") {      my_title <- paste(my_title," RPO=",rpo,sep="") }
@@ -1978,7 +1991,6 @@ get_title <- function(run_names_title=run_names,species_title=species,networks_t
    }
    return(my_title)
 }
-
 ########################################
 
 ### Miscellaneous leaflet functions ###
