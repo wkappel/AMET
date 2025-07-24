@@ -32,7 +32,7 @@ if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded"
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded")	}
 if(!require(plotly))		{ stop("Required Package plotly was not loaded") 	}
 if(!require(dplyr))		{ stop("Required Package dplyr was not loaded") 	}
-
+if(!require(webshot))           { stop("Required Package webshot was not loaded")       }
 
 network <- network_names[1]
 network_name <- network_label[1]
@@ -68,10 +68,8 @@ if (use_median == "y") {
 }
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,network,species,"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+main.title <- get_title(run_names_title=run_names[1],html_break=T)
+if (num_runs > 1) { main.title <- get_title(run_names_title="Multiple Runs",html_break=T) }
 
 ################################################
 
@@ -241,7 +239,9 @@ for (i in 1:6) {
    if (inc_kelly_stats == "y") {
       plt <- plt %>% add_annotations(font=list(color=text.col,size=20),text=~value, x=~season, y=~region, showarrow=FALSE)
    }
-   saveWidget(plt, file=paste(filename[i],".html",sep=""),selfcontained=T)
+   filename_out <- paste(filename[i],".html",sep="")
+   saveWidget(plt, file=filename_out,selfcontained=T)
+   if (png_from_html == "y") { webshot(filename_out,file=paste(filename[i],".png",sep="")) }
 }
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")

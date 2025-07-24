@@ -20,8 +20,8 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Load Required Libraries 
-if(!require(maps))	{ stop("Required Package maps was not loaded") 		}
-if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") 	}
+if(!require(maps))	{ stop("Required Package maps was not loaded") 	  }
+if(!require(mapdata))	{ stop("Required Package mapdata was not loaded") }
 
 if(!exists("dates")) 		{ dates <- paste(start_date,"-",end_date) }
 if(!exists("quantile_min")) 	{ quantile_min <- 0.001 }
@@ -456,7 +456,7 @@ units_all	<- c("%","%","%","%",units,units,units,"none")
 unique_labels <- "y"												# Set use of unique labels as true
 for (i in 1:8) {
    levLab <- get(labels_all[i])
-   plot_title <- paste(species,stat_names[i],"for run",run_name1,"for", dates,sep=" ")
+   plot_title <- paste(species,stat_names[i],"for run",run_name1,custom_title_text,"for", dates,sep=" ")
    if (custom_title != "") { plot_title <- custom_title }
    if ((ametptype == "png") || (ametptype == "both")) {
       plotfmt <- "png"
@@ -473,5 +473,4 @@ for (i in 1:8) {
 
 zip_files <- paste(run_name1,species,pid,"*",sep="_")
 zip_command<-paste("zip",filename_zip,zip_files,sep=" ")
-print(zip_command)
 system(zip_command)
