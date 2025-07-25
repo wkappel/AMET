@@ -48,7 +48,24 @@ The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to 
 - MET Updates v1.6
 
 - New MET Features v1.6
-
+  - Added support and example scripts to use a number of traditionally AQ only scripts with MET data. These scripts include:
+    - run_AMET_batch_scripts_met.csh
+    - run_boxplot_ggplot.csh
+    - run_boxplot_plotly.csh
+    - run_histogram_plotly.csh
+    - run_kellyplot_plotly.csh
+    - run_kellyplot_region_plotly.csh
+    - run_kellyplot_season_plotly.csh
+    - run_plot_spatial_animation_ggplot.csh
+    - run_plot_spatial_animation_plotly.csh
+    - run_plot_spatial_diff_leaflet.csh
+    - run_plot_spatial_leaflet.csh
+    - run_scatterplot_density_ggplot.csh
+    - run_spatial_surface.csh
+    - run_stats_plots.csh
+    - run_stats_plots_leaflet.csh
+    - run_summary_panel_plot.csh
+    - run_timeseries_plotly.csh
 
 
 ## Getting the AMET Repository
