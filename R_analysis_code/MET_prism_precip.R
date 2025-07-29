@@ -302,7 +302,8 @@
   my.leaf<-leaflet() %>% addTiles() 
   saveWidget(my.leaf, file=leaffile, selfcontained=T)
 
-  my.leaf<-leaflet() %>% addTiles() %>%
+#  my.leaf<-leaflet() %>% addTiles() %>%
+  my.leaf <- my.leaf.base %>%
   addRasterImage(flip(r1,"y"), colors = pal1, opacity = transp, group=modgroup) %>%
   addRasterImage(flip(r2,"y"), colors = pal2, opacity = transp, group=obsgroup) %>%
   addRasterImage(flip(r3,"y"), colors = pal3, opacity = transp, group=diffgroup) %>%
@@ -310,7 +311,7 @@
   addLegend(pal = pal1, values = values(r1),title = "Total Precipitation (mm)")  %>%
   addLegend(pal = pal3, values = values(r3),title = "Diff Precipitation (mm)")  %>%
   addLegend(pal = pal4, values = values(r4),title = "Diff Precipitation (%)")  %>%
-  addLayersControl(overlayGroups = c(modgroup, obsgroup, diffgroup, diffpgroup), 
+  addLayersControl(baseGroups=base_Groups, overlayGroups = c(modgroup, obsgroup, diffgroup, diffpgroup), 
                    options = layersControlOptions(collapsed = FALSE))  %>%
   hideGroup(c(modgroup,diffgroup,diffpgroup))
   saveWidget(my.leaf, file=leaffile, selfcontained=T)
