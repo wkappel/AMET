@@ -241,7 +241,7 @@ for (i in 1:6) {
    }
    filename_out <- paste(filename[i],".html",sep="")
    saveWidget(plt, file=filename_out,selfcontained=T)
-   if (png_from_html == "y") { webshot(filename_out,file=paste(filename[i],".png",sep="")) }
+   if (png_from_html == "y") { plotly_IMAGE(plt, out_file=paste(filename[i],".png",sep=""), width = 2400, height = 1600, format="png") }
 }
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")

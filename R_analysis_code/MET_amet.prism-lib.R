@@ -702,4 +702,62 @@ wrf_precip <-function(model_output,tindex=1,rainc_var="RAINC",rainnc_var="RAINNC
 #####--------------------------	  END OF FUNCTION: TEMPLATE       ---------------------------------####
 ##########################################################################################################
 
+### Miscellaneous leaflet functions (from AQ_Misc_Functions.R) ###
+
+if(!require(htmltools)){stop("Required Package htmltools was not loaded")}
+library(pandoc)
+library(leaflet)
+library(maps)
+library(htmlwidgets)
+
+tag.map.title.html <- tags$style(HTML("
+  .leaflet-control.map-title {
+    transform: translate(-50%,20%);
+    position: fixed !important;
+    left: 50%;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: rgba(255,255,255,0.75);
+    font-weight: bold;
+    font-size: 20px;
+  }
+"))
+
+tag.map.title.png <- tags$style(HTML("
+  .leaflet-control.map-title {
+    transform: translate(-50%,20%);
+    position: fixed !important;
+    left: 3%;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: rgba(255,255,255,0.75);
+    font-weight: bold;
+    font-size: 20px;
+  }
+"))
+
+leaflet_map <- c("OpenStreetMap.Mapnik","OpenTopoMap","Esri.WorldImagery","Esri.WorldStreetMap","USGS.USTopo","USGS.USImagery","USGS.USImageryTopo")
+
+GetURL <- function(service, host = "basemap.nationalmap.gov") {
+  sprintf("https://%s/arcgis/services/%s/MapServer/WmsServer", host, service)
+}
+
+att <- paste0("<a href='https://www.usgs.gov/'>",
+              "U.S. Geological Survey</a> | ",
+              "<a href='https://www.usgs.gov/laws/policies_notices.html'>",
+              "Policies</a>")
+
+mapStates <- map("state",fill=T,plot=F)
+my.leaf.base <- leaflet(options = leafletOptions(zoomSnap = 0.25, zoomDelta =0.25), data=mapStates) %>%
+      addProviderTiles(leaflet_map[1],group="Street Map")  %>%
+      addProviderTiles(leaflet_map[2],group="Topo Map") %>%
+      addProviderTiles(leaflet_map[3],group="ESRI World Imagery") %>%
+      addProviderTiles(leaflet_map[4],group="ESRI Street Map") %>%
+      addWMSTiles(GetURL("USGSImageryOnly"),group="USGS Imagery",layers="0",attribution=att) %>%
+      addWMSTiles(GetURL("USGSTopo"),group="USGS Topo",layers="0",attribution=att) %>%
+      addWMSTiles(GetURL("USGSImageryTopo"),group="USGS Topo Imagery",layers="0",attribution=att)
+
+base_Groups = c("Street Map","Topo Map","ESRI World Imagery","ESRI Street Map","USGS Topo","USGS Imagery","USGS Topo Imagery")
 
