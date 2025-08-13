@@ -54,7 +54,7 @@ args              <- commandArgs(2)
 mysql_login       <- args[1]
 mysql_pass        <- args[2]
 
-### Use database login/password from config file if requested ###
+### Use login/password from config file if requested ###
 if (mysql_login == 'config_file') { mysql_login <- amet_login }
 if (mysql_pass == 'config_file')  { mysql_pass  <- amet_pass  }
 ##############################################################
@@ -77,7 +77,11 @@ create_table<-function()
 }
 ##################################################
 
-exists <- "n"
+### Set some initial states ###
+exists 		<- 0
+project_deleted <- 0
+###############################
+
 cat(paste("\nActive database = ",dbase,"\n",sep=""))
 cat(paste("Project ID = ",project_id,"\n\n",sep=""))
 if (length(MYSQL_tables) != 0) {
@@ -91,7 +95,10 @@ if (length(MYSQL_tables) != 0) {
          mysql_result <- dbExecute(con,drop)
          drop2 <- paste("delete from aq_project_log where proj_code = '",project_id,"'",sep="")
          mysql_result <- dbExecute(con,drop2)
-         cat("The following database tables have been successfully removed from the database. \n")
+         cat("The following database table has been successfully removed from the database. \n")
+	 cat(project_id)
+	 cat("\n\n")
+	 project_deleted <- 1
       }
       else {
          cat(paste("\nWould you like to update the description of the existing project ",project_id," (y/n)? \n",sep=""))
@@ -173,11 +180,11 @@ if (length(MYSQL_tables) != 0) {
             } 
          }
       }
-      exists <- 'y'
-   }
-}
+      exists <- 1	# identify that project exists or existed
+   }	# End if project ID in tables
+}	# End if length MySQL tables
 
-if (exists != "y") {
+if (!exists) {
    cat(paste("\nNo existing project named ",project_id," found.  Creating new project ",project_id," with the information below:",sep=""))
    cat(paste("\nmodel = ",model,sep=""))
    cat(paste("\nuser name = ",user_name,sep=""))
@@ -194,20 +201,23 @@ if (exists != "y") {
    table_query <- paste("REPLACE INTO aq_project_log (proj_code, model, user_id, email, description, proj_date, proj_time) VALUES ('",project_id,"','",model,"','",user_name,"','",email,"','",description,"',",proj_date,",'",proj_time,"')",sep="")
    mysql_result <- dbExecute(con,table_query)
    create_table()
-   cat("\n### The following database tables have been successfully generated.  Please review the following for accuracy. ### \n")
+   cat("\n### The following database tables have been successfully generated.  Please review the following for accuracy. ### \n\n")
+   exists <- 1
 }
 
 if ((rename_table == 'y') || (rename_table == 'Y') || (rename_table == 't') || (rename_table == 'T')) {
    project_id <- new_project_id
 }
-query_min <- paste("SELECT * from aq_project_log where proj_code='",project_id,"' ",sep="")
-query_results <- suppressWarnings(dbGetQuery(con,query_min))
-cat(paste("project_id  = ",project_id,"\n",sep=""))
-cat(paste("model       = ",query_results$model,"\n",sep=""))
-cat(paste("user        = ",query_results$user,"\n",sep=""))
-cat(paste("email       = ",query_results$email,"\n",sep=""))
-cat(paste("description = ",query_results$description,"\n",sep=""))
-cat(paste("proj_date   = ",query_results$proj_date,"\n",sep=""))
-cat(paste("proj_time   = ",query_results$proj_time,"\n",sep=""))
+if (!project_deleted) {
+   query_min <- paste("SELECT * from aq_project_log where proj_code='",project_id,"' ",sep="")
+   query_results <- suppressWarnings(dbGetQuery(con,query_min))
+   cat(paste("project_id  = ",project_id,"\n",sep=""))
+   cat(paste("model       = ",query_results$model,"\n",sep=""))
+   cat(paste("user        = ",query_results$user,"\n",sep=""))
+   cat(paste("email       = ",query_results$email,"\n",sep=""))
+   cat(paste("description = ",query_results$description,"\n",sep=""))
+   cat(paste("proj_date   = ",query_results$proj_date,"\n",sep=""))
+   cat(paste("proj_time   = ",query_results$proj_time,"\n\n",sep=""))
+}
 mysql_result <- dbDisconnect(con)
 
