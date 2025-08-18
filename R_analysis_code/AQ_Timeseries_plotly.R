@@ -227,7 +227,7 @@ for (k in 1:length(species)) {
                Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
                Corr_Mean[[j]]       <- by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)) # Captures both spatial and temporal correlation
                RMSE_Mean[[j]]       <- (by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))/s
-               Dates[[j]]           <- as.POSIXct(unique(aqdat.df$Start_Date),tz=tz,origin="1970-01-01")
+               Dates[[j]]           <- as.POSIXct(unique(aqdat.df$Start_Date),origin="1970-01-01")
             }
             if (averaging == "h") {
                years            <- substr(aqdat.df$Start_Date,1,4)
