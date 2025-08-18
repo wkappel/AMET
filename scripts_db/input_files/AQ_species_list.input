@@ -679,6 +679,15 @@ AQS_EC_SPEC4 <- "EC_88321"
 
 k <- 31
    species_AQS_Daily <- paste("
+   # setenv Gas Variables
+#     setenv GAS_1 \"CO,ppb,CO,ppb,CO\"
+#     setenv GAS_2 \"SO2,ppb,SO2,ppb,SO2\"
+#     setenv GAS_3 \"NO,ppb,NO,ppb,NO\"
+#     setenv GAS_4 \"NO2,ppb,NO2,ppb,NO2\"
+#     setenv GAS_5 \"NOX,ppb,NOX,ppb,NOX\"
+#     setenv GAS_6 \"NOY,ppb,NOY,ppb,NOY\"
+
+   # setenv Aerosol Variables
      setenv AERO_1 \"PM25,ug/m3,",PM_MOD_SPEC,",ug/m3,PM_TOT\"              # PM2.5 Total Mass
      setenv AERO_2 \"PM25,ug/m3,",PM_FRM_MOD_SPEC,",ug/m3,PM_FRM\"          # PM2.5 Total Mass (I+J with FRM adjustment)
      setenv AERO_3 \"PM25_88101,ug/m3,",PM_MOD_SPEC,",ug/m3,PM_TOT_88101\"

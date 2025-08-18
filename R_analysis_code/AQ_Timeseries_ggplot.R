@@ -1,13 +1,13 @@
 header <- "
-############################# TIME SERIES PLOT ####################################
-### AMET CODE: AQ_Timeseries.R
+###################### TIME SERIES PLOT (GGPLOT Version) ##########################
+### AMET CODE: AQ_Timeseries_ggplot.R
 ###
 ### This script is part of the AMET-AQ system.  It plots single timeseries for a 
 ### single species, single network for multiple simulations. Data are averaged across
 ### time and space to create single time series. The script also plots the bias, RMSE
 ### and correlation.
 ###
-### Last updated by Wyat Appel: June 2025 
+### Last updated by Wyat Appel: August 2025 
 ###################################################################################
 "
 
@@ -18,24 +18,25 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
+if(!require(dplyr))	{ stop("Required Package dplyr was not loaded") 	}
+if(!require(tidyr))     { stop("Required Package tidyr was not loaded") 	}
+if(!require(ggplot2))   { stop("Required Package ggplot2 was not loaded") 	}
+if(!require(gridExtra)) { stop("Required Package gridExtra was not loaded") 	}
+
 ## Set some defaults
 network 	<- network_names[1]
 species 	<- species[1]
 labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	<- get_title()
-main.title.bias <- get_title(custom_text="Bias")
-sub.title	<- ""
+run_names_title <- run_names
+if(length(run_names)>1) {run_names_title <- "Multi-Run" }
+main.title 	<- get_title(run_names_title=run_names_title,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
 
 ## Set output file name
-filename_txt 	<- paste(run_name1,species,pid,"timeseries.csv",sep="_")
-filename_pdf    <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
-filename_png    <- paste(run_name1,species,pid,"timeseries.png",sep="_")
+filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
 
-## Create full path to output file
-filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
-filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
+## Create a full path to file
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 
 #######################
@@ -163,8 +164,9 @@ for (j in 1:num_runs) {	# For each simulation being plotted
             Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
             CORR[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
             RMSE[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))
-            Dates[[j]] 		 <- as.POSIXct(paste0(unique(aqdat.df$Start_Date), " 00:00:00"),tz = "America/New_York", format = "%Y-%m-%d %H:%M:%S")
-	 }
+#            Dates[[j]]           <- as.POSIXct(unique(aqdat.df$Start_Date),origin="1970-01-01")
+	    Dates[[j]] <- as.POSIXct(paste0(unique(aqdat.df$Start_Date), " 00:00:00"),tz = "America/New_York", format = "%Y-%m-%d %H:%M:%S")
+         }
          if (averaging == "h") {
             Obs_Mean[[j]]        <- tapply(aqdat.df$Obs_Value,aqdat.df$Hour,FUN=avg_func)
             Mod_Mean[[j]]        <- tapply(aqdat.df$Mod_Value,aqdat.df$Hour,FUN=avg_func)
@@ -248,6 +250,47 @@ if (length(Dates[[1]]) == 0) { stop("Stopping because length of dates was zero. 
 write.table(All_Data.df,file=filename_txt,append=F,row.names=F,sep=",")      # Write raw data to csv file
 ########################################
 
+prepare_combined_stat_data <- function() {
+  n_runs <- length(Dates)
+  
+  # For each run, create a dataframe with all stats in long format
+  dfs <- lapply(1:n_runs, function(k) {
+    # Extract vectors for this run
+    date_vec <- Dates[[k]]
+    run <- run_names[k]
+    
+    # Combine all stats into a wide dataframe
+    df_wide <- data.frame(
+      run_name = run,
+      date = date_vec,
+      obs_value = Obs_Mean[[k]],
+      mod_value = Mod_Mean[[k]],
+      bias_value = Bias_Mean[[k]],
+      rmse_value = RMSE[[k]],
+      corr_value = CORR[[k]]
+    )
+    
+    # Convert from wide to long format (one row per stat per date)
+    df_long <- df_wide %>%
+      pivot_longer(
+        cols = c(obs_value, mod_value, bias_value, rmse_value, corr_value),
+        names_to = "Type",
+        values_to = "Value"
+      )
+    
+    return(df_long)
+  })
+  
+  # Combine all runs vertically
+  combined_df <- bind_rows(dfs)
+  
+  # Optionally order factor levels
+  combined_df$run_name <- factor(combined_df$run_name, levels = run_names)
+  combined_df$Type <- factor(combined_df$Type, levels = c("obs_value", "mod_value", "bias_value", "rmse_value", "corr_value"))
+  
+  return(combined_df)
+}
+
 ### Calculate some values for plot formatting ###
 range		<- ymax-ymin
 ymax		<- ymax+(0.3*range)
@@ -273,192 +316,167 @@ if (length(bias_y_axis_min) > 0) {
 
 #################################################
 
-#####################################
-### Plot Model vs. Ob Time Series ###
-#####################################
-pdf(file=filename_pdf,width=11,height=13)
-par(mfrow = c(4,1),mai=c(.7,1,.4,1))
-par(cex.axis=1,las=1,mfg=c(1,1),lab=c(5,10,7))
+filename_pdf         <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
+filename_png         <- paste(run_name1,species,pid,"timeseries.png",sep="_")
 
-plot(Dates[[1]],Mod_Mean[[1]], axes=TRUE, ylim=c(ymin,ymax),type='l',ylab=paste(species,"(",units,")",sep=" "),xlab=x_label,lty=1,col=plot_colors[2],cex=.8, xaxt="n",lwd=line_width, cex.lab=1.5)  # Plot model data
-#mtext(x_label, side=1, line=3, cex=1.5)
+filename_pdf         <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
+filename_png         <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
 
-if (inc_points == 'y') {
-   points(Dates[[1]],Mod_Mean[[1]],col=plot_colors[[2]])
-}
-{
-   if ((averaging == "h") || (averaging == "m") || (averaging == "a")) {
-      axis(side=1, at=Dates[[1]])
-   }
-   else if (averaging == "ym") {
-      axis.POSIXct(side=1, at=Dates[[1]],format="%b %Y")
-   }
-   else {
-      axis.POSIXct(side=1, at=Dates[[1]],format="%b %d")
-   }
-}
-lines(Dates[[1]],Obs_Mean[[1]],col=plot_colors[1],lty=1,lwd=line_width)
-if (inc_points == 'y') {
-   points(Dates[[1]],Obs_Mean[[1]],col=plot_colors[1])
-}
-legend_names <- c(network_label[1],run_names[1])
-legend_colors <- c(plot_colors[1],plot_colors[2])
-if (num_runs > 1) {
-   for (k in 2:num_runs) {
-      lines(Dates[[k]],Mod_Mean[[k]],col=plot_colors[k+1],lty=1,lwd=line_width)
-      if (inc_points == 'y') {
-         points(Dates[[k]],Mod_Mean[[k]],col=plot_colors[k+1])
-      }
-      legend_names <- c(legend_names,run_names[k])
-      legend_colors <- c(legend_colors,plot_colors[k+1])
-      if (Num_Obs[[k]] != Num_Obs[[1]]) {
-         num_diff <- abs(Num_Obs[[k]]-Num_Obs[[1]])
-         sub.title <- paste("Warning: Number of observations differ by",num_diff,"between simulations",sep=" ")
-      }
-   }   
-}
-usr <- par("usr")
-text(usr[2],usr[4],paste("# of Sites: ",num_sites,sep=""),adj=c(1.1,1.1),cex=1.1)
-if (inc_legend == 'y') {
-   legend("topleft",legend=legend_names,col=legend_colors,lty=c(1,1,1), merge=TRUE,cex=1.1, bty='n')  # Add legend
+# Prepare data for Bias, RMSE, Correlation
+prepare_stat_data <- function(stat_list, stat_name, y_lab, y_min, y_max) {
+  n_runs <- length(stat_list)
+  dfs <- lapply(1:n_runs, function(k) {
+    data.frame(Date = Dates[[k]],
+               Value = stat_list[[k]],
+               Run = factor(run_names[k], levels=run_names),
+               Stat = stat_name)
+  })
+  df <- bind_rows(dfs)
+  df$y_min <- y_min
+  df$y_max <- y_max
+  df$y_lab <- y_lab
+  return(df)
 }
 
-title(main=main.title, cex.main = 1, sub=sub.title, cex.sub = 1, col.sub = "red")
-######################################
+combined_df <- prepare_combined_stat_data()
+obs_unique <- combined_df %>%
+  filter(Type == "obs_value") %>%
+  distinct(date, Value)
 
-if (run_info_text == "y") {
-   if (rpo != "None") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.25),paste("RPO: ",rpo,sep=""),pos=2,cex=1)
-   }
-   if (pca != "None") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.20),paste("PCA: ",pca,sep=""),pos=2,cex=1)
-   }
-   if (state != "All") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.15),paste("State: ",state,sep=""),pos=2,cex=1)
-   }
-   if (site != "All") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.10),paste("Site: ",site,", ",aqdat_query.df$county[1]," county, ",aqdat_query.df$state[1],sep=""),pos=2,cex=1)
-   }
+obs_unique$run_name 	<- network_names[1]
+obs_unique$Type		<- "obs_value"
+# Only model runs - exclude obs to avoid duplication
+mod_only <- combined_df %>%
+  filter(Type == "mod_value")
+mod_only$run_name <- as.character(mod_only$run_name)
+
+# Combine obs_unique and mod_only into one data frame
+combined_mod_obs_df <- rbind(obs_unique, mod_only)
+
+df_bias <- combined_df %>% filter(Type == "bias_value")
+df_rmse <- combined_df %>% filter(Type == "rmse_value")
+df_corr <- combined_df %>% filter(Type == "corr_value")
+
+num_days <- length(unique(df_bias$date))   # Or use your main date vector
+
+time_tick <- if (num_days < 30) {
+  "1 day"
+} else if (num_days < 60) {
+  "2 days"
+} else if (num_days < 90) {
+  "3 days"
+} else if (num_days < 370) {
+  "1 week"
+} else {
+  "2 weeks"
+}
+one_day_secs <- (num_days/100)*(24 * 60 * 60)
+
+legend_rows <- 1
+if (num_runs > 2) { legend_rows <- 2 }
+
+min_date <- as.POSIXct(min(obs_unique$date))
+max_date <- as.POSIXct(max(obs_unique$date))
+
+# Combine levels: observation first, then unique model runs
+all_runs <- c(network_names[1], unique(mod_only$run_name))
+
+# Set combined run_name as factor with levels in the order you want
+combined_mod_obs_df$run_name <- factor(combined_mod_obs_df$run_name, levels = all_runs)
+
+# Count unique levels
+num_runs_plots <- length(levels(combined_mod_obs_df$run_name))
+
+# Now in scale_color_manual use levels for breaks
+p_model_obs <- ggplot(combined_mod_obs_df, aes(x = date, y = Value, color = run_name)) +
+  geom_line(size = as.numeric(line_width)) +
+  {if(inc_points == "y") geom_point()} +
+  labs(title = main.title, y = paste(species, " (", units, ")", sep = ""), x = x_label) +
+  scale_color_manual(
+    values = plot_colors[1:num_runs_plots],    # supply colors matching levels
+    breaks = levels(combined_mod_obs_df$run_name)  # breaks = factor levels
+  ) +
+  scale_x_datetime(date_labels = ifelse(averaging == "ym", "%b %Y", "%b %d"),
+                   date_breaks = time_tick,
+                   limits = c(min_date, max_date),
+                   expand = expansion(mult = 0, add = one_day_secs)
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = ifelse(inc_legend == "y", "top", "none"),
+        plot.title = element_text(hjust = 0.5)) +
+  guides(color = guide_legend(title = NULL,nrow=legend_rows))
+
+p_model_obs <- p_model_obs +
+  annotate("text",
+           x = max_date,  # x-position at max date for right alignment
+           y = max(combined_mod_obs_df$Value) * 1.05,       # y = Inf for top of the plot
+           label = paste("# of sites:", num_sites),
+           hjust = 1,     # right justify text at x-position
+           vjust = 1,   # shift slightly down from top edge
+           size = 4,      # text size, adjust as needed
+           fontface = "italic")
+
+p_bias <- ggplot(df_bias, aes(x = date, y = Value, color = run_name)) +
+  geom_hline(yintercept = 0, color = "black") +            # Add background line first
+  geom_line(size = as.numeric(line_width), linetype = "solid") +
+  {if(inc_points == 'y') geom_point()} +
+  labs(title = NULL, y = paste("Bias (", units, ")", sep = ""), x = x_label) +
+  scale_color_manual(values = plot_colors[2:(num_runs_plots + 1)]) +
+  scale_x_datetime(date_labels = ifelse(averaging == "ym", "%b %Y", "%b %d"), 
+                   date_breaks = time_tick, limits=c(min_date,max_date),expand=expansion(mult=0,add=one_day_secs)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = ifelse(inc_legend == 'f', "top", "none")) +
+  guides(color = guide_legend(title = NULL,nrow=legend_rows))
+
+p_rmse <- ggplot(df_rmse, aes(x=date, y=Value, color=run_name)) +
+  geom_line(size=as.numeric(line_width), linetype="solid") +
+  {if(inc_points == 'y') geom_point()} +
+  labs(title = NULL, y = paste("RMSE (", units, ")", sep = ""), x = x_label) +
+  scale_color_manual(values = plot_colors[2:(num_runs_plots + 1)]) +
+  scale_x_datetime(date_labels = ifelse(averaging=="ym", "%b %Y", "%b %d"), date_breaks = time_tick, limits=c(min_date,max_date),expand=expansion(mult=0,add=one_day_secs)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = ifelse(inc_legend == 'f', "top", "none")) +
+  guides(color = guide_legend(title = NULL,nrow=legend_rows))
+
+p_corr <- ggplot(df_corr, aes(x=date, y=Value, color=run_name)) +
+  geom_line(size=as.numeric(line_width), linetype="solid") +
+  {if(inc_points == 'y') geom_point()} +
+  scale_color_manual(values = plot_colors[2:(num_runs_plots + 1)]) +
+  labs(title = NULL, y = "Correlation", x = x_label) +
+  scale_x_datetime(date_labels = ifelse(averaging=="ym", "%b %Y", "%b %d"), date_breaks = time_tick, limits=c(min_date,max_date),expand=expansion(mult=0,add=one_day_secs)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = ifelse(inc_legend == 'f', "top", "none")) +
+  guides(color = guide_legend(title = NULL,nrow=legend_rows))
+
+# Always include p_model_obs
+plots_to_include <- list(p_model_obs)
+
+# Conditionally add plots
+if (inc_bias == "y") {
+  plots_to_include <- c(plots_to_include, list(p_bias))
 }
 
-#################################################
-### Plot Model Bias,RMSE and Corr Time Series ###
-#################################################
+if (inc_rmse == "y") {
+  plots_to_include <- c(plots_to_include, list(p_rmse))
+}
 
-for (f in 1:3) {        # Loop for plotting Bias, RMSE and Correlation
-   if (f == 3) {
-      stat_func <- 'corr'
-      main.title.bias <- paste("Correlation for",run_name1,species,"for",network,"for",dates,sep=" ")
-      y_stat_max <- corr_max
-      y_stat_min <- max(0,corr_min)
-   }
-   if (f == 2) {
-      stat_func <- 'rmse'
-      main.title.bias <- paste("RMSE for",run_name1,species,"for",network,"for",dates,sep=" ")
-      y_stat_max <- rmse_max
-      y_stat_min <- max(0,rmse_min)
+if (inc_corr == "y") {
+  plots_to_include <- c(plots_to_include, list(p_corr))
+}
 
-   }
-   if (f == 1) {
-      stat_func <- 'bias'
-      main.title.bias <- paste("Bias for",run_name1,species,"for",network,"for",dates,sep=" ")
-      y_stat_max <- bias_max
-      y_stat_min <- bias_min
-   }
-
-   par(new=T)
-   par(mfg=c(f+1,1),mai=c(.52,1,.4,1))
-
-   {
-      if (stat_func == 'corr') { # If plotting correlation instead of bias
-         plot(Dates[[1]],CORR[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab="Correlation",xlab=x_label,lty=1,col=plot_colors[2],cex=.8, xaxt="n",lwd=line_width, cex.lab=1.5)
-         if (inc_points == 'y') {
-            points(Dates[[1]],CORR[[1]],col=plot_colors[2])
-         }
-      }
-      else if (stat_func == 'rmse') {
-         plot(Dates[[1]],RMSE[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab=paste("RMSE (",units,")",sep=""),xlab=x_label,lty=1,col=plot_colors[2],cex=.7, xaxt="n",lwd=line_width,cex.lab=1.5)
-         if (inc_points == 'y') {
-            points(Dates[[1]],RMSE[[1]],col=plot_colors[2])
-         }
-      }
-      else {
-         plot(Dates[[1]],Bias_Mean[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab=paste("Bias (",units,")",sep=" "),xlab=x_label,lty=1,col=plot_colors[2],cex=.7, xaxt="n",lwd=line_width,cex.lab=1.5)  # Plot model data
-         if (inc_points == 'y') {
-            points(Dates[[1]],Bias_Mean[[1]],col=plot_colors[2])
-         }
-      }
-   }
-
-   {
-      if ((averaging == "h") || (averaging == "m") || (averaging == "a")) {
-         axis(side=1, at=Dates[[1]])
-      }
-      else if (averaging == "ym") {
-         axis.POSIXct(side=1, at=Dates[[1]],format="%b %Y")
-      }
-      else {
-         axis.POSIXct(side=1, at=Dates[[1]],format="%b %d")
-      }
-   } 
-   legend_names <- run_names[1]
-   legend_colors <- plot_colors[2]
-
-   if (num_runs > 1) {
-      for (k in 2:num_runs) {
-         {
-            if (stat_func == 'corr') {
-               lines(Dates[[k]],CORR[[k]],col=plot_colors[k+1],lty=1,lwd=line_width) 
-               if (inc_points == 'y') {
-                  points(Dates[[k]],CORR[[k]],col=plot_colors[k+1])
-               }
-            }
-            else if (stat_func == 'rmse') {
-               lines(Dates[[k]],RMSE[[k]],col=plot_colors[k+1],lty=1,lwd=line_width)
-               if (inc_points == 'y') {
-                  points(Dates[[k]],RMSE[[k]],col=plot_colors[k+1])
-               }
-            }
-            else {
-               lines(Dates[[k]],Bias_Mean[[k]],col=plot_colors[k+1],lty=1,lwd=line_width) 
-               if (inc_points == 'y') {
-                  points(Dates[[k]],Bias_Mean[[k]],col=plot_colors[k+1])
-               }
-            } 
-         }
-         legend_names <- c(legend_names,run_names[k])
-         legend_colors <- c(legend_colors,plot_colors[k+1])
-      } 
-   }
-   abline(h=0,col="black")
-   usr <- par("usr")
-   text(usr[2],usr[4],paste("# of Sites: ",num_sites,sep=""),adj=c(1.1,1.1),cex=1.1)
-   if (inc_legend == 'y') {
-      legend("topleft",legend=legend_names,col=legend_colors,lty=c(1,1,1), merge=TRUE,cex=1.1, bty='n')  # Add legend
-   }
-   title(main=main.title.bias, cex.main=1)
-   ###################################
-
-   if (run_info_text == "y") {
-      if (rpo != "None") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.25),paste("RPO: ",rpo,sep=""),pos=2,cex=1)
-      }
-      if (pca != "None") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.20),paste("PCA: ",pca,sep=""),pos=2,cex=1)
-      }
-      if (state != "All") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.15),paste("State: ",state,sep=""),pos=2,cex=1)
-      }
-      if (site != "All") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.10),paste("Site: ",site,", ",aqdat_query.df$county[1]," county, ",aqdat_query.df$state[1],sep=""),pos=2,cex=1)
-      } 
-   }
-}	# End loop for plotting Bias, RMSE and Correlation
+### Output to pdf
+# Calculate PDF height dynamically, e.g., 5 inches per plot (adjust as needed)
+plot_height_per_plot <- 5
+#plot_width_per_plot <- 20
+#pdf_width <- plot_width_per_plot - 3*((length(plots_to_include))-1)
+pdf_height <- plot_height_per_plot * length(plots_to_include)
+pdf(filename_pdf, width=15, height=pdf_height)
+do.call(grid.arrange, c(plots_to_include,ncol=1))
+dev.off()
 
 #######################
 ### Create PNG Plot ###
 #######################
-dev.off()
 if ((ametptype == "png") || (ametptype == "both")) {
    convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf," png:",filename_png,sep="")
    system(convert_command)
