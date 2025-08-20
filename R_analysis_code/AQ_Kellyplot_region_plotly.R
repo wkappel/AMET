@@ -14,7 +14,7 @@ header <- "
 ###
 ### Original concept and some code developed by Jim Kelly of EPA.  
 ###
-### Last updated by Wyat Appel: July 2025
+### Last updated by Wyat Appel: August 2025
 ###########################################################################################
 "
 
@@ -33,14 +33,20 @@ if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not lo
 if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
 if(!require(dplyr))             { stop("Required Package dplyr was not loaded") 	}
 if(!require(webshot))           { stop("Required Package webshot was not loaded")       }
+if(!require(scales))            { stop("Required Package scales was not loaded")        }
 
 ## Set some defaults
 network 	<- network_names[1]
 network_name	<- network_label[1]
 num_runs 	<- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names_title=run_names[1])
-if (num_runs > 1) { main.title <- get_title(run_names_title="Multiple Runs") }
+
+main.title              <- get_title(run_names_title=run_names[1],html_break=T)
+main.title.ggplot       <- get_title(run_names_title=run_names[1],html_break=F)
+if (num_runs > 1) {
+   main.title           <- get_title(run_names_title="Multiple Runs",html_break=T)
+   main.title.ggplot    <- get_title(run_names_title="Multiple Runs",html_break=F)
+}
 
 ################################################
 ## Set output names and remove existing files ##
@@ -186,7 +192,7 @@ for (i in 1:6) {
       nme.min <- min(data.tmp$value,na.rm=T)
       if (length(nme_max) != 0) { nme.max <- nme_max }
       if (length(nme_min) != 0) { nme.min <- nme_min }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- nme.max
       axis.min <- nme.min
@@ -206,7 +212,7 @@ for (i in 1:6) {
       me.min    <- (min(data.tmp$value,na.rm=T))
       if (length(me_max) != 0) { me.max <- me_max }
       if (length(me_min) != 0) { me.min <- me_min }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- me.max
       axis.min <- me.min
@@ -217,7 +223,7 @@ for (i in 1:6) {
       rmse.min  <- (min(data.tmp$value,na.rm=T))
       if (length(rmse_min) != 0) { rmse.min <- rmse_min }
       if (length(rmse_max) != 0) { rmse.max <- rmse_max }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- rmse.max
       axis.min <- rmse.min
@@ -228,7 +234,7 @@ for (i in 1:6) {
       cor.min   <- (floor(10*((min(data.tmp$value,na.rm=T)))))/10
       if (length(cor_min) != 0) { cor.min <- cor_min }
       if (length(cor_max) != 0) { cor.max <- cor_max }
-      col.rng <- colorRampPalette(brewer.pal(11, "YlOrBr"))(100)
+      col.rng <- colorRampPalette(brewer.pal(9, "YlOrBr"))(100)
       write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
       axis.max <- cor.max
       axis.min <- cor.min
@@ -246,7 +252,39 @@ for (i in 1:6) {
    }
    filename_out <- paste(filename[i],".html",sep="")
    saveWidget(plt, file=filename_out,selfcontained=T)
-   if (png_from_html == "y") { plotly_IMAGE(plt, out_file=paste(filename[i],".png",sep=""), width = 2400, height = 1600, format="png") }
+   if (png_from_html == "y") {
+      x <- try(plotly_IMAGE(plt, out_file=paste(filename[i],".png",sep=""), width = 2400, height = 1600, format="png"),silent=TRUE)
+      if (inherits(x, "try-error")) {
+         cat("There was an error creating PNG files using plotly_IMAGE. Using GGPLOT instead. You may not have set the plotly account username and API-KEY in the amet-config.R file to use plotly_IMAGE.\n")
+
+         # Basic heatmap with color scale limits
+         gg_plt <- ggplot(data=data.tmp, aes(x = region, y = simulation, fill = value)) +
+         geom_tile() +
+         scale_fill_gradientn(colors = col.rng, limits = c(axis.min, axis.max), breaks=seq(axis.min,axis.max,length.out=10),labels=label_number(accuracy=1), name = paste(stat_in, stat_unit_in)) +
+         labs(title = main.title.ggplot, x = "Region", y = "Simulation") +
+         theme_bw() +
+         theme(
+           plot.title = element_text(size = 10, margin = margin(t = 0, b = 10),hjust=0.5),
+           axis.title.x = element_text(size = 10, margin = margin(t = 25)),
+           axis.title.y = element_text(size = 10, margin = margin(r = 25)),
+           axis.text.x = element_text(size = 10),
+           axis.text.y = element_text(size = 10),
+           legend.title = element_text(size = 10),
+           legend.text = element_text(size = 10),
+           plot.margin = margin(l = 15, r = 15, b = 20, t = 20)
+         )
+         gg_plt <- gg_plt +
+           guides(fill = guide_colorbar(barheight = unit(12, "cm")))
+
+         # Add value annotations if requested
+        if (inc_kelly_stats == "y") {
+           gg_plt <- gg_plt +
+           geom_text(aes(label = as.character(!!sym("round_value"))), color = text.col, size = 3)  # size roughly corresponds to font size 20
+        }
+        out_file <- paste(filename[i],"_plotly.png",sep="")
+        ggsave(out_file,gg_plt, width = 13, height = 8)
+      }
+   }
 }
 data.tmp <- data_melted.df[data_melted.df$variable == "NUM_OBS",]
 write.table(data.tmp,file=filename_txt,row.names=F,col.names=F,append=T,sep=",")
