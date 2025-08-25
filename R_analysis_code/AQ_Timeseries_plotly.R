@@ -82,7 +82,7 @@ if (length(network_names) > 1) {
 ###############################################
 
 for (k in 1:length(species)) {
-   main.title <- get_title(species[k])
+   main.title <- get_title(species_title=species[k])
    for (j in 1:num_runs) {	# For each simulation being plotted
       run_name <- run_names[j]
       if (length(network_names) > 1) {
@@ -373,7 +373,7 @@ for (k in 1:length(species)) {
            layout(annotations = list(x=Dates[[j]],y=NME_Mean[[j]],text=run_names[j],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=colors[j])))
       }
    }
-fig[[k]] <- p
+   fig[[k]] <- p
 } # End species loop
 ### Save plot using subplot ###
 num_rows <- c(1,2,2,2,3,3,4,4,5,5)

@@ -242,9 +242,12 @@ for (i in 1:6) {
    filename_out <- paste(filename[i],".html",sep="")
    saveWidget(plt, file=filename_out,selfcontained=T)
    if (png_from_html == "y") {
-      x <- try(plotly_IMAGE(plt, out_file=paste(filename[i],".png",sep=""), width = 2400, height = 1600, format="png"),silent=TRUE)
-      if (inherits(x, "try-error")) {
-         cat("There was an error creating PNG files using plotly_IMAGE. Using GGPLOT instead. You may not have set the plotly account username and API-KEY in the amet-config.R file to use plotly_IMAGE.\n")
+      x <- NULL
+      if (exists("try_plotly_image") && try_plotly_image) {
+         x <- try(plotly_IMAGE(plt, out_file=paste(filename[i],".png",sep=""), width = 2400, height = 1600, format="png"),silent=TRUE)
+      }
+      if ((inherits(x, "try-error")) || (!exists("try_plotly_image") || !try_plotly_image)) {
+         cat("PNG files not created using plotly_IMAGE. Using GGPLOT instead. You may not have set the plotly account username and API-KEY in the amet-config.R file to use plotly_IMAGE.\n")
 
          # Basic heatmap with color scale limits
          gg_plt <- ggplot(data=data.tmp, aes(x = season, y = simulation, fill = value)) +

@@ -63,10 +63,10 @@ setenv END_DATE_H $AMET_EDATE
 ##################################################################################################
 ### Run AMET batch scripts to create stats and plots.  Output to /project/amet_aq/Unit_Testing ###
 ##################################################################################################
-R CMD BATCH $AMET_RUN_DIR/Run_Spatial_Plots_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Stacked_Barplot_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Time_Plots_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Scatter_Plots_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Misc_Plots_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Spatial_Plots_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Stacked_Barplot_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Time_Plots_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Scatter_Plots_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Misc_Plots_Batch.R
 
 exit()

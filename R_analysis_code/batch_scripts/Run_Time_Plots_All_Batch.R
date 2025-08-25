@@ -112,8 +112,8 @@ run_script_command16 <- paste(ametbase,"/R_analysis_code/AQ_Kellyplot_region_plo
 if (hourly_ozone_analysis == 'y') {
    averaging <- ozone_averaging
    for (m in 1:length(batch_query)) {
-      network_names_list  <- c("AQS_Hourly","CASTNET_Hourly")
-      network_label_list  <- c("AQS_Hourly","CASTNET_Hourly")
+      network_names_list  <- c("AQS_Hourly","CASTNET_Hourly","NAPS_Hourly")
+      network_label_list  <- c("AQS_Hourly","CASTNET_Hourly","NAPS_Hourly")
       for (i in 1:length(network_names_list)) {
          species	<- "O3"
          figdir         <- paste(out_dir,species,sep="/")
@@ -191,8 +191,8 @@ if (hourly_ozone_analysis == 'y') {
 if (daily_ozone_analysis == 'y') {  
    averaging <- ozone_averaging
    species_list 	<- c("O3_1hrmax","O3_8hrmax")
-   network_names_list	<- c("AQS_Daily_O3","CASTNET_Daily")
-   network_label_list	<- c("AQS_Daily","CASTNET_Daily")
+   network_names_list	<- c("AQS_Daily_O3","CASTNET_Daily","NAPS_Daily_O3")
+   network_label_list	<- c("AQS_Daily","CASTNET_Daily","NAPS_Daily")
    for (m in 1:length(batch_query)) {
       for (n in 1:length(network_names_list)) {
          network_names <- network_names_list[n]

@@ -25,3 +25,6 @@ maxrec		<- -1			## Set MySQL maximum records for queries (-1 for no maximum)
 ## Misc Executables 
 Bldoverlay_exe_config  	 <- paste(amet_base,"/bin/bldoverlay.exe",sep="")	## Full path to build overlay executable
 
+## Plotly API credentials (free account); Needed for plotly_IMAGE() ##
+#Sys.setenv("plotly_username"="")
+#Sys.setenv("plotly_api_key"="")
