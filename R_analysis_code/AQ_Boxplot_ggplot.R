@@ -38,7 +38,7 @@ filename_txt            <- paste(run_name1,species,pid,"boxplot_ggplot.csv",sep=
 filename_pdf            <- paste(figdir,filename_pdf,sep="/")
 filename_bias_pdf       <- paste(figdir,filename_bias_pdf,sep="/")
 filename_png            <- paste(figdir,filename_png,sep="/")
-filename_bias_pdf       <- paste(figdir,filename_bias_png,sep="/")
+filename_bias_png       <- paste(figdir,filename_bias_png,sep="/")
 filename_txt            <- paste(figdir,filename_txt,sep="/")
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
@@ -230,14 +230,14 @@ if ((ametptype == "png") || (ametptype == "both")) {
 
 sp<-ggplot(aqdat_out_bias.df,aes(x=bin,y=Value,fill=Sim,col=Sim)) + geom_boxplot(position=position_dodge(0.8),outlier.size=1,outlier.color=NULL) + geom_boxplot(position=position_dodge(0.8),outlier.size=1,color="black",outlier.shape=NA) + theme(legend.title = element_blank(), legend.text = element_text(size=13), legend.key.size = unit(0.8, 'cm'), legend.justification=c(0,1), legend.position=c(0.02,0.98), legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5), axis.text.x=element_text(angle=x_label_angle, vjust=0.5)) + labs(title=bias.title,x=date_title,y=paste(species,"Bias (",units,")")) + geom_hline(yintercept=0,color="black") + scale_color_manual(values=plot_colors[-1]) + scale_fill_manual(values=plot_colors[-1]) + scale_y_continuous(limits= c(bias_min,bias_max), breaks = pretty(aqdat_out_bias.df$Value, n = 10))
 
-if (overlap_boxes != "y") { ggsave(filename_pdf_bias,plot=sp,height=9,width=9) }
+if (overlap_boxes != "y") { ggsave(filename_bias_pdf,plot=sp,height=9,width=9) }
 
 if ((ametptype == "png") || (ametptype == "both")) {
-   convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_pdf_bias," png:",filename_png_bias,sep="")
+   convert_command<-paste("convert -flatten -density ",png_res,"x",png_res," ",filename_bias_pdf," png:",filename_bias_png,sep="")
    system(convert_command)
 
    if (ametptype == "png") {
-      remove_command <- paste("rm ",filename_pdf_bias,sep="")
+      remove_command <- paste("rm ",filename_bias_pdf,sep="")
       system(remove_command)
    }
 }

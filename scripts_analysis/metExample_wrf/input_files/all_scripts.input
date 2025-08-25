@@ -191,9 +191,10 @@ num_obs_limit	<- 1
 use_avg_stats	<- "n"
 
 ### Plotly Options ###
-img_height	<- 900
-img_width	<- 1600
-png_from_html   <- "y"  # create png file from html file
+img_height		<- 900
+img_width		<- 1600
+png_from_html   	<- "y"  # create png file from html file
+try_plotly_image        <- 0    # try using the plotly_IMAGE function to create PNGs from HTMLs. Requires (free) plotly account API-KEY
 
 #########################
 ### Axis Plot Options ###
