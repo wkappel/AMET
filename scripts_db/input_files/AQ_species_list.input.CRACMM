@@ -23,7 +23,7 @@
 #   for EC and OC and rarely used. The normal EC and OC  #
 #   values used the correct model species.               #
 #		 					 #
-#	LAST UPDATE: 03/2025				 #
+#	LAST UPDATE: 09/2025				 #
 ##------------------------------------------------------##
 
 ###################################
@@ -170,7 +170,7 @@ species_CSN <- paste("
   setenv AERO_54 \"Acetone,ppb,ACETONE,ppb,Acetone\"     # Acetone
   setenv AERO_55 \"Benzene,ppb,BENZENE,ppb,Benzene\"             # Benzene
   setenv AERO_56 \"Butadiene,ppb,BUTADIENE13,ppb,Butadiene13\"    # 1,3-Butadiene
-  setenv AERO_57 \"MTETN_43552,ppb,MEKETONE,ppb,Methy_Ethyl_Keytone\"    # Methyl Ethyl Keytone
+  setenv AERO_57 \"Methyl_ethyl_ketone,ppb,MEKETONE,ppb,Methy_Ethyl_Keytone\"    # Methyl Ethyl Keytone
 ",sep = "")
 
 #########################################
@@ -587,7 +587,8 @@ k <- 32
      setenv AERO_15 \"Acetone,ppb,ACETONE,ppb,Acetone\"     # Acetone
      setenv AERO_16 \"Benzene,ppb,BENZENE,ppb,Benzene\"             # Benzene
      setenv AERO_17 \"Butadiene,ppb,BUTADIENE13,ppb,Butadiene13\"    # 1,3-Butadiene
-     setenv AERO_18 \"43552,ppb,MEKETONE,ppb,Methy_Ethyl_Keytone\"    # Methyl Ethyl Keytone
+     setenv AERO_17 \"Butadiene,ppb,BUTADIENE13,ppb,Butadiene13\"    # 1,3-Butadiene
+     setenv AERO_18 \"Methyl_ethyl_ketone,ppb,MEKETONE,ppb,Methy_Ethyl_Keytone\"    # Methyl Ethyl Keytone
      setenv AERO_19 \"",AQS_OC_SPEC,",ug/m3,AOCIJ,ug/m3,OC\"            # OC blank adjusted Mass
      setenv AERO_20 \"",AQS_EC_SPEC,",ug/m3,AECIJ,ug/m3,EC\"            # EC Mass
      setenv AERO_21 \"",AQS_OC_SPEC,"+",AQS_EC_SPEC,",ug/m3,AOCIJ+AECIJ,,TC\"  # Total Carbon
@@ -603,7 +604,7 @@ k <- 32
      setenv AERO_31 \"Na,ug/m3, ANAIJ,,Na\"                      # sodium
      setenv AERO_32 \"Cl,ug/m3, ACLIJ,,Cl\"                      # chlorine
      setenv AERO_33 \"Na+Cl,ug/m3,ACLIJ+ANAIJ,,NaCl\"            # sodium chloride
-     setenv AERO_34 \"SO4,ug/m3,ASO4IJ,ug/m3,SO4\"               # PM2.5 Total Mass  
+     setenv AERO_34 \"SO4,ug/m3,ASO4IJ,ug/m3,SO4\"               # PM2.5 Total Mass
      setenv AERO_35 \"NO3,ug/m3,ANO3IJ,ug/m3,NO3\"               # PM2.5 Total Mass
      setenv AERO_36 \"NH4,ug/m3,ANH4IJ,ug/m3,NH4\"               # PM2.5 Total Mass
      setenv AERO_37 \"PM25,ug/m3,PM25_TOT,ug/m3,PM25_TOT\"       # PM2.5 Total Mass with sharp cutoff
@@ -625,14 +626,14 @@ k <- 32
      setenv AERO_53 \"",AQS_OC_SPEC4,"+",AQS_EC_SPEC3,",ug/m3,PM25_OC+PM25_EC,,PM25_TC_88320\"  # Total Carbon
      setenv AERO_54 \"PM10_81102,ug/m3,",PM10_CUT_MOD_SPEC,",ug/m3,PM10\"       # PM10 Total Mass
      setenv AERO_55 \"Fe,ug/m3, AFEJ,,Fe\"         # iron
-     setenv AERO_56 \"Al,ug/m3,AALJ,,Al\"          # aluminum 
+     setenv AERO_56 \"Al,ug/m3,AALJ,,Al\"          # aluminum
      setenv AERO_57 \"Si,ug/m3, ASIJ,,Si\"         # silicon
      setenv AERO_58 \"Ti,ug/m3, ATIJ,,Ti\"         # titanium
      setenv AERO_59 \"Ca,ug/m3,ACAJ,,Ca\"          # calcium
      setenv AERO_60 \"Mg,ug/m3,AMGJ,,Mg\"          # magnesium
      setenv AERO_61 \"K,ug/m3,AKJ,,K\"             # potassium
      setenv AERO_62 \"Mg,ug/m3,AMNJ,,Mn\"          # manganese
-     setenv AERO_63 \"2.2*Al+2.49*Si+1.63*Ca+2.42*Fe+1.94*Ti,ug/m3,ASOILJ,,soil\" 
+     setenv AERO_63 \"2.2*Al+2.49*Si+1.63*Ca+2.42*Fe+1.94*Ti,ug/m3,ASOILJ,,soil\"
      setenv AERO_64 \"PM25-SO4-NO3-NH4-",AQS_OC_SPEC,"-",AQS_EC_SPEC,"-[Na]-[Cl]-2.2*Al-2.49*Si-1.63*Ca-2.42*Fe-1.94*Ti , ug/m3, AUNSPEC1IJ,,OTHER\"        # PM Other
      setenv AERO_65 \"0.8*",AQS_OC_SPEC,",ug/m3, ANCOMIJ,,NCOM\"    # PM Other
      setenv AERO_66 \"PM25-SO4-NO3-NH4-",AQS_OC_SPEC,"-",AQS_EC_SPEC,"-[Na]-[Cl]-2.2*Al-2.49*Si-1.63*Ca-2.42*Fe-1.94*Ti-0.8*",AQS_OC_SPEC,",ug/m3, AUNSPEC2IJ,,OTHER_REM\"    # PM Other no NCOM
