@@ -36,8 +36,8 @@ run_name 	<- run_names[1]
 ob_col_name 	<- paste(species,"_ob",sep="")
 mod_col_name 	<- paste(species,"_mod",sep="")
 averaging 	<- 'e'
-multi_run 	<- 0
-if (run_name2 != "") { multi_run <- 1 }
+#multi_run 	<- 0
+multi_run <- as.numeric(exists("run_name2") && run_name2 != "")
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {
@@ -85,7 +85,6 @@ if (run_name2 != "") { multi_run <- 1 }
    aqdat_spatial.df <- merge(aqdat_spatial.df, aqdat_spatial2_sub.df, by=c("Stat_ID"), all=FALSE, suffixes=c("","2"))
    aqdat.df <- data.frame(Network=I(aqdat_query.df$network),Stat_ID=I(aqdat_query.df$stat_id),State=I(aqdat_query.df$state),County=I(aqdat_query.df$county),lat=aqdat_query.df$lat,lon=aqdat_query.df$lon,Obs_Value=aqdat_query.df[[ob_col_name]],Mod_Value=aqdat_query.df[[mod_col_name]],Mod_Value2=aqdat_query.df[[mod_col_name2]],Hour=aqdat_query.df$ob_hour,Start_Date=aqdat_query.df$ob_dates,Month=aqdat_query.df$month)
 }
-print("GOT HERE")
 averaging <- 'e'
 Date_Hour            <- paste(aqdat.df$Start_Date," ",aqdat.df$Hour,sep="") # Create unique Date/Hour field
 aqdat.df$Date_Hour   <- Date_Hour                                                    # Add Date_Hour field to dataframe
