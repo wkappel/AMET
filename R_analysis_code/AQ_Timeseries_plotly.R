@@ -250,20 +250,20 @@ for (k in 1:length(species)) {
                Corr_Mean[[j]]   <- by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Hour,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)) # Captures both spatial and temporal correlation
                RMSE_Mean[[j]]   <- (by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Hour,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))/s
                Dates[[j]]       <- paste(years[1],"-",months[1],"-",days[1]," ",unique(aqdat.df$Hour),":00:00",sep="")
-               x_label		<- paste("Hour (",TIME_FORMAT,")")
-	       all_means <- list(Obs_Mean, Mod_Mean, Bias_Mean, Corr_Mean, RMSE_Mean)
-	       # Iterate over each list and assign date names
-		for (i in seq_along(all_means)) {
-		  for (j in seq_along(all_means[[i]])) {
-		    names(all_means[[i]][[j]]) <- Dates[[j]]
-		  }
-		}
-		# Assign them back to original variables:
-		Obs_Mean <- all_means[[1]]
-		Mod_Mean <- all_means[[2]]
-		Bias_Mean <- all_means[[3]]
-		Corr_Mean <- all_means[[4]]
-		RMSE_Mean <- all_means[[5]]
+               x_label		<- paste("Hour (",TIME_FORMAT,"; Date is generic)",sep="")
+               all_means <- list(Obs_Mean, Mod_Mean, Bias_Mean, Corr_Mean, RMSE_Mean)
+	             # Iterate over each list and assign date names
+		           for (i in seq_along(all_means)) {
+		              for (j in seq_along(all_means[[i]])) {
+		                  names(all_means[[i]][[j]]) <- Dates[[j]]
+		              }
+		           }
+		           # Assign them back to original variables:
+		           Obs_Mean <- all_means[[1]]
+		           Mod_Mean <- all_means[[2]]
+		           Bias_Mean <- all_means[[3]]
+		           Corr_Mean <- all_means[[4]]
+		           RMSE_Mean <- all_means[[5]]
             }
             if (averaging == "a") {
                years                <- substr(aqdat.df$Start_Date,1,4)
