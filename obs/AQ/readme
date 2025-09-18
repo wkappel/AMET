@@ -1,3 +1,3 @@
 Location of the AQ observation data
 Use the following commands to obtain the data.
-wget https://cmas-amet.s3.amazonaws.com/AMET/v1.5_example/AQ/aqExample/2000_2023_NAmerican_AQ_Obs_Data/AMET_obsdata_2018.tar.gz
+wget https://cmas-amet.s3.amazonaws.com/AMET/2000_2024_NAmerican_AQ_Obs_Data/AMET_obsdata_2018.tar.gz
