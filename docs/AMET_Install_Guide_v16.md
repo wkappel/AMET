@@ -231,6 +231,7 @@ After you have installed the basic R software, AMET also requires the following 
 * ggplot2
 * grid
 * gridExtra
+* hexbin
 * htmltools
 * htmlwidgets
 * lattice
@@ -259,7 +260,7 @@ The easiest way to install R packages, is through the R package manager.  Once R
 ```
 > sudo R
 
-> install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer","RMySQL","RMariaDB","stats","webshot","xts","pandoc"),repos="http://cran.r-project.org")
+> install.packages(c("akima","data.table","date","dplyr","dygraphs","fields","ggplot2","grid","gridExtra","hexbin","htmltools","htmlwidgets","lattice","latticeExtra","leaflet","leaflet.extras","leafpop","lubridate","maps","mapdata","plotly","plotrix","processx","reshape2","RColorBrewer","RMySQL","RMariaDB","stats","webshot","xts","pandoc"),repos="http://cran.r-project.org")
 
 ```
 
