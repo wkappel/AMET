@@ -26,10 +26,11 @@ if (use_median == "y") {
    method <- "Median"
 }
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(network_name," Stacked Barplot for ",run_name1," for ",dates,sep="") }
-   else { title <- custom_title }
-}
+main.title <- get_title(species="Multiple Species")
+#{
+#   if (custom_title == "") { title <- paste(network_name," Stacked Barplot for ",run_name1," for ",dates,sep="") }
+#   else { title <- custom_title }
+#}
 
 ## Set output filenames
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_soil.pdf",sep="_")
@@ -341,7 +342,7 @@ if (total_networks > 1) {
 ######################################
 
 ## Put title at top of barplot ##
-title(main=title,cex.main=1)
+title(main=main.title,cex.main=1)
 
 ## Convert pdf to png ##
 dev.off()

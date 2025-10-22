@@ -1,6 +1,6 @@
 header <- "
-###################################### SPATIAL PLOT ######################################
-### AMET CODE: AQ_Plot_Spatial_animation.R 
+############################### SPATIAL PLOT (GGPLOT VERSION) ############################
+### AMET CODE: AQ_Plot_Spatial_animation_ggplot.R 
 ###
 ### This code is part of the AMET-AQ system.  The Plot Spatial code takes a MYSQL database
 ### query for a single species from one or more networks and plots the observation value, 
@@ -11,7 +11,7 @@ header <- "
 ###
 ### The map area plotted is dynamically generated from the input data.   
 ###
-### Create by Wyat Appel: June 2025
+### Create by Wyat Appel: July 2025
 ##########################################################################################
 "
 ## get some environmental variables and setup some directories
@@ -28,18 +28,19 @@ if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded"
 if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
 if(!require(grid))              { stop("Required Package grid was not loaded") 		}
 if(!require(gridExtra))         { stop("Required Package gridExtra was not loaded") 	}
+if(!require(tidyr))             { stop("Required Package tidyr was not loaded")         }
 
-if(!exists("quantile_min")) 	{ quantile_min 	  <- 0.001 }
-if(!exists("quantile_max")) 	{ quantile_max 	  <- 0.950 }
-if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" }
+if(!exists("quantile_min")) 	{ quantile_min 	  <- 0.001 	}
+if(!exists("quantile_max")) 	{ quantile_max 	  <- 0.950 	}
+if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" 	}
 
 ## Set some defaults 
 network		<- network_names[1] # When using mutiple networks, units from network 1 will be used
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title <- get_title()
 ################################################
 
-## Set file names and titles
+## Set output file names
 filename_obs_png		<- paste(run_name1,species,pid,"spatialplot_obs.png",sep="_")           # Filename for obs spatial plot
 filename_mod_png		<- paste(run_name1,species,pid,"spatialplot_mod.png",sep="_")           # Filename for model spatial plot
 filename_diff_png		<- paste(run_name1,species,pid,"spatialplot_diff.png",sep="_")          # Filename for diff spatial plot
@@ -65,7 +66,7 @@ filename_tile_pdf       	<- paste(run_name1,species,pid,"spatialplot_tile.pdf",s
 filename_tile_png               <- paste(run_name1,species,pid,"spatialplot_tile.png",sep="_")
 filename_tile_html		<- paste(run_name1,species,pid,"spatialplot_tile.html",sep="_")          # Filename for diff spatial plot
 
-## Create a full path to file
+## Create full path to output files
 filename_obs_png      		<- paste(figdir,filename_obs_png,sep="/")           # Filename for obs spatial plot
 filename_mod_png      		<- paste(figdir,filename_mod_png,sep="/")           # Filename for model spatial plot
 filename_diff_png     		<- paste(figdir,filename_diff_png,sep="/")          # Filename for diff spatial plot
@@ -125,7 +126,6 @@ sub_title       	<- NULL						# Set sub title to NULL
 lev_lab         	<- NULL
 legend_names    	<- NULL
 legend_chars    	<- NULL
-sub_title		<- NULL
 tile_out		<- NULL
 grid_out		<- NULL
 grob_out		<- NULL
@@ -251,6 +251,25 @@ for (j in 1:total_networks) {							# Loop through for each network
       }
    }
 }
+
+####################################################################################
+### Deal with different dates with available data between the different networks ###
+### This avoids issues with the color bar disappearing on some of the panels     ###
+####################################################################################
+unique_dates <- unique(unlist(lapply(sinfo_obs_anim, function(x) x$date)))
+for (d in 1:total_networks) {
+   sinfo_obs_anim[[d]]          <- as.data.frame(sinfo_obs_anim[[d]])
+   sinfo_obs_anim[[d]]          <- sinfo_obs_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_obs_anim[[d]]$network  <- network_names[d]
+   sinfo_mod_anim[[d]]          <- as.data.frame(sinfo_mod_anim[[d]])
+   sinfo_mod_anim[[d]]          <- sinfo_mod_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_mod_anim[[d]]$network  <- network_names[d]
+   sinfo_diff_anim[[d]]         <- as.data.frame(sinfo_diff_anim[[d]])
+   sinfo_diff_anim[[d]]         <- sinfo_diff_anim[[d]] %>% complete(date = unique_dates)
+   sinfo_diff_anim[[d]]$network <- network_names[d]
+}
+####################################################################################
+
 #########################
 ## plot format options ##
 #########################
@@ -409,10 +428,10 @@ for (i in 1:5) {
           geom_point(data = plot_data, shape=spch[k], aes(lon, lat, col = plotval),size=4) +
           geom_point(data = plot_data, shape=spch2[k], size=4,color="black",aes(x=lon,y=lat))
       }
-      sp <- sp + xlab('Longitude') + ylab('Latitude') + labs(title=title,subtitle=sub_title,color=paste0(species," (",units,")\n",plot_names[i]))
+      sp <- sp + xlab('Longitude') + ylab('Latitude') + labs(title=main.title,subtitle=sub_title,color=paste0(species," (",units,")\n",plot_names[i]))
    }
    grob_out[[i]] <- sp
-   grid_out[[i]] <- ggplotly(sp,tooltip=c("lat","lon","date","plotval")) %>% layout(title=list(text=paste0(title,'<br>',sub_title),y=0.98),showlegend=T)
+   grid_out[[i]] <- ggplotly(sp,tooltip=c("lat","lon","date","plotval")) %>% layout(title=list(text=paste0(main.title,'<br>',sub_title),y=0.98),showlegend=T)
    saveWidget(grid_out[[i]], file=filename_html,selfcontained=T)
    ggsave(sp,filename=filename_pdf,width=16,height=9)
    ggsave(sp,filename=filename_png,width=16,height=9)
@@ -441,7 +460,7 @@ for (i in 1:5) {
             geom_point(data = plot_data_anim, shape=spch2[k] ,size=5,color="black",aes(x=lon,y=lat,frame=(date), group=date))
          }
       }
-      fig <- ggplotly(sp_anim,tooltip=c("lat","lon","date","plotval")) %>% animation_opts(transition=0,easing="elastic",redraw=FALSE) %>% layout(title=list(text=paste0(title,'<br>',sub_title),y=0.98)) 
+      fig <- ggplotly(sp_anim,tooltip=c("lat","lon","date","plotval")) %>% animation_opts(transition=0,easing="elastic",redraw=FALSE) %>% layout(title=list(text=paste0(main.title,'<br>',sub_title),y=0.98)) 
       tile_out[[i]] <- fig
       saveWidget(fig, file=filename_anim,selfcontained=T)
    }

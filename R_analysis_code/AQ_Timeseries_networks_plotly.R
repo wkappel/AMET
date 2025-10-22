@@ -30,14 +30,9 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ## Set some defaults
 network 	<- network_names[1]
 sub.title       <- ""
-main.title   	<- custom_title
-main.title.bias <- custom_title
-
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-if (custom_title == "") { 
-   main.title 	<- paste(run_name1,species[1],"for",dates,sep=" ") 
-   main.title.bias 	<- paste(run_name1,species[1],"for",dates,sep=" ")
-}
+main.title      <- get_title()
+main.title.bias <- get_title(bias="T")
 
 # Set output file names
 filename_html   <- paste(run_name1,species,pid,"timeseries.html",sep="_")              # Set output file name

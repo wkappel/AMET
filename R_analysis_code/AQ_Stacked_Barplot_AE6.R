@@ -20,9 +20,13 @@ merge_sitePOC <- "F"
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ## Set some defaults
-network 	<- network_names[1]
-network_name 	<- network_label[1]
-num_runs 	<- 1
+network 		<- network_names[1]
+network_name 		<- network_label[1]
+num_runs 		<- 1
+merge_statid_POC 	<- "n" # Do not merge statid and POC. Need them separate from CSN merging of PM_TOT and speciated data
+remove_negatives 	<- "n" # Do not remove negatives. This will be handled in another fuction
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title(species="Multiple Species")
 
 ### Set filenames and titles ###
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_AE6.pdf",sep="_")
@@ -38,21 +42,15 @@ method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
 }
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { 
-      title <- paste(dates,sep=", ") 
-      if (clim_reg != "None") { title <- paste(title,clim_reg,sep=", ") }
-}
-   else { title <- custom_title }
-}
 ################################
 
 if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
    num_runs <- 2
 }
 
+###################################
+### Set variable initial values ###
+###################################
 medians          <- NULL
 data.df          <- NULL
 medians_2        <- NULL
@@ -68,11 +66,11 @@ rmse_sys       <- NULL
 rmse_sys2      <- NULL
 rmse_unsys     <- NULL
 rmse_unsys2    <- NULL
+###################################
 
-merge_statid_POC <- "n"	# Do not merge statid and POC. Need them separate from CSN merging of PM_TOT and speciated data
-remove_negatives <- "n"	# Do not remove negatives. This will be handled in another fuction
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
 species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","TC","soil","NaCl","NCOM","OTHER","OTHER_REM") 
+
 #############################################
 ### Read sitex file or query the database ###
 #############################################
@@ -445,7 +443,7 @@ if (num_runs > 1) {
 ######################################
 
 ## Put title at top of barplot ##
-title(main=title,cex.main=1.2)
+title(main=main.title,cex.main=1.2)
 
 ## Convert pdf to png ##
 dev.off()

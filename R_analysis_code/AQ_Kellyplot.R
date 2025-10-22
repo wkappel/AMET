@@ -31,13 +31,16 @@ if(!require(data.table))        { stop("Required Package data.table was not load
 if(!require(ggplot2))           { stop("Required Package ggplot2 was not loaded") 	}
 if(!require(RColorBrewer))      { stop("Required Package RColorBrewer was not loaded") 	}
 
-network <- network_names[1]
-network_name <- network_label[1]
-num_runs <- 1
+## Set some defaults
+network         <- network_names[1]
+network_name    <- network_label[1]
+num_runs        <- 1
+season          <- NULL
+region          <- NULL
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title(run_names_title=run_name1)
 
-################################################
-## Set output names and remove existing files ##
-################################################
+## Set output file names 
 filename_nmb    <- paste(run_name1,species,pid,"Kellyplot_NMB",sep="_")
 filename_nme    <- paste(run_name1,species,pid,"Kellyplot_NME",sep="_")
 filename_rmse   <- paste(run_name1,species,pid,"Kellyplot_RMSE",sep="_")
@@ -47,7 +50,7 @@ filename_corr   <- paste(run_name1,species,pid,"Kellyplot_Corr",sep="_")
 filename_txt    <- paste(run_name1,species,pid,"Kellyplot_stats_data.csv",sep="_")      # Set output file name
 filename_zip    <- paste(run_name1,species,pid,"Kellyplot.zip",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename        <- NULL
 filename[1]     <- paste(figdir,filename_nmb,sep="/")
 filename[2]     <- paste(figdir,filename_nme,sep="/")
@@ -63,17 +66,7 @@ method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
 }
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,network,species,"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
-
 ################################################
-
-season         <- NULL
-region         <- NULL
 
 ### Define NOAA climate region database queries ###
 region[1] <- " and (s.state='IL' or s.state='IN' or s.state='KY' or s.state='MO' or s.state='OH' or s.state='TN' or s.state='WV')"
@@ -302,7 +295,7 @@ for (i in 1:6) {
            legend.text=element_text(size=15),
            legend.title=element_text(size=15),
            plot.title=element_text(size=8,hjust=0.5)) +
-     labs(title=title)
+     labs(title=main.title)
    if (inc_kelly_stats == "y") {
       plt <- plt + geom_text(size=2.5,data=data.orig,aes(x=season,y=region,label=round_value))   #Add the value for each color square to the Kelly plot.
    }

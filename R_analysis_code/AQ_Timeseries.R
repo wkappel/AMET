@@ -24,14 +24,18 @@ species 	<- species[1]
 labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	<- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
-main.title.bias <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title 	<- get_title()
+main.title.bias <- get_title(custom_text="Bias")
 sub.title	<- ""
 
 ## Set output file name
-filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
+filename_txt 	<- paste(run_name1,species,pid,"timeseries.csv",sep="_")
+filename_pdf    <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
+filename_png    <- paste(run_name1,species,pid,"timeseries.png",sep="_")
 
-## Create a full path to file
+## Create full path to output file
+filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
+filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 
 #######################
@@ -159,8 +163,8 @@ for (j in 1:num_runs) {	# For each simulation being plotted
             Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
             CORR[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
             RMSE[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))
-            Dates[[j]]           <- as.POSIXct(unique(aqdat.df$Start_Date),origin="1970-01-01")
-         }
+            Dates[[j]] 		 <- as.POSIXct(paste0(unique(aqdat.df$Start_Date), " 00:00:00"),tz = "America/New_York", format = "%Y-%m-%d %H:%M:%S")
+	 }
          if (averaging == "h") {
             Obs_Mean[[j]]        <- tapply(aqdat.df$Obs_Value,aqdat.df$Hour,FUN=avg_func)
             Mod_Mean[[j]]        <- tapply(aqdat.df$Mod_Value,aqdat.df$Hour,FUN=avg_func)
@@ -268,12 +272,6 @@ if (length(bias_y_axis_min) > 0) {
 }
 
 #################################################
-
-filename_pdf         <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
-filename_png         <- paste(run_name1,species,pid,"timeseries.png",sep="_")
-
-filename_pdf         <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
-filename_png         <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
 
 #####################################
 ### Plot Model vs. Ob Time Series ###

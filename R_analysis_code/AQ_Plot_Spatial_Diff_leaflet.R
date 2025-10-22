@@ -34,21 +34,18 @@ if(!exists("quantile_max")) 	{ quantile_max <- 0.950 }
 if(!exists("png_from_html")) 	{ png_from_html <- "n" }
 
 ## Set some defaults 
-network <- network_names[1]	# When using mutiple networks, units from network 1 will be used
+network 	 <- network_names[1]	# When using mutiple networks, units from network 1 will be used
+remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
 
-### Set file names and titles ###
+## Set output file names
 filename_html	         <- paste(run_name1,species,pid,"spatialplot_diff",sep="_") # Filename for diff spatial plot
 filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 filename_bias_hist       <- paste(run_name1,species,pid,"histogram_bias_diff",sep="_") # Filename for diff spatial plot
 filename_error_hist      <- paste(run_name1,species,pid,"histogram_error_diff",sep="_") # Filename for diff spatial plot
 filename_corr_hist       <- paste(run_name1,species,pid,"histogram_corr_diff",sep="_") # Filename for diff spatial plot
 
-## Create a full path to file
+## Create full path to output files
 filename_html        <- paste(figdir,"/",filename_html,".html",sep="")            # Filename for diff spatial plot
 filename_bias_hist_html   <- paste(figdir,"/",filename_bias_hist,".html",sep="")
 filename_error_hist_html  <- paste(figdir,"/",filename_error_hist,".html",sep="")
@@ -57,10 +54,11 @@ filename_bias_hist_png    <- paste(figdir,"/",filename_bias_hist,".png",sep="")
 filename_error_hist_png   <- paste(figdir,"/",filename_error_hist,".png",sep="")
 filename_corr_hist_png    <- paste(figdir,"/",filename_corr_hist,".png",sep="")
 filename_csv	          <- paste(figdir,filename_csv,sep="/")
+########################################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+###################################
+### Set variable initial values ###
+###################################
 sinfo_data	<- NULL
 sinfo_data_tmp	<- NULL
 diff_min        <- NULL
@@ -78,9 +76,8 @@ all_corr	<- NULL
 all_corr2	<- NULL
 all_corr_diff	<- NULL
 map_title	<- NULL
-########################################
+###################################
 
-remove_negatives <- 'n'      # Set remove negatives to false. Negatives are needed in the coverage calculation and will be removed automatically by Average
 for (j in 1:total_networks) {							# Loop through for each network
    sites          	<- NULL							# Set sites vector to NULL
    lats          	<- NULL							# Set lats vector to NULL
@@ -294,32 +291,41 @@ my.leaf <- my.leaf.base
 for (i in 1:9) {
    left_adj <- 30
    if (i > 6) { left_adj <- 10 }
-   main_title 		<- tags$div(tag.map.title.html, HTML(map_title[1]))
-   main_title_png 	<- tags$div(tag.map.title.png, HTML(map_title[1]))
-   data.df 		<- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
-   range_max 		<- max(quantile(abs(plot_data[[i]]),probs=quantile_max,na.rm=T))
-   data.seq 		<- pretty(c(-range_max,range_max),n=20)
+   main_title           <- tags$div(tag.map.title.html, HTML(map_title[1]))
+   main_title_png       <- tags$div(tag.map.title.png, HTML(map_title[1]))
+   data.df              <- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
+   range_max            <- max(quantile(abs(plot_data[[i]]),probs=quantile_max,na.rm=T))
+   if ((i == 1) || (i == 2)) {
+      range_max         <- max(quantile(c(abs(plot_data[[1]]),abs(plot_data[[2]])),probs=quantile_max,na.rm=T))
+   }
+   data.seq             <- pretty(c(-range_max,range_max),n=20)
    if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
       data.seq <- pretty(c(diff_range_min,diff_range_max),n=20)
    }
-   min.data 	<- min(data.seq)
-   max.data 	<- max(data.seq)
-   n.bins 	<- length(data.seq)
-   num_bins[i] 	<- n.bins
-   binpal2 	<- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
- 
+   min.data     <- min(data.seq)
+   max.data     <- max(data.seq)
+   n.bins       <- length(data.seq)
+   num_bins[i]  <- n.bins
+   binpal2      <- colorBin(my.diff.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
+
    if ((i == 3) || (i == 4) || (i == 5) || (i == 6)) {
-     data.df 	<- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
-     range_min 	<- min(quantile((plot_data[[i]]),probs=quantile_min,na.rm=T))	# Removed abs function on 8/30/2022
-     range_max 	<- max(quantile((plot_data[[i]]),probs=quantile_max,na.rm=T))	# Removed abs function on 8/30/2022
-     data.seq 	<- pretty(c(range_min,range_max),n=20)
+     data.df    <- data.frame(site.id=all_sites,latitude=all_lats,longitude=all_lons,o3.obs=plot_data[[i]])
+     if ((i == 3) || (i == 4)) {
+        range_min       <- min(quantile(c(plot_data[[3]],plot_data[[4]]),probs=quantile_min,na.rm=T))   # Removed abs function on 8/30/2022
+        range_max       <- max(quantile(c(plot_data[[3]],plot_data[[4]]),probs=quantile_max,na.rm=T))   # Removed abs function on 8/30/2022
+     }
+     if ((i == 5) || (i == 6)) {
+        range_min       <- min(quantile(c(plot_data[[5]],plot_data[[6]]),probs=quantile_min,na.rm=T))    # Removed abs function on 8/30/2022
+        range_max       <- max(quantile(c(plot_data[[5]],plot_data[[6]]),probs=quantile_max,na.rm=T))    # Removed abs function on 8/30/2022
+     }
+     data.seq   <- pretty(c(range_min,range_max),n=20)
      if ((length(diff_range_min) != 0) || (length(diff_range_max) != 0)) {
       data.seq <- pretty(c(diff_range_min,diff_range_max),n=20)
      }
-     min.data 	<- min(data.seq)
-     max.data 	<- max(data.seq)
-     n.bins 	<- length(data.seq)
-     binpal2 	<- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
+     min.data   <- min(data.seq)
+     max.data   <- max(data.seq)
+     n.bins     <- length(data.seq)
+     binpal2    <- colorBin(my.colors(10), c(min.data,max.data), n.bins-1 , pretty = FALSE)
    }
 
      if(i == 1) { 

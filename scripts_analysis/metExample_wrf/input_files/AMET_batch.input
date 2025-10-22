@@ -1,0 +1,450 @@
+###########################################################################
+### The options in this section are apply only batch run scripts. Use   ###  
+### the flags in this section to control the query options and which    ###
+### AMET plots are run when running the AMET batch script option.	###
+###########################################################################
+
+#start_date	<- 20180701
+#end_date	<- 20180731
+
+start_date      <- gsub('-','',Sys.getenv("START_DATE_H"))
+end_date        <- gsub('-','',Sys.getenv("END_DATE_H"))
+
+start_year <- substr(start_date,1,4)
+end_year <- substr(end_date,1,4)
+start_month <- substr(start_date,5,6)
+end_month <- substr(end_date,5,6)
+
+if(start_year == end_year) { year_label <- start_year }
+if(start_month == end_month) { month_label <- start_month }
+
+date_query <- paste("d.ob_dates between ",start_date," and ",end_date," and d.ob_datee between ",start_date," and ",end_date,sep="")
+
+###################################################
+# Cleanup workspace from previously loaded data ###
+###################################################
+if(exists("NAA_regions")) { rm(NAA_regions) }
+
+##############################################################
+### Basic query for entire date range w/ no other criteria ###
+##############################################################
+batch_query <- c(date_query)
+batch_names <- c("All")
+
+#####################################
+### Example for seasonal analysis ###
+#####################################
+#batch_query <- c("month=12 or month=1 or month=2","month=3 or month=4 or month=5","month=6 or month=7 or month=8","month=9 or month=10 or month=11")
+#batch_names <- c("Winter","Spring","Summer","Fall")
+#####################################
+
+####################################
+### Example for monthly analysis ###
+####################################
+#batch_query <- c("month=1","month=2","month=3","month=4","month=5","month=6","month=7","month=8","month=9","month=10","month=11","month=12")
+#batch_names <- c("January","February","March","April","May","June","July","August","September","October","November","December")
+####################################
+
+#######################################################
+### Example for Season/NOAA Climate Region analysis ###
+#######################################################
+#seasons                 <- c("(month=12 or month=1 or month=2)","(month=3 or month=4 or month=5)","(month=6 or month=7 or month=8)","(month=9 or month=10 or month=11)")
+#season_names            <- c("Winter","Spring","Summer","Fall")
+
+#climate_regions         <- c("(s.state='IL' or s.state='IN' or s.state='KY' or s.state='MO' or s.state='OH' or s.state='TN' or s.state='WV')", "(s.state='IA' or s.state='MI' or s.state='MN' or s.state='WI')", "(s.state='CT' or s.state='DE' or s.state='ME' or s.state='MD' or s.state='MA' or s.state='NH' or s.state='NJ' or s.state='NY' or s.state='PA' or s.state='RI' or s.state='VT')", "(s.state='ID' or s.state='OR' or s.state='WA')", "(s.state='AR' or s.state='KS' or s.state='LA' or s.state='MS' or s.state='OK' or s.state='TX')", "(s.state='AL' or s.state='FL' or s.state='GA' or s.state='SC' or s.state='NC' or s.state='VA')", "(s.state='AZ' or s.state='CO' or s.state='NM' or s.state='UT')", "(s.state='CA' or s.state='NV')", "(s.state='MT' or s.state='NE' or s.state='ND' or s.state='SD' or s.state='WY')")
+#climate_names           <- c("Central","EN_Central","Northeast","Northwest","South","Southeast","Southwest","West","WN_Central")
+
+#batch_query <- paste(date_query,rep(seasons,each=length(climate_regions)),rep(climate_regions,length(seasons)),sep=" and ")
+#batch_names <- paste(rep(season_names,each=length(climate_names)),rep(climate_names,length(season_names)),sep="_")
+#######################################################
+
+###########################################
+### Process for individual NAA Regions  ###
+###########################################
+# Specify a csv site file with the format stat_id,region and a set of regions to process
+# Each region will be processed separately
+#SITE_FILE <- "/work/MOD3EVAL/cmaq_exp/post_scripts/O3_NAA_Sites_v2_short_names.txt"
+#NAA_regions <- c("SJV","St_Louis")
+
+### Read site file and construct query string
+# No editing of this section should be required ###
+if (exists("NAA_regions") && file.exists(SITE_FILE)) {
+   batch_query <- NULL
+   batch_names <- NULL
+   sites_in <- read.csv(file=SITE_FILE, colClasses=c("character"),header=T)
+   regions <- strsplit(NAA_regions,",")
+   for (i in 1:length(regions)) {
+      sites_query <- NULL
+      for (j in 1:length(sites_in$stat_id)) {
+         if (sites_in$region[j] == regions[i]) {
+            if (is.null(sites_query)) {
+               sites_query <- paste("d.stat_id = '",sites_in$stat_id[j],"'",sep="")
+            }
+            else {
+               sites_query <- paste(sites_query," or d.stat_id = '",sites_in$stat_id[j],"'",sep="")
+            }
+         }
+      }
+      sites_query <- paste(sites_query,") and (",date_query,sep="")
+      batch_query <- c(batch_query,sites_query)
+      batch_names <- c(batch_names,regions[i])
+   }
+}
+#################################################
+
+#############################################
+### Specify which scripts to run in batch ###
+#############################################
+hourly_ozone_analysis   <- 'n'	# Flag to include hourly ozone analysis
+hourly_pm_analysis	<- 'n'	# Flag to include hourly pm analysis
+daily_ozone_analysis    <- 'y'	# Flag to include daily ozone analysis
+aerosol_analysis        <- 'n'	# Flag to include aerosol analysis
+dep_analysis            <- 'n'	# Flag to include analysis of deposition performance
+gas_analysis            <- 'n'	# Flag to include gas analysis
+AE6_analysis            <- 'n'	# Flag to include AERO6 soil species from CSN and IMPROVE
+AOD_analysis		<- 'n'	# Flag to include Aerosol Optical Depth (AOD) from AERONET
+PAMS_analysis		<- 'n'	# Flag to include PAMS network species from AQS (hourly and daily)
+
+################################
+### Specify averaging to use ###
+################################
+# Flag to average ozone data; options are:
+# n (no averaging), d (daily), dow (day of week), md (day of month), m (month), ym (month by year), s (season), a (annual), e (entire period)
+ozone_averaging         <- 'n'             
+aerosol_averaging       <- 'n'  
+deposition_averaging    <- 'n'  
+gas_averaging           <- 'n'  
+AE6_averaging           <- 'n'	
+AOD_averaging		<- 'n'	
+PAMS_averaging		<- 'n'	
+
+### Choose which spatial plots to run ###
+stat_plots 		<- 'y'	# AQ_Stats_Plots.R; AQ_Stats_Plots_leaflet.R; AQ_Stats_Plots_leaflet_network.R
+spatial_plots 		<- 'n'	# AQ_Plot_Spatial.R; AQ_Plot_Spatial_leaflet.R
+diff_plots		<- 'n'	# AQ_Plot_Spatial_Diff.R; AQ_Plot_Spatial_Diff_leaflet.R; AQ_Plot_Spatial_Diff_leaflet_network.R
+mtom_plots		<- 'n'	# AQ_Plot_Spatial_MtoM.R; AQ_Plot_Spatial_MtoM_leaflet.R
+ratio_plots		<- 'n'	# AQ_Plot_Spatial_Ratio.R
+spatial_anim		<- 'n'	# AQ_Plot_spatial_animation_ggplot.R, AQ_Plot_Spatial_animation_plotly.R
+
+### Choose which bar plots to run ###
+AE5_barplot		<- 'n'	# AQ_Stacked_Barplot.R
+AE6_barplot		<- 'y'	# AQ_Stacked_Barplot_AE6.R
+AE6_barplot_timeseries  <- 'y'  # AQ_Stacked_Barplot_AE6_ts.R
+soil_barplot		<- 'y'	# AQ_Stacked Barplot_soil.R
+soil_multi_barplot	<- 'y'	# AQ_Stacked_Barplot_soil_multi.R
+
+### Choose which time plots to run ###
+timeseries_plot		<- 'y'	# AQ_Timeseries.R
+timeseries_mtom		<- 'n'	# AQ_Timeseries_multi_networks.R
+temporal_plot		<- 'n'	# AQ_Temporal_Plots.R
+box_plot		<- 'y'	# AQ_Boxplot.R
+box_plot_hourly		<- 'n'	# AQ_Boxplot_Hourly.R
+box_plot_roselle	<- 'n'	# AQ_Boxplot_Roselle.R
+monthly_stat_plot	<- 'n'	# AQ_Monthly_Stat_Plot.R
+kelly_plot              <- 'y'  # AQ_Kellyplot_season.R, AQ_Kellyplot_season_plotly.R, AQ_Kellyplot_region.R, AQ_Kellyplot_region_plotly.R
+kelly_plot_annual       <- 'n'  # AQ_Kellyplot.R, AQ_Kellyplot_plotly.R
+
+### Choose which scatter plots to run ###
+scatter_plot               <- 'y'	# AQ_Scatterplot.R
+scatter_single_plot        <- 'y'	# AQ_Scatterplot_single.R
+scatter_density_plot       <- 'y'	# AQ_Scatterplot_density.R
+scatter_bins_plot          <- 'y'	# AQ_Scatterplot_bins.R
+scatter_percentiles_plot   <- 'y'	# AQ_Scatterplot_percentiles.R
+scatter_skill_plot         <- 'y'	# AQ_Scatterplot_skill.R
+scatter_mtom_plot	   <- 'n'	# AQ_Scatterplot_mtom.R
+scatter_soil_plot	   <- 'y'	# AQ_Scatterplot_soil.R
+
+### Choose to plot misc plots ###
+soccer_plot		<- 'y'	# AQ_Soccerplot.R and AQ_Soccerplot_plotly.R
+bugle_plot      	<- 'y'  # AQ_Bugleplot.R
+summary_plot		<- 'y'	# AQ_Summary_Panel_Plot.R
+histogram_plot		<- 'y'	# AQ_Histogram.R; AQ_Histogram_plotly.R
+temporal_plot		<- 'n'	# AQ_Temporal_Plots.R
+
+### Use this to add additional query information (e.g. states) ###
+#additional_query       <- ""
+additional_query	<- "and s.co_network NOT LIKE '%CASTNET%'"
+#additional_query	<- "and d.O3_8hrmax_ob >= 60"
+
+### Include SEARCH network in analysis ###
+inc_search <- 'n'
+
+### Additional run names for some analyses ###
+#run_name3	<- 
+#run_name4	<- 
+#run_name5	<- 
+#run_name6	<- 
+#run_name7	<-
+##run_name8	<-
+##run_name9	<-
+##run_name10	<-
+##run_name11	<-
+##run_name12	<-
+##run_name13	<-
+##run_name14	<-
+##run_name15	<-
+##run_name16	<-
+##run_name17	<-
+##run_name18	<-
+##run_name19	<-
+##run_name20	<-
+
+######################################################################
+### The options in this section apply to the various AMET scripts. ###
+### These are the same options contained in the all_scripts.input  ###
+### file. See the AMET User's guide for more details on these 	   ###
+### options.  							   ###
+######################################################################
+
+################################
+### Set PNG image resolution ###
+### Integer value (100-1200) ###
+################################
+png_res <- 300
+
+##################################
+### Custom Title for All Plots ###
+##################################
+#custom_title<-"My really cool title"
+custom_title_text <- ""
+
+### Use only common sites among mulitple simulations ###
+common_sites	<- "n"
+
+#####################################
+### Spatial Decomposition Options ###
+#####################################
+
+### Monitoring Sites to Include ###
+site_id	<- "All"
+
+### Create individual time plots by site (y/n).
+### If set to y, the site variable will default to NULL
+by_site	<- "n"
+
+### States to Include ###
+state	<- "All"
+
+### Regional Planning Organizations to Include ###
+rpo	<- "None"
+
+### Priciple Component Analysis (PCA) Region ###
+pca	<- "None"
+
+### Climate Region ###
+clim_reg <- "None"
+
+### Merge statid and POC into a single site id name ###
+merge_statid_POC <-"y"
+
+### Aggregate multiple PO Codes from the same site ###
+aggregate_data	<- "n"
+
+######################################
+
+############################
+### Various Option Flags ###
+############################
+
+### Flag to Include or Remove Zero Precipitation Observations ###
+zeroprecip	<- "n"
+
+### Numerical Limit for Data Completeness ###
+coverage_limit	<- 75
+all_valid	<- "y"
+all_valid_amon	<- "y"
+
+### Flag for Soccer and Bugle Plots Setting NMB/NME or FB/FE ###
+soccerplot_opt	<- 1
+
+### Flag for PAVE Overlay; 1=hourly, 2=daily ###
+overlay_opt	<- 1
+
+### Flag to include run info text on plots ###
+run_info_text	<- "y"
+
+### Remove Negatives Flag ###
+remove_negatives	<- 'y'
+rm_negs_query		<- 'n'
+
+### Remove mean values from some time series plots ###
+remove_mean 		<- 'n'
+
+color_ranges 		<- 'n'
+
+### Numerical Limit for Data Completeness as minimum number of required observations (used when calulating site statistics or averages)###
+num_obs_limit	<- 1
+
+### Flag to use average values for computing statistics; default is no (""); set to "y" to use average stats ###
+use_avg_stats	<- "n"
+
+### Plotly Options ###
+img_height		<- 900
+img_width		<- 1600
+png_from_html   	<- "n"  # create png file from html file
+try_plotly_image        <- 0    # try using the plotly_IMAGE function to create PNGs from HTMLs. Requires (free) plotly account API-KEY
+leg_size_fac    	<- 1
+text_size_fac   	<- 1
+
+#########################
+### Axis Plot Options ###
+#########################
+
+### Specify angle of x-axis text on ggplot boxplot
+x_label_angle	<- 0
+
+### x and y axes limits ###
+x_axis_min 	<- NULL
+x_axis_max 	<- NULL
+y_axis_min 	<- NULL 
+y_axis_max 	<- NULL
+bias_y_axis_min <- NULL 
+bias_y_axis_max <- NULL
+
+### Set Plot symbol type and colors ###
+plot_colors     <- c("grey60","red","blue","green4","yellow3","orange2","brown","purple")
+plot_colors2    <- c("grey60","red","blue","green4","yellow3","orange2","brown","purple")
+plot_symbols    <- c(16,17,15,18,11,8,4)
+
+############################
+
+################################
+### Time Series Plot Options ###
+################################
+use_var_mean 		<- 'n'
+inc_points 		<- 'y'
+inc_legend		<- 'y' 
+inc_bias		<- 'y'
+inc_rmse		<- 'n'
+inc_corr		<- 'n'
+inc_nmb			<- 'n'
+inc_nme			<- 'n'
+obs_per_day_limit	<- 0
+line_width		<- "1"
+
+##################################
+### Averaging Function Options ###
+##################################
+# mean, median, or sum
+avg_func                <- mean
+avg_func_name           <- "mean"
+
+###########################
+#### Kelly Plot Options ###
+###########################
+inc_kelly_stats <- "n"
+nmb_int         <- NULL
+nmb_max         <- NULL
+nme_int         <- NULL
+nme_min         <- NULL
+nme_max         <- NULL
+mb_int          <- NULL
+mb_max          <- NULL
+me_min          <- NULL
+me_max          <- NULL
+cor_int         <- NULL
+cor_min         <- NULL
+cor_max         <- NULL
+rmse_min        <- NULL
+rmse_max        <- NULL
+
+############################
+### Spatial Plot Options ###
+############################
+plot_radius     	<- 0
+outlier_radius  	<- 40
+fill_opacity    	<- 0.8
+num_ints		<- NULL 
+perc_error_max		<- NULL
+abs_error_max		<- NULL
+rmse_range_max		<- NULL
+perc_range_min		<- NULL
+perc_range_max		<- NULL
+abs_range_min		<- NULL
+abs_range_max		<- NULL
+diff_range_min		<- NULL
+diff_range_max		<- NULL
+diff_range_max_min 	<- NULL	# Animation plots
+diff_range_max_max 	<- NULL # Animation plots
+diff_range_abs_max_min 	<- NULL # Animaiton plots
+diff_range_abs_max_max 	<- NULL # Animation plots
+greyscale		<- "n"
+inc_counties		<- "y"
+symbsizfac		<- 1
+map_leg_size		<- 0.65
+hist_max		<- NULL
+map_type		<- 1
+quantile_min		<- 0.001
+quantile_max		<- 0.999
+GroupedLayerControl	<- 0
+
+### Embed pop-up time series plots on some leaflet spatial plots. 
+### Only applies to queries < 100 sites due to time contraints ###
+popup_ts        <- 'y'
+
+#######################
+### Boxplot Options ###
+#######################
+### Include whiskers on box plots ###
+inc_whiskers	<- 'n'
+
+### Include boxplot quartile ranges ###
+inc_ranges	<- 'y'
+
+### Include median points on box plots ###
+inc_median_points	<- 'y'
+
+### Include median points on box plots ###
+inc_median_lines	<- 'y'
+overlap_boxes           <- ""
+
+############################
+### Scatter Plot Options ###
+############################
+### Flags for Confidence Lines to Plot on Scatterplots ###
+conf_line	<-'n'
+
+### Array of flags for which statistics to include on scatter plots ###
+#  1) num_pairs, 2) mean(obs),  3) mean(mod),  4) indx_agr,    5) corr,
+#  6) r_sqrd,    7) rmse,       8) rmse_sys,   9) rmse_unsys, 10) nmb,
+# 11) nme,      12) nmdnb,     13) nmdne,     14) mb,         15) me,
+# 16) med_bias, 17) med_error, 18) fb,        19) fe
+stats_flags<-c("","","","","","","y","","","y","y","","","","y","y","","","")
+
+### Binned Scatter Plot Options ###
+pca_flag	<- 'n'
+bin_by_mod	<- 'n'
+inc_error	<- 'n'
+
+### Density Scatter plot options ###
+density_zlim	<- NULL
+num_dens_bins	<- NULL
+
+### Skill plot criteria line ###
+### Skill plot criteria line ###
+O3_max_limit    <- 70
+PM_max_limit    <- 25
+gas_max_limit   <- 10
+dep_max_limit   <- 5
+AE6_max_limit   <- 10
+AOD_max_limit   <- 10
+
+##################################
+### Stacked Bar Charts Options ###
+##################################
+use_median	<- 'n'
+remove_other 	<- 'n'
+
+##################################
+
+### File containing list of stations created dynamically by the user ###
+stat_file	<- ""
+
+### Set the site variable to site_id if by_site set to F ###
+if (by_site != 'y') { site <- site_id }
+
+#####################################
+###### Path of Network Input file ###
+#####################################
+#ametNetworkInput <- Sys.getenv("AMET_NET_INPUT")
+#source(ametNetworkInput) # Network related input

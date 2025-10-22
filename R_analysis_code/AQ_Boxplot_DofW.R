@@ -10,7 +10,6 @@ header <- "
 ### and model values.  The script then plots these values as a box plot.
 ###
 ### Last updated by Wyat Appel: June 2025
-###
 ################################################################
 "
 
@@ -21,20 +20,20 @@ ametR		<- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
+## Set some defaults
 network		<- network_names[1]
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+title <- get_title()
 
-### Set file names and titles ###
+## Set output file names 
 filename_pdf <- paste(run_name1,species,pid,"boxplot_dow.pdf",sep="_")
 filename_png <- paste(run_name1,species,pid,"boxplot_dow.png",sep="_")
 filename_csv <- paste(run_name1,species,pid,"boxplot_data.csv",sep="_")      
 
-## Create a full path to file
+## Create a full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")
 filename_png <- paste(figdir,filename_png,sep="/")
 filename_csv <- paste(figdir,filename_csv,sep="/")
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title <- get_title(run_names,species,network_names,dates,custom_title)
 #################################
 
 #################################

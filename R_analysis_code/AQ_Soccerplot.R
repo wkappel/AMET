@@ -10,7 +10,7 @@ header <- "
 ### the plotted points will fall within the goal lines.  This type of plot is used by EPA
 ### and other planning organizations as part of their assessment of model performance.
 ###
-### Last updated by Wyat Appel: Feb 2020
+### Last updated by Wyat Appel: June 2025 
 ######################################################################################
 "
 
@@ -22,26 +22,25 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")    # R directory
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
 ### Set some defaults
+remove_negatives <- "n"
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste("Soccergoal plot for ",run_name1," for ",dates,"; State=",state,"; Site=",site,sep="") }   
-   else { title <- custom_title }
-}
+main.title <- get_title()
 
+## Set output file names
 filename_pdf <- paste(run_name1,pid,"soccerplot.pdf",sep="_")             # Set PDF filename
 filename_png <- paste(run_name1,pid,"soccerplot.png",sep="_")             # Set PNG filename
 filename_txt <- paste(run_name1,pid,"soccerplot.csv",sep="_")       # Set output file name
 
-## Create a full path to file
+## Create full path to output files
 filename_pdf <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png <- paste(figdir,filename_png,sep="/")      # Set PNG filenam
 filename_txt <- paste(figdir,filename_txt,sep="/")      # Set output file name
-
-remove_negatives <- "n"
+################################
 
 ### Set initial NULL vectors ###
 plot_vals <- NULL
 ################################
+
 for (j in 1:length(network_names)) {	# Loop through each network
    mean_obs      <- NULL
    mean_mod      <- NULL
@@ -169,7 +168,7 @@ for (n in 1:length(network_names)) {							# For each network, plot values as po
 }
 
 ### Put title at top of boxplot ###
-title(main=title,cex.main=1.2)
+title(main=main.title,cex.main=1.2)
 ###################################
 
 ### Put legend on the plot ###

@@ -27,10 +27,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Set some defaults
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste("Soccergoal plot for ",run_name1," for ",dates,"; State=",state,"; Site=",site,sep="") }   
-   else { title <- custom_title }
-}
+main.title <- get_title()
 
 ## Set output file names
 filename_html_norm <- paste(run_name1,pid,"soccerplot_norm.html",sep="_")             # Set PDF filename
@@ -101,7 +98,7 @@ plot_chars <- c(15,19,23,24,25,seq(from=0,to=14,by=1))
 #############################################
 
 p <- plot_ly(data = stats_all.df, x=~Percent_Norm_Mean_Bias,y=~Percent_Norm_Mean_Err,height=img_height,width=img_width,type='scatter',mode='markers',marker=list(size=20),symbol=~species,symbols=plot_chars,color=~Network,colors=plot_colors,marker=list(size=12),legend=list(title="species"),legendshowlegend=TRUE,text= ~paste("NMB:",Percent_Norm_Mean_Bias,"<br>NME:",Percent_Norm_Mean_Err,"<br>Network:",Network,"<br>species:",species),hoverinfo='text') %>%
-	layout(title=list(text=title,y=0.97),font=list(size=15),xaxis=list(title="Normalized Mean Bias (%)",dtick=10,range=c(-100,100)),yaxis=list(title="Normalized Mean Error (%)",dtick=10,range=c(0,125))) 
+	layout(title=list(text=main.title,y=0.97),font=list(size=15),xaxis=list(title="Normalized Mean Bias (%)",dtick=10,range=c(-100,100)),yaxis=list(title="Normalized Mean Error (%)",dtick=10,range=c(0,125))) 
 p <- p %>%  add_segments(x=-15,xend=-15,y=0,yend=35,line=list(dash="dash",color='red'),inherit=F,showlegend=TRUE,name="Goal") %>%
    add_segments(x=15,xend=15,y=0,yend=35,line=list(dash="dash",color='red'),inherit=F,showlegend=FALSE) %>%
    add_segments(x=-15,xend=15,y=35,yend=35,line=list(dash="dash",color='red'),inherit=F,showlegend=FALSE) %>%
@@ -115,7 +112,7 @@ p <- p %>%  add_segments(x=-15,xend=-15,y=0,yend=35,line=list(dash="dash",color=
 saveWidget(p, file=filename_html_norm,selfcontained=T)
 
 p <- plot_ly(data = stats_all.df, x=~Frac_Bias,y=~Frac_Err,height=img_height,width=img_width,type='scatter',mode='markers',marker=list(size=20),symbol=~species,symbols=plot_chars,color=~Network,colors=plot_colors,marker=list(size=12),legend=list(title="species"),legendshowlegend=TRUE,text= ~paste("FB:",Frac_Bias,"<br>FE:",Frac_Err,"<br>Network:",Network,"<br>species:",species),hoverinfo='text') %>%
-	layout(title=list(text=title,y=0.97),xaxis=list(title="Fractional Bias (%)",dtick=10,range=c(-100,100)),yaxis=list(title="Fractional Error (%)",dtick=10,range=c(0,125)))
+	layout(title=list(text=main.title,y=0.97),xaxis=list(title="Fractional Bias (%)",dtick=10,range=c(-100,100)),yaxis=list(title="Fractional Error (%)",dtick=10,range=c(0,125)))
 p <- p %>%  add_segments(x=-15,xend=-15,y=0,yend=35,line=list(dash="dash",color='red'),inherit=F,showlegend=TRUE,name="Goal") %>%
    add_segments(x=15,xend=15,y=0,yend=35,line=list(dash="dash",color='red'),inherit=F,showlegend=FALSE) %>%
    add_segments(x=-15,xend=15,y=35,yend=35,line=list(dash="dash",color='red'),inherit=F,showlegend=FALSE) %>%

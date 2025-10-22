@@ -10,7 +10,7 @@ header <- "
 ### self-contained using PANDOC. If PANDOC is unavailable, the selfcontained options at
 ### the end of this code should be set to false.
 ###
-### Last modified by Wyat Appel: Feb 2022
+### Last modified by Wyat Appel: July 2025
 ##################################################################################
 "
 
@@ -393,8 +393,13 @@ for (i in 1:8) {
         ecdf_data <- all_corr
      }
 #    tag.map.title.png <- tag_map_title_png_func(30)
-    main_title <- tags$div(tag.map.title.html, HTML(paste(run_name1,species,name,dates,sep=" ")))
-    main_title_png <- tags$div(tag.map.title.png, HTML(paste(run_name1,species,name,dates,sep=" ")))
+#    main_title <- tags$div(tag.map.title.html, HTML(paste(run_name1,species,name,dates,sep=" ")))
+#    main_title_png <- tags$div(tag.map.title.png, HTML(paste(run_name1,species,name,dates,sep=" ")))
+    title_html <- get_title(run_names_title=run_names[1],html_break=F)
+    if (num_runs > 1) { title_html <- get_title(run_names_title="Multiple Runs",html_break=F) }
+    main_title <- tags$div(tag.map.title.html, HTML(title_html))
+    main_title_png <- tags$div(tag.map.title.png, HTML(title_html))
+
     data.df <- data.frame(network=sinfo_data[[j]]$network,site.id=sinfo_data[[j]]$stat_id,latitude=sinfo_data[[j]]$lat,longitude=sinfo_data[[j]]$lon,data.obs=plot_val)
     contents <- paste("Network: ",sinfo_data[[j]]$network,
                   "<br/>",
@@ -489,6 +494,6 @@ for (i in 1:8) {
      webshot("Rplot.html", file = filename_png[i],cliprect = "viewport",zoom=2,vwidth=max(lon_diff*24.5,1600),vheight=max(lat_diff*36.5,800))
   }
 }
-zip_files <- paste(run_name1,species,pid,"*.html",sep="_")
+zip_files <- paste(run_name1,species,pid,"*",sep="_")
 zip_command<-paste("zip",filename_zip,zip_files,sep=" ")
 system(zip_command)

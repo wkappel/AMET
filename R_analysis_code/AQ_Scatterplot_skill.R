@@ -24,10 +24,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network 	<- network_names[1]
 run_name 	<- run_name1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1," ",species," for ",dates,sep="") }
-   else { title <- custom_title }
-}
+main.title <- get_title()
 
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_skill.pdf",sep="_")             # Set PDF filename
@@ -56,6 +53,7 @@ hit_exceed    	<- 0
 hit_nonexceed 	<- 0
 miss_exceed   	<- 0
 false_alarm   	<- 0
+####################################
 
 #############################################
 ### Read sitex file or query the database ###
@@ -216,7 +214,7 @@ text(axis.max,y[6], paste(species," (",units,")"),cex=1.2,adj=c(1,0))		# add spe
 ##########################################
 
 ### Put title at top of boxplot ###
-title(main=title,cex.main=1.1)
+title(main=main.title,cex.main=1.1)
 ###################################
 
 ### Plot points and stats for each network ###

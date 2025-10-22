@@ -4,8 +4,8 @@
 ### AMET plots are run when running the AMET batch script option.	###
 ###########################################################################
 
-#start_date	<- 20110701
-#end_date	<- 20110714
+#start_date	<- 20180701
+#end_date	<- 20180731
 
 start_date      <- gsub('-','',Sys.getenv("START_DATE_H"))
 end_date        <- gsub('-','',Sys.getenv("END_DATE_H"))
@@ -95,30 +95,36 @@ if (exists("NAA_regions") && file.exists(SITE_FILE)) {
 #############################################
 ### Specify which scripts to run in batch ###
 #############################################
-hourly_ozone_analysis   <- 'y'	# Flag to include hourly ozone analysis
-hourly_pm_analysis	<- 'y'	# Flag to include hourly pm analysis
+hourly_ozone_analysis   <- 'n'	# Flag to include hourly ozone analysis
+hourly_pm_analysis	<- 'n'	# Flag to include hourly pm analysis
 daily_ozone_analysis    <- 'y'	# Flag to include daily ozone analysis
-aerosol_analysis        <- 'y'	# Flag to include aerosol analysis
-dep_analysis            <- 'y'	# Flag to include analysis of deposition performance
-gas_analysis            <- 'y'	# Flag to include gas analysis
-AE6_analysis            <- 'y'	# Flag to include AERO6 soil species from CSN and IMPROVE
-AOD_analysis		<- 'y'	# Flag to include Aerosol Optical Depth (AOD) from AERONET
-PAMS_analysis		<- 'y'	# Flag to include PAMS network species from AQS (hourly and daily)
+aerosol_analysis        <- 'n'	# Flag to include aerosol analysis
+dep_analysis            <- 'n'	# Flag to include analysis of deposition performance
+gas_analysis            <- 'n'	# Flag to include gas analysis
+AE6_analysis            <- 'n'	# Flag to include AERO6 soil species from CSN and IMPROVE
+AOD_analysis		<- 'n'	# Flag to include Aerosol Optical Depth (AOD) from AERONET
+PAMS_analysis		<- 'n'	# Flag to include PAMS network species from AQS (hourly and daily)
 
-ozone_averaging         <- 'n'  # Flag to average ozone data; options are n (none), d (daily), m (month), s (season), y (all)           
-aerosol_averaging       <- 'n'  # Flag to average aerosol data; options are n (none), d (daily), m (month), s (season), y (all)
-deposition_averaging    <- 'n'  # Flag to sum deposition data; options are n (none), d (daily), m (month), s (season), y (all)
-gas_averaging           <- 'n'  # Flag to average gas data; options are n (none), d (daily), m (month), s (season), y (all)
-AE6_averaging           <- 'n'	# Flag to soil species; options are n (none), d (daily), m (month), s (season), y (all)
-AOD_averaging		<- 'n'	# Flag to AOD; options are n (none), d (daily), m (month), s (season), y (all)
-PAMS_averaging		<- 'n'	# Flag to average PAMS species; options are n (none), d (daily), m (month), s (season), y (all)
+################################
+### Specify averaging to use ###
+################################
+# Flag to average ozone data; options are:
+# n (no averaging), d (daily), dow (day of week), md (day of month), m (month), ym (month by year), s (season), a (annual), e (entire period)
+ozone_averaging         <- 'n'             
+aerosol_averaging       <- 'n'  
+deposition_averaging    <- 'n'  
+gas_averaging           <- 'n'  
+AE6_averaging           <- 'n'	
+AOD_averaging		<- 'n'	
+PAMS_averaging		<- 'n'	
 
 ### Choose which spatial plots to run ###
-stat_plots 	<- 'y'	# AQ_Stats_Plots.R
-spatial_plots 	<- 'y'	# AQ_Plot_Spatial.R
-diff_plots	<- 'n'	# AQ_Plot_Spatial_Diff.R
-mtom_plots	<- 'n'	# AQ_Plot_Spatial_MtoM.R
-ratio_plots	<- 'n'	# AQ_Plot_Spatial_Ratio.R
+stat_plots 		<- 'y'	# AQ_Stats_Plots.R; AQ_Stats_Plots_leaflet.R; AQ_Stats_Plots_leaflet_network.R
+spatial_plots 		<- 'n'	# AQ_Plot_Spatial.R; AQ_Plot_Spatial_leaflet.R
+diff_plots		<- 'n'	# AQ_Plot_Spatial_Diff.R; AQ_Plot_Spatial_Diff_leaflet.R; AQ_Plot_Spatial_Diff_leaflet_network.R
+mtom_plots		<- 'n'	# AQ_Plot_Spatial_MtoM.R; AQ_Plot_Spatial_MtoM_leaflet.R
+ratio_plots		<- 'n'	# AQ_Plot_Spatial_Ratio.R
+spatial_anim		<- 'n'	# AQ_Plot_spatial_animation_ggplot.R, AQ_Plot_Spatial_animation_plotly.R
 
 ### Choose which bar plots to run ###
 AE5_barplot		<- 'n'	# AQ_Stacked_Barplot.R
@@ -128,12 +134,12 @@ soil_barplot		<- 'y'	# AQ_Stacked Barplot_soil.R
 soil_multi_barplot	<- 'y'	# AQ_Stacked_Barplot_soil_multi.R
 
 ### Choose which time plots to run ###
-timeseries_plot		<- 'y'	# AQ_Timeseries.R
-timeseries_mtom		<- 'y'	# AQ_Timeseries_multi_networks.R
-temporal_plot		<- 'y'	# AQ_Temporal_Plots.R
+timeseries_plot		<- 'y'	# AQ_Timeseries.R, AQ_Timeseries_plotly.R
+timeseries_mtom		<- 'n'	# AQ_Timeseries_multi_networks.R
+temporal_plot		<- 'n'	# AQ_Temporal_Plots.R
 box_plot		<- 'y'	# AQ_Boxplot.R
-box_plot_hourly		<- 'y'	# AQ_Boxplot_Hourly.R
-box_plot_roselle	<- 'y'	# AQ_Boxplot_Roselle.R
+box_plot_hourly		<- 'n'	# AQ_Boxplot_Hourly.R
+box_plot_roselle	<- 'n'	# AQ_Boxplot_Roselle.R
 monthly_stat_plot	<- 'n'	# AQ_Monthly_Stat_Plot.R
 kelly_plot              <- 'y'  # AQ_Kellyplot_season.R, AQ_Kellyplot_season_plotly.R, AQ_Kellyplot_region.R, AQ_Kellyplot_region_plotly.R
 kelly_plot_annual       <- 'n'  # AQ_Kellyplot.R, AQ_Kellyplot_plotly.R
@@ -149,12 +155,15 @@ scatter_mtom_plot	   <- 'n'	# AQ_Scatterplot_mtom.R
 scatter_soil_plot	   <- 'y'	# AQ_Scatterplot_soil.R
 
 ### Choose to plot misc plots ###
-soccer_plot	<- 'y'	# AQ_Soccerplot.R and AQ_Soccerplot_plotly.R
-bugle_plot      <- 'y'  # AQ_Bugleplot.R
-summary_plot	<- 'y'	# AQ_Summary_Panel_Plot.R
+soccer_plot		<- 'y'	# AQ_Soccerplot.R and AQ_Soccerplot_plotly.R
+bugle_plot      	<- 'y'  # AQ_Bugleplot.R
+summary_plot		<- 'y'	# AQ_Summary_Panel_Plot.R
+histogram_plot		<- 'y'	# AQ_Histogram.R; AQ_Histogram_plotly.R
+temporal_plot		<- 'n'	# AQ_Temporal_Plots.R
 
 ### Use this to add additional query information (e.g. states) ###
-additional_query	<- ""
+#additional_query       <- ""
+additional_query	<- "and s.co_network NOT LIKE '%CASTNET%'"
 #additional_query	<- "and d.O3_8hrmax_ob >= 60"
 
 ### Include SEARCH network in analysis ###
@@ -197,6 +206,7 @@ png_res <- 300
 ### Custom Title for All Plots ###
 ##################################
 #custom_title<-"My really cool title"
+custom_title_text <- ""
 
 ### Use only common sites among mulitple simulations ###
 common_sites	<- "n"
@@ -269,11 +279,12 @@ num_obs_limit	<- 1
 use_avg_stats	<- "n"
 
 ### Plotly Options ###
-img_height	<- 900
-img_width	<- 1600
-png_from_html   <- "n"  # create png file from html file
-leg_size_fac    <- 1
-text_size_fac   <- 1
+img_height		<- 900
+img_width		<- 1600
+png_from_html   	<- "n"  # create png file from html file
+try_plotly_image        <- 0    # try using the plotly_IMAGE function to create PNGs from HTMLs. Requires (free) plotly account API-KEY
+leg_size_fac    	<- 1
+text_size_fac   	<- 1
 
 #########################
 ### Axis Plot Options ###
@@ -283,8 +294,6 @@ text_size_fac   <- 1
 x_label_angle	<- 0
 
 ### x and y axes limits ###
-axis_max_limit	<- NULL
-axis_min_limit	<- NULL
 x_axis_min 	<- NULL
 x_axis_max 	<- NULL
 y_axis_min 	<- NULL 
@@ -342,27 +351,32 @@ rmse_max        <- NULL
 ############################
 ### Spatial Plot Options ###
 ############################
-plot_radius     <- 0
-outlier_radius  <- 40
-fill_opacity    <- 0.8
-num_ints	<- NULL 
-perc_error_max	<- NULL
-abs_error_max	<- NULL
-rmse_range_max	<- NULL
-perc_range_min	<- NULL
-perc_range_max	<- NULL
-abs_range_min	<- NULL
-abs_range_max	<- NULL
-diff_range_min	<- NULL
-diff_range_max	<- NULL
-greyscale	<- "n"
-inc_counties	<- "y"
-symbsizfac	<- 1
-map_leg_size	<- 0.65
-hist_max	<- NULL
-map_type	<- 1
-quantile_min	<- 0.001
-quantile_max	<- 0.999
+plot_radius     	<- 0
+outlier_radius  	<- 40
+fill_opacity    	<- 0.8
+num_ints		<- NULL 
+perc_error_max		<- NULL
+abs_error_max		<- NULL
+rmse_range_max		<- NULL
+perc_range_min		<- NULL
+perc_range_max		<- NULL
+abs_range_min		<- NULL
+abs_range_max		<- NULL
+diff_range_min		<- NULL
+diff_range_max		<- NULL
+diff_range_max_min 	<- NULL	# Animation plots
+diff_range_max_max 	<- NULL # Animation plots
+diff_range_abs_max_min 	<- NULL # Animaiton plots
+diff_range_abs_max_max 	<- NULL # Animation plots
+greyscale		<- "n"
+inc_counties		<- "y"
+symbsizfac		<- 1
+map_leg_size		<- 0.65
+hist_max		<- NULL
+map_type		<- 1
+quantile_min		<- 0.001
+quantile_max		<- 0.999
+GroupedLayerControl	<- 0
 
 ### Embed pop-up time series plots on some leaflet spatial plots. 
 ### Only applies to queries < 100 sites due to time contraints ###

@@ -23,19 +23,19 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ### Set some defaults ###
 network 			<- network_names[1]
 if(!exists("dates")) { dates 	<- paste(start_date,"-",end_date) }
-title 				<- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+title 				<- get_title()
 run_names 			<- NULL
 legend_names 			<- NULL
 run_names 			<- run_name1
 ################################################
 
-### Set file names and titles ###
+## Set output file names
 filename_pdf	 	<- paste(run_name1,species,pid,"boxplot_roselle.pdf",sep="_")
 filename_png 	 	<- paste(run_name1,species,pid,"boxplot_roselle.png",sep="_")
 filename_bias_pdf 	<- paste(run_name1,species,pid,"boxplot_roselle_bias.pdf",sep="_")
 filename_bias_png 	<- paste(run_name1,species,pid,"boxplot_roselle_bias.png",sep="_")
 
-## Create a full path to file
+## Create full path to output files
 filename_pdf		<- paste(figdir,filename_pdf,sep="/")
 filename_png		<- paste(figdir,filename_png,sep="/")
 filename_bias_pdf	<- paste(figdir,filename_bias_pdf,sep="/")

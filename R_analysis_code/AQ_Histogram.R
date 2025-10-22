@@ -22,16 +22,8 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 network 	<- network_names[[1]]                                             # Set network
 sub.title       <- ""
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") {
-      main.title        <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-      main.title.bias   <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ")
-   }
-   else {
-     main.title   <- custom_title
-     main.title.bias <- custom_title
-  }
-}
+main.title 	<- get_title()
+main.title.bias <- get_title(bias="T")
 
 ## Set output file names
 filename_all_pdf	<- paste(run_name1,species,pid,"histogram.pdf",sep="_")			# Set PDF filename

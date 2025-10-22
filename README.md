@@ -13,6 +13,7 @@ The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to 
 
 - General Updates for v1.6
     - Moved from using RMySQL to RMariaDB, as R is moving away from RMySQL
+    - Provided beta code of an AMET website interface for producing analysis plots. This beta code comes with little documentation at this point in time
 
 - AQ Updates v1.6
     - Support added for AirNow ozone and PM2.5 data 
@@ -48,7 +49,24 @@ The Atmospheric Model Evaluation Tool (AMET) is a suite of software designed to 
 - MET Updates v1.6
 
 - New MET Features v1.6
-
+  - Added support and example scripts to use a number of traditionally AQ only scripts with MET data. These scripts include:
+    - run_AMET_batch_scripts_met.csh
+    - run_boxplot_ggplot.csh
+    - run_boxplot_plotly.csh
+    - run_histogram_plotly.csh
+    - run_kellyplot_plotly.csh
+    - run_kellyplot_region_plotly.csh
+    - run_kellyplot_season_plotly.csh
+    - run_plot_spatial_animation_ggplot.csh
+    - run_plot_spatial_animation_plotly.csh
+    - run_plot_spatial_diff_leaflet.csh
+    - run_plot_spatial_leaflet.csh
+    - run_scatterplot_density_ggplot.csh
+    - run_spatial_surface.csh
+    - run_stats_plots.csh
+    - run_stats_plots_leaflet.csh
+    - run_summary_panel_plot.csh
+    - run_timeseries_plotly.csh
 
 
 ## Getting the AMET Repository
@@ -65,7 +83,7 @@ Earlier release versions of AMET that are currently available on Git Hub include
 * [v1.3 (July 2017)](https://github.com/USEPA/AMET/tree/1.3)
 * [v1.4 (August 2018)](https://github.com/USEPA/AMET/tree/1.4)
 * [v1.5 (August 2022)](https://github.com/USEPA/AMET/tree/1.5)
-* [v1.6 (June 2025)](https://github.com/USEPA/AMET/tree/1.6)
+* [v1.6 (September 2025)](https://github.com/USEPA/AMET/tree/1.6)
 
 ## EPA Disclaimer
 The United States Environmental Protection Agency (EPA) GitHub project code is provided on an "as is" basis and the user assumes responsibility for its use. EPA has relinquished control of the information and no longer has responsibility to protect the integrity , confidentiality, or availability of the information. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA. The EPA seal and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or the United States Government.    [<img src="https://licensebuttons.net/p/mark/1.0/88x31.png" width="50" height="15">](https://creativecommons.org/publicdomain/zero/1.0/)

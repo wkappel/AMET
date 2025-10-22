@@ -10,7 +10,7 @@ header <- "
 ### from the R htmlwidgets package and PANDOC. If PANDOC is not available, the selfcontained option
 ### should be set to F. Output format is html.
 ###
-### Last updated by Wyat Appel: Jan 2022
+### Last updated by Wyat Appel: June 2025 
 ###############################################################################################
 "
 
@@ -29,22 +29,19 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Set some defaults
 network 	<- network_names[1]
-main.title   	<- custom_title
-main.title.bias <- custom_title
-sub.title       <- ""
 labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 species_in 	<- species
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-if (custom_title == "") { 
-   main.title 	<- paste(run_name1,species[1],"for",dates,sep=" ") 
-   main.title.bias 	<- paste(run_name1,species[1],"for",dates,sep=" ")
-}
+main.title      <- get_title()
+main.title.bias <- get_title(bias="T")
 
 ## Set output file names
 filename_html   <- paste(run_name1,"multispec",pid,"timeseries.html",sep="_")              # Set output file name
+filename_txt    <- paste(run_name1,"multispec",pid,"timeseries.csv",sep="_")
+
+## Create full path to output files
 filename_html   <- paste(figdir,filename_html,sep="/")
-filename_txt	<- paste(run_name1,"multispec",pid,"timeseries.csv",sep="_")
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 ########################
 

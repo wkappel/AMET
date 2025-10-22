@@ -28,12 +28,11 @@ if(!exists("quantile_max")) 	{ quantile_max <- 0.950 }
 if(!exists("near_zero_color")) 	{ near_zero_color <- "grey50" }
 
 ## Set some defaults
-network <- network_names[1]														# When using mutiple networks, units from network 1 will be used
+network 		<- network_names[1]														# When using mutiple networks, units from network 1 will be used
+remove_negatives 	<- "n"
+total_networks 		<- length(network_names)
+k 			<- 1
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,species,"for",network_label[1],"for",dates,sep=" ") }
-   else { title <- custom_title }
-}
 
 ## Create output file names
 figure_diff	<- paste(run_name1,species,pid,"spatialplot_mtom_diff_avg",sep="_")           # Filename for diff spatial plot
@@ -46,9 +45,9 @@ figure_max	<-paste(figdir,figure_max,sep="/")               # Filename for diff 
 figure_min	<-paste(figdir,figure_min,sep="/")               # Filename for diff spatial plot
 #############################
 
-########################################
-### Set NULL values and plot symbols ###
-########################################
+###################################
+### Set variable initial values ###
+###################################
 sinfo_diff      <- NULL						# Set list for difference values to NULL
 sinfo_max	<- NULL
 sinfo_min	<- NULL
@@ -66,6 +65,7 @@ sub_title       <- NULL						# Set sub title to NULL
 lev_lab         <- NULL
 legend_names    <- NULL
 legend_chars    <- NULL
+###################################
 
 plot.symbols <- as.integer(plot_symbols)
 pick.symbol.name.fun <- function(x){
@@ -81,9 +81,6 @@ spch2 	<- apply(matrix(plot.symbols),1,pick.symbol2.fun)
 spch	<- plot.symbols
 ########################################
 
-remove_negatives <- "n"
-total_networks <- length(network_names)
-k <- 1
 for (j in 1:total_networks) {                                            # Loop through for each network
    sites	<- NULL
    lats		<- NULL

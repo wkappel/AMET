@@ -17,11 +17,19 @@ ametR           <- paste(ametbase,"/R_analysis_code",sep="")	# R directory
 ## source miscellaneous R input file 
 source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-functions file
 
-## Create file names
+## Set some defaults
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title()
+run_count       <- 1
+num_runs        <- 1
+run_names       <- run_name1               # Set default to just one run being plotted
+network 	<- network_names[1]
+
+## Set output file names
 filename_html 		<- paste(run_name1,species,pid,"histogram.html",sep="_")             # Set PDF filename
 filename_txt  		<- paste(run_name1,species,pid,"histogram.csv",sep="_")       # Set output file name
 
-## Create a full path to file
+## Create full path to output files
 filename_html 		<- paste(figdir,filename_html,sep="/")      # Set PDF filename
 filename_txt  		<- paste(figdir,filename_txt,sep="/")      # Set output file name
 #################################
@@ -29,13 +37,6 @@ filename_txt  		<- paste(figdir,filename_txt,sep="/")      # Set output file nam
 ## Load Required R Libraries
 if(!require(plotly))            { stop("Required Package plotly was not loaded") 	}
 if(!require(htmlwidgets))       { stop("Required Package htmlwidgets was not loaded") 	} 
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(run_names,species,network_label,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
-
-run_count 	<- 1
-num_runs        <- 1
-run_names       <- run_name1               # Set default to just one run being plotted
 
 {
    if ((exists("run_name2")) && (nchar(run_name2) > 0)) {
@@ -53,10 +54,9 @@ run_names       <- run_name1               # Set default to just one run being p
    if ((exists("run_name6")) && (nchar(run_name6) > 0)) {
       run_names <- c(run_names,run_name6)
    }
+   num_runs <- length(run_names)
 }
 
-network <- network_names[[1]]
-num_runs <- length(run_names)
 for (j in 1:num_runs) {
    run_name <- run_names[j]
    {

@@ -24,9 +24,13 @@ if(!require(plotly))              { stop("Required Package plotly was not loaded
 if(!require(htmlwidgets))         { stop("Required Package htmlwidgets was not loaded") }
 
 ## Set some defaults
-network 	<- network_names[1]
-network_name 	<- network_label[1]
-num_runs 	<- 1
+network 		<- network_names[1]
+network_name 		<- network_label[1]
+num_runs 		<- 1
+remove_negatives 	<- "n"
+merge_statid_POC 	<- "n"
+if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
+main.title <- get_title(species="Multiple Species")
 
 ### Set output filenames
 filename_pdf    <- paste(run_name1,pid,"stacked_barplot_AE6_ggplot.pdf",sep="_")
@@ -41,14 +45,6 @@ filename_txt  	<- paste(figdir,filename_txt,sep="/")      # Set output file name
 method <- "Mean"
 if (use_median == "y") {
    method <- "Median"
-}
-
-if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { 
-      title <- get_title(run_names=run_names,network_label=network_label,species="Multiple Species",dates=dates,state=state,pca=pca,clim_reg=clim_reg)
-   }
-   else { title <- custom_title }
 }
 ################################
 
@@ -74,21 +70,23 @@ if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
    }
 }
 
+###################################
+### Set variable initial values ###
+###################################
 axis.max	<- NULL
-sinfo	       <- NULL
-medians        <- NULL
-data.df        <- NULL
-medians_       <- NULL
-data2.df       <- NULL
-drop_names     <- NULL
-species_names  <- NULL
-species_names2 <- NULL
+sinfo	       	<- NULL
+medians        	<- NULL
+data.df        	<- NULL
+medians_       	<- NULL
+data2.df       	<- NULL
+drop_names     	<- NULL
+species_names  	<- NULL
+species_names2 	<- NULL
+###################################
 
-remove_negatives <- "n"
 criteria <- paste(" WHERE d.SO4_ob is not NULL and d.network='",network,"' ",query,sep="")          # Set part of the MYSQL query
 species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","Al","Fe","Si","Ca","Ti","Mg","Mn","K","Na","Cl","NCOM")
 
-merge_statid_POC <- "n"
 for (j in 1:length(run_names)) {
    medians.df <- NULL
    run_name <- run_names[j]
@@ -191,7 +189,7 @@ if (length(y_axis_max) > 0) {
    axis.max <- y_axis_max
 }
 
-bp <- ggplot(data_out.df, aes(x=obs_mod,y=value)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE)) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(panel.grid.major.x = element_blank(), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=10, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(size=12))
+bp <- ggplot(data_out.df, aes(x=obs_mod,y=value)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE)) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(panel.grid.major.x = element_blank(), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=main.title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=10, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(size=12))
 #bp <- bp + annotate("text",x=1,y=axis.max,label=paste("# of Obs:",num_pairs,"\n # of Sites:",num_sites,sep=""),hjust=1)
 #bp <- bp + annotation_custom(grob=textGrob(label=paste("# of Obs:",num_pairs,"\n # of Sites:",num_sites,sep=""),gp=gpar(cex=0.8), hjust=1),xmin=,xmax=2.8,ymin=axis.max,ymax=axis.max)
 bp <- bp + annotate("text",-Inf,axis.max,label=sim_legend,hjust=0,vjust=1)

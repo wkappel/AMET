@@ -7,7 +7,7 @@ header <- "
 ### will create a single plot for a single network and model simulation. Output format is
 ### png, pdf or both.  
 ###
-### Last Updated by Wyat Appel: June, 2019
+### Last Updated by Wyat Appel: June 2025
 ########################################################################################
 "
 
@@ -21,10 +21,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ### Set some defaults 
 network <- network_names[[1]]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-{
-   if (custom_title == "") { title <- paste(run_name1,network,"soil species for",dates,sep=" ") }
-   else { title <- custom_title }
-}
+main.title <- get_title()
 
 ## Set output file names
 filename_pdf <- paste(run_name1,species,pid,"scatterplot_soil.pdf",sep="_")             # Set PDF filename
@@ -134,7 +131,7 @@ if (run_info_text == "y") {
    text(85,30,"Averaged by Site", cex=1)						# add run name text
 }
  ### Put title at top of boxplot ###
-title(main=title,cex.main=1)
+title(main=main.title,cex.main=1)
 ###################################
 
 ### Plot points and stats for each network ###

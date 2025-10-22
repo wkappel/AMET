@@ -8,7 +8,7 @@ header <- "
 ### These four plots are then combined into a single html plot using
 ### the plotly subplot function. 
 ###
-### Created by Wyat Appel: June 2025
+### Created by Wyat Appel: July 2025 
 ################################################################
 "
 
@@ -36,8 +36,8 @@ run_name 	<- run_names[1]
 ob_col_name 	<- paste(species,"_ob",sep="")
 mod_col_name 	<- paste(species,"_mod",sep="")
 averaging 	<- 'e'
-multi_run 	<- 0
-if (run_name2 != "") { multi_run <- 1 }
+#multi_run 	<- 0
+multi_run <- as.numeric(exists("run_name2") && run_name2 != "")
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {
@@ -161,9 +161,9 @@ if ((length(y_axis_min) > 0) || (length(x_axis_min) > 0)) {
 }
 y.x.lm <- lm(aqdat.df$Mod_Value~aqdat.df$Obs_Value)$coeff
 options(bitmapType='cairo')
-sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x="Obs",y="Model") + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5))
+sp <- ggplot(aqdat.df,aes(x=Obs_Value,y=Mod_Value)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(axis.min,axis.max) + ylim(axis.min,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x="Obs",y="Model") + scale_y_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5))
 if (multi_run) {
-   sp <- ggplot(aqdat.df,aes(x=Mod_Value,y=Mod_Value2)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(0,axis.max) + ylim(0,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x=run_name1,y=run_name2) + scale_y_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5),axis.title.x=element_text(margin=margin(t=30)))
+   sp <- ggplot(aqdat.df,aes(x=Mod_Value,y=Mod_Value2)) + geom_hex(bins=100) + scale_fill_gradientn(colours=c("light blue","blue","dark green","yellow","orange","red")) + geom_abline(intercept = 0, slope=1) + xlim(axis.min,axis.max) + ylim(axis.min,axis.max) + geom_smooth(method=lm, linetype="dashed", color="black") + labs(title=main.title,x=run_name1,y=run_name2) + scale_y_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + scale_x_continuous(expand=c(0,0), limits=c(axis.min,axis.max), breaks = pretty(c(axis.min,axis.max), n = 10)) + theme(legend.justification=c(1,0), legend.position='none', legend.background=element_blank(), legend.key=element_blank(), plot.title=element_text(hjust=0.5,vjust=0.5),axis.title.x=element_text(margin=margin(t=30)))
 }
 p2 <- ggplotly(sp)
 ########################################################
@@ -180,7 +180,7 @@ yaxis 		<- list(title=paste(species," (",units,")"),automargin=TRUE,font=list(si
 p3 		<- plot_ly(data=data.df, x=~Dates, y=~Obs_Mean, type="scatter", width=img_width, height=img_height, mode='lines+markers', line = list(color=plot_colors[1]), marker=list(symbol='circle',color=plot_colors[1],size=10), name=obs_label, text=~paste("Name: Obs<br>Date: ",Dates,"<br>Obs value: ",round(Obs_Mean,3))) %>%  
      			layout(title=main.title,font=list(size=15),xaxis=xaxis,yaxis=yaxis,theme(plot.title=element_text(hjust=0.5,vjust=0.5)),margin=list(t=50,b=110)) %>%
 		        layout(annotations=list(x=~Dates,y=~Obs_Mean,text=~Network,xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE),plot_bgcolor='#e5ecf6')
-		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean, type="scatter", name=paste(run_names[1]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='circle',color=plot_colors[2]),text=~paste("Name:",run_name,"<br>Date: ",Dates,"<br>Mod value: ",round(Mod_Mean,3))) %>% 
+		p3 <- add_trace(p3, x=~Dates, y=~Mod_Mean, type="scatter", name=paste(run_names[1]," (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color=plot_colors[2]), marker=list(symbol='circle',color=plot_colors[2]),text=~paste("Name:",run_name,"<br>Date: ",Dates,"<br>Mod value: ",round(Mod_Mean,3))) %>% 
 		        layout(annotations = list(x=~Dates,y=~Mod_Mean,text=run_names[1],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[2]))) 
 		p3 <- add_trace(p3, x=~Dates, y=~Bias_Mean, type="scatter", name=paste(run_names[1]," Bias (# Sites: ",Num_Sites,")",sep=""),mode='lines+markers', line = list(color='plot_colors[2]'), marker=list(symbol='square-open',color=plot_colors[2]),text=~paste("Name:",run_name," Bias<br>Date: ",Dates,"<br>Bias value: ",round(Bias_Mean,3))) %>%
 		        layout(annotations = list(x=~Dates,y=~Bias_Mean,text=run_names[1],xanchor='left',yanchor='bottom',showarrow=FALSE,clicktoshow='onoff',visible=FALSE,font=list(color=plot_colors[2])))

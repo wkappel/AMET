@@ -21,7 +21,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 
 ## Set some defaults 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-title 	<- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title 	<- get_title()
 network <- network_names[1]
 
 ## Set output file names
@@ -263,7 +263,7 @@ while (run_count <= num_runs) {
       ##########################################
 
       ### Put title at top of boxplot ###
-      title(main=title,cex.main=1.1)
+      title(main=main.title,cex.main=1.1)
       ###################################
    }
 

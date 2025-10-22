@@ -25,7 +25,7 @@ source(paste(ametR,"/AQ_Misc_Functions.R",sep=""))     # Miscellanous AMET R-fun
 ## Set some defaults 
 network 	<- network_names[1]
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	<- get_title(run_names,species,network_names,dates,custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
+main.title 	<- get_title()
 run_names    	<- run_name1               # Set default to just one run being plotted
 
 ## Create output file names
@@ -54,6 +54,7 @@ filename_txt 	<- paste(figdir,filename_txt,sep="/")     # Set output file name
    if ((exists("run_name6")) && (nchar(run_name6) > 0)) {
       run_names <- c(run_names,run_name6)
    }
+   num_runs     <- length(run_names)
 }
 
 #################################
@@ -69,7 +70,6 @@ point_color  <- NULL
 data_count   <- NULL
 bin_names    <- NULL
 num_obs      <- NULL
-num_runs     <- length(run_names)
 #################################
 
 if ((network ==  "NADP_dep") || (network == "NADP_conc")) {
@@ -85,7 +85,7 @@ for (j in 1:num_runs) {
          if (data_exists == "y") { units <- as.character(sitex_info$units[[1]]) }
       }
       else {
-         query_result   <- query_dbase(run_names[j],network,species,criteria)
+         query_result   <- query_dbase(run_names[j],network,species,criteria=criteria)
          aqdat_query.df <- query_result[[1]]
          data_exists    <- query_result[[2]]
          if (data_exists == "y") { units <- query_result[[3]] }

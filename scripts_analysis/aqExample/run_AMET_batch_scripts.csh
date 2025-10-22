@@ -50,7 +50,7 @@ setenv AMET_RUN_DIR $AMETBASE/R_analysis_code/batch_scripts
 setenv AMET_OUT $AMETBASE/output/$AMET_PROJECT/batch_plots 
 
 ### Set the input files to use (full path and file name) ###
-setenv AMETRINPUT 	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch.input
+setenv AMETRINPUT	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch.input
 #setenv AMET_NET_INPUT 	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/Network.input
 
 ### Plot Type, options are "pdf","png","both" ###
@@ -63,10 +63,10 @@ setenv END_DATE_H $AMET_EDATE
 ##################################################################################################
 ### Run AMET batch scripts to create stats and plots.  Output to /project/amet_aq/Unit_Testing ###
 ##################################################################################################
-R CMD BATCH $AMET_RUN_DIR/Run_Spatial_Plots_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Stacked_Barplot_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Time_Plots_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Scatter_Plots_All_Batch.R
-R CMD BATCH $AMET_RUN_DIR/Run_Misc_Plots_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Spatial_Plots_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Stacked_Barplot_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Time_Plots_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Scatter_Plots_All_Batch.R
+R CMD BATCH --no-save --no-restore $AMET_RUN_DIR/Run_Misc_Plots_Batch.R
 
 exit()

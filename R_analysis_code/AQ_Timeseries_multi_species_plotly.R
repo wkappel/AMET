@@ -24,14 +24,10 @@ species_in 	<- species
 sub.title       <- ""
 run_name 	<- run_name1
 total_species 	<- length(species_in)
-main.title   	<- custom_title
-main.title.bias <- custom_title
 labels 		<- c(network,run_name)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-if (custom_title == "") {
-   main.title        <- paste(run_name1,"for",network_label[1],"for",dates,sep=" ")
-   main.title.bias   <- paste(run_name1,"for",network_label[1],"for",dates,sep=" ")
-}
+main.title 	<- get_title()
+main.title.bias <- get_title(bias="T")
 
 ## Set output file names
 filename_pdf <- paste(run_name1,pid,"timeseries.pdf",sep="_")
