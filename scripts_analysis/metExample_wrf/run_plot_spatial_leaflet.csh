@@ -32,8 +32,8 @@
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
 
   ### Indicate this as a MET database query ###
-  Met_query 	<- "T"
-  TIME_FORMAT 	<- "UTC"
+  setenv Met_query 	T
+  setenv TIME_FORMAT 	UTC
 
   ### T/F; Set to T if the model/obs pairs are loaded in the AMET database (i.e. by setting LOAD_SITEX = T)
   setenv AMET_DB  T
@@ -69,7 +69,7 @@
   ### Species to Plot ###
   ### Acceptable Species Names: T, WVMR, SRAD, Wind_Speed, PCP1H, PSFC
 
-  setenv AMET_AQSPECIES T 
+  setenv AMET_METSPECIES T 
 
   ### Observation Network to plot
   ### Set to 'T' to process that nework
