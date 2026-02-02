@@ -26,6 +26,17 @@ end_date        <- gsub('-','',Sys.getenv("AMET_EDATE"))
 start_hour 	<- 00        # hh
 end_hour   	<- 23        # hh
 
+#######################
+### Species to Plot ###
+#######################
+### Acceptable Species Names: SO4,NO3,NH4,HNO3,TNO3,PM25,EC,OC,TC,O3,SO2,CO,NO,SO4_dep,SO4_conc,NO3_dep,NO3_conc,NH4_dep,NH4_conc,precip,NOy ###
+
+#species<-Sys.getenv("AMET_AQSPECIES")
+species<-unlist(strsplit(Sys.getenv("AMET_AQSPECIES"),","))
+custom_species          <-""
+custom_species_name     <-""
+custom_units            <-""
+
 #add_query <- "and d.lon between -125 and -60 "
 #add_query <-  "and (s.state='CT' or s.state='DE' or s.state='DC' or s.state='ME' or s.state='MD' or s.state='MA' or s.state='NH' or s.state='NJ' or s.state='NY' or s.state='PA' or s.state='RI' or s.state='VT') "
 #add_query <- ""
@@ -33,7 +44,10 @@ add_query <- Sys.getenv("AMET_ADD_QUERY")
 
 query <- paste(" and s.stat_id=d.stat_id and d.ob_dates BETWEEN",start_date,"and",end_date,"and d.ob_datee BETWEEN",start_date,"and",end_date,"and ob_hour between",start_hour,"and",end_hour,add_query,sep=" ")
 
-if (Met_query == "T") { query <- paste(" and s.stat_id=d.stat_id and d.ob_date BETWEEN",start_date,"and",end_date,"and d.ob_date BETWEEN",start_date,"and",end_date,"and ob_time between",start_hour,"and",end_hour,add_query,sep=" ") }
+if (Met_query == "T") { 
+   species<-unlist(strsplit(Sys.getenv("AMET_METSPECIES"),","))
+   query <- paste(" and s.stat_id=d.stat_id and d.ob_date BETWEEN",start_date,"and",end_date,"and d.ob_date BETWEEN",start_date,"and",end_date,"and ob_time between",start_hour,"and",end_hour,add_query,sep=" ") 
+}
 
 #########################
 ### Process ID number ###
@@ -74,17 +88,6 @@ run_name2<-Sys.getenv("AMET_PROJECT2")
 #run_name18	<-
 #run_name19	<-
 #run_name20	<-
-
-#######################
-### Species to Plot ###
-#######################
-### Acceptable Species Names: SO4,NO3,NH4,HNO3,TNO3,PM25,EC,OC,TC,O3,SO2,CO,NO,SO4_dep,SO4_conc,NO3_dep,NO3_conc,NH4_dep,NH4_conc,precip,NOy ###
-
-#species<-Sys.getenv("AMET_AQSPECIES")
-species<-unlist(strsplit(Sys.getenv("AMET_AQSPECIES"),","))
-custom_species		<-""
-custom_species_name	<-""
-custom_units		<-""
 
 ######################
 ###  Title Options ###
@@ -350,4 +353,3 @@ stat_file	<- ""
 ##################################
 ametNetworkInput <- Sys.getenv("AMET_NET_INPUT")
 source(ametNetworkInput) # Network related input
-print("GOT HERE")

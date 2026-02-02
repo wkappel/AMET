@@ -28,11 +28,11 @@
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
 
   ### Indicate this as a MET database query ###
-  Met_query     <- "T"
-  TIME_FORMAT   <- "UTC"
+  setenv Met_query     T
+  setenv TIME_FORMAT   UTC
 
   ### Set the project name to be used for model-to-model comparisons ###
-  setenv AMET_PROJECT2  aqExample
+  #setenv AMET_PROJECT2  metExample_wrf
  
   ###  Directory where figures and text output will be directed
   setenv AMET_OUT       $AMETBASE/output/$AMET_PROJECT/plot_spatial_animation_ggplot

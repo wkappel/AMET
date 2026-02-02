@@ -7,7 +7,7 @@ header <- "
 ### time and space to create single time series. The script also plots the bias, RMSE
 ### and correlation.
 ###
-### Last updated by Wyat Appel: June 2025 
+### Last updated by Wyat Appel: February 2026 
 ###################################################################################
 "
 
@@ -24,18 +24,14 @@ species 	<- species[1]
 labels 		<- c(network,run_names)
 num_runs 	<- length(run_names)
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title 	<- get_title()
-main.title.bias <- get_title(custom_text="Bias")
+main.title 	<- get_title(run_names,species,network_names,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg,dates=dates,custom_title="")
+main.title.bias <- get_title(run_names,species,network_label,dates,custom_text="Bias",custom_title,site=site,state=state,rpo=rpo,pca=pca,clim_reg=clim_reg)
 sub.title	<- ""
 
 ## Set output file name
-filename_txt 	<- paste(run_name1,species,pid,"timeseries.csv",sep="_")
-filename_pdf    <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
-filename_png    <- paste(run_name1,species,pid,"timeseries.png",sep="_")
+filename_txt <- paste(run_name1,species,pid,"timeseries.csv",sep="_")
 
-## Create full path to output file
-filename_pdf    <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
-filename_png    <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
+## Create a full path to file
 filename_txt	<- paste(figdir,filename_txt,sep="/")           # Filename for diff spatial plot
 
 #######################
@@ -131,31 +127,22 @@ for (j in 1:num_runs) {	# For each simulation being plotted
             Mod_Mean[[j]]	<- Mod_Mean[[j]] - Mod_Period_Mean[[j]]
          }
          Bias_Mean[[j]]	<- Mod_Mean[[j]]-Obs_Mean[[j]]
-         CORR[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Date_Hour,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
-         RMSE[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Date_Hour,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))
+         CORR[[j]]            	<- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Date_Hour,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
+         RMSE[[j]]            	<- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Date_Hour,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))
          Dates[[j]]		<- as.POSIXct(unique(aqdat.df$Date_Hour),origin="1970-01-01")
-         if (averaging == "ym") {
-	    years                     <- substr(aqdat.df$Start_Date,1,4)
-	    months                    <- substr(aqdat.df$Start_Date,6,7)
-	    yearmonth                 <- paste(years,months,sep="-")
-	    aqdat.df$Year		<- years
+         if ((averaging == "ym") || (averaging == "m")) {
+	    years		<- substr(aqdat.df$Start_Date,1,4)
+	    months		<- substr(aqdat.df$Start_Date,6,7)
+	    yearmonth		<- paste(years,months,sep="-")
+	    aqdat.df$Year	<- years
 	    aqdat.df$YearMonth	<- yearmonth
-	    Obs_Mean[[j]]		<- tapply(aqdat.df$Obs_Value,aqdat.df$YearMonth,FUN=avg_func)
-	    Mod_Mean[[j]]		<- tapply(aqdat.df$Mod_Value,aqdat.df$YearMonth,FUN=avg_func)
-	    Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
-	    CORR[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$YearMonth,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
-	    RMSE[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$YearMonth,function(dfrm)sqrt(mean((dfrm$Mod_Value - dfrm$Obs_Value)^2))))
-	    Dates[[j]]           <- as.POSIXct(paste(unique(aqdat.df$YearMonth),"-01",sep=""),origin="1970-01-01")
-	    x_label              <- "Month"
-	 }
-	 if (averaging == "m") {
-	    Obs_Mean[[j]]        <- tapply(aqdat.df$Obs_Value,aqdat.df$Month,FUN=avg_func)
-	    Mod_Mean[[j]]        <- tapply(aqdat.df$Mod_Value,aqdat.df$Month,FUN=avg_func)
-	    Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
-	    CORR[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Month,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
-	    RMSE[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Month,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))
-	    Dates[[j]]            <- unique(aqdat.df$Month)
-	    x_label		   <- "Month"
+	    Obs_Mean[[j]]	<- tapply(aqdat.df$Obs_Value,aqdat.df$YearMonth,FUN=avg_func)
+	    Mod_Mean[[j]]	<- tapply(aqdat.df$Mod_Value,aqdat.df$YearMonth,FUN=avg_func)
+	    Bias_Mean[[j]]      <- Mod_Mean[[j]]-Obs_Mean[[j]]
+	    CORR[[j]]           <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$YearMonth,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
+	    RMSE[[j]]           <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$YearMonth,function(dfrm)sqrt(mean((dfrm$Mod_Value - dfrm$Obs_Value)^2))))
+	    Dates[[j]]          <- as.POSIXct(paste(unique(aqdat.df$YearMonth),"-01",sep=""),origin="1970-01-01")
+	    x_label             <- paste("Month (",avg_func_name,")",sep="")
 	 }
          if (averaging == "d") {
             Obs_Mean[[j]]        <- tapply(aqdat.df$Obs_Value,aqdat.df$Start_Date,FUN=avg_func)
@@ -163,8 +150,8 @@ for (j in 1:num_runs) {	# For each simulation being plotted
             Bias_Mean[[j]]       <- Mod_Mean[[j]]-Obs_Mean[[j]]
             CORR[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)cor(dfrm$Obs_Value,dfrm$Mod_Value)))
             RMSE[[j]]            <- as.matrix(by(aqdat.df[,c("Obs_Value","Mod_Value")],aqdat.df$Start_Date,function(dfrm)sqrt(mean((dfrm$Mod_Value-dfrm$Obs_Value)^2))))
-            Dates[[j]] 		 <- as.POSIXct(paste0(unique(aqdat.df$Start_Date), " 00:00:00"),tz = "America/New_York", format = "%Y-%m-%d %H:%M:%S")
-	 }
+	    Dates[[j]] <- as.POSIXct(paste0(unique(aqdat.df$Start_Date), " 00:00:00"),tz = "America/New_York", format = "%Y-%m-%d %H:%M:%S")
+         }
          if (averaging == "h") {
             Obs_Mean[[j]]        <- tapply(aqdat.df$Obs_Value,aqdat.df$Hour,FUN=avg_func)
             Mod_Mean[[j]]        <- tapply(aqdat.df$Mod_Value,aqdat.df$Hour,FUN=avg_func)
@@ -273,6 +260,12 @@ if (length(bias_y_axis_min) > 0) {
 
 #################################################
 
+filename_pdf         <- paste(run_name1,species,pid,"timeseries.pdf",sep="_")              # Set output file name
+filename_png         <- paste(run_name1,species,pid,"timeseries.png",sep="_")
+
+filename_pdf         <- paste(figdir,filename_pdf,sep="/")           # Filename for obs spatial plot
+filename_png         <- paste(figdir,filename_png,sep="/")           # Filename for model spatial plot
+
 #####################################
 ### Plot Model vs. Ob Time Series ###
 #####################################
@@ -280,23 +273,35 @@ pdf(file=filename_pdf,width=11,height=13)
 par(mfrow = c(4,1),mai=c(.7,1,.4,1))
 par(cex.axis=1,las=1,mfg=c(1,1),lab=c(5,10,7))
 
-plot(Dates[[1]],Mod_Mean[[1]], axes=TRUE, ylim=c(ymin,ymax),type='l',ylab=paste(species,"(",units,")",sep=" "),xlab=x_label,lty=1,col=plot_colors[2],cex=.8, xaxt="n",lwd=line_width, cex.lab=1.5)  # Plot model data
-#mtext(x_label, side=1, line=3, cex=1.5)
+plot(Dates[[1]],Mod_Mean[[1]], axes=TRUE, ylim=c(ymin,ymax),type='l',ylab=paste(species,"(",units,")",sep=" "),xlab="",lty=1,col=plot_colors[2],cex=.8, xaxt="n",lwd=line_width, cex.lab=1.5, las=2)  # Plot model data
+mtext(x_label, side=1, line=4, cex=1)
 
 if (inc_points == 'y') {
    points(Dates[[1]],Mod_Mean[[1]],col=plot_colors[[2]])
 }
 {
    if ((averaging == "h") || (averaging == "m") || (averaging == "a")) {
-      axis(side=1, at=Dates[[1]])
+      axis(side=1, at=Dates[[1]],labels=FALSE)
    }
    else if (averaging == "ym") {
-      axis.POSIXct(side=1, at=Dates[[1]],format="%b %Y")
+      axis.POSIXct(side=1, at=Dates[[1]],format="%b %Y",labels=FALSE)
    }
    else {
-      axis.POSIXct(side=1, at=Dates[[1]],format="%b %d")
+      axis.POSIXct(side=1, at=Dates[[1]],format="%b %d",labels=FALSE)
    }
 }
+yrange <- ymax-ymin
+label_int <- round(length(Dates[[1]])/30)
+if(label_int == 0) { label_int <- 1 }
+idx <- seq(1, length(Dates[[1]]), by=label_int)
+
+text(x=Dates[[1]][idx], y=par("usr")[3] - (0.05*yrange),  # y just below plot area
+     labels=format(Dates[[1]][idx], "%b %d"),
+     srt=90, # rotate 90 degrees for vertical
+     adj=1,  # right adjustment for vertical labels
+     xpd=TRUE, # allow drawing outside plot region
+     cex=1)
+
 lines(Dates[[1]],Obs_Mean[[1]],col=plot_colors[1],lty=1,lwd=line_width)
 if (inc_points == 'y') {
    points(Dates[[1]],Obs_Mean[[1]],col=plot_colors[1])
@@ -318,7 +323,7 @@ if (num_runs > 1) {
    }   
 }
 usr <- par("usr")
-text(usr[2],usr[4],paste("# of Sites: ",num_sites,sep=""),adj=c(1.1,1.1),cex=1.1)
+text(usr[2],0.98*usr[4],paste("# of Sites: ",num_sites,sep=""),adj=c(1.1,1.1),cex=1.1)
 if (inc_legend == 'y') {
    legend("topleft",legend=legend_names,col=legend_colors,lty=c(1,1,1), merge=TRUE,cex=1.1, bty='n')  # Add legend
 }
@@ -328,16 +333,16 @@ title(main=main.title, cex.main = 1, sub=sub.title, cex.sub = 1, col.sub = "red"
 
 if (run_info_text == "y") {
    if (rpo != "None") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.25),paste("RPO: ",rpo,sep=""),pos=2,cex=1)
+      text(usr[2],ymax-((ymax-ymin)*.25),paste("RPO: ",rpo,sep=""),pos=2,cex=1)
    }
    if (pca != "None") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.20),paste("PCA: ",pca,sep=""),pos=2,cex=1)
+      text(usr[2],ymax-((ymax-ymin)*.20),paste("PCA: ",pca,sep=""),pos=2,cex=1)
    }
    if (state != "All") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.15),paste("State: ",state,sep=""),pos=2,cex=1)
+      text(usr[2],ymax-((ymax-ymin)*.15),paste("State: ",state,sep=""),adj=c(1.1,1.1),pos=2,cex=1)
    }
    if (site != "All") {
-      text(max(Dates[[1]]),ymax-((ymax-ymin)*.10),paste("Site: ",site,", ",aqdat_query.df$county[1]," county, ",aqdat_query.df$state[1],sep=""),pos=2,cex=1)
+      text(usr[2],ymax-((ymax-ymin)*.10),paste("Site: ",site,", ",aqdat_query.df$county[1]," county, ",aqdat_query.df$state[1],sep=""),pos=2,cex=1)
    }
 }
 
@@ -367,40 +372,48 @@ for (f in 1:3) {        # Loop for plotting Bias, RMSE and Correlation
    }
 
    par(new=T)
-   par(mfg=c(f+1,1),mai=c(.52,1,.4,1))
+   par(mfg=c(f+1,1),mai=c(.7,1,.4,1))
 
    {
       if (stat_func == 'corr') { # If plotting correlation instead of bias
-         plot(Dates[[1]],CORR[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab="Correlation",xlab=x_label,lty=1,col=plot_colors[2],cex=.8, xaxt="n",lwd=line_width, cex.lab=1.5)
+         plot(Dates[[1]],CORR[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab="Correlation",xlab="",lty=1,col=plot_colors[2],cex=.8, xaxt="n",lwd=line_width, cex.lab=1.5)
          if (inc_points == 'y') {
             points(Dates[[1]],CORR[[1]],col=plot_colors[2])
          }
       }
       else if (stat_func == 'rmse') {
-         plot(Dates[[1]],RMSE[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab=paste("RMSE (",units,")",sep=""),xlab=x_label,lty=1,col=plot_colors[2],cex=.7, xaxt="n",lwd=line_width,cex.lab=1.5)
+         plot(Dates[[1]],RMSE[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab=paste("RMSE (",units,")",sep=""),xlab="",lty=1,col=plot_colors[2],cex=.7, xaxt="n",lwd=line_width,cex.lab=1.5)
          if (inc_points == 'y') {
             points(Dates[[1]],RMSE[[1]],col=plot_colors[2])
          }
       }
       else {
-         plot(Dates[[1]],Bias_Mean[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab=paste("Bias (",units,")",sep=" "),xlab=x_label,lty=1,col=plot_colors[2],cex=.7, xaxt="n",lwd=line_width,cex.lab=1.5)  # Plot model data
+         plot(Dates[[1]],Bias_Mean[[1]], axes=TRUE, ylim=c(y_stat_min,y_stat_max),type='l',ylab=paste("Bias (",units,")",sep=" "),xlab="",lty=1,col=plot_colors[2],cex=.7, xaxt="n",lwd=line_width,cex.lab=1.5)  # Plot model data
          if (inc_points == 'y') {
             points(Dates[[1]],Bias_Mean[[1]],col=plot_colors[2])
          }
       }
    }
-
+   mtext(x_label, side=1, line=4, cex=1)
    {
       if ((averaging == "h") || (averaging == "m") || (averaging == "a")) {
-         axis(side=1, at=Dates[[1]])
+         axis(side=1, at=Dates[[1]],labels=FALSE)
       }
       else if (averaging == "ym") {
-         axis.POSIXct(side=1, at=Dates[[1]],format="%b %Y")
+         axis.POSIXct(side=1, at=Dates[[1]],format="%b %Y",labels=FALSE)
       }
       else {
-         axis.POSIXct(side=1, at=Dates[[1]],format="%b %d")
+         axis.POSIXct(side=1, at=Dates[[1]],format="%b %d",labels=FALSE)
       }
    } 
+   yrange <- y_stat_max-y_stat_min
+   text(x=Dates[[1]][idx], y=par("usr")[3] - (0.05*yrange),  # y just below plot area
+   labels=format(Dates[[1]][idx], "%b %d"),
+   srt=90, # rotate 90 degrees for vertical
+   adj=1,  # right adjustment for vertical labels
+   xpd=TRUE, # allow drawing outside plot region
+   cex=1)
+
    legend_names <- run_names[1]
    legend_colors <- plot_colors[2]
 
@@ -432,7 +445,7 @@ for (f in 1:3) {        # Loop for plotting Bias, RMSE and Correlation
    }
    abline(h=0,col="black")
    usr <- par("usr")
-   text(usr[2],usr[4],paste("# of Sites: ",num_sites,sep=""),adj=c(1.1,1.1),cex=1.1)
+   text(usr[2],0.98*usr[4],paste("# of Sites: ",num_sites,sep=""),adj=c(1.1,1.1),cex=1.1)
    if (inc_legend == 'y') {
       legend("topleft",legend=legend_names,col=legend_colors,lty=c(1,1,1), merge=TRUE,cex=1.1, bty='n')  # Add legend
    }
@@ -441,16 +454,16 @@ for (f in 1:3) {        # Loop for plotting Bias, RMSE and Correlation
 
    if (run_info_text == "y") {
       if (rpo != "None") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.25),paste("RPO: ",rpo,sep=""),pos=2,cex=1)
+         text(usr[2],0.75*usr[4],paste("RPO: ",rpo,sep=""),pos=2,cex=1)
       }
       if (pca != "None") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.20),paste("PCA: ",pca,sep=""),pos=2,cex=1)
+         text(usr[2],0.8*usr[4],paste("PCA: ",pca,sep=""),pos=2,cex=1)
       }
       if (state != "All") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.15),paste("State: ",state,sep=""),pos=2,cex=1)
+         text(usr[2],0.85*usr[4],paste("State: ",state,sep=""),adj=c(1.1,1.1),pos=2,cex=1)
       }
       if (site != "All") {
-         text(max(Dates[[1]]),y_stat_max-((bias_max-bias_min)*.10),paste("Site: ",site,", ",aqdat_query.df$county[1]," county, ",aqdat_query.df$state[1],sep=""),pos=2,cex=1)
+         text(usr[2],0.9*usr[4],paste("Site: ",site,", ",aqdat_query.df$county[1]," county, ",aqdat_query.df$state[1],sep=""),pos=2,cex=1)
       } 
    }
 }	# End loop for plotting Bias, RMSE and Correlation
