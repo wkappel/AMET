@@ -32,6 +32,7 @@
   ### Indicate this as a MET database query ###
   setenv MET_QUERY     T
   setenv TIME_FORMAT   UTC
+
   ### T/F; Set to T if the model/obs pairs are loaded in the AMET database (i.e. by setting LOAD_SITEX = T)
   setenv AMET_DB  T
 

@@ -89,7 +89,7 @@ species_IMPROVE <- paste("
   setenv AERO_30 \"MNf_val,ug/m3,AMNJ,,Mn\"                            # manganese
   setenv AERO_31 \"2.20*ALf_val+2.49*SIf_val+1.63*CAf_val+2.42*FEf_val+1.94*TIf_val,ug/m3,ASOILJ,,soil\"       # IMPROVE soil eqn.
   setenv AERO_32 \"MF_val-SO4f_val-NO3f_val-0.2903*NO3f_val-0.375*SO4f_val-OCf_val-ECf_val-NAf_val-CHLf_val-2.2*ALf_val-2.49*SIf_val-1.63*CAf_val-2.42*FEf_val-1.94*TIf_val,ug/m3,AUNSPEC1IJ,,OTHER\"        # PM Other
-  setenv AERO_34 \"MF_val-SO4f_val-NO3f_val-0.2903*NO3f_val-0.375*SO4f_val-OCf_val-ECf_val-NAf_val-CHLf_val-2.2*ALf_val-2.49*SIf_val-1.63*CAf_val-2.42*FEf_val-1.94*TIf_val,ug/m3, AUNSPEC2IJ,,OTHER_REM\"    # PM Other remaining
+  setenv AERO_34 \"MF_val-SO4f_val-NO3f_val-0.2903*NO3f_val-0.375*SO4f_val-OCf_val-ECf_val-NAf_val-CHLf_val-2.2*ALf_val-2.49*SIf_val-1.63*CAf_val-2.42*FEf_val-1.94*TIf_val-0.8*OCf_val,ug/m3, AUNSPEC2IJ,,OTHER_REM\"    # PM Other remaining
 ",sep = "")
 
 ################################
