@@ -105,13 +105,13 @@
   echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_Kellyplot_season_NMB.html
-                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_Kellyplot_season_NME.html
-                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_Kellyplot_season_MB.html
-                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_Kellyplot_season_ME.html
-                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_Kellyplot_season_RMSE.html
-                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_Kellyplot_season_Corr.html
-                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_AQSPECIES}_${AMET_PID}_Kellyplot_season_data.csv 
+		echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_Kellyplot_season_NMB.html
+                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_Kellyplot_season_NME.html
+                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_Kellyplot_season_MB.html
+                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_Kellyplot_season_ME.html
+                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_Kellyplot_season_RMSE.html
+                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_Kellyplot_season_Corr.html
+                echo "Plot   ---------->" $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_Kellyplot_season_data.csv 
 		echo "-----------------------------------------------------------------------------------------"
 		exit(0)
   else

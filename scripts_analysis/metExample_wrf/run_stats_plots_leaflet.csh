@@ -28,7 +28,7 @@
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
 
   ### Indicate this as a MET database query ###
-  setenv Met_query     T
+  setenv MET_QUERY     T
   setenv TIME_FORMAT   UTC
  
   ### T/F; Set to T if the model/obs pairs are loaded in the AMET database (i.e. by setting LOAD_SITEX = T)
