@@ -28,7 +28,7 @@
   setenv MYSQL_CONFIG   $AMETBASE/configure/amet-config.R
 
   ### Indicate this as a MET database query ###
-  setenv Met_query     T
+  setenv MET_QUERY     T
   setenv TIME_FORMAT   UTC
 
   ### Set the project name to be used for model-to-model comparisons ###

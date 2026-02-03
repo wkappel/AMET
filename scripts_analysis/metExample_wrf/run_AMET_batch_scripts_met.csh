@@ -26,16 +26,16 @@ setenv AMET_DB	T
 #setenv OUTDIR	$AMETBASE/output/$AMET_PROJECT/sitex_output
 
 ### Set the location of the base AMET installation, database name and project name ###
-setenv AMETBASE		/work/MOD3EVAL/wtt/AMETv16_develop	
-setenv AMET_DATABASE 	amad_amet_csc
-setenv AMET_PROJECT	4us_2022
+#setenv AMETBASE	/home/AMETv16		
+setenv AMET_DATABASE 	AMET
+setenv AMET_PROJECT	metExample_wrf
 setenv MYSQL_CONFIG	$AMETBASE/configure/amet-config.R
 
 ###  Start and End Dates of plot (YYYY-MM-DD) -- must match available dates in db or site compare files
 ### Note that the date environment variable name in this script is different than the other AMET run scripts
 ### to mathcn the enviroment name used in the AMET pre_and_post_analysis.csh script
-setenv AMET_SDATE "2022-07-01"
-setenv AMET_EDATE "2022-07-10"
+setenv AMET_SDATE "2016-07-01"
+setenv AMET_EDATE "2016-07-10"
 
 ### Set the project name to be used for model-to-model comparisons ###
 #setenv AMET_PROJECT2 aqExample 

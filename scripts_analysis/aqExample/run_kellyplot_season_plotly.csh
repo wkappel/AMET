@@ -126,7 +126,7 @@
   endif
 
   # R-script execution command
-  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Kellyplot_season.R $AMET_LOG 
+  R CMD BATCH --no-save --slave $AMETBASE/R_analysis_code/AQ_Kellyplot_season_plotly.R $AMET_LOG 
   setenv AMET_R_STATUS $status
   
   if($AMET_R_STATUS == 0) then		
