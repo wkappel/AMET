@@ -63,7 +63,7 @@
   ### Species to Plot ###
   ### Acceptable Species Names: T, WVMR, SRAD, Wind_Speed, PCP1H, PSFC
 
-  setenv AMET_AQSPECIES	T 
+  setenv AMET_METSPECIES	T 
 
   ### Observation Network to plot
   ### Set to 'T' to process that nework
