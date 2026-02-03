@@ -157,15 +157,15 @@ prism_read_bil <-function(model_start_date, prismdir,
  if(annual) {
    writeLines("Annual precip")
    bil   <-get_prism_annual(  "ppt", year=yyyy, keepZip = FALSE)
-   pd    <- prism_archive_subset("ppt", "annual", years=yyyy)
+   pd    <- prism_archive_subset("ppt", "annual", years=yyyy, resolution="4km")
  } else if (daily) {
    writeLines("Daily precip")
    bil   <-get_prism_dailys(  "ppt", dates=bil_day, keepZip = FALSE)
-   pd    <- prism_archive_subset("ppt", "daily", dates=bil_day)
+   pd    <- prism_archive_subset("ppt", "daily", dates=bil_day, resolution="4km")
  } else {
    writeLines("Monthly precip")
-   bil   <-get_prism_monthlys("ppt", year=yyyy, mon=mm, keepZip = FALSE)
-   pd    <- prism_archive_subset("ppt", "monthly", years=yyyy, mon=mm)
+   bil   <-get_prism_monthlys("ppt", year=yyyy, mon=mm, keepZip = TRUE)
+   pd    <- prism_archive_subset("ppt", "monthly", years=yyyy, mon=mm, resolution="4km")
  }
   writeLines("PRECIP downloaded")
 
