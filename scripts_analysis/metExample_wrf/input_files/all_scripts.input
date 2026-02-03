@@ -44,9 +44,9 @@ add_query <- Sys.getenv("AMET_ADD_QUERY")
 
 query <- paste(" and s.stat_id=d.stat_id and d.ob_dates BETWEEN",start_date,"and",end_date,"and d.ob_datee BETWEEN",start_date,"and",end_date,"and ob_hour between",start_hour,"and",end_hour,add_query,sep=" ")
 
-if (Met_query == "T") { 
+if (Met_query == "T") {
    species<-unlist(strsplit(Sys.getenv("AMET_METSPECIES"),","))
-   query <- paste(" and s.stat_id=d.stat_id and d.ob_date BETWEEN",start_date,"and",end_date,"and d.ob_date BETWEEN",start_date,"and",end_date,"and ob_time between",start_hour,"and",end_hour,add_query,sep=" ") 
+   query <- paste(" and s.stat_id=d.stat_id and d.ob_date BETWEEN",start_date,"and",end_date,"and d.ob_date BETWEEN",start_date,"and",end_date,"and ob_time between",start_hour,"and",end_hour,add_query,sep=" ")
 }
 
 #########################
@@ -196,8 +196,8 @@ use_avg_stats	<- "n"
 ### Plotly Options ###
 img_height		<- 900
 img_width		<- 1600
-png_from_html   	<- "y"  # create png file from html file
-try_plotly_image        <- 0    # try using the plotly_IMAGE function to create PNGs from HTMLs. Requires (free) plotly account API-KEY
+png_from_html   	<- "y"	# create png file from html file
+try_plotly_image	<- 0	# try using the plotly_IMAGE function to create PNGs from HTMLs. Requires (free) plotly account API-KEY
 
 #########################
 ### Axis Plot Options ###
@@ -267,28 +267,33 @@ rmse_max        <- NULL
 ############################
 ### Spatial Plot Options ###
 ############################
-near_zero_color <- "grey50"
-plot_radius     <- 0
-outlier_radius  <- 40
-fill_opacity    <- 0.8
-num_ints	<- NULL 
-perc_error_max	<- NULL
-abs_error_max	<- NULL
-rmse_range_max	<- NULL
-perc_range_min	<- NULL
-perc_range_max	<- NULL
-abs_range_min	<- NULL
-abs_range_max	<- NULL
-diff_range_min	<- NULL
-diff_range_max	<- NULL
-greyscale	<- "n"
-inc_counties	<- "y"
-symbsizfac	<- 1
-map_leg_size	<- 0.65
-hist_max	<- NULL
-map_type	<- 1
-quantile_min	<- 0.001
-quantile_max	<- 0.999
+near_zero_color 	<- "grey50"
+plot_radius     	<- 0
+outlier_radius  	<- 40
+fill_opacity    	<- 0.8
+num_ints		<- NULL 
+perc_error_max		<- NULL
+abs_error_max		<- NULL
+rmse_range_max		<- NULL
+perc_range_min		<- NULL
+perc_range_max		<- NULL
+abs_range_min		<- NULL
+abs_range_max		<- NULL
+diff_range_min		<- NULL
+diff_range_max		<- NULL
+diff_range_max_min      <- NULL # Animation plots
+diff_range_max_max      <- NULL # Animation plots
+diff_range_abs_max_min  <- NULL # Animaiton plots
+diff_range_abs_max_max  <- NULL # Animation plots
+greyscale		<- "n"
+inc_counties		<- "y"
+symbsizfac		<- 1
+map_leg_size		<- 0.65
+hist_max		<- NULL
+map_type		<- 1
+quantile_min		<- 0.001
+quantile_max		<- 0.999
+GroupedLayerControl     <- 0
 
 ### Embed pop-up time series plots on some leaflet plots. Only applies to queries < 100 sites due to time contraints ###
 popup_ts	<- 'y'

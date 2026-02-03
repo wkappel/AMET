@@ -322,10 +322,12 @@ intervals <- num_ints
       diff_abs_max_min <- floor(min(quantile(abs(all_diff_abs_max),0.005)))
    }
    else {
-      diff_max <- diff_range_max
-      diff_min <- diff_range_min
-      diff_max_max <- diff_range_max
-      diff_max_min <- diff_range_min
+      diff_max 		<- diff_range_max
+      diff_min 		<- diff_range_min
+      diff_max_max 	<- diff_range_max_max
+      diff_max_min 	<- diff_range_min_min
+      diff_abs_max_max	<- diff_range_abs_max_max
+      diff_abs_max_min	<- diff_range_abs_max_min
    }
 }
 #####################################################################

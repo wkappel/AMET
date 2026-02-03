@@ -39,7 +39,7 @@
   #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output/201807
 
   ### Set the project name to be used for model-to-model comparisons ###
-  #setenv AMET_PROJECT2  aqExample
+  setenv AMET_PROJECT2  metExample_wrf 
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
   #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
