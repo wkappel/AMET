@@ -50,14 +50,8 @@ setenv AMET_RUN_DIR $AMETBASE/R_analysis_code/batch_scripts
 setenv AMET_OUT $AMETBASE/output/$AMET_PROJECT/batch_plots 
 
 ### Set the input files to use (full path and file name) ###
-setenv AMETRINPUT_BATCH_MET	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch_met.input
-#setenv AMETRINPUT_SPATIAL_MET	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch_spatial_config_met.R
-#setenv AMETRINPUT_KELLYPLOT	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch_kellyplot_config.R
-#setenv AMETRINPUT_TIMESERIES	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch_timeseries_config.R
-#setenv AMETRINPUT_BOXPLOT	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch_boxplot_config.R
-#setenv AMETRINPUT_SCATTERPLOT	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch_scatterplot_config.R
-
-#setenv AMET_NET_INPUT 	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/Network.input
+setenv 	AMETRINPUT_BATCH_MET	$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/AMET_batch_met.input
+#setenv AMET_NET_INPUT 		$AMETBASE/scripts_analysis/$AMET_PROJECT/input_files/Network.input
 
 ### Plot Type, options are "pdf","png","both" ###
 setenv AMET_PTYPE both

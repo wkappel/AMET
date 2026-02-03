@@ -272,18 +272,20 @@ intervals <- num_ints
 
 {
    if ((length(diff_range_min) == 0) || (length(diff_range_max) == 0)) {
-      diff_max <- max(quantile(abs(all_diff),quantile_max))
-      diff_min <- -diff_max
-      diff_max_max <- max(quantile(abs(all_diff_max),0.990))
-      diff_max_min <- -diff_max_max
-      diff_abs_max_max <- max(quantile(abs(all_diff_abs_max),0.990))
-      diff_abs_max_min <- floor(min(quantile(abs(all_diff_abs_max),0.005)))
+      diff_max 		<- max(quantile(abs(all_diff),quantile_max))
+      diff_min 		<- -diff_max
+      diff_max_max 	<- max(quantile(abs(all_diff_max),0.990))
+      diff_max_min 	<- -diff_max_max
+      diff_abs_max_max 	<- max(quantile(abs(all_diff_abs_max),0.990))
+      diff_abs_max_min 	<- floor(min(quantile(abs(all_diff_abs_max),0.005)))
    }
    else {
-      diff_max <- diff_range_max
-      diff_min <- diff_range_min
-      diff_max_max <- diff_range_max
-      diff_max_min <- diff_range_min
+      diff_max 		<- diff_range_max
+      diff_min 		<- diff_range_min
+      diff_max_max 	<- diff_range_max_max
+      diff_max_min 	<- diff_range_min_min
+      diff_abs_max_max  <- diff_range_abs_max_max
+      diff_abs_max_min  <- diff_range_abs_max_min
    }
 }
 #####################################################################
