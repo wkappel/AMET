@@ -39,6 +39,7 @@ remove_negatives <- 'n'      # Set remove negatives to false. Negatives are need
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
 
 ## Set output file names
+filename_png             <- paste(run_name1,species,pid,"spatialplot_diff",sep="_") # Filename for diff spatial plot
 filename_html	         <- paste(run_name1,species,pid,"spatialplot_diff",sep="_") # Filename for diff spatial plot
 filename_csv  		 <- paste(run_name1,species,pid,"spatialplot_diff.csv",sep="_")
 filename_bias_hist       <- paste(run_name1,species,pid,"histogram_bias_diff",sep="_") # Filename for diff spatial plot
@@ -46,6 +47,7 @@ filename_error_hist      <- paste(run_name1,species,pid,"histogram_error_diff",s
 filename_corr_hist       <- paste(run_name1,species,pid,"histogram_corr_diff",sep="_") # Filename for diff spatial plot
 
 ## Create full path to output files
+filename_png        <- paste(figdir,"/",filename_png,".png",sep="")            # Filename for diff spatial plot
 filename_html        <- paste(figdir,"/",filename_html,".html",sep="")            # Filename for diff spatial plot
 filename_bias_hist_html   <- paste(figdir,"/",filename_bias_hist,".html",sep="")
 filename_error_hist_html  <- paste(figdir,"/",filename_error_hist,".html",sep="")
