@@ -39,7 +39,7 @@
   #setenv OUTDIR  $AMETBASE/output/$AMET_PROJECT/sitex_output/201807
 
   ### Set the project name to be used for model-to-model comparisons ###
-  setenv AMET_PROJECT2  metExample_wrf 
+  setenv AMET_PROJECT2  metExample_mpas
 
   ### IF AMET_DB = F, set location of site compare output files using the environment variable OUTDIR
   #setenv OUTDIR2  $AMETBASE/output/$AMET_PROJECT2/sitex_output
@@ -108,12 +108,10 @@
 		echo
 		echo "Statistics information"
 		echo "-----------------------------------------------------------------------------------------"
-		echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_spatialplot_bias_1.$AMET_PTYPE"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_spatialplot_bias_2.$AMET_PTYPE"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_spatialplot_bias_diff.$AMET_PTYPE"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_spatialplot_error_1.$AMET_PTYPE"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_spatialplot_error_2.$AMET_PTYPE"
-                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_spatialplot_error_diff.$AMET_PTYPE"
+		echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_spatialplot_diff.$AMET_PTYPE"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_histogram_bias_diff.$AMET_PTYPE"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_histogram_error_diff.$AMET_PTYPE"
+                echo "Plots -- ---------------------> $AMET_OUT/${AMET_PROJECT}_${AMET_METSPECIES}_${AMET_PID}_histogram_corr_diff.$AMET_PTYPE"
 		echo "-----------------------------------------------------------------------------------------"
 		exit 0
   else
