@@ -7,7 +7,7 @@ header <- "
 ### function. Designed for single simulation, single network and
 ### single species.
 ###
-### Last Updated by Wyat Appel: June 2025
+### Last Updated by Wyat Appel: April 2026
 ##################################################################
 "
 
@@ -40,19 +40,21 @@ filename_bias_png	<- paste(figdir,filename_bias_png,sep="/")                  # 
 
 {
    if (Sys.getenv("AMET_DB") == 'F') {
-      sitex_info       <- read_sitex(Sys.getenv("OUTDIR"),network,run_name1,species)
-      data_exists      <- sitex_info$data_exists
+      sitex_info       	<- read_sitex(Sys.getenv("OUTDIR"),network,run_name1,species)
+      data_exists      	<- sitex_info$data_exists
       if (data_exists == "y") {
-         aqdat_query.df   <- sitex_info$sitex_data
-         aqdat_query.df   <- aqdat_query.df[with(aqdat_query.df,order(network,stat_id)),]
-         units            <- as.character(sitex_info$units[[1]])
+         aqdat_query.df <- sitex_info$sitex_data
+         aqdat_query.df <- aqdat_query.df[with(aqdat_query.df,order(network,stat_id)),]
+         units          <- as.character(sitex_info$units[[1]])
+	 model_name	<- "Model"
       }
    }
    else {
-      query_result    <- query_dbase(run_name1,network,species)
-      aqdat_query.df  <- query_result[[1]]
-      data_exists     <- query_result[[2]]
+      query_result    	<- query_dbase(run_name1,network,species)
+      aqdat_query.df  	<- query_result[[1]]
+      data_exists     	<- query_result[[2]]
       if (data_exists == "y") { units <- query_result[[3]] }
+      model_name        <- query_result[[4]]
    }
 }
 if (data_exists == "n") { stop("Stopping because data_exists is false. Likely no data found for query.") }
@@ -130,7 +132,7 @@ hist(aqdat_stats.df$Obs_Value, col=NULL, border='red', breaks=hist_breaks, ylim=
 hist(aqdat_stats.df$Mod_Value, col=NULL, border='blue', breaks=hist_breaks, cex=1, prob=T, axes=F, main="", xlab="", ylab="", add=T)
 lines(x.seq.ob, dnorm(x.seq.ob, mean=obs.mean, sd=obs.sd), col="blue")
 lines(x.seq.ob, dnorm(x.seq.mod, mean=mod.mean, sd=mod.sd), col="red")
-legend("topright", c(network,'CMAQ'), lty=c(1,1), col=c("red","blue"), merge=F, cex=1.2, bty="n")
+legend("topright", c(network,model_name), lty=c(1,1), col=c("red","blue"), merge=F, cex=1.2, bty="n")
 
 text(x=x.axis.max,y=0.7*ymax, paste("RPO = ",rpo,sep=""),cex=1,adj=c(1,.5))           # add RPO region to plot
 text(x=x.axis.max,y=0.65*ymax, paste("PCA = ",pca,sep=""),cex=1,adj=c(1,0.5))
