@@ -91,7 +91,7 @@ species <- c("SO4","NO3","NH4","PM_TOT","EC","OC","TC","soil","NaCl","NCOM","OTH
 }
 #############################################
 aqdat_all.df <- aqdat_query.df
-aqdat_all.df[aqdat_all.df == -999] <- NA
+aqdat_all.df[aqdat_all.df < -100] <- NA # Check to see if values are missing (using -100 as missing indicator instead of -999 due to inclusion of blank value)
 
 ### Calculate NH4 from NO3 and SO4 if unavailable ###
 aqdat_all.df$NH4_ob[is.na(aqdat_all.df$NH4)] <- 0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob
@@ -113,9 +113,9 @@ if (num_runs > 1) {
    }
    #############################################
    aqdat_all2.df <- aqdat_query2.df
-   aqdat_all2.df[aqdat_all2.df == -999] <- NA
+   aqdat_all2.df[aqdat_all2.df < -100] <- NA # Check to see if values are missing (using -100 as missing indicator instead of -999 due to inclusion of blank value)
    ### Calculate NH4 from NO3 and SO4 if unavailable ###
-   aqdat_all2.df$NH4_ob[aqdat_all2.df$NH4 == -999] <- 0.2903*aqdat_all2.df$NO3_ob+0.375*aqdat_all2.df$SO4_ob
+    aqdat_all2.df$NH4_ob[aqdat_all2.df$NH4 == -999] <- 0.2903*aqdat_all2.df$NO3_ob+0.375*aqdat_all2.df$SO4_ob
     aqdat_all2.df$NCOM_ob <- 0.8*aqdat_all2.df$OC_ob
 }
 
