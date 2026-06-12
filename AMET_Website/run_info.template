@@ -216,6 +216,7 @@ hist_max<- NULL
 map_type<-
 quantile_min<-
 quantile_max<-
+GroupedLayerControl<-0
 ### Stacked Bar Charts Options ###
 inc_FRM_adj<-"y"
 use_median<-"y"
