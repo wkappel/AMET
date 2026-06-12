@@ -1431,7 +1431,7 @@ echo " <p align=\"center\"><a href=\"$cache_amet2/${project_id}_${species}_${pid
              echo "          <td> ";
 	     echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_mtom_density.html\">Density Scatterplot (HTML)</a> ";
       }
-      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Model-Model Scatter Plot";   }
+      else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting Model-Model Density Scatter Plot";   }
    }
    if ($_POST['run_program'] == "AQ_Scatterplot_percentiles.R") {
       if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_percentiles.pdf"))	{
@@ -4313,7 +4313,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99003>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4335,7 +4335,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99003>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4358,7 +4358,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4379,7 +4379,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4401,7 +4401,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4423,7 +4423,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4445,7 +4445,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D selected>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4467,7 +4467,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D selected>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4489,7 +4489,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4510,7 +4510,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4532,7 +4532,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002 selected>Orange</option>
+  <option value=#FF9900 selected>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4553,7 +4553,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002 selected>Orange</option>
+  <option value=#FF9900 selected>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4575,7 +4575,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown selected>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4596,7 +4596,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown selected>Brown</option>
   <option value=#9900FF>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4639,7 +4639,7 @@ Enter a value above to set the x and y axes limits for several plots (scatter, b
   <option value=#93C47D>Lgt Green</option>
   <option value=#00FF00>Green</option>
   <option value=#38761D>Drk Green</option>
-  <option value=#FF99002>Orange</option>
+  <option value=#FF9900>Orange</option>
   <option value=brown>Brown</option>
   <option value=#9900FF selected>Purple</option>
   <option value=#D9D9D9>Lgt Grey</option>
@@ -4926,7 +4926,7 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Scatterplot_density.R"><font face="Arial, Helvetica, sans-serif">Density Scatterplot (single run, single network)</font></option>
 	    <option value="AQ_Scatterplot_density_ggplot.R"><font face="Arial, Helvetica, sans-serif">GGPlot Density Scatterplot (single run, single network)</font></option>
 	    <option value="AQ_Scatterplot_mtom.R"><font face="Arial, Helvetica, sans-serif">Model/Model Scatterplot (multiple networks)</font></option>
-	    <option value="AQ_Scatterplot_mtom_density_ggplot.R"><font face="Arial, Helvetica, sans-serif">Model/Model Density Scatterplot (single network)</font></option>
+	    <option value="AQ_Scatterplot_mtom_density.R"><font face="Arial, Helvetica, sans-serif">Model/Model Density Scatterplot (single network)</font></option>
 	    <option value="AQ_Scatterplot_percentiles.R"><font face="Arial, Helvetica, sans-serif">Scatterplot of Percentiles (single network, single run)</font></option>
 	    <option value="AQ_Scatterplot_skill.R"><font face="Arial, Helvetica, sans-serif">Ozone Skill Scatterplot (single network, mult runs)</font></option>
 	    <option value="AQ_Scatterplot_bins.R"><font face="Arial, Helvetica, sans-serif">Binned MB & RMSE Scatterplots (single net., mult. run)</font></option>
@@ -4972,7 +4972,6 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Boxplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Boxplot (single network, multi run)</font></option>
 	    <option value="AQ_Boxplot_DofW.R"><font face="Arial, Helvetica, sans-serif">Day of Week Boxplot (single network, multiple runs)</font></option>
 	    <option value="AQ_Boxplot_Hourly.R"><font face="Arial, Helvetica, sans-serif">Hourly Boxplot (single network, multiple runs)</font></option>
-	    <option value="AQ_Boxplot_MDA8.R"><font face="Arial, Helvetica, sans-serif">8hr Average Boxplot (single network, hourly data, can be slow)</font></option>
 	    <option value="AQ_Boxplot_Roselle.R"><font face="Arial, Helvetica, sans-serif">Roselle Boxplot (single network, multiple simulations)</font></option>
     </optgroup>
     <optgroup label="Stacked Bar Plots">
@@ -5005,9 +5004,7 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     </optgroup>
     <optgroup label="Experimental Scripts (may not work correctly)">
 	<option value="AQ_Overlay_File.R"><font face="Arial, Helvetica, sans-serif">Create PAVE/VERDI Obs Overlay File (hourly/daily data only)</font></option>
-//	<option value="AQ_Scatterplot_log.R"><font face="Arial, Helvetica, sans-serif">Log-Log Model/Ob Scatterplot (multiple networks)</font></option>
 	<option value="AQ_Spectral_Analysis.R"><font face="Arial, Helvetica, sans-serif">Spectral Analysis (single network, single run, experimental)</font></option>
-        <option value="AQ_Temporal_Plots.R"><font face="Arial, Helvetica, sans-serif">CDF, Q-Q, Taylor Plots (single network, multi run)</font></option>
 	<option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">PM Ratio Spatial Plot (multi network, single run)</font></option>
     </optgroup>
   </select>

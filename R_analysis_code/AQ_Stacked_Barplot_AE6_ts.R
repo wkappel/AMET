@@ -149,13 +149,13 @@ for (j in 1:length(run_names)) {
    num_dates <- length(unique(data_ts.df$ob_dates))
    data_ts_obs.df <- data_ts.df[-c(3,5,7,8,9,11,13,15,17,19,21,23,25,27,29,31,33,34,36)]
    names(data_ts_obs.df)[-1] <- gsub("_ob","",names(data_ts_obs.df)[-1])
-   data_ts_melted_obs.df <- melt(data_ts_obs.df,id=c("ob_dates"))
+   data_ts_melted_obs.df <- reshape2::melt(data_ts_obs.df,id.vars=c("ob_dates"))
    names(data_ts_melted_obs.df)[2] <- "species"
    data_ts_melted_obs.df$cat <- network
 
    data_ts_mod.df <- data_ts.df[-c(2,4,6,8,9,10,12,14,16,18,20,22,24,26,28,30,32,34,35)]
    names(data_ts_mod.df)[-1] <- gsub("_mod","",names(data_ts_mod.df)[-1])
-   data_ts_melted_mod.df <- melt(data_ts_mod.df,id=c("ob_dates"))
+   data_ts_melted_mod.df <- reshape2::melt(data_ts_mod.df,id.vars=c("ob_dates"))
    names(data_ts_melted_mod.df)[2] <- "species"
    data_ts_melted_mod.df$cat <- paste("Sim",j,sep="") 
 
@@ -203,6 +203,9 @@ axis.max <-  max(pdata[[1]]$ymax)
 
 bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE),width=0.75) + facet_grid(~ob_dates, labeller=as_labeller(dates_names)) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x = element_text(angle=270), panel.grid.major.x = element_blank(), panel.spacing.x=unit(0.1,"line"), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=main.title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=1, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
 
+png(filename_png, width = 15, height = 9, units = "in", res = 600)
+print(bp)
+dev.off()
 ggsave(filename_pdf,width=15,height=9)
 
 axis.max <- axis.max+(0.2*j)*axis.max
