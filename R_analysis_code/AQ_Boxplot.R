@@ -629,12 +629,12 @@ if (averaging == "m") {
 #}
 if (num_runs > 1) {
    if (sum(obs.stats$n) != sum(obs.stats2$n)) {
-      text(norm.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
+      text(norm_bias.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
    }
 }
 if (num_runs > 2) {
    if ((sum(obs.stats$n) != sum(obs.stats2$n)) || (sum(obs.stats$n) != sum(obs.stats3$n))) {
-      text(norm.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
+      text(norm_bias.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
    }
 }
 
