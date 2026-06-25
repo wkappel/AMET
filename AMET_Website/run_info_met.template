@@ -32,6 +32,7 @@ run_name7<-
 #inc_networks<-
 inc_all<-
 inc_metar<-
+inc_speci<-
 inc_airnow<-
 inc_asos<-
 inc_maritime<-
@@ -43,6 +44,7 @@ custom_title<-''
 png_from_html<-
 png_res<-
 x_label_angle<-0
+leg_size_fac<-1
 ### Plotly Options ###
 img_height<-
 img_width<-
@@ -157,6 +159,7 @@ hist_max <- NULL
 map_type <-
 quantile_min<-
 quantile_max<-
+GroupedLayerControl<-0
 ### Stacked Bar Charts Options ###
 inc_FRM_adj<-"y"
 use_median<-"y"
@@ -191,6 +194,10 @@ if (inc_all == "y") {
 if (inc_metar == "y") {
    network_names <- c(network_names,"METAR")
    network_label <- c(network_label,"METAR")
+}
+if (inc_speci == "y") {
+   network_names <- c(network_names,"SPECI")
+   network_label <- c(network_label,"SPECI")
 }
 if (inc_airnow == "y") {
    network_names <- c(network_names,"AIRNOW")
