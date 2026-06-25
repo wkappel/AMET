@@ -4051,7 +4051,9 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Boxplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Boxplot (single network, multi run)</font></option>
 	    <option value="AQ_Boxplot_DofW.R"><font face="Arial, Helvetica, sans-serif">Day of Week Boxplot (single network, multiple runs)</font></option>
 	    <option value="AQ_Boxplot_Hourly.R"><font face="Arial, Helvetica, sans-serif">Hourly Boxplot (single network, multiple runs)</font></option>
+<!--
 	    <option value="AQ_Boxplot_MDA8.R"><font face="Arial, Helvetica, sans-serif">8hr Average Boxplot (single network, hourly data, can be slow)</font></option>
+-->
 	    <option value="AQ_Boxplot_Roselle.R"><font face="Arial, Helvetica, sans-serif">Roselle Boxplot (single network, multiple simulations)</font></option>
     </optgroup>
 <!--    <optgroup label="Stacked Bar Plots">
