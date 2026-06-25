@@ -2825,7 +2825,7 @@ TEST;
                     <tr align="center" valign="top" bgcolor="#CCCCCC">
                       <td width="396" height="250"><div align="left">
                         <span class="style5"><font face="Arial, Helvetica, sans-serif"><strong>Met Observation Networks</strong></font></span><font face="Arial, Helvetica, sans-serif"><strong><br>
-                        </strong>Choose air quality monitoring networks to use.                        </font></p>
+                        </strong>Choose meteorology monitoring networks to use.                        </font></p>
                         </div>
                         <div align="left">
                           <p><font face="Arial, Helvetica, sans-serif">
@@ -2835,6 +2835,8 @@ TEST;
                           <font face="Arial, Helvetica, sans-serif">
                           <input name="inc_metar" type="checkbox" id="inc_metar" value="y" checked>
                           <label for=inc_metar><strong>METAR</strong></label></font><br>
+                          <input name="inc_airnow" type="checkbox" id="inc_airnow" value="y" unchecked>
+                          <label for=inc_speci><strong>SPECI</strong></label></font><br>
                           <input name="inc_airnow" type="checkbox" id="inc_airnow" value="y" unchecked>
                           <label for=inc_airnow><strong>AIRNOW</strong></label></font><br>
                           <input name="inc_asos" type="checkbox" id="inc_asos" value="y" unchecked>
@@ -4001,11 +4003,15 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Scatterplot_mtom.R"><font face="Arial, Helvetica, sans-serif">Model/Model Scatterplot (multiple networks)</font></option>
 	    <option value="AQ_Scatterplot_mtom_density_ggplot.R"><font face="Arial, Helvetica, sans-serif">Model/Model Density Scatterplot (single network)</font></option>
 	    <option value="AQ_Scatterplot_percentiles.R"><font face="Arial, Helvetica, sans-serif">Scatterplot of Percentiles (single network, single run)</font></option>
+<!--
 	    <option value="AQ_Scatterplot_skill.R"><font face="Arial, Helvetica, sans-serif">Ozone Skill Scatterplot (single network, mult runs)</font></option>
+-->
 	    <option value="AQ_Scatterplot_bins.R"><font face="Arial, Helvetica, sans-serif">Binned MB & RMSE Scatterplots (single net., mult. run)</font></option>
 	    <option value="AQ_Scatterplot_bins_plotly.R"><font face="Arial, Helvetica, sans-serif">Interactive Binned Plot (single net., mult. run)</font></option>
 	    <option value="AQ_Scatterplot_multi.R"><font face="Arial, Helvetica, sans-serif">Multi Simulation Scatter plot (single network, mult runs)</font></option>
+<!--
 	    <option value="AQ_Scatterplot_soil.R"><font face="Arial, Helvetica, sans-serif">Soil Scatter plot (single network, mult runs)</font></option>
+ -->
     </optgroup>
     <optgroup label="Time Series Plots">
 	    <option value="AQ_Timeseries.R"><font face="Arial, Helvetica, sans-serif">Time-series Plot (single network, multiple sites averaged)</font></option>
@@ -4035,7 +4041,9 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Plot_Spatial_Diff.R"><font face="Arial, Helvetica, sans-serif">Spatial Plot of Bias/Error Difference (multi network, multi run)</font></option>
 	    <option value="AQ_Plot_Spatial_Diff_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (single plot)</font></option>
 	    <option value="AQ_Plot_Spatial_Diff_leaflet_network.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (multiple plots )</font></option>
+<!--
 	    <option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">Ratio Spatial Plot to total PM2.5 (multi network, multi run)</font></option>
+-->
     </optgroup>
     <optgroup label="Box Plots">
 	    <option value="AQ_Boxplot.R"><font face="Arial, Helvetica, sans-serif">Boxplot (single network, multi run)</font></option>
