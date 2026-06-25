@@ -4088,7 +4088,9 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     </optgroup>
 <!--   <optgroup label="Experimental Scripts (may not work correctly)">
         <option value="AQ_Overlay_File.R"><font face="Arial, Helvetica, sans-serif">Create PAVE/VERDI Obs Overlay File (hourly/daily data only)</font></option>
+<!--
         <option value="AQ_Scatterplot_log.R"><font face="Arial, Helvetica, sans-serif">Log-Log Model/Ob Scatterplot (multiple networks)</font></option>
+-->
         <option value="AQ_Spectral_Analysis.R"><font face="Arial, Helvetica, sans-serif">Spectral Analysis (single network, single run, experimental)</font></option>
         <option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">PM Ratio Spatial Plot (multi network, single run)</font></option>
    </optgroup> -->
