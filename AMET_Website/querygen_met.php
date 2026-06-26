@@ -1061,7 +1061,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_ggplot.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_plotly.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.html"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.csv"))    {
           echo " <p align=\"center\">";
           echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.html\">Mod/Ob Scatterplot (HTML)</a> ";
           echo "&nbsp;";
@@ -1075,7 +1075,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_plotly.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_multisim_plotly.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_multi.html"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_multi.csv"))    {
           echo " <p align=\"center\">";
           echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_multi.html\">Mod/Ob Scatterplot (HTML)</a> ";
           echo "&nbsp;";
@@ -1089,7 +1089,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_multisim_plotly.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_single.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_single.pdf"))	{
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_single.csv"))	{
      echo " <p align=\"center\">";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
@@ -1106,7 +1106,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_single.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_density.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density.pdf"))	{
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density.csv"))	{
      echo " <p align=\"center\">";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
@@ -1123,7 +1123,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_density.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_density_ggplot.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density_ggplot.csv"))    {
           echo " <p align=\"center\">";
               echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
@@ -1140,7 +1140,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_density_ggplot.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_log.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_log.pdf"))	{
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_log.csv"))	{
      echo " <p align=\"center\">";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.pdf\">Model/Ob Log-Log Scatterplot (PDF)</a> ";
       echo "         </td>";
@@ -1199,7 +1199,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_soil.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_skill.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_skill.pdf"))  {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_skill.csv"))  {
               echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.pdf\">Skill Plot (PDF)</a> ";
               echo "&nbsp;&nbsp;";
               echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.png\">Skill Plot (PNG)</a> ";
@@ -1211,7 +1211,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_skill.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_bins.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.pdf"))   {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.csv"))   {
       echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.png\">Mean Bias Plot (PNG)</a> ";
       echo "&nbsp;&nbsp;";
       echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.pdf\">Mean Bias Plot (PDF)</a> ";
@@ -1223,7 +1223,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_bins.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_bins_plotly.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.html"))   {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.csv"))   {
       echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.html\">Binned Plot (HTML)</a> ";
       echo "&nbsp;&nbsp;";
       echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.csv\">Raw Data File (CSV)</a> ";
@@ -1233,7 +1233,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_bins_plotly.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_multi.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.pdf"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.csv"))    {
       echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.pdf\">Scatterplot (PDF)</a> ";
       echo "&nbsp;&nbsp;";
       echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.png\">Scatterplot (PNG)</a> ";
@@ -1331,7 +1331,7 @@ if ($_POST['run_program'] == "AQ_Timeseries_plotly.R") {
 echo "         </td>";
 echo "</center>";
 echo "         <td>";
-if ($_POST['run_program'] == "AQ_Timeseries_plotly_bysite.R") {
+if ($_POST['run_program'] == "AQ_Timeseries_bysite_plotly.R") {
    echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
    echo "<center>";
    if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.zip"))     {
@@ -4020,7 +4020,7 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Timeseries.R"><font face="Arial, Helvetica, sans-serif">Time-series Plot (single network, multiple sites averaged)</font></option>
 	    <option value="AQ_Timeseries_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Time-series Plots (single network, multiple sites not average)</font></option>
 	    <option value="AQ_Timeseries_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Muli-simulation Timeseries</font></option>
-	    <option value="AQ_Timeseries_plotly_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Plotly Time-series Plots (single network, multiple sites not average)</font></option>
+	    <option value="AQ_Timeseries_bysite_plotly.R"><font face="Arial, Helvetica, sans-serif">Individual Site Plotly Time-series Plots (single network, multiple sites not average)</font></option>
 	    <option value="AQ_Timeseries_networks_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-network Timeseries</font></option>
 	    <option value="AQ_Timeseries_species_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-species Timeseries</font></option>
 	    <option value="AQ_Timeseries_multi_networks.R"><font face="Arial, Helvetica, sans-serif">Multi-Network Time-series Plot (mult. net., single run)</font></option>
