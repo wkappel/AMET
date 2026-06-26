@@ -1295,12 +1295,12 @@ echo "         <td>";
 if ($_POST['run_program'] == "AQ_Timeseries_bysite.R") {
    echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
    echo "<center>";
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.zip"))     {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries_csv.zip"))     {
    echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.zip\"> Time Series (zip)</a> ";
    echo "&nbsp;&nbsp;";
    echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_csv.zip\">Timeseries Data (zip)</a> ";
    }
-   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries by site plots, please try limiting to one or two sites"; }
 }
 echo "         </td>";
 echo "</center>";
