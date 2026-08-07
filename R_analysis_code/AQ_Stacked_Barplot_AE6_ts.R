@@ -8,7 +8,7 @@ header <- "
 ### PMother and total PM2.5. These averages are then plotted as a stacked bar plot time series.
 ### This script allows for a single network but multiple simulations.
 ###
-### Last updated by Wyat Appel: June 2025 
+### Last updated by Wyat Appel: June 2026 
 #########################################################################################
 "
 
@@ -36,19 +36,22 @@ if (use_median == "y") {
 }
 
 if(!exists("dates")) { dates <- paste(start_date,"-",end_date) }
-main.title <- get_title(species="Multiple Species")
+{
+   if (custom_title == "") { title <- paste(network_name," Stacked Barplot for ",run_name1," for ",dates,sep="") }
+   else { title <- custom_title }
+}
 
 ## Set output filenames
 filename_pdf     <- paste(run_name1,pid,"stacked_barplot_AE6_ts.pdf",sep="_")
 filename_png     <- paste(run_name1,pid,"stacked_barplot_AE6_ts.png",sep="_")
 filename_html	 <- paste(run_name1,pid,"stacked_barplot_AE6_ts.html",sep="_")
-filename_txt	 <- paste(run_name1,pid,"stacked_barplot_AE6_data_ts.csv",sep="_")
+#filename_txt	 <- paste(run_name1,pid,"stacked_barplot_AE6_data_ts.csv",sep="_")
 
 ## Create a full path to output files
 filename_pdf  <- paste(figdir,filename_pdf,sep="/")      # Set PDF filename
 filename_png  <- paste(figdir,filename_png,sep="/")      # Set PNG filename
 filename_html  <- paste(figdir,filename_html,sep="/")
-filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
+#filename_txt  <- paste(figdir,filename_txt,sep="/")      # Set output file name
 ################################
 
 {
@@ -115,7 +118,7 @@ for (j in 1:length(run_names)) {
    }
    #############################################
    aqdat_all.df <- aqdat_query.df
-   aqdat_all.df[aqdat_all.df == -999] <- NA
+   aqdat_all.df[aqdat_all.df < -100] <- NA      # Check to see if values are missing (using -100 as missing indicator instead of -999 due to inclusion of blank value)
 
    ### Calculate NH4 from NO3 and SO4 if unavailable ###
    aqdat_all.df$NH4_ob[aqdat_all.df$NH4 == -999] <- 0.2903*aqdat_all.df$NO3_ob+0.375*aqdat_all.df$SO4_ob
@@ -155,6 +158,7 @@ for (j in 1:length(run_names)) {
 
    data_ts_mod.df <- data_ts.df[-c(2,4,6,8,9,10,12,14,16,18,20,22,24,26,28,30,32,34,35)]
    names(data_ts_mod.df)[-1] <- gsub("_mod","",names(data_ts_mod.df)[-1])
+
    data_ts_melted_mod.df <- reshape2::melt(data_ts_mod.df,id.vars=c("ob_dates"))
    names(data_ts_melted_mod.df)[2] <- "species"
    data_ts_melted_mod.df$cat <- paste("Sim",j,sep="") 
@@ -181,7 +185,7 @@ for (j in 1:length(run_names)) {
    x_factor <- c(x_factor,paste("Sim",j,sep=""))
 }
 
-title <- paste(main.title,sim_legend,sep="\n\n")
+title <- paste(title,sim_legend,sep="\n\n")
 
 data_merged.df$species <- factor(data_merged.df$species, levels=c("SO4","NO3","NH4","EC","OC","Al","Ca","Fe","K","Mg","Si","Ti","Na","Cl","NCOM","OTHR"))
 data_merged.df$cat     <- factor(data_merged.df$cat, levels=x_factor)
@@ -201,12 +205,13 @@ bp_temp <- ggplot(data_merged.df, aes(x=cat,y=value)) + geom_bar(aes(color=speci
 pdata <- ggplot_build(bp_temp)$data
 axis.max <-  max(pdata[[1]]$ymax)
 
-bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE),width=0.75) + facet_grid(~ob_dates, labeller=as_labeller(dates_names)) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x = element_text(angle=270), panel.grid.major.x = element_blank(), panel.spacing.x=unit(0.1,"line"), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=main.title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=1, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
+bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE),width=0.75) + facet_grid(~ob_dates, labeller=as_labeller(dates_names)) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x = element_text(angle=270), panel.grid.major.x = element_blank(), panel.spacing.x=unit(0.1,"line"), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=1, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
 
 png(filename_png, width = 15, height = 9, units = "in", res = 600)
 print(bp)
 dev.off()
-ggsave(filename_pdf,width=15,height=9)
+ggsave(filename_pdf,plot=bp,width=15,height=9)
+#ggsave(filename_png,plot=bp,width=15,height=9,dpi=600)
 
 axis.max <- axis.max+(0.2*j)*axis.max
 bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species,
@@ -222,5 +227,5 @@ bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(co
 #bp <- ggplotly(bp,tooltip=c("value","cat","date")) %>%
 bp <- ggplotly(bp,tooltip="text") %>%
  layout(yaxis=list(autorange=TRUE))
- 
+   
 saveWidget(bp, file=filename_html,selfcontained=T)
