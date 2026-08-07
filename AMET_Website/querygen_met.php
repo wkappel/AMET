@@ -2138,8 +2138,8 @@ echo "          <td> ";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.png\">(PNG)</a> ";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.pdf\"> (PDF)</a> ";
     echo "<p>Periodogram Plot ";
-    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.png\">(PNG)</a> ";
-    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.pdf\"> (PDF)</a> ";	     
+//    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.png\">(PNG)</a> ";
+//    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.pdf\"> (PDF)</a> ";	     
   }   
    else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting temporal plots."; }
 }
@@ -4019,6 +4019,9 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
     <optgroup label="Time Series Plots">
 	    <option value="AQ_Timeseries.R"><font face="Arial, Helvetica, sans-serif">Time-series Plot (single network, multiple sites averaged)</font></option>
 	    <option value="AQ_Timeseries_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Time-series Plots (single network, multiple sites not average)</font></option>
+<!--
+	    <option value="AQ_Timeseries_dygraph.R"><font face="Arial, Helvetica, sans-serif">Dygraph Time-series Plot (single network, multiple sites averaged)</font></option>
+-->
 	    <option value="AQ_Timeseries_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Muli-simulation Timeseries</font></option>
 	    <option value="AQ_Timeseries_bysite_plotly.R"><font face="Arial, Helvetica, sans-serif">Individual Site Plotly Time-series Plots (single network, multiple sites not average)</font></option>
 	    <option value="AQ_Timeseries_networks_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-network Timeseries</font></option>
@@ -4071,11 +4074,17 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Stacked_Barplot_panel_AE6_multi.R"><font face="Arial, Helvetica, sans-serif">Multi-Panel, Mulit Run Stacked Bar Plot AE6 (full year data)</font></option>
     </optgroup> -->
     <optgroup label="Misc Scripts">
+<!--
 	    <option value="AQ_Kellyplot.R"><font face="Arial, Helvetica, sans-serif">Kelly Plot (single species, single network, full year data)</font></option>
+-->
 	    <option value="AQ_Kellyplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Kelly Plot (single species, single network, full year data)</font></option>
+<!--
 	    <option value="AQ_Kellyplot_region.R"><font face="Arial, Helvetica, sans-serif">Climate Region Kelly Plot (single species, single network, multi sim)</font></option>
+-->
 	    <option value="AQ_Kellyplot_region_plotly.R"><font face="Arial, Helvetica, sans-serif">Plolty Climate Region Kelly Plot (single species, single network, multi sim)</font></option>
+<!--
 	    <option value="AQ_Kellyplot_season.R"><font face="Arial, Helvetica, sans-serif">Seasonal Kelly Plot (single species, single network, multi sim)</font></option>
+-->
 	    <option value="AQ_Kellyplot_season_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Seasonal Kelly Plot (single species, single network, multi sim)</font></option>
 	    <option value="AQ_Stats.R"><font face="Arial, Helvetica, sans-serif">Species Statistics (multi species, single network)</font></option>
 	    <option value="AQ_Raw_Data.R"><font face="Arial, Helvetica, sans-serif">Create raw data csv file (single network, single simulation)</font></option>
@@ -4087,11 +4096,11 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Temporal_Plots.R"><font face="Arial, Helvetica, sans-serif">CDF, Q-Q, Taylor Plots (single network, multi run)</font></option>
     </optgroup>
 <!--   <optgroup label="Experimental Scripts (may not work correctly)">
-        <option value="AQ_Overlay_File.R"><font face="Arial, Helvetica, sans-serif">Create PAVE/VERDI Obs Overlay File (hourly/daily data only)</font></option>
 <!--
+        <option value="AQ_Overlay_File.R"><font face="Arial, Helvetica, sans-serif">Create PAVE/VERDI Obs Overlay File (hourly/daily data only)</font></option>
         <option value="AQ_Scatterplot_log.R"><font face="Arial, Helvetica, sans-serif">Log-Log Model/Ob Scatterplot (multiple networks)</font></option>
--->
         <option value="AQ_Spectral_Analysis.R"><font face="Arial, Helvetica, sans-serif">Spectral Analysis (single network, single run, experimental)</font></option>
+-->
         <option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">PM Ratio Spatial Plot (multi network, single run)</font></option>
    </optgroup> -->
   </select>
