@@ -1061,7 +1061,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_ggplot.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_plotly.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.html"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.csv"))    {
           echo " <p align=\"center\">";
           echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.html\">Mod/Ob Scatterplot (HTML)</a> ";
           echo "&nbsp;";
@@ -1075,7 +1075,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_plotly.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_multisim_plotly.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_multi.html"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_multi.csv"))    {
           echo " <p align=\"center\">";
           echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_multi.html\">Mod/Ob Scatterplot (HTML)</a> ";
           echo "&nbsp;";
@@ -1089,7 +1089,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_multisim_plotly.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_single.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_single.pdf"))	{
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_single.csv"))	{
      echo " <p align=\"center\">";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_single.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
@@ -1106,7 +1106,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_single.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_density.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density.pdf"))	{
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density.csv"))	{
      echo " <p align=\"center\">";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
@@ -1123,7 +1123,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_density.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_density_ggplot.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_density_ggplot.csv"))    {
           echo " <p align=\"center\">";
               echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_density_ggplot.pdf\">Mod/Ob Scatterplot (PDF)</a> ";
 //         echo "         </td>";
@@ -1140,7 +1140,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_density_ggplot.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_log.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_log.pdf"))	{
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_log.csv"))	{
      echo " <p align=\"center\">";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_log.pdf\">Model/Ob Log-Log Scatterplot (PDF)</a> ";
       echo "         </td>";
@@ -1199,7 +1199,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_soil.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_skill.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_skill.pdf"))  {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_skill.csv"))  {
               echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.pdf\">Skill Plot (PDF)</a> ";
               echo "&nbsp;&nbsp;";
               echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_skill.png\">Skill Plot (PNG)</a> ";
@@ -1211,7 +1211,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_skill.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_bins.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.pdf"))   {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.csv"))   {
       echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.png\">Mean Bias Plot (PNG)</a> ";
       echo "&nbsp;&nbsp;";
       echo " <a align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.pdf\">Mean Bias Plot (PDF)</a> ";
@@ -1223,7 +1223,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_bins.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_bins_plotly.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.html"))   {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot_bins.csv"))   {
       echo "     <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.html\">Binned Plot (HTML)</a> ";
       echo "&nbsp;&nbsp;";
       echo "     <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot_bins.csv\">Raw Data File (CSV)</a> ";
@@ -1233,7 +1233,7 @@ if ($_POST['run_program'] == "AQ_Scatterplot_bins_plotly.R") {
 echo "         </td>";
 echo "          <td> ";
 if ($_POST['run_program'] == "AQ_Scatterplot_multi.R") {
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.pdf"))    {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_scatterplot.csv"))    {
       echo " <p align=\"left\"><a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.pdf\">Scatterplot (PDF)</a> ";
       echo "&nbsp;&nbsp;";
       echo " <a href=\"$cache_amet2/${project_id}_${species}_${pid}_scatterplot.png\">Scatterplot (PNG)</a> ";
@@ -1295,12 +1295,12 @@ echo "         <td>";
 if ($_POST['run_program'] == "AQ_Timeseries_bysite.R") {
    echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
    echo "<center>";
-   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.zip"))     {
+   if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries_csv.zip"))     {
    echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries.zip\"> Time Series (zip)</a> ";
    echo "&nbsp;&nbsp;";
    echo "    <a href=\"$cache_amet2/${project_id}_${species}_${pid}_timeseries_csv.zip\">Timeseries Data (zip)</a> ";
    }
-   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries plot"; }
+   else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting timeseries by site plots, please try limiting to one or two sites"; }
 }
 echo "         </td>";
 echo "</center>";
@@ -1331,7 +1331,7 @@ if ($_POST['run_program'] == "AQ_Timeseries_plotly.R") {
 echo "         </td>";
 echo "</center>";
 echo "         <td>";
-if ($_POST['run_program'] == "AQ_Timeseries_plotly_bysite.R") {
+if ($_POST['run_program'] == "AQ_Timeseries_bysite_plotly.R") {
    echo "<center><strong>AMET Timeseries Plots</strong></center><p>";
    echo "<center>";
    if(file_exists("$cache_amet/${project_id}_${species}_${pid}_timeseries.zip"))     {
@@ -2138,8 +2138,8 @@ echo "          <td> ";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.png\">(PNG)</a> ";
     echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_taylor.pdf\"> (PDF)</a> ";
     echo "<p>Periodogram Plot ";
-    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.png\">(PNG)</a> ";
-    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.pdf\"> (PDF)</a> ";	     
+//    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.png\">(PNG)</a> ";
+//    echo "	<a href=\"$cache_amet2/${project_id}_${species}_${pid}_periodogram.pdf\"> (PDF)</a> ";	     
   }   
    else {echo "<a href=\"$cache_amet2/web_query.txt\">query_output.txt</a> An error was encountered plotting temporal plots."; }
 }
@@ -2825,7 +2825,7 @@ TEST;
                     <tr align="center" valign="top" bgcolor="#CCCCCC">
                       <td width="396" height="250"><div align="left">
                         <span class="style5"><font face="Arial, Helvetica, sans-serif"><strong>Met Observation Networks</strong></font></span><font face="Arial, Helvetica, sans-serif"><strong><br>
-                        </strong>Choose air quality monitoring networks to use.                        </font></p>
+                        </strong>Choose meteorology monitoring networks to use.                        </font></p>
                         </div>
                         <div align="left">
                           <p><font face="Arial, Helvetica, sans-serif">
@@ -2835,6 +2835,8 @@ TEST;
                           <font face="Arial, Helvetica, sans-serif">
                           <input name="inc_metar" type="checkbox" id="inc_metar" value="y" checked>
                           <label for=inc_metar><strong>METAR</strong></label></font><br>
+                          <input name="inc_airnow" type="checkbox" id="inc_airnow" value="y" unchecked>
+                          <label for=inc_speci><strong>SPECI</strong></label></font><br>
                           <input name="inc_airnow" type="checkbox" id="inc_airnow" value="y" unchecked>
                           <label for=inc_airnow><strong>AIRNOW</strong></label></font><br>
                           <input name="inc_asos" type="checkbox" id="inc_asos" value="y" unchecked>
@@ -4001,18 +4003,24 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Scatterplot_mtom.R"><font face="Arial, Helvetica, sans-serif">Model/Model Scatterplot (multiple networks)</font></option>
 	    <option value="AQ_Scatterplot_mtom_density_ggplot.R"><font face="Arial, Helvetica, sans-serif">Model/Model Density Scatterplot (single network)</font></option>
 	    <option value="AQ_Scatterplot_percentiles.R"><font face="Arial, Helvetica, sans-serif">Scatterplot of Percentiles (single network, single run)</font></option>
+<!--
 	    <option value="AQ_Scatterplot_skill.R"><font face="Arial, Helvetica, sans-serif">Ozone Skill Scatterplot (single network, mult runs)</font></option>
+-->
 	    <option value="AQ_Scatterplot_bins.R"><font face="Arial, Helvetica, sans-serif">Binned MB & RMSE Scatterplots (single net., mult. run)</font></option>
 	    <option value="AQ_Scatterplot_bins_plotly.R"><font face="Arial, Helvetica, sans-serif">Interactive Binned Plot (single net., mult. run)</font></option>
 	    <option value="AQ_Scatterplot_multi.R"><font face="Arial, Helvetica, sans-serif">Multi Simulation Scatter plot (single network, mult runs)</font></option>
+<!--
 	    <option value="AQ_Scatterplot_soil.R"><font face="Arial, Helvetica, sans-serif">Soil Scatter plot (single network, mult runs)</font></option>
+ -->
     </optgroup>
     <optgroup label="Time Series Plots">
 	    <option value="AQ_Timeseries.R"><font face="Arial, Helvetica, sans-serif">Time-series Plot (single network, multiple sites averaged)</font></option>
 	    <option value="AQ_Timeseries_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Time-series Plots (single network, multiple sites not average)</font></option>
+<!--
 	    <option value="AQ_Timeseries_dygraph.R"><font face="Arial, Helvetica, sans-serif">Dygraph Time-series Plot (single network, multiple sites averaged)</font></option>
+-->
 	    <option value="AQ_Timeseries_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Muli-simulation Timeseries</font></option>
-	    <option value="AQ_Timeseries_plotly_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Plotly Time-series Plots (single network, multiple sites not average)</font></option>
+	    <option value="AQ_Timeseries_bysite_plotly.R"><font face="Arial, Helvetica, sans-serif">Individual Site Plotly Time-series Plots (single network, multiple sites not average)</font></option>
 	    <option value="AQ_Timeseries_networks_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-network Timeseries</font></option>
 	    <option value="AQ_Timeseries_species_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-species Timeseries</font></option>
 	    <option value="AQ_Timeseries_multi_networks.R"><font face="Arial, Helvetica, sans-serif">Multi-Network Time-series Plot (mult. net., single run)</font></option>
@@ -4032,10 +4040,14 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Plot_Spatial_MtoM.R"><font face="Arial, Helvetica, sans-serif">Model/Model Diff Spatial Plot (multi network, multi run)</font></option>
 	    <option value="AQ_Plot_Spatial_MtoM_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Model/Model Diff Spatial Plot (multi network, multi run)</font></option>
 	    <option value="AQ_Plot_Spatial_MtoM_Species.R"><font face="Arial, Helvetica, sans-serif">Model/Model Species Diff Spatial Plot (multi network, multi run)</font></option>
+<!--
 	    <option value="AQ_Plot_Spatial_Diff.R"><font face="Arial, Helvetica, sans-serif">Spatial Plot of Bias/Error Difference (multi network, multi run)</font></option>
+-->
 	    <option value="AQ_Plot_Spatial_Diff_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (single plot)</font></option>
 	    <option value="AQ_Plot_Spatial_Diff_leaflet_network.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (multiple plots )</font></option>
+<!--
 	    <option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">Ratio Spatial Plot to total PM2.5 (multi network, multi run)</font></option>
+-->
     </optgroup>
     <optgroup label="Box Plots">
 	    <option value="AQ_Boxplot.R"><font face="Arial, Helvetica, sans-serif">Boxplot (single network, multi run)</font></option>
@@ -4043,7 +4055,9 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Boxplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Boxplot (single network, multi run)</font></option>
 	    <option value="AQ_Boxplot_DofW.R"><font face="Arial, Helvetica, sans-serif">Day of Week Boxplot (single network, multiple runs)</font></option>
 	    <option value="AQ_Boxplot_Hourly.R"><font face="Arial, Helvetica, sans-serif">Hourly Boxplot (single network, multiple runs)</font></option>
+<!--
 	    <option value="AQ_Boxplot_MDA8.R"><font face="Arial, Helvetica, sans-serif">8hr Average Boxplot (single network, hourly data, can be slow)</font></option>
+-->
 	    <option value="AQ_Boxplot_Roselle.R"><font face="Arial, Helvetica, sans-serif">Roselle Boxplot (single network, multiple simulations)</font></option>
     </optgroup>
 <!--    <optgroup label="Stacked Bar Plots">
@@ -4059,11 +4073,17 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Stacked_Barplot_panel_AE6_multi.R"><font face="Arial, Helvetica, sans-serif">Multi-Panel, Mulit Run Stacked Bar Plot AE6 (full year data)</font></option>
     </optgroup> -->
     <optgroup label="Misc Scripts">
+<!--
 	    <option value="AQ_Kellyplot.R"><font face="Arial, Helvetica, sans-serif">Kelly Plot (single species, single network, full year data)</font></option>
+-->
 	    <option value="AQ_Kellyplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Kelly Plot (single species, single network, full year data)</font></option>
+<!--
 	    <option value="AQ_Kellyplot_region.R"><font face="Arial, Helvetica, sans-serif">Climate Region Kelly Plot (single species, single network, multi sim)</font></option>
+-->
 	    <option value="AQ_Kellyplot_region_plotly.R"><font face="Arial, Helvetica, sans-serif">Plolty Climate Region Kelly Plot (single species, single network, multi sim)</font></option>
+<!--
 	    <option value="AQ_Kellyplot_season.R"><font face="Arial, Helvetica, sans-serif">Seasonal Kelly Plot (single species, single network, multi sim)</font></option>
+-->
 	    <option value="AQ_Kellyplot_season_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Seasonal Kelly Plot (single species, single network, multi sim)</font></option>
 	    <option value="AQ_Stats.R"><font face="Arial, Helvetica, sans-serif">Species Statistics (multi species, single network)</font></option>
 	    <option value="AQ_Raw_Data.R"><font face="Arial, Helvetica, sans-serif">Create raw data csv file (single network, single simulation)</font></option>
@@ -4075,9 +4095,11 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Temporal_Plots.R"><font face="Arial, Helvetica, sans-serif">CDF, Q-Q, Taylor Plots (single network, multi run)</font></option>
     </optgroup>
 <!--   <optgroup label="Experimental Scripts (may not work correctly)">
+<!--
         <option value="AQ_Overlay_File.R"><font face="Arial, Helvetica, sans-serif">Create PAVE/VERDI Obs Overlay File (hourly/daily data only)</font></option>
         <option value="AQ_Scatterplot_log.R"><font face="Arial, Helvetica, sans-serif">Log-Log Model/Ob Scatterplot (multiple networks)</font></option>
         <option value="AQ_Spectral_Analysis.R"><font face="Arial, Helvetica, sans-serif">Spectral Analysis (single network, single run, experimental)</font></option>
+-->
         <option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">PM Ratio Spatial Plot (multi network, single run)</font></option>
    </optgroup> -->
   </select>

@@ -316,6 +316,14 @@ if (inc_whiskers == 'y') {
 }
 bias.y.axis.max <- bias.y.axis.max.value+((bias.y.axis.max.value-bias.y.axis.min)*0.25)
 
+norm_bias.x.axis.min <- min(q1.norm_bias,q1.norm_bias2,q1.norm_bias3)
+norm_bias.x.axis.max.value <- max(q1.norm_bias,q1.norm_bias2,q1.norm_bias3)
+if (inc_whiskers == 'y') {
+   norm_bias.x.axis.min <- min(Norm_Bias,Norm_Bias2,Norm_Bias3)                              # Set y-axis minimum values
+   norm_bias.x.axis.max.value <- max(Norm_Bias,Norm_Bias2,Norm_Bias3)                        # Determine y-axis maximum value
+}
+norm_bias.x.axis.max <- norm_bias.x.axis.max.value+((norm_bias.x.axis.max.value-norm_bias.x.axis.min)*0.25)
+
 norm_bias.y.axis.min <- min(q1.norm_bias,q1.norm_bias2,q1.norm_bias3)
 norm_bias.y.axis.max.value <- max(q3.norm_bias,q3.norm_bias2,q3.norm_bias3)
 if (inc_whiskers == 'y') {
@@ -629,12 +637,12 @@ if (averaging == "m") {
 #}
 if (num_runs > 1) {
    if (sum(obs.stats$n) != sum(obs.stats2$n)) {
-      text(norm.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
+      text(norm_bias.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
    }
 }
 if (num_runs > 2) {
    if ((sum(obs.stats$n) != sum(obs.stats2$n)) || (sum(obs.stats$n) != sum(obs.stats3$n))) {
-      text(norm.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
+      text(norm_bias.x.axis.min,norm_bias.y.axis.max*0.87,"Note: # of obs differs between simulations",adj=c(0.125,0.5))
    }
 }
 

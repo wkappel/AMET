@@ -95,6 +95,18 @@ mb_min	     <- NULL
 rmse_max     <- NULL
 num_runs     <- length(run_names)
 for (j in 1:num_runs) {
+	### Deal with multiple networks and species ###
+criteria_in <- "Default"
+if (length(network_names) > 1) {
+  network_query <- paste("(d.network='",network_names[1],"'",sep="")
+  for (i in 2:length(network_names)) {
+     network_query <- paste(network_query," or d.network='",network_names[i],"'",sep="")
+  }
+  network_query  <- paste(network_query,")",sep="")
+  criteria_in    <- paste(" WHERE",network_query,query,sep=" ")
+}
+###############################################
+
    {
       if (pca_flag == "y") {
          criteria <- paste(" WHERE d.",species,"_ob is not NULL and d.network='",network,"' ",pca[j],query,sep="") # Set part of the MYSQL query
