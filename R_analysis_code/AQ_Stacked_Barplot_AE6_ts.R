@@ -209,9 +209,18 @@ dev.off()
 ggsave(filename_pdf,width=15,height=9)
 
 axis.max <- axis.max+(0.2*j)*axis.max
-bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species),stat="identity",position=position_stack(reverse=TRUE), width=0.75) + facet_grid(~ob_dates) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x=element_blank(), panel.spacing.x = unit(0.1,"lines"), panel.grid.major.x = element_blank(), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=main.title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=0, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
+bp <- ggplot(data_merged.df, aes(x=cat,y=value,date=ob_dates)) + geom_bar(aes(color=species,fill=species,
+        text = paste0(
+          "Species: ", species,
+          "<br>Value: ", signif(value,5),
+          "<br>Network/Sim: ", cat,
+          "<br>Obs Date: ", ob_dates
+        )
+      ),
+      stat="identity",position=position_stack(reverse=TRUE), width=0.75) + facet_grid(~ob_dates) + scale_color_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + scale_fill_manual(values=bar_colors,guide=guide_legend(reverse=TRUE)) + theme(strip.text.x=element_blank(), panel.spacing.x = unit(0.1,"lines"), panel.grid.major.x = element_blank(), panel.grid.major.y=element_line(size=.1, color="white")) + labs(title=title,x="Network / Simulation", y=paste(method," Concentration (",units,")",sep="")) + scale_y_continuous(expand=c(0,0.1), limits=c(0,axis.max), breaks = pretty(c(0,axis.max), n = 10)) + theme(axis.title.y=element_text(size=15),axis.title.x=element_blank(), plot.title=element_text(size=12, vjust=0, hjust=0.5), axis.text.y=element_text(size=12),axis.text.x=element_text(angle=90,hjust=0.5,vjust=0.5,size=10))
 
-bp <- ggplotly(bp,tooltip=c("species","value","cat","date")) %>%
+#bp <- ggplotly(bp,tooltip=c("value","cat","date")) %>%
+bp <- ggplotly(bp,tooltip="text") %>%
  layout(yaxis=list(autorange=TRUE))
-   
+ 
 saveWidget(bp, file=filename_html,selfcontained=T)

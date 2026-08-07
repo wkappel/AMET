@@ -4001,16 +4001,13 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Scatterplot_mtom.R"><font face="Arial, Helvetica, sans-serif">Model/Model Scatterplot (multiple networks)</font></option>
 	    <option value="AQ_Scatterplot_mtom_density_ggplot.R"><font face="Arial, Helvetica, sans-serif">Model/Model Density Scatterplot (single network)</font></option>
 	    <option value="AQ_Scatterplot_percentiles.R"><font face="Arial, Helvetica, sans-serif">Scatterplot of Percentiles (single network, single run)</font></option>
-	    <option value="AQ_Scatterplot_skill.R"><font face="Arial, Helvetica, sans-serif">Ozone Skill Scatterplot (single network, mult runs)</font></option>
 	    <option value="AQ_Scatterplot_bins.R"><font face="Arial, Helvetica, sans-serif">Binned MB & RMSE Scatterplots (single net., mult. run)</font></option>
 	    <option value="AQ_Scatterplot_bins_plotly.R"><font face="Arial, Helvetica, sans-serif">Interactive Binned Plot (single net., mult. run)</font></option>
 	    <option value="AQ_Scatterplot_multi.R"><font face="Arial, Helvetica, sans-serif">Multi Simulation Scatter plot (single network, mult runs)</font></option>
-	    <option value="AQ_Scatterplot_soil.R"><font face="Arial, Helvetica, sans-serif">Soil Scatter plot (single network, mult runs)</font></option>
     </optgroup>
     <optgroup label="Time Series Plots">
 	    <option value="AQ_Timeseries.R"><font face="Arial, Helvetica, sans-serif">Time-series Plot (single network, multiple sites averaged)</font></option>
 	    <option value="AQ_Timeseries_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Time-series Plots (single network, multiple sites not average)</font></option>
-	    <option value="AQ_Timeseries_dygraph.R"><font face="Arial, Helvetica, sans-serif">Dygraph Time-series Plot (single network, multiple sites averaged)</font></option>
 	    <option value="AQ_Timeseries_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Muli-simulation Timeseries</font></option>
 	    <option value="AQ_Timeseries_plotly_bysite.R"><font face="Arial, Helvetica, sans-serif">Individual Site Plotly Time-series Plots (single network, multiple sites not average)</font></option>
 	    <option value="AQ_Timeseries_networks_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Multi-network Timeseries</font></option>
@@ -4035,7 +4032,6 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Plot_Spatial_Diff.R"><font face="Arial, Helvetica, sans-serif">Spatial Plot of Bias/Error Difference (multi network, multi run)</font></option>
 	    <option value="AQ_Plot_Spatial_Diff_leaflet.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (single plot)</font></option>
 	    <option value="AQ_Plot_Spatial_Diff_leaflet_network.R"><font face="Arial, Helvetica, sans-serif">Interactive Spatial Plot of Bias/Error Difference (multiple plots )</font></option>
-	    <option value="AQ_Plot_Spatial_Ratio.R"><font face="Arial, Helvetica, sans-serif">Ratio Spatial Plot to total PM2.5 (multi network, multi run)</font></option>
     </optgroup>
     <optgroup label="Box Plots">
 	    <option value="AQ_Boxplot.R"><font face="Arial, Helvetica, sans-serif">Boxplot (single network, multi run)</font></option>
@@ -4043,7 +4039,6 @@ Network 7 </font><font face="Arial, Helvetica, sans-serif">
 	    <option value="AQ_Boxplot_plotly.R"><font face="Arial, Helvetica, sans-serif">Plotly Boxplot (single network, multi run)</font></option>
 	    <option value="AQ_Boxplot_DofW.R"><font face="Arial, Helvetica, sans-serif">Day of Week Boxplot (single network, multiple runs)</font></option>
 	    <option value="AQ_Boxplot_Hourly.R"><font face="Arial, Helvetica, sans-serif">Hourly Boxplot (single network, multiple runs)</font></option>
-	    <option value="AQ_Boxplot_MDA8.R"><font face="Arial, Helvetica, sans-serif">8hr Average Boxplot (single network, hourly data, can be slow)</font></option>
 	    <option value="AQ_Boxplot_Roselle.R"><font face="Arial, Helvetica, sans-serif">Roselle Boxplot (single network, multiple simulations)</font></option>
     </optgroup>
 <!--    <optgroup label="Stacked Bar Plots">
